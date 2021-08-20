@@ -1,17 +1,20 @@
 const mysql = require('mysql');
-const dotenv = require('dotenv');
-dotenv.config();
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
+require('dotenv').config({path: 'variables.env'});
 
-connection.connect((err) => {
-  if (err) {
-    throw err;
+const conectarBD = async () => {
+  try {
+    let connection = mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    });
+    await connection.connect();
+    console.log('Conectado!');
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
   }
-
-  console.log('Connected!');
-});
+}
+  
+module.exports = conectarBD;
