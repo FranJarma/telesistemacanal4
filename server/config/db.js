@@ -10,7 +10,7 @@ const conectarBD = async () => {
       database: process.env.DB_NAME
     });
     await connection.connect();
-    console.log('Conectado!');
+    console.log('Conectado a la bd!');
   } catch (error) {
     console.log(error);
     process.exit(1);
