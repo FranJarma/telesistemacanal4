@@ -15,10 +15,10 @@ const Datatable = ({columnas, datos}) => {
     //state para buscador
     const [textoFiltrado, setTextoFiltrado] = useState('');
     const itemsFiltrados = datos.filter(item =>
-    (item.nombreCompleto && item.nombreCompleto.toLowerCase().includes(textoFiltrado.toLowerCase()))
-    || (item.mes && item.mes.toLowerCase().includes(textoFiltrado.toLowerCase())
+    (item.FullName && item.FullName.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.mes && item.mes.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.fechaPago && item.fechaPago.toLowerCase().includes(textoFiltrado.toLowerCase()))
-    ));
+    );
     const paginacionOpciones = {
         rowsPerPageText: 'Registros por página',
         rangeSeparatorText: 'de',

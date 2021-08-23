@@ -1,14 +1,25 @@
-import React from 'react';
-import { Button, Card, CardContent, CardHeader, Tooltip, Typography } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { Button, Card, CardContent, CardHeader, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
-import {abonadosActivos} from './DatosTabla';
 import {columnasAbonadosActivos} from './ColumnasTabla';
+import {abonadosActivos} from './DatosTabla';
 import useStyles from './../Styles';
 import Aside from '../design/layout/Aside';
 import { Link } from 'react-router-dom';
-import Footer from '../design/layout/Footer';
+import clienteAxios from './../../../config/axios';
 
 const ListaAbonadosActivos = () => {
+    const [abonados, setAbonados] = useState([]);
+    useEffect(() => {
+        traerAbonados();
+    },[])
+
+    async function traerAbonados () {
+        const datosAbonadosAPI = await clienteAxios.get('/api/abonados');
+        console.log(datosAbonadosAPI.data)
+        console.log(abonadosActivos)
+        setAbonados(datosAbonadosAPI.data);
+    }
     const styles = useStyles();
     return (
         <>
@@ -21,7 +32,7 @@ const ListaAbonadosActivos = () => {
                 <Typography variant="h1">Abonados Activos</Typography>
                 <Datatable
                     columnas={columnasAbonadosActivos}
-                    datos={abonadosActivos}
+                    datos={abonados}
                 />
             </CardContent>
         </Card>

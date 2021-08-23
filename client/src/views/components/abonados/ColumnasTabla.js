@@ -1,48 +1,40 @@
 import { Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
-
 export const columnasAbonadosActivos = [
     {
-        "name": "N°",
-        "selector": row =>row["id"],
-        "sortable": true,
-        "width": '4rem'
+        "name": "id",
+        "omit": true,
+        "selector": row =>row["UserId"],
+        "sortable": true
     },
     {
         "name": "Nombre Completo",
-        "selector": row =>row["nombreCompleto"],
+        "selector": row =>row["FullName"],
         "sortable": true,
         "width": '11rem'
     },
     {
         "name": "N° teléfono",
-        "selector": row =>row["telefono"],
-        "sortable": true,
-        "width": '9rem'
+        "selector": row =>row["Phone"],
+        "sortable": true
     },
     {
-        "name": "Barrio - Dirección",
-        "selector": row =>row["domicilio"]["barrio"] + " - " + row["domicilio"]["calle"] + " " +  row["domicilio"]["numero"] ,
+        "name": "Domicilio",
+        "selector": row =>row["Domicilio"],
         "sortable": true,
-    },
-    {
-        "name": "Servicio",
-        "selector": row =>row["servicio"],
-        "sortable": true,
-        "width": '10rem'
     },
     {
         cell: (data) =>
         <>
         <Link to={{
-            pathname: `/caratula-abonado/abonadoId=${data.id}`,
+            pathname: `/caratula-abonado/nombre=${data.FullName}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "teal"}}>
         <Tooltip title="Editar"><i className="bx bx-edit bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
-            pathname: `/historial-de-pagos/abonadoId=${data.id}`,
+            pathname: `/historial-de-pagos/abonado=${data.FullName}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "navy"}}>

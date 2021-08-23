@@ -16,16 +16,32 @@ const CaratulaAbonado = () => {
             <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.nombreCompleto}` : "Agregar abonado"}</Typography>
             <Typography variant="h2"><i className="bx bx-user"></i> Datos del abonado</Typography>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={3} lg={3}>
+                <Grid item xs={12} md={4} lg={4}>
                     <TextField
                     autoFocus
                     variant="standard"
                     value={location.state ? location.state.nombreCompleto : ""}
                     fullWidth
-                    label="Nombre Completo">
+                    label="Nombre">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3}>
+                <Grid item xs={12} md={4} lg={4}>
+                    <TextField
+                    variant="standard"
+                    value={location.state ? location.state.nombreCompleto : ""}
+                    fullWidth
+                    label="Apellido">
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
+                    <TextField
+                    value={location.state ? location.state.email : ""}
+                    type="email"
+                    fullWidth
+                    label="Correo electrónico">
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
                     <TextField
                     value={location.state ? location.state.dni : ""}
                     type="number"
@@ -33,7 +49,7 @@ const CaratulaAbonado = () => {
                     label="DNI">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3}>
+                <Grid item xs={12} md={4} lg={4}>
                     <DatePicker
                     disableFuture
                     format="dd/MM/yyyy"
@@ -43,25 +59,57 @@ const CaratulaAbonado = () => {
                     views={["year", "month", "date"]}>
                     </DatePicker>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3}>
+                <Grid item xs={12} md={4} lg={4}>
                     <TextField
-                    value={location.state ? location.state.email : ""}
-                    type="email"
+                    value={location.state ? location.state.telefono : ""}
+                    type="number"
                     fullWidth
-                    label="Correo electrónico">
+                    label="N° Teléfono">
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
+                    <TextField
+                    value={location.state ? location.state.domicilio.provincia : ""}
+                    fullWidth
+                    label="Provincia"
+                    select>
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
+                    <TextField
+                    value={location.state ? location.state.domicilio.departamento : ""}
+                    fullWidth
+                    label="Departamento"
+                    select>
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
+                    <TextField
+                    value={location.state ? location.state.domicilio.municipio : ""}
+                    fullWidth
+                    label="Municipio"
+                    select>
                     </TextField>
                 </Grid>
             </Grid>
             <Typography variant="h2"><i className="bx bx-home"></i> Datos del domicilio de instalación</Typography>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={6}>
+                <Grid item xs={12} md={4} lg={4}>
+                    <TextField
+                    value={location.state ? location.state.domicilio.barrio : ""}
+                    fullWidth
+                    label="Barrio"
+                    >
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
                     <TextField
                     value={location.state ? location.state.domicilio.calle : ""}
                     fullWidth
                     label="Calle">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3}>
+                <Grid item xs={12} md={2} lg={2}>
                     <TextField
                     value={location.state ? location.state.domicilio.numero : ""}
                     type="number"
@@ -69,33 +117,12 @@ const CaratulaAbonado = () => {
                     label="Número">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3}>
+                <Grid item xs={12} md={2} lg={2}>
                     <TextField
                     value={location.state ? location.state.domicilio.piso : ""}
                     type="number"
                     fullWidth
                     label="Piso">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4}>
-                    <TextField
-                    value={location.state ? location.state.domicilio.provincia : ""}
-                    fullWidth
-                    label="Provincia">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4}>
-                    <TextField
-                    value={location.state ? location.state.domicilio.municipio : ""}
-                    fullWidth
-                    label="Municipio">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4}>
-                    <TextField
-                    value={location.state ? location.state.domicilio.barrio : ""}
-                    fullWidth
-                    label="Barrio">
                     </TextField>
                 </Grid>
             </Grid>
