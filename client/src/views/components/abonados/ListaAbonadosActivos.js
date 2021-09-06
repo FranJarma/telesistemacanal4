@@ -1,25 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Button, Card, CardContent, CardHeader, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import {columnasAbonadosActivos} from './ColumnasTabla';
-import {abonadosActivos} from './DatosTabla';
 import useStyles from './../Styles';
 import Aside from '../design/layout/Aside';
 import { Link } from 'react-router-dom';
-import clienteAxios from './../../../config/axios';
+import AbonadoContext from '../../../context/abonados/abonadoContext';
 
 const ListaAbonadosActivos = () => {
-    const [abonados, setAbonados] = useState([]);
+    const abonadosContext = useContext(AbonadoContext);
+    const { abonados, traerAbonadosActivos } = abonadosContext;
     useEffect(() => {
-        traerAbonados();
-    },[])
-
-    async function traerAbonados () {
-        const datosAbonadosAPI = await clienteAxios.get('/api/abonados');
-        console.log(datosAbonadosAPI.data)
-        console.log(abonadosActivos)
-        setAbonados(datosAbonadosAPI.data);
-    }
+        traerAbonadosActivos();
+    },[]);
     const styles = useStyles();
     return (
         <>

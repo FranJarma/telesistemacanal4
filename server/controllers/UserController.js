@@ -1,8 +1,5 @@
 const User = require('./../models/User');
-const Role = require('./../models/Role');
-const UserRole = require('./../models/UserRole');
-const { Op } = require("sequelize");
-
+const db = require('./../config/connection');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
@@ -10,13 +7,7 @@ require('dotenv').config({path: 'variables.env'});
 
 exports.AbonadosActivosListar = async(req, res) => {
     try {
-        const abonados = await User.findAll({
-            attributes: ['UserId', 'FullName', 'Phone','Domicilio'],
-            where: {
-                'deactivateAt': null
-            }
-        });
-        console.log(abonados)
+        const abonados = await db.query('CALL _AbonadosActivosReadAll();');
         res.json(abonados);
     } catch (error) {
         console.log(error);
@@ -26,14 +17,7 @@ exports.AbonadosActivosListar = async(req, res) => {
 
 exports.AbonadosInactivosListar = async(req, res) => {
     try {
-        const abonados = await User.findAll({
-            attributes: ['UserId', 'FullName', 'Phone','Domicilio'],
-            where: {
-                'deactivateAt': {
-                    [Op.not]: null
-                }
-            }
-        });
+        const abonados = await db.query('CALL _AbonadosInactivosReadAll();');
         console.log(abonados)
         res.json(abonados);
     } catch (error) {
