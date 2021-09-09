@@ -3,7 +3,7 @@ import { Card, CardContent, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import {abonadosInactivos} from './DatosTabla';
 import {columnasAbonadosInactivos} from './ColumnasTabla';
-import useStyles from './../Styles';
+import useStyles from '../Styles';
 import Aside from '../design/layout/Aside';
 
 const ListaAbonadosInactivos = () => {

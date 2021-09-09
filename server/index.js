@@ -15,8 +15,8 @@ app.use((req, res, next) => {
     next();
 });
 
-//ABONADOS
-app.use('/api/abonados', require('./routes/User.js'));
+//USUARIOS
+app.use('/api/usuarios', require('./routes/User.js'));
 //PROVINCIAS
 app.use('/api/provincias', require('./routes/Provincia.js'));
 //MUNICIPIOS
@@ -25,7 +25,8 @@ app.use('/api/municipios', require('./routes/Municipio.js'));
 app.use('/api/barrios', require('./routes/Barrio.js'));
 //SERVICIOS
 app.use('/api/servicios', require('./routes/Servicio.js'));
-
+//CONDICIONES IVA
+app.use('/api/condicionesIVA', require('./routes/CondicionesIVA.js'));
 //pág principal
 app.get('/', (req, res)=>{
     res.send(`Conectado a: ${process.env.DB_NAME} en puerto: ${PORT}`)

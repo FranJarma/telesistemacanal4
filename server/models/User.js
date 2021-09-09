@@ -12,11 +12,6 @@ const User = db.define('_user', {
         unique: true,
         allowNull: false,
     },
-    Email: {
-        type: STRING(256),
-        unique: true,
-        allowNull: true
-    },
     Name: {
         type: STRING(256),
         allowNull: false
@@ -41,17 +36,15 @@ const User = db.define('_user', {
         type: STRING(256),
         allowNull: true
     },
-    IsLocked: {
-        type: INTEGER,
-        defaultValue: 0
+    Email: {
+        type: STRING(256),
+        unique: true,
+        allowNull: true
     },
-    IsActive: {
-        type: INTEGER,
-        defaultValue: 1
-    },
-    IsTestUser: {
-        type: INTEGER,
-        defaultValue: 0
+    FechaNacimiento: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW
     },
     Phone: {
         type: STRING(256),
@@ -61,38 +54,55 @@ const User = db.define('_user', {
         type: INTEGER,
         defaultValue: 0
     },
-    _fechaCarga: {
+    IsActive: {
+        type: INTEGER,
+        defaultValue: 1
+    },
+    IsLocked: {
+        type: INTEGER,
+        defaultValue: 0
+    },
+    IsTestUser: {
+        type: INTEGER,
+        defaultValue: 0
+    },
+    LastLoginDate: {
         type: DATE,
         allowNull: false,
         defaultValue: NOW
     },
-    _usuarioCarga: {
+    createdAt: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: NOW
+    },
+    createdBy: {
         type: UUID,
         allowNull: false
         //agregar usuario de carga
     },
-    _fechaDesactivado: {
+    deactivateAt: {
         type: DATE,
         allowNull: true,
     },
-    _usuarioDesactivado: {
+    deactivateBy: {
         type: UUID,
         allowNull: true
     },
-    _fechaModificacion: {
+    updatedAt: {
         type: DATE,
         allowNull: true
     },
-    _usuarioModificacion: {
+    updatedBy: {
         type: UUID,
         allowNull: true
     },
     //Columnas Relacionadas por fk
-    ProvinciaId: {
+    BarrioId: {
         type: INTEGER,
         allowNull: false
     },
-    DepartamentoId: {
+    ProvinciaId: {
         type: INTEGER,
         allowNull: false
     },

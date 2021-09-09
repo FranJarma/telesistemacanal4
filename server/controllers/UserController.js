@@ -1,10 +1,10 @@
-const User = require('./../models/User');
 const db = require('./../config/connection');
 const bcrypt = require('bcrypt');
-const { validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({path: 'variables.env'});
 
+//FUNCIONES PARA ABONADOS
 exports.AbonadosActivosListar = async(req, res) => {
     try {
         const abonados = await db.query('CALL _AbonadosActivosReadAll();');
@@ -31,10 +31,13 @@ exports.AbonadoCreate = async(req, res) => {
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
     }
+    else {
+        return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
+    }
     try {
-        const { email, dni } = req.body;
-        let dniExists = User.findOne({dni}) || User.findOne({email});
-        if (dniExists) res.status(400).json({mensaje: 'Ya existe un abonado con ese DNI o Email'});
+        const { abonadoInfo } = req.body;
+        console.log(abonadoInfo);
+        /*
         //creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
         abonado = new User(req.body);
         //hasheamos password
@@ -59,12 +62,13 @@ exports.AbonadoCreate = async(req, res) => {
             res.json({token});
             }
         });
+        */
     } catch (error) {
         console.log(error);
         res.status(400).send('Hubo un error en el registro');
     }
 }
 
-exports.AbonadoEliminar = async(req, res) => {
+exports.UserEliminar = async(req, res) => {
     res.status(200).send("Eliminar abonado")
 }

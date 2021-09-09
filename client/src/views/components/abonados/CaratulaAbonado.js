@@ -1,61 +1,119 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Aside from '../design/layout/Aside';
-import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import useStyles from './../Styles';
+import useStyles from '../Styles';
 import { DatePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
-import clienteAxios from './../../../config/axios';
-import ProvinciaContext from './../../../context/provincias/provinciaContext';
-import MunicipioContext from './../../../context/municipios/municipioContext';
-import BarrioContext from './../../../context/barrios/barrioContext';
-import ServicioContext from './../../../context/servicios/servicioContext';
+import ErrorsContext from '../../../context/errors/errorContext';
+import AbonadoContext from '../../../context/abonados/abonadoContext';
+import ProvinciaContext from '../../../context/provincias/provinciaContext';
+import MunicipioContext from '../../../context/municipios/municipioContext';
+import BarrioContext from '../../../context/barrios/barrioContext';
+import ServicioContext from '../../../context/servicios/servicioContext';
+import CondicionesIVAContext from '../../../context/condicionesIVA/condicionesIVAContext';
+import { toast } from 'react-toastify';
 
 const CaratulaAbonado = () => {
+    //Context
+    const errorsContext = useContext(ErrorsContext);
+    const abonadosContext = useContext(AbonadoContext);
     const provinciasContext = useContext(ProvinciaContext);
     const municipiosContext = useContext(MunicipioContext);
-    const barrioContext = useContext(BarrioContext);
-    const servicioContext = useContext(ServicioContext);
+    const barriosContext = useContext(BarrioContext);
+    const serviciosContext = useContext(ServicioContext);
+    const condicionesIVAContext = useContext(CondicionesIVAContext);
 
+    const { errors, crearAbonado } = abonadosContext;
     const { provincias, traerProvincias } = provinciasContext;
     const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
-    const { barrios, traerBarriosPorMunicipio } = barrioContext;
-    const { servicios, traerServicios } = servicioContext;
-
+    const { barrios, traerBarriosPorMunicipio } = barriosContext;
+    const { servicios, traerServicios } = serviciosContext;
+    const { condicionesIVA, traerCondicionesIVA } = condicionesIVAContext;
     const location = useLocation();
     const styles = useStyles();
+    //Observables
     useEffect(() => {
         traerProvincias();
+        traerMunicipiosPorProvincia(provinciaSeleccionadaId);
         traerServicios();
+        traerCondicionesIVA();
     }, [])
-
-    const [provinciaSeleccionadaId, setProvinciaSeleccionadaId] = useState(0);
+    //States
+    const [abonadoInfo, setAbonadoInfo] = useState({
+        nombre: '',
+        apellido: '',
+        dni: '',
+        cuit: '',
+        email: '',
+        telefono: '',
+        domicilioCalle: '',
+        domicilioNumero: '',
+        domicilioPiso: '',
+    })
+    const onInputChange = (e) => {
+        setAbonadoInfo({
+            ...abonadoInfo,
+            [e.target.name] : e.target.value
+        });
+    }
+    const { nombre, apellido, dni, cuit, email, telefono, domicilioCalle, domicilioNumero, domicilioPiso} = abonadoInfo;
+    //seteamos en 10 para que traiga jujuy directamente
+    const [provinciaSeleccionadaId, setProvinciaSeleccionadaId] = useState(10);
+    //para más adelante cuando vayan a otras provincias
+    /*
     const handleChangeProvinciaSeleccionada = (e) => {
         setProvinciaSeleccionadaId(e.target.value);
+        setMunicipioSeleccionadoId(0);
         setBarrioSeleccionadoId(0);
         traerMunicipiosPorProvincia(e.target.value);
-    }
-    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
+    }*/
+    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState('');
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
         setBarrioSeleccionadoId(0);
         traerBarriosPorMunicipio(e.target.value);
     }
-    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(0);
-    const handleChangeBarrioSeleccionado = (e) => {
-        setBarrioSeleccionadoId(e.target.value);
-    }
-    const [servicioSeleccionado, setServicioSeleccionadoId] = useState(0);
+    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState('');
+    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState('');
     const handleChangeServicioSeleccionado = (e) => {
         setServicioSeleccionadoId(e.target.value);
     }
-    const [barrioSeleccionado, setBarrioSeleccionado] = useState('');
-    const handleChangeInputBarrioSeleccionado = (e) => {
-        setBarrioSeleccionado(e.target.value);
+    const [condicionIVASeleccionadoId, setCondicionIVASeleccionadoId] = useState('');
+    const handleChangeCondicionIVASeleccionado = (e) => {
+        setCondicionIVASeleccionadoId(e.target.value);
+    }
+    const [fechaNacimiento, setFechaNacimiento] = useState(new Date());
+    const [fechaContrato, setFechaContrato] = useState(new Date());
+    const [fechaBajada, setFechaBajada] = useState(new Date());
+
+    //SUBMIT
+    const onSubmitAbonado = (e) => {
+        e.preventDefault();
+        crearAbonado({
+            nombre,
+            apellido,
+            dni,
+            cuit,
+            email,
+            telefono,
+            domicilioCalle,
+            domicilioNumero,
+            domicilioPiso,
+            fechaNacimiento,
+            fechaContrato,
+            fechaBajada,
+            condicionIVASeleccionadoId,
+            provinciaSeleccionadaId,
+            municipioSeleccionadoId,
+            barrioSeleccionadoId,
+            servicioSeleccionadoId
+        });
     }
     return ( 
     <>
     <Aside/>
+    <form onSubmit={onSubmitAbonado}>
     <Card className={styles.cartaPrincipal}>
         <CardContent>
             <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.nombreCompleto}` : "Agregar abonado"}</Typography>
@@ -64,31 +122,42 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     autoFocus
-                    variant="standard"
-                    value={location.state ? location.state.nombreCompleto : ""}
+                    variant="outlined"
+                    value={nombre}
+                    name="nombre"
+                    onChange={onInputChange}
                     fullWidth
                     label="Nombre">
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
-                    variant="standard"
-                    value={location.state ? location.state.nombreCompleto : ""}
+                    variant="outlined"
+                    value={apellido}
+                    name="apellido"
+                    onChange={onInputChange}
                     fullWidth
                     label="Apellido">
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
-                    value={location.state ? location.state.dni : ""}
-                    type="number"
+                    variant="outlined"
+                    value={dni}
+                    name="dni"
+                    inputProps={{ maxLength: 8 }}
+                    onChange={onInputChange}
                     fullWidth
                     label="DNI">
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
-                    value={location.state ? location.state.email : ""}
+                    variant="outlined"
+                    value={cuit}
+                    name="cuit"
+                    inputProps={{ maxLength: 11 }}
+                    onChange={onInputChange}
                     fullWidth
                     label="CUIT"
                     >
@@ -96,17 +165,24 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
-                    value={location.state ? location.state.email : ""}
+                    variant="outlined"
+                    value={condicionIVASeleccionadoId}
+                    onChange={handleChangeCondicionIVASeleccionado}
                     fullWidth
                     select
                     label="Condición IVA"
                     >
+                    {condicionesIVA.map((condicionIVA)=>(
+                        <MenuItem key={condicionIVA.CondicionIVAId} value={condicionIVA.CondicionIVAId}>{condicionIVA.CondicionIVADescripcion}</MenuItem>
+                    ))}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
-                    value={location.state ? location.state.email : ""}
-                    type="email"
+                    variant="outlined"
+                    value={email}
+                    name="email"
+                    onChange={onInputChange}
                     fullWidth
                     label="Email"
                     >
@@ -114,6 +190,9 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <DatePicker
+                    inputVariant="outlined"
+                    value={fechaNacimiento}
+                    onChange={(fecha)=>setFechaNacimiento(fecha)}
                     disableFuture
                     format="dd/MM/yyyy"
                     fullWidth
@@ -124,15 +203,20 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
-                    value={location.state ? location.state.telefono : ""}
+                    variant="outlined"
+                    value={telefono}
+                    name="telefono"
+                    onChange={onInputChange}
                     type="number"
                     fullWidth
                     label="N° Teléfono">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
-                    onChange={handleChangeProvinciaSeleccionada}
+                    variant="outlined"
+                    disabled
+                    //onChange={handleChangeProvinciaSeleccionada}
                     value={provinciaSeleccionadaId}
                     label="Provincia"
                     fullWidth
@@ -143,8 +227,9 @@ const CaratulaAbonado = () => {
                     ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
+                    variant="outlined"
                     onChange={handleChangeMunicipioSeleccionado}
                     value={municipioSeleccionadoId}
                     label="Municipio"
@@ -153,7 +238,7 @@ const CaratulaAbonado = () => {
                     >
                     {municipios.length > 0 ? municipios.map((municipio)=>(
                         <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
-                    )): <MenuItem disabled>No se encontraron municipios registrados en esa provincia</MenuItem>}
+                    )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
                     </TextField>
                 </Grid>
             </Grid>
@@ -161,26 +246,34 @@ const CaratulaAbonado = () => {
             <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <Autocomplete
+                    variant="outlined"
                     label="Barrio"
                     noOptionsText= "No se encontraron barrios"
                     fullWidth
                     options={barrios}
-                    onChange={(event, value) => value !== "" ? setBarrioSeleccionadoId(value.BarrioId) : ""} // prints the selected value
+                    key={municipioSeleccionadoId}
+                    onChange={(event, value) => value ? setBarrioSeleccionadoId(value.BarrioId) : setBarrioSeleccionadoId(0)}
                     getOptionLabel={(option) => option.BarrioNombre}
-                    renderInput={(params) => <TextField {...params} label="Barrio" variant="standard" />}
+                    renderInput={(params) => <TextField {...params} label="Barrio" variant="outlined" />}
                     >
                     </Autocomplete>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
-                    value={location.state ? location.state.domicilio.calle : ""}
+                    variant="outlined"
+                    value={domicilioCalle}
+                    name="domicilioCalle"
+                    onChange={onInputChange}
                     fullWidth
                     label="Calle">
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
-                    value={location.state ? location.state.domicilio.numero : ""}
+                    variant="outlined"
+                    value={domicilioNumero}
+                    name="domicilioNumero"
+                    onChange={onInputChange}
                     type="number"
                     fullWidth
                     label="Número">
@@ -188,7 +281,10 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
-                    value={location.state ? location.state.domicilio.piso : ""}
+                    variant="outlined"
+                    value={domicilioPiso}
+                    name="domicilioPiso"
+                    onChange={onInputChange}
                     type="number"
                     fullWidth
                     label="Piso">
@@ -199,7 +295,8 @@ const CaratulaAbonado = () => {
             <Grid container spacing={3}>
                 <Grid item xs={12} md={3} lg={3}>
                     <TextField
-                    value={servicioSeleccionado}
+                    variant="outlined"
+                    value={servicioSeleccionadoId}
                     onChange={handleChangeServicioSeleccionado}
                     label="Tipo de servicio"
                     fullWidth
@@ -212,6 +309,9 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <DatePicker
+                    inputVariant="outlined"
+                    value={fechaContrato}
+                    onChange={(fecha)=>setFechaContrato(fecha)}
                     format="dd/MM/yyyy"
                     fullWidth
                     label="Fecha de Contrato"
@@ -220,6 +320,9 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <DatePicker
+                    inputVariant="outlined"
+                    value={fechaBajada}
+                    onChange={(fecha)=>setFechaBajada(fecha)}
                     format="dd/MM/yyyy"
                     fullWidth
                     label="Fecha de Bajada"
@@ -229,12 +332,13 @@ const CaratulaAbonado = () => {
             </Grid>
         </CardContent>
         <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
-            <Button startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
+            <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
             variant="contained" color="primary">
             {location.state ? "Modificar" : "Registrar"}
         </Button>
         </div>
     </Card>
+    </form>
     </>
     );
 }
