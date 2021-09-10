@@ -24,6 +24,7 @@ const ListaAbonadosActivos = () => {
     const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
+        traerAbonadosActivos(e.target.value);
     }
     const styles = useStyles();
     return (
@@ -36,13 +37,14 @@ const ListaAbonadosActivos = () => {
             <CardContent>
                 <Typography variant="h1">Abonados Activos</Typography>
                 <br/>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
+                <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
                     onChange={handleChangeMunicipioSeleccionado}
                     value={municipioSeleccionadoId}
                     label="Municipio"
                     fullWidth
                     select
+                    variant="outlined"
                     >
                     {municipios.length > 0 ? municipios.map((municipio)=>(
                         <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>

@@ -9,7 +9,7 @@ const Toast = (mensaje, categoria) => {
         timer: 2000,
         timerProgressBar: true,
         icon: `${categoria}`,
-        title: `<a style="font-family: Poppins">${mensaje}</a>` 
+        title: `<a style="font-family: Poppins">${mensaje}</a>`
       })
   )
 }

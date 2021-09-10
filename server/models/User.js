@@ -1,54 +1,64 @@
-const { Sequelize, DATE, NOW, UUID, STRING, INTEGER } = require('sequelize');
+const { Sequelize, UUIDV4, DATE, NOW, STRING, INTEGER, BIGINT,  } = require('sequelize');
 const db = require('../config/connection');
 
 const User = db.define('_user', {
     UserId: {
-        type: UUID,
-        primaryKey: true,
-        defaultValue: Sequelize.UUIDV1
+        type: UUIDV4,
+        primaryKey: true
     },
     UserName: {
         type: STRING(256),
         unique: true,
-        allowNull: false,
-    },
-    Name: {
-        type: STRING(256),
-        allowNull: false
-    },
-    LastName: {
-        type: STRING(256),
-        allowNull: false
+        allowNull: true,
     },
     FullName: {
         type: STRING(256),
-        allowNull: false,
+        allowNull: false
     },
     Password: {
         type: STRING(256),
-        allowNull: true
+        allowNull: true,
     },
     Documento: {
         type: INTEGER,
-        allowNull: true
+        allowNull: false
     },
-    Domicilio: {
+    Cuit: {
+        type: BIGINT,
+        allowNull: false
+    },
+    DomicilioCalle: {
         type: STRING(256),
+        allowNull: false
+    },
+    DomicilioNumero: {
+        type: INTEGER,
+        allowNull: false
+    },
+    DomicilioPiso: {
+        type: INTEGER,
         allowNull: true
     },
     Email: {
         type: STRING(256),
         unique: true,
+        allowNull: false
+    },
+    FechaBajada: {
+        type: DATE,
+        allowNull: true
+    },
+    FechaContrato: {
+        type: DATE,
         allowNull: true
     },
     FechaNacimiento: {
         type: DATE,
-        allowNull: false,
-        defaultValue: NOW
+        allowNull: true
     },
     Phone: {
-        type: STRING(256),
-        allowNull: true
+        type: BIGINT,
+        allowNull: false
     },
     FailedPasswordCount: {
         type: INTEGER,
@@ -64,21 +74,20 @@ const User = db.define('_user', {
     },
     IsTestUser: {
         type: INTEGER,
-        defaultValue: 0
+        defaultValue: 1
     },
     LastLoginDate: {
         type: DATE,
-        allowNull: false,
-        defaultValue: NOW
+        allowNull: true
     },
     createdAt: {
         type: DATE,
-        allowNull: false,
+        allowNull: true,
         defaultValue: NOW
     },
     createdBy: {
-        type: UUID,
-        allowNull: false
+        type: UUIDV4,
+        allowNull: true
         //agregar usuario de carga
     },
     deactivateAt: {
@@ -86,16 +95,16 @@ const User = db.define('_user', {
         allowNull: true,
     },
     deactivateBy: {
-        type: UUID,
-        allowNull: true
+        type: UUIDV4,
+        allowNull: true,
     },
     updatedAt: {
         type: DATE,
-        allowNull: true
+        allowNull: true,
     },
     updatedBy: {
-        type: UUID,
-        allowNull: true
+        type: UUIDV4,
+        allowNull: true,
     },
     //Columnas Relacionadas por fk
     BarrioId: {
@@ -109,6 +118,10 @@ const User = db.define('_user', {
     MunicipioId: {
         type: INTEGER,
         allowNull: false
+    },
+    CondicionIVAId: {
+        type: INTEGER,
+        allowNull: true
     },
 });
 

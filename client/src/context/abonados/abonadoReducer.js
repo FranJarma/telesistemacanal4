@@ -6,6 +6,7 @@ export default (state, action) => {
         case CREAR_ABONADO: {
             return {
                 ...state,
+                errorFormulario: state.errorFormulario,
                 abonados: [...state.abonados, action.payload]
             };
         }

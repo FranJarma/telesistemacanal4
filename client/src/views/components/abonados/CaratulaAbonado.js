@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Aside from '../design/layout/Aside';
-import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useStyles from '../Styles';
-import { DatePicker } from '@material-ui/pickers';
-import { useLocation } from 'react-router-dom';
-import ErrorsContext from '../../../context/errors/errorContext';
+import { DatePicker  } from '@material-ui/pickers';
+import { useLocation, useHistory } from 'react-router-dom';
 import AbonadoContext from '../../../context/abonados/abonadoContext';
 import ProvinciaContext from '../../../context/provincias/provinciaContext';
 import MunicipioContext from '../../../context/municipios/municipioContext';
 import BarrioContext from '../../../context/barrios/barrioContext';
 import ServicioContext from '../../../context/servicios/servicioContext';
 import CondicionesIVAContext from '../../../context/condicionesIVA/condicionesIVAContext';
-import { toast } from 'react-toastify';
 
 const CaratulaAbonado = () => {
     //Context
-    const errorsContext = useContext(ErrorsContext);
     const abonadosContext = useContext(AbonadoContext);
     const provinciasContext = useContext(ProvinciaContext);
     const municipiosContext = useContext(MunicipioContext);
@@ -24,13 +21,14 @@ const CaratulaAbonado = () => {
     const serviciosContext = useContext(ServicioContext);
     const condicionesIVAContext = useContext(CondicionesIVAContext);
 
-    const { errors, crearAbonado } = abonadosContext;
+    const { errorFormulario, crearAbonado } = abonadosContext;
     const { provincias, traerProvincias } = provinciasContext;
     const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
     const { barrios, traerBarriosPorMunicipio } = barriosContext;
     const { servicios, traerServicios } = serviciosContext;
     const { condicionesIVA, traerCondicionesIVA } = condicionesIVAContext;
     const location = useLocation();
+    const history = useHistory();
     const styles = useStyles();
     //Observables
     useEffect(() => {
@@ -41,15 +39,15 @@ const CaratulaAbonado = () => {
     }, [])
     //States
     const [abonadoInfo, setAbonadoInfo] = useState({
-        nombre: '',
-        apellido: '',
-        dni: '',
-        cuit: '',
-        email: '',
-        telefono: '',
-        domicilioCalle: '',
-        domicilioNumero: '',
-        domicilioPiso: '',
+        nombre: null,
+        apellido: null,
+        dni: null,
+        cuit: null,
+        email: null,
+        telefono: null,
+        domicilioCalle: null,
+        domicilioNumero: null,
+        domicilioPiso: null,
     })
     const onInputChange = (e) => {
         setAbonadoInfo({
@@ -68,18 +66,18 @@ const CaratulaAbonado = () => {
         setBarrioSeleccionadoId(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState('');
+    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(null);
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
-        setBarrioSeleccionadoId(0);
+        setBarrioSeleccionadoId(null);
         traerBarriosPorMunicipio(e.target.value);
     }
-    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState('');
-    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState('');
+    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(null);
+    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState(null);
     const handleChangeServicioSeleccionado = (e) => {
         setServicioSeleccionadoId(e.target.value);
     }
-    const [condicionIVASeleccionadoId, setCondicionIVASeleccionadoId] = useState('');
+    const [condicionIVASeleccionadoId, setCondicionIVASeleccionadoId] = useState(null);
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIVASeleccionadoId(e.target.value);
     }
@@ -109,6 +107,10 @@ const CaratulaAbonado = () => {
             barrioSeleccionadoId,
             servicioSeleccionadoId
         });
+        if(errorFormulario === '')
+        setTimeout(()=>{
+            history.push('/abonados-activos');
+        },1000) 
     }
     return ( 
     <>
@@ -189,7 +191,7 @@ const CaratulaAbonado = () => {
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
-                    <DatePicker
+                    <DatePicker 
                     inputVariant="outlined"
                     value={fechaNacimiento}
                     onChange={(fecha)=>setFechaNacimiento(fecha)}
@@ -199,7 +201,7 @@ const CaratulaAbonado = () => {
                     label="Fecha de nacimiento"
                     openTo="year"
                     views={["year", "month", "date"]}>
-                    </DatePicker>
+                    </DatePicker >
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
@@ -308,7 +310,7 @@ const CaratulaAbonado = () => {
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
-                    <DatePicker
+                    <DatePicker 
                     inputVariant="outlined"
                     value={fechaContrato}
                     onChange={(fecha)=>setFechaContrato(fecha)}
@@ -316,10 +318,10 @@ const CaratulaAbonado = () => {
                     fullWidth
                     label="Fecha de Contrato"
                     >
-                    </DatePicker>
+                    </DatePicker >
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
-                    <DatePicker
+                    <DatePicker 
                     inputVariant="outlined"
                     value={fechaBajada}
                     onChange={(fecha)=>setFechaBajada(fecha)}
@@ -327,7 +329,7 @@ const CaratulaAbonado = () => {
                     fullWidth
                     label="Fecha de Bajada"
                     >
-                    </DatePicker>
+                    </DatePicker >
                 </Grid>
             </Grid>
         </CardContent>

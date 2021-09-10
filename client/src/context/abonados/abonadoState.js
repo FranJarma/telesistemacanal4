@@ -8,7 +8,8 @@ import {CREAR_ABONADO, LISTA_ABONADOS_ACTIVOS, LISTA_ABONADOS_INACTIVOS} from '.
 
 const AbonadoState = (props) => {
     const initialState = {
-        abonados: []
+        abonados: [],
+        errorFormulario: null
     };
     const [state, dispatch] = useReducer(AbonadoReducer, initialState);
     const crearAbonado = async (abonado) => {
@@ -22,12 +23,17 @@ const AbonadoState = (props) => {
                 })
         })
         .catch(err => {
-            Toast(err.response.data.errors[0].msg, 'warning');
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else {
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
         })
     }
     const traerAbonadosActivos = async () => {
         try {
-            const resultado = await clienteAxios.get('/api/abonados/activos');
+            const resultado = await clienteAxios.get('/api/usuarios/abonados/activos');
             dispatch({
                 type: LISTA_ABONADOS_ACTIVOS,
                 payload: resultado.data
@@ -51,7 +57,7 @@ const AbonadoState = (props) => {
         <AbonadoContext.Provider
             value={{
                 abonados: state.abonados,
-                errors: state.errors,
+                errorFormulario: state.errorFormulario,
                 crearAbonado,
                 traerAbonadosActivos,
                 traerAbonadosInactivos

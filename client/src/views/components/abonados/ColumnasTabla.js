@@ -14,9 +14,19 @@ export const columnasAbonadosActivos = [
         "width": '11rem'
     },
     {
+        "name": "DNI",
+        "selector": row =>row["Documento"],
+        "sortable": true
+    },
+    {
         "name": "N° teléfono",
         "selector": row =>row["Phone"],
         "sortable": true
+    },
+    {
+        "name": "Barrio",
+        "selector": row =>row["Barrio"],
+        "sortable": true,
     },
     {
         "name": "Domicilio",
@@ -27,14 +37,14 @@ export const columnasAbonadosActivos = [
         cell: (data) =>
         <>
         <Link to={{
-            pathname: `/caratula-abonado/nombre=${data.FullName}`,
+            pathname: `/caratula-abonado/edit/UserId=${data.UserId}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "teal"}}>
         <Tooltip title="Editar"><i className="bx bx-edit bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
-            pathname: `/historial-de-pagos/abonado=${data.FullName}`,
+            pathname: `/historial-de-pagos/abonado=${data.UserId}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "navy"}}>

@@ -1,10 +1,10 @@
-const { Sequelize, UUID, STRING } = require('sequelize');
+const { Sequelize, UUIDV4, STRING } = require('sequelize');
 const sequelize = new Sequelize({dialect: 'mysql', define: { freezeTableName: true}});
 
 const Role = sequelize.define('_role', {
     RoleId: {
-        type: UUID,
-        defaultValue: Sequelize.UUIDV1
+        type: UUIDV4
+
     },
     RoleName: {
         type: STRING(256),
