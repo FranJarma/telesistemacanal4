@@ -5,7 +5,7 @@ export const columnasAbonadosActivos = [
         "name": "id",
         "omit": true,
         "selector": row =>row["UserId"],
-        "sortable": true
+        "sortable": true,
     },
     {
         "name": "Nombre Completo",
@@ -16,22 +16,33 @@ export const columnasAbonadosActivos = [
     {
         "name": "DNI",
         "selector": row =>row["Documento"],
-        "sortable": true
+        "sortable": true,
+        "hide": "md"
     },
     {
         "name": "N° teléfono",
         "selector": row =>row["Phone"],
-        "sortable": true
+        "sortable": true,
+        "hide": "md"
     },
     {
         "name": "Barrio",
         "selector": row =>row["Barrio"],
         "sortable": true,
+        "hide": "md"
     },
     {
         "name": "Domicilio",
         "selector": row =>row["Domicilio"],
         "sortable": true,
+        "hide": "md",
+        "width": '15rem'
+    },
+    {
+        "name": "Servicio",
+        "selector": row =>row["Servicio"],
+        "sortable": true,
+        "hide": "md"
     },
     {
         cell: (data) =>
@@ -50,7 +61,7 @@ export const columnasAbonadosActivos = [
         style={{textDecoration: 'none', color: "navy"}}>
         <Tooltip title="Ver historial de pagos"><i className="bx bx-list-ul bx-xs"></i></Tooltip>
         </Link>
-        <Link to="/caratula-abonado/edit" style={{textDecoration: 'none', color: "red"}}><Tooltip title="Dar de baja"><i className="bx bx-trash bx-xs"></i></Tooltip></Link>
+        <Link to="/caratula-abonado/edit" style={{textDecoration: 'none', color: "red"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Link>
         </>,
     }
 ]

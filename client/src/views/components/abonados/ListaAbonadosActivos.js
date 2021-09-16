@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import {columnasAbonadosActivos} from './ColumnasTabla';
+import ExpandedComponent from './ExpandedComponent';
 import useStyles from '../Styles';
 import Aside from '../design/layout/Aside';
 import { Link } from 'react-router-dom';
@@ -46,6 +47,7 @@ const ListaAbonadosActivos = () => {
                     select
                     variant="outlined"
                     >
+                    <MenuItem value={0}>Todos</MenuItem>
                     {municipios.length > 0 ? municipios.map((municipio)=>(
                         <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
                     )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
@@ -54,6 +56,7 @@ const ListaAbonadosActivos = () => {
                 <Datatable
                     columnas={columnasAbonadosActivos}
                     datos={abonados}
+                    expandedComponent={ExpandedComponent}
                 />
             </CardContent>
         </Card>

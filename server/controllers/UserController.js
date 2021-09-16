@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const User = require('./../models/User');
 const UserRole = require('./../models/UserRole');
+const UserServicio = require('./../models/UserServicio');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -12,7 +13,7 @@ require('dotenv').config({path: 'variables.env'});
 exports.AbonadosActivosListar = async(req, res) => {
     console.log(req.params.id);
     try {
-        const abonados = await db.query('CALL _AbonadosActivosReadAll();');
+        const abonados = await db.query(`CALL _AbonadosActivosReadAll();`);
         res.json(abonados);
     } catch (error) {
         res.status(500).send('Hubo un error al encontrar los abonados');
@@ -57,7 +58,10 @@ exports.AbonadoCreate = async(req, res) => {
         const abonadoRole = new UserRole();
         abonadoRole.UserId = abonado.UserId;
         abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
-        await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :BarrioId, :MunicipioId, :ProvinciaId, :CondicionIVAId)',
+        const abonadoServicio = new UserServicio();
+        abonadoServicio.UserId = abonado.UserId;
+        abonadoServicio.ServicioId = abonado.ServicioId;
+        await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :BarrioId, :MunicipioId, :ProvinciaId, :CondicionIVAId, :ServicioId)',
         {
             replacements: {
                 UserId: abonado.UserId,
@@ -78,7 +82,8 @@ exports.AbonadoCreate = async(req, res) => {
                 BarrioId: abonado.BarrioId,
                 MunicipioId: abonado.MunicipioId,
                 ProvinciaId: abonado.ProvinciaId,
-                CondicionIVAId: abonado.CondicionIVAId
+                CondicionIVAId: abonado.CondicionIVAId,
+                ServicioId: abonado.ServicioId
             }
         });
             return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
