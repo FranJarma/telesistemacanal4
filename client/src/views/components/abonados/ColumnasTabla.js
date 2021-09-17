@@ -17,32 +17,32 @@ export const columnasAbonadosActivos = [
         "name": "DNI",
         "selector": row =>row["Documento"],
         "sortable": true,
-        "hide": "md"
+        "hide": "sm"
     },
     {
         "name": "N° teléfono",
         "selector": row =>row["Phone"],
         "sortable": true,
-        "hide": "md"
+        "hide": "sm",
     },
     {
         "name": "Barrio",
         "selector": row =>row["Barrio"],
         "sortable": true,
-        "hide": "md"
+        "hide": "sm"
     },
     {
         "name": "Domicilio",
         "selector": row =>row["Domicilio"],
         "sortable": true,
-        "hide": "md",
+        "hide": "sm",
         "width": '15rem'
     },
     {
         "name": "Servicio",
         "selector": row =>row["Servicio"],
         "sortable": true,
-        "hide": "md"
+        "hide": "sm"
     },
     {
         cell: (data) =>

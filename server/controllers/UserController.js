@@ -4,8 +4,10 @@ const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const User = require('./../models/User');
+const Domicilio = require('./../models/Domicilio');
 const UserRole = require('./../models/UserRole');
 const UserServicio = require('./../models/UserServicio');
+const UserDomicilio = require('./../models/UserDomicilio');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -45,23 +47,26 @@ exports.AbonadoCreate = async(req, res) => {
         abonado.FechaBajada = req.body.fechaBajada;
         abonado.FechaContrato = req.body.fechaContrato;
         abonado.FechaNacimiento = req.body.fechaNacimiento;
-        abonado.DomicilioCalle = req.body.domicilioCalle;
-        abonado.DomicilioNumero = req.body.domicilioNumero;
-        abonado.DomicilioPiso = req.body.domicilioPiso;
         abonado.Phone = req.body.telefono;
         abonado.Email = req.body.email;
-        abonado.BarrioId = req.body.barrioSeleccionadoId;
-        abonado.MunicipioId = req.body.municipioSeleccionadoId;
-        abonado.ProvinciaId = req.body.provinciaSeleccionadaId;
         abonado.ServicioId = req.body.servicioSeleccionadoId;
         abonado.CondicionIVAId = req.body.condicionIVASeleccionadoId;
+        const domicilio = new Domicilio();
+        domicilio.DomicilioId = uuidv4().toUpperCase();
+        domicilio.DomicilioCalle = req.body.domicilioCalle;
+        domicilio.DomicilioNumero = req.body.domicilioNumero;
+        domicilio.DomicilioPiso = req.body.domicilioPiso;
+        domicilio.BarrioId = req.body.barrioSeleccionadoId;
+        const abonadoDomicilio = new UserDomicilio();
+        abonadoDomicilio.UserId = abonado.UserId;
+        abonadoDomicilio.DomicilioId = domicilio.DomicilioId;
         const abonadoRole = new UserRole();
         abonadoRole.UserId = abonado.UserId;
         abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
         const abonadoServicio = new UserServicio();
         abonadoServicio.UserId = abonado.UserId;
         abonadoServicio.ServicioId = abonado.ServicioId;
-        await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :BarrioId, :MunicipioId, :ProvinciaId, :CondicionIVAId, :ServicioId)',
+        await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :BarrioId, :MunicipioId, :ProvinciaId, :CondicionIVAId, :ServicioId)',
         {
             replacements: {
                 UserId: abonado.UserId,
@@ -71,17 +76,16 @@ exports.AbonadoCreate = async(req, res) => {
                 FullName: abonado.FullName,
                 Documento: abonado.Documento,
                 Cuit: abonado.Cuit,
-                DomicilioCalle: abonado.DomicilioCalle,
-                DomicilioNumero: abonado.DomicilioNumero,
-                DomicilioPiso: abonado.DomicilioPiso,
+                DomicilioId: domicilio.DomicilioId,
+                DomicilioCalle: domicilio.DomicilioCalle,
+                DomicilioNumero: domicilio.DomicilioNumero,
+                DomicilioPiso: domicilio.DomicilioPiso,
+                BarrioId: domicilio.BarrioId,
                 Email: abonado.Email,
                 FechaBajada: abonado.FechaBajada,
                 FechaContrato: abonado.FechaContrato,
                 FechaNacimiento: abonado.FechaNacimiento,
                 Phone: abonado.Phone,
-                BarrioId: abonado.BarrioId,
-                MunicipioId: abonado.MunicipioId,
-                ProvinciaId: abonado.ProvinciaId,
                 CondicionIVAId: abonado.CondicionIVAId,
                 ServicioId: abonado.ServicioId
             }

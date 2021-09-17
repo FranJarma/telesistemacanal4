@@ -27,6 +27,10 @@ const MenuAside = () => {
           <li><Link to="/abonados-activos">Activos</Link></li>
           <li><Link to="/abonados-inactivos">Inactivos</Link></li>
           <li><Link to="/caratula-abonado">Nuevo abonado</Link></li>
+          <li><Link to="/caratula-abonado">Cambio de titularidad</Link></li>
+          <li><Link to="/caratula-abonado">Cambio de domicilio</Link></li>
+          <li><Link to="/caratula-abonado">Cambio de servicio</Link></li>
+
         </ul>
       </li>
       <li>

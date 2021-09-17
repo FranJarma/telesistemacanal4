@@ -36,6 +36,28 @@ const CaratulaAbonado = () => {
         traerMunicipiosPorProvincia(provinciaSeleccionadaId);
         traerServicios();
         traerCondicionesIVA();
+        if(location.state)
+        {
+            setAbonadoInfo({
+                nombre: location.state.FullName.split(',')[1],
+                apellido: location.state.FullName.split(',')[0],
+                dni: location.state.Documento,
+                cuit: location.state.Cuit,
+                email: location.state.Email,
+                telefono: location.state.Phone,
+                domicilioCalle: location.state.DomicilioCalle,
+                domicilioNumero: location.state.DomicilioNumero,
+                domicilioPiso: location.state.DomicilioPiso,
+            });
+            setCondicionIVASeleccionadoId(location.state.CondicionIVAId);
+            setFechaNacimiento(location.state.FechaNacimiento);
+            setFechaBajada(location.state.FechaBajada);
+            setFechaContrato(location.state.FechaContrato);
+            //setProvinciaSeleccionadaId(location.state.ProvinciaId);
+            setMunicipioSeleccionadoId(location.state.MunicipioId);
+            setBarrioSeleccionadoId(location.state.BarrioId);
+            setServicioSeleccionadoId(location.state.ServicioId);
+        }
     }, [])
     //States
     const [abonadoInfo, setAbonadoInfo] = useState({
@@ -66,18 +88,21 @@ const CaratulaAbonado = () => {
         setBarrioSeleccionadoId(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(null);
+    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(1);
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
         setBarrioSeleccionadoId(null);
         traerBarriosPorMunicipio(e.target.value);
     }
-    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(null);
-    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState(null);
+    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(1);
+    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState(1);
+    const handleChangeBarrioSeleccionado = (e) => {
+        setBarrioSeleccionadoId(e.target.value);
+    }
     const handleChangeServicioSeleccionado = (e) => {
         setServicioSeleccionadoId(e.target.value);
     }
-    const [condicionIVASeleccionadoId, setCondicionIVASeleccionadoId] = useState(null);
+    const [condicionIVASeleccionadoId, setCondicionIVASeleccionadoId] = useState(1);
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIVASeleccionadoId(e.target.value);
     }
@@ -118,7 +143,7 @@ const CaratulaAbonado = () => {
     <form onSubmit={onSubmitAbonado}>
     <Card className={styles.cartaPrincipal}>
         <CardContent>
-            <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.nombreCompleto}` : "Agregar abonado"}</Typography>
+            <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.FullName}` : "Agregar abonado"}</Typography>
             <Typography variant="h2"><i className="bx bx-user"></i> Datos del abonado</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
@@ -247,18 +272,18 @@ const CaratulaAbonado = () => {
             <Typography variant="h2"><i className="bx bx-home"></i> Datos del domicilio de instalación</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <Autocomplete
+                <TextField
                     variant="outlined"
+                    onChange={handleChangeBarrioSeleccionado}
+                    value={barrioSeleccionadoId}
                     label="Barrio"
-                    noOptionsText= "No se encontraron barrios"
                     fullWidth
-                    options={barrios}
-                    key={municipioSeleccionadoId}
-                    onChange={(event, value) => value ? setBarrioSeleccionadoId(value.BarrioId) : setBarrioSeleccionadoId(0)}
-                    getOptionLabel={(option) => option.BarrioNombre}
-                    renderInput={(params) => <TextField {...params} label="Barrio" variant="outlined" />}
+                    select
                     >
-                    </Autocomplete>
+                    {barrios.length > 0 ? barrios.map((barrio)=>(
+                        <MenuItem key={barrio.BarrioId} value={barrio.BarrioId}>{barrio.BarrioNombre}</MenuItem>
+                    )): <MenuItem disabled>No se encontraron barrios</MenuItem>}
+                    </TextField>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
@@ -295,7 +320,7 @@ const CaratulaAbonado = () => {
             </Grid>
             <Typography variant="h2"><i className="bx bx-plug"></i> Datos del servicio a contratar</Typography>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={3} lg={3}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant="outlined"
                     value={servicioSeleccionadoId}
@@ -309,7 +334,7 @@ const CaratulaAbonado = () => {
                     ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <DatePicker 
                     inputVariant="outlined"
                     value={fechaContrato}
@@ -320,7 +345,7 @@ const CaratulaAbonado = () => {
                     >
                     </DatePicker >
                 </Grid>
-                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <DatePicker 
                     inputVariant="outlined"
                     value={fechaBajada}
@@ -332,6 +357,58 @@ const CaratulaAbonado = () => {
                     </DatePicker >
                 </Grid>
             </Grid>
+            {servicioSeleccionadoId !== 1 ?
+            <>
+            <Typography variant="h2"><i className='bx bx-broadcast'></i> Datos de ONU</Typography>
+            <Grid container spacing={3}>
+                <Grid item xs={12} md={3} lg={3}>
+                    <TextField
+                    variant="outlined"
+                    value={servicioSeleccionadoId}
+                    onChange={handleChangeServicioSeleccionado}
+                    label="Tipo de ONU"
+                    fullWidth
+                    select
+                    disabled
+                    >
+                    {servicios.map((servicio)=>(
+                        <MenuItem key={servicio.ServicioId} value={servicio.ServicioId}>{servicio.ServicioNombre}</MenuItem>
+                    ))}
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <TextField
+                    variant="outlined"
+                    value={servicioSeleccionadoId}
+                    onChange={handleChangeServicioSeleccionado}
+                    label="MAC"
+                    fullWidth
+                    >
+                </TextField>
+                </Grid>
+                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <TextField
+                    variant="outlined"
+                    value={servicioSeleccionadoId}
+                    onChange={handleChangeServicioSeleccionado}
+                    label="Nº de serie"
+                    fullWidth
+                    >
+                </TextField>
+                </Grid>
+                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <TextField
+                    variant="outlined"
+                    value={servicioSeleccionadoId}
+                    onChange={handleChangeServicioSeleccionado}
+                    label="Modelo"
+                    fullWidth
+                    >
+                </TextField>
+                </Grid>
+            </Grid>
+            </>
+            : "" }
         </CardContent>
         <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
             <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}

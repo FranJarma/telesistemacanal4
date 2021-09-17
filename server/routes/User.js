@@ -9,6 +9,7 @@ let validacionesDomicilio = [];
 
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos', UserController.AbonadosInactivosListar);
+/*
 router.post('/abonados/create',
 
 [       check('nombre', 'El nombre es obligatorio').notEmpty(),
@@ -43,22 +44,9 @@ router.post('/abonados/create',
         check('barrioSeleccionadoId', 'El barrio es obligatorio').notEmpty(),
         check('domicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
         check('domicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
-        check(['domicilioCalle', 'domicilioNumero', 'barrioSeleccionadoId']).custom(values =>{
-            validacionesDomicilio.push(values);
-            return User.findOne(
-                {where:{
-                    DomicilioCalle: validacionesDomicilio[0],
-                    DomicilioNumero: validacionesDomicilio[1],
-                    BarrioId: validacionesDomicilio[2]
-                }
-                })
-                .then(user=>{
-                if (user) throw new Error('Ya existe un abonado con ese domicilio registrado en ese barrio');
-            })
-        }),
         check('servicioSeleccionadoId', 'El tipo de servicio es obligatorio').notEmpty(),
 ],UserController.AbonadoCreate);
-    
+*/
 router.get('/delete/:id', UserController.UserEliminar);
 
 module.exports = router;

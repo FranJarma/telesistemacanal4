@@ -13,7 +13,8 @@
 
 .fondo::after {
   content: "";
-  background: url('D:\Proyectos de React\telesistemasrl\client\src\views\images\fondo.jpg') no-repeat center center fixed; 
+  background: url('C:\Users\super\Desktop\Proyectos\telesistemacanal4\client\src\views\images\fondo.jpg') no-repeat center center fixed; 
+  /*NOTEBOOK: *D:\Proyectos de React\telesistemasrl\client\src\views\images\fondo.jpg*/
   top: 0;
   left: 0;
   bottom: 0;
