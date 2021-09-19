@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Aside from '../design/layout/Aside';
 import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Alert from '@material-ui/lab/Alert';
 import useStyles from '../Styles';
 import { DatePicker  } from '@material-ui/pickers';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -21,7 +21,7 @@ const CaratulaAbonado = () => {
     const serviciosContext = useContext(ServicioContext);
     const condicionesIVAContext = useContext(CondicionesIVAContext);
 
-    const { errorFormulario, crearAbonado } = abonadosContext;
+    const { errorFormulario, crearAbonado, modificarAbonado } = abonadosContext;
     const { provincias, traerProvincias } = provinciasContext;
     const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
     const { barrios, traerBarriosPorMunicipio } = barriosContext;
@@ -55,6 +55,7 @@ const CaratulaAbonado = () => {
             setFechaContrato(location.state.FechaContrato);
             //setProvinciaSeleccionadaId(location.state.ProvinciaId);
             setMunicipioSeleccionadoId(location.state.MunicipioId);
+            traerBarriosPorMunicipio(location.state.MunicipioId);
             setBarrioSeleccionadoId(location.state.BarrioId);
             setServicioSeleccionadoId(location.state.ServicioId);
         }
@@ -88,21 +89,21 @@ const CaratulaAbonado = () => {
         setBarrioSeleccionadoId(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(1);
+    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
+    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(0);
+    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState(0);
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
-        setBarrioSeleccionadoId(null);
+        setBarrioSeleccionadoId(0);
         traerBarriosPorMunicipio(e.target.value);
     }
-    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(1);
-    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState(1);
     const handleChangeBarrioSeleccionado = (e) => {
         setBarrioSeleccionadoId(e.target.value);
     }
     const handleChangeServicioSeleccionado = (e) => {
         setServicioSeleccionadoId(e.target.value);
     }
-    const [condicionIVASeleccionadoId, setCondicionIVASeleccionadoId] = useState(1);
+    const [condicionIVASeleccionadoId, setCondicionIVASeleccionadoId] = useState(0);
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIVASeleccionadoId(e.target.value);
     }
@@ -113,29 +114,45 @@ const CaratulaAbonado = () => {
     //SUBMIT
     const onSubmitAbonado = (e) => {
         e.preventDefault();
-        crearAbonado({
-            nombre,
-            apellido,
-            dni,
-            cuit,
-            email,
-            telefono,
-            domicilioCalle,
-            domicilioNumero,
-            domicilioPiso,
-            fechaNacimiento,
-            fechaContrato,
-            fechaBajada,
-            condicionIVASeleccionadoId,
-            provinciaSeleccionadaId,
-            municipioSeleccionadoId,
-            barrioSeleccionadoId,
-            servicioSeleccionadoId
-        });
-        if(errorFormulario === '')
+        if(!location.state) {
+            crearAbonado({
+                nombre,
+                apellido,
+                dni,
+                cuit,
+                email,
+                telefono,
+                domicilioCalle,
+                domicilioNumero,
+                domicilioPiso,
+                fechaNacimiento,
+                fechaContrato,
+                fechaBajada,
+                condicionIVASeleccionadoId,
+                provinciaSeleccionadaId,
+                municipioSeleccionadoId,
+                barrioSeleccionadoId,
+                servicioSeleccionadoId
+            });
+        }
+        else {
+            modificarAbonado({
+                nombre,
+                apellido,
+                dni,
+                cuit,
+                email,
+                telefono,
+                fechaNacimiento,
+                fechaContrato,
+                fechaBajada,
+                condicionIVASeleccionadoId,
+            });
+        }
+        if(!errorFormulario)
         setTimeout(()=>{
             history.push('/abonados-activos');
-        },1000) 
+        },1000)
     }
     return ( 
     <>
@@ -241,7 +258,7 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
-                    variant="outlined"
+                    variant="filled"
                     disabled
                     //onChange={handleChangeProvinciaSeleccionada}
                     value={provinciaSeleccionadaId}
@@ -256,7 +273,8 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
-                    variant="outlined"
+                    variant = {location.state ? 'filled' : 'outlined'}
+                    disabled={location.state ? true : false}
                     onChange={handleChangeMunicipioSeleccionado}
                     value={municipioSeleccionadoId}
                     label="Municipio"
@@ -273,7 +291,8 @@ const CaratulaAbonado = () => {
             <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                 <TextField
-                    variant="outlined"
+                    variant = {location.state ? 'filled' : 'outlined'}
+                    disabled={location.state ? true : false}
                     onChange={handleChangeBarrioSeleccionado}
                     value={barrioSeleccionadoId}
                     label="Barrio"
@@ -287,7 +306,8 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
-                    variant="outlined"
+                    variant = {location.state ? 'filled' : 'outlined'}
+                    disabled={location.state ? true : false}
                     value={domicilioCalle}
                     name="domicilioCalle"
                     onChange={onInputChange}
@@ -297,7 +317,8 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
-                    variant="outlined"
+                    variant = {location.state ? 'filled' : 'outlined'}
+                    disabled={location.state ? true : false}
                     value={domicilioNumero}
                     name="domicilioNumero"
                     onChange={onInputChange}
@@ -308,7 +329,8 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
-                    variant="outlined"
+                    variant = {location.state ? 'filled' : 'outlined'}
+                    disabled={location.state ? true : false}
                     value={domicilioPiso}
                     name="domicilioPiso"
                     onChange={onInputChange}
@@ -322,7 +344,8 @@ const CaratulaAbonado = () => {
             <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
-                    variant="outlined"
+                    variant = {location.state ? 'filled' : 'outlined'}
+                    disabled={location.state ? true : false}
                     value={servicioSeleccionadoId}
                     onChange={handleChangeServicioSeleccionado}
                     label="Tipo de servicio"
@@ -409,6 +432,8 @@ const CaratulaAbonado = () => {
             </Grid>
             </>
             : "" }
+            <br/>
+            {location.state ? <Alert severity="info">Los datos del domicilio y del servicio sólamente pueden modificarse en las opciones Cambio de Domicilio y Cambio de Servicio respectivamente.</Alert> :""}
         </CardContent>
         <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
             <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}

@@ -2,6 +2,10 @@ const { Sequelize, STRING, INTEGER } = require('sequelize');
 const sequelize = new Sequelize({dialect: 'mysql', define: { freezeTableName: true}});
 
 const Domicilio = sequelize.define('domicilio', {
+    DomicilioId: {
+        type: INTEGER,
+        allowNull: false
+    },
     DomicilioCalle: {
         type: STRING(256),
         allowNull: false

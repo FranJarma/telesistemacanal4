@@ -38,6 +38,9 @@ exports.AbonadoCreate = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     try {
+        //traemos el id del ultimo domicilio registrado
+        const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioRead();');
+        console.log(ultimoDomicilioId[0].DomicilioId);
         //creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
         const abonado = new User(req.body);
         abonado.UserId = uuidv4().toUpperCase();
@@ -52,21 +55,21 @@ exports.AbonadoCreate = async(req, res) => {
         abonado.ServicioId = req.body.servicioSeleccionadoId;
         abonado.CondicionIVAId = req.body.condicionIVASeleccionadoId;
         const domicilio = new Domicilio();
-        domicilio.DomicilioId = uuidv4().toUpperCase();
+        domicilio.DomicilioId = ultimoDomicilioId[0].DomicilioId + 1;
         domicilio.DomicilioCalle = req.body.domicilioCalle;
         domicilio.DomicilioNumero = req.body.domicilioNumero;
         domicilio.DomicilioPiso = req.body.domicilioPiso;
         domicilio.BarrioId = req.body.barrioSeleccionadoId;
         const abonadoDomicilio = new UserDomicilio();
         abonadoDomicilio.UserId = abonado.UserId;
-        abonadoDomicilio.DomicilioId = domicilio.DomicilioId;
+        abonadoDomicilio.DomicilioId = ultimoDomicilioId[0].DomicilioId + 1;
         const abonadoRole = new UserRole();
         abonadoRole.UserId = abonado.UserId;
         abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
         const abonadoServicio = new UserServicio();
         abonadoServicio.UserId = abonado.UserId;
         abonadoServicio.ServicioId = abonado.ServicioId;
-        await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :BarrioId, :MunicipioId, :ProvinciaId, :CondicionIVAId, :ServicioId)',
+        await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :BarrioId, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :CondicionIVAId, :ServicioId)',
         {
             replacements: {
                 UserId: abonado.UserId,
@@ -88,11 +91,27 @@ exports.AbonadoCreate = async(req, res) => {
                 Phone: abonado.Phone,
                 CondicionIVAId: abonado.CondicionIVAId,
                 ServicioId: abonado.ServicioId
-            }
+        }
         });
             return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
         }   
     catch (error) {
+        console.log(error)
+        res.status(400).send({msg: 'Hubo un error al registrar el abonado'});
+    }
+}
+
+exports.AbonadoUpdate = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+            console.log(req.body);
+            return res.status(200).json({msg: 'El Abonado ha sido modificado correctamente'})
+        }   
+    catch (error) {
+        console.log(error)
         res.status(400).send({msg: 'Hubo un error al registrar el abonado'});
     }
 }

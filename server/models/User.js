@@ -27,18 +27,6 @@ const User = db.define('_user', {
         type: BIGINT,
         allowNull: false
     },
-    DomicilioCalle: {
-        type: STRING(256),
-        allowNull: false
-    },
-    DomicilioNumero: {
-        type: INTEGER,
-        allowNull: false
-    },
-    DomicilioPiso: {
-        type: INTEGER,
-        allowNull: true
-    },
     Email: {
         type: STRING(256),
         unique: true,
@@ -107,18 +95,6 @@ const User = db.define('_user', {
         allowNull: true,
     },
     //Columnas Relacionadas por fk
-    BarrioId: {
-        type: INTEGER,
-        allowNull: false
-    },
-    ProvinciaId: {
-        type: INTEGER,
-        allowNull: false
-    },
-    MunicipioId: {
-        type: INTEGER,
-        allowNull: false
-    },
     CondicionIVAId: {
         type: INTEGER,
         allowNull: true

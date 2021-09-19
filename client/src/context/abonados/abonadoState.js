@@ -4,12 +4,12 @@ import AbonadoReducer from './abonadoReducer';
 import clienteAxios from '../../config/axios';
 import Toast from './../../views/components/design/components/Toast';
 import Swal from './../../views/components/design/components/Swal';
-import {CREAR_ABONADO, LISTA_ABONADOS_ACTIVOS, LISTA_ABONADOS_INACTIVOS} from '../../types';
+import {CREAR_ABONADO, MODIFICAR_ABONADO, LISTA_ABONADOS_ACTIVOS, LISTA_ABONADOS_INACTIVOS, ERROR_FORMULARIO_ABONADO} from '../../types';
 
 const AbonadoState = (props) => {
     const initialState = {
         abonados: [],
-        errorFormulario: null
+        errorFormulario: true
     };
     const [state, dispatch] = useReducer(AbonadoReducer, initialState);
     const crearAbonado = async (abonado) => {
@@ -19,6 +19,29 @@ const AbonadoState = (props) => {
                 Swal('Operación completa', resOk.data.msg);
                 dispatch({
                     type: CREAR_ABONADO,
+                    payload: resOk.data.msg
+                });
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else {
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+            dispatch({
+                type: ERROR_FORMULARIO_ABONADO,
+                payload: true
+            });
+        })
+    }
+    const modificarAbonado = async (abonado) => {
+        clienteAxios.put(`/api/usuarios/abonados/update/${abonado.UserId}`, abonado)
+        .then(resOk => {
+            if (resOk.data)
+                Swal('Operación completa', resOk.data.msg);
+                dispatch({
+                    type: MODIFICAR_ABONADO,
                     payload: resOk.data.msg
                 })
         })
@@ -59,6 +82,7 @@ const AbonadoState = (props) => {
                 abonados: state.abonados,
                 errorFormulario: state.errorFormulario,
                 crearAbonado,
+                modificarAbonado,
                 traerAbonadosActivos,
                 traerAbonadosInactivos
             }}

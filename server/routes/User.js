@@ -5,11 +5,9 @@ const User = require('./../models/User');
 
 const { check } = require('express-validator');
 
-let validacionesDomicilio = [];
-
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos', UserController.AbonadosInactivosListar);
-/*
+
 router.post('/abonados/create',
 
 [       check('nombre', 'El nombre es obligatorio').notEmpty(),
@@ -31,22 +29,22 @@ router.post('/abonados/create',
             })
         }),
         check('condicionIVASeleccionadoId', 'La condición IVA es obligatoria').notEmpty(),
-        check('email', 'El email es obligatorio').notEmpty(),
-        check('email', 'El email no tiene el formato correcto').isEmail(),
         check('email').custom(email=>{
             return User.findOne({where: {Email: email}}).then(user=>{
                 if (user) throw new Error('El email ya se encuentra registrado');
             })
         }),
-        check('telefono', 'El telefono es obligatorio').notEmpty(),
-        check('telefono', 'El Teléfono no tiene el formato correcto, debe tener solo números').isNumeric(),
         check('municipioSeleccionadoId', 'El domicilio es obligatorio').notEmpty(),
         check('barrioSeleccionadoId', 'El barrio es obligatorio').notEmpty(),
         check('domicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
         check('domicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
         check('servicioSeleccionadoId', 'El tipo de servicio es obligatorio').notEmpty(),
 ],UserController.AbonadoCreate);
-*/
+
+router.put('/abonados/update/:id',
+
+[],UserController.AbonadoUpdate);
+
 router.get('/delete/:id', UserController.UserEliminar);
 
 module.exports = router;
