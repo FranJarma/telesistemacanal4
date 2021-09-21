@@ -56,6 +56,9 @@ const theme = createTheme({
   palette: {
     primary: {
       main: "#008080"
+    },
+    secondary: {
+      main: "#f44336"
     }
   }
 }, esLocale)
