@@ -23,7 +23,7 @@ export const columnasAbonadosActivos = [
         "name": "N° teléfono",
         "selector": row =>row["Phone"],
         "sortable": true,
-        "hide": "sm",
+        "omit": true,
     },
     {
         "name": "Barrio",

@@ -21,7 +21,7 @@ const CaratulaAbonado = () => {
     const serviciosContext = useContext(ServicioContext);
     const condicionesIVAContext = useContext(CondicionesIVAContext);
 
-    const { errorFormulario, crearAbonado, modificarAbonado } = abonadosContext;
+    const { crearAbonado, modificarAbonado } = abonadosContext;
     const { provincias, traerProvincias } = provinciasContext;
     const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
     const { barrios, traerBarriosPorMunicipio } = barriosContext;
@@ -39,6 +39,7 @@ const CaratulaAbonado = () => {
         if(location.state)
         {
             setAbonadoInfo({
+                id: location.state.UserId,
                 nombre: location.state.FullName.split(',')[1],
                 apellido: location.state.FullName.split(',')[0],
                 dni: location.state.Documento,
@@ -62,6 +63,7 @@ const CaratulaAbonado = () => {
     }, [])
     //States
     const [abonadoInfo, setAbonadoInfo] = useState({
+        id: null,
         nombre: null,
         apellido: null,
         dni: null,
@@ -78,7 +80,7 @@ const CaratulaAbonado = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { nombre, apellido, dni, cuit, email, telefono, domicilioCalle, domicilioNumero, domicilioPiso} = abonadoInfo;
+    const { id, nombre, apellido, dni, cuit, email, telefono, domicilioCalle, domicilioNumero, domicilioPiso} = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [provinciaSeleccionadaId, setProvinciaSeleccionadaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -137,6 +139,7 @@ const CaratulaAbonado = () => {
         }
         else {
             modificarAbonado({
+                id,
                 nombre,
                 apellido,
                 dni,
@@ -149,10 +152,6 @@ const CaratulaAbonado = () => {
                 condicionIVASeleccionadoId,
             });
         }
-        if(!errorFormulario)
-        setTimeout(()=>{
-            history.push('/abonados-activos');
-        },1000)
     }
     return ( 
     <>
@@ -433,7 +432,7 @@ const CaratulaAbonado = () => {
             </>
             : "" }
             <br/>
-            {location.state ? <Alert severity="info">Los datos del domicilio y del servicio sólamente pueden modificarse en las opciones Cambio de Domicilio y Cambio de Servicio respectivamente.</Alert> :""}
+            {location.state ? <Alert severity="info">Los datos del domicilio y del servicio sólamente pueden modificarse en las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
         </CardContent>
         <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
             <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}

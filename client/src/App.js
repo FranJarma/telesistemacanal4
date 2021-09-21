@@ -12,7 +12,6 @@ import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosIna
 import ListaDetallesPagos from './views/components/detallesPagos/ListaDetallesPagos';
 import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetallePago';
 import Login from './views/components/auth/Login';
-import ErrorsState from './context/errors/errorState';
 import AbonadoState from './context/abonados/abonadoState';
 import ProvinciaState from './context/provincias/provinciaState';
 import MunicipioState from './context/municipios/municipioState';
@@ -65,14 +64,13 @@ function App() {
     <>
     <ThemeProvider theme={theme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
-        <ErrorsState>
+        <Router>
           <AbonadoState>
             <ProvinciaState>
               <MunicipioState>
                 <BarrioState>
                   <ServicioState>
                     <CondicionesIVAState>
-                      <Router>
                         <Switch>
                           <Route exact path="/">
                             <Login/>
@@ -99,14 +97,13 @@ function App() {
                             <CaratulaDetallePago/>
                           </Route>
                         </Switch>
-                      </Router>
-                    </CondicionesIVAState>
+                        </CondicionesIVAState>
                   </ServicioState>
                 </BarrioState>
               </MunicipioState>
             </ProvinciaState>
           </AbonadoState>
-        </ErrorsState>
+        </Router>
       </MuiPickersUtilsProvider>
     </ThemeProvider>
     </>

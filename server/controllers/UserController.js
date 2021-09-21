@@ -40,7 +40,6 @@ exports.AbonadoCreate = async(req, res) => {
     try {
         //traemos el id del ultimo domicilio registrado
         const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioRead();');
-        console.log(ultimoDomicilioId[0].DomicilioId);
         //creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
         const abonado = new User(req.body);
         abonado.UserId = uuidv4().toUpperCase();
@@ -107,7 +106,36 @@ exports.AbonadoUpdate = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     try {
-            console.log(req.body);
+        //creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
+        const abonado = new User(req.body);
+        abonado.UserId = req.body.id;
+        abonado.FullName = req.body.apellido + ',' + req.body.nombre;
+        abonado.Documento = req.body.dni;
+        abonado.Cuit = req.body.cuit;
+        abonado.FechaBajada = req.body.fechaBajada;
+        abonado.FechaContrato = req.body.fechaContrato;
+        abonado.FechaNacimiento = req.body.fechaNacimiento;
+        abonado.Phone = req.body.telefono;
+        abonado.Email = req.body.email;
+        abonado.ServicioId = req.body.servicioSeleccionadoId;
+        abonado.CondicionIVAId = req.body.condicionIVASeleccionadoId;
+        await db.query('CALL __UserUpdate(:user_id, :UserName, :FullName, :Password, :Documento, :Cuit, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :CondicionIVAId)',
+        {
+            replacements: {
+                user_id: abonado.UserId,
+                UserName: null,
+                FullName: abonado.FullName,
+                Password: null,
+                Documento: abonado.Documento,
+                Cuit: abonado.Cuit,
+                Email: abonado.Email,
+                FechaBajada: abonado.FechaBajada,
+                FechaContrato: abonado.FechaContrato,
+                FechaNacimiento: abonado.FechaNacimiento,
+                Phone: abonado.Phone,
+                CondicionIVAId: abonado.CondicionIVAId,
+        }
+        });
             return res.status(200).json({msg: 'El Abonado ha sido modificado correctamente'})
         }   
     catch (error) {
