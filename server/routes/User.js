@@ -4,7 +4,6 @@ const UserController = require('./../controllers/UserController');
 const User = require('./../models/User');
 
 const { check } = require('express-validator');
-const { Op } = require('sequelize');
 
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos', UserController.AbonadosInactivosListar);
@@ -48,6 +47,6 @@ router.put('/abonados/update/:id',
         check('condicionIVASeleccionadoId', 'La condición IVA es obligatoria').notEmpty(),
 ],UserController.AbonadoUpdate);
 
-router.get('/delete/:id', UserController.UserEliminar);
+router.put('/abonados/delete/:id', UserController.AbonadoDelete);
 
 module.exports = router;

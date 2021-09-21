@@ -1,4 +1,4 @@
-import {CREAR_ABONADO, LISTA_ABONADOS_ACTIVOS, MODIFICAR_ABONADO} from '../../types';
+import {CREAR_ABONADO, LISTA_ABONADOS_ACTIVOS, MODIFICAR_ABONADO, DAR_DE_BAJA_ABONADO} from '../../types';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
@@ -13,6 +13,12 @@ export default (state, action) => {
             return {
                 ...state,
                 abonados: state.abonados.map(abonado => abonado.UserId === action.payload.UserId ? action.payload : abonado)
+            };
+        }
+        case DAR_DE_BAJA_ABONADO: {
+            return {
+                ...state,
+                abonados: state.abonados.map(abonado => abonado.UserId === action.payload.id ? action.payload : abonado)
             };
         }
         case LISTA_ABONADOS_ACTIVOS:

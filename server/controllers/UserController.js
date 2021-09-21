@@ -144,6 +144,23 @@ exports.AbonadoUpdate = async(req, res) => {
     }
 }
 
-exports.UserEliminar = async(req, res) => {
-    res.status(200).send("Eliminar abonado")
+exports.AbonadoDelete = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        console.log(req.body)
+        // await db.query('CALL __UserUpdate(:user_id)',
+        // {
+        //     replacements: {
+        //         user_id: abonado.UserId,
+        // }
+        // });
+            return res.status(200).json({msg: 'El Abonado ha sido dado de baja correctamente'})
+        }   
+    catch (error) {
+        console.log(error)
+        res.status(400).send({msg: 'Hubo un error al dar de baja el abonado'});
+    }
 }

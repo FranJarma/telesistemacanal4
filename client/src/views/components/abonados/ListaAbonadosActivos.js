@@ -1,7 +1,8 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
-import {columnasAbonadosActivos} from './ColumnasTabla';
+import Modal from '../design/components/Modal';
 import ExpandedComponent from './ExpandedComponent';
 import useStyles from '../Styles';
 import Aside from '../design/layout/Aside';
@@ -13,7 +14,7 @@ const ListaAbonadosActivos = () => {
     const abonadosContext = useContext(AbonadoContext);
     const municipiosContext = useContext(MunicipioContext);
 
-    const { abonados, traerAbonadosActivos } = abonadosContext;
+    const { abonados, traerAbonadosActivos, darDeBajaAbonado } = abonadosContext;
     const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
 
     useEffect(() => {
@@ -23,11 +24,89 @@ const ListaAbonadosActivos = () => {
     },[]);
 
     const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
+    const [idAbonadoBaja, setIdAbonadoBaja] = useState(null);
+    const [modalDarDeBaja, setModalDarDeBaja] = useState(false);
+
+    const handleChangeModalDarDeBaja = (data) => {
+        setModalDarDeBaja(!modalDarDeBaja)
+        if(!modalDarDeBaja){
+            setIdAbonadoBaja(data.UserId)
+        }
+        else {
+            setIdAbonadoBaja(null)
+        }
+    }
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
         traerAbonadosActivos(e.target.value);
     }
+
     const styles = useStyles();
+    const columnasAbonadosActivos = [
+    {
+        "name": "id",
+        "omit": true,
+        "selector": row =>row["UserId"],
+        "sortable": true,
+    },
+    {
+        "name": "Nombre Completo",
+        "selector": row =>row["FullName"],
+        "sortable": true,
+        "width": '11rem'
+    },
+    {
+        "name": "DNI",
+        "selector": row =>row["Documento"],
+        "sortable": true,
+        "hide": "sm"
+    },
+    {
+        "name": "N° teléfono",
+        "selector": row =>row["Phone"],
+        "sortable": true,
+        "omit": true,
+    },
+    {
+        "name": "Barrio",
+        "selector": row =>row["Barrio"],
+        "sortable": true,
+        "hide": "sm"
+    },
+    {
+        "name": "Domicilio",
+        "selector": row =>row["Domicilio"],
+        "sortable": true,
+        "hide": "sm",
+        "width": '15rem'
+    },
+    {
+        "name": "Servicio",
+        "selector": row =>row["Servicio"],
+        "sortable": true,
+        "hide": "sm"
+    },
+    {
+        cell: (data) =>
+        <>
+        <Link to={{
+            pathname: `/caratula-abonado/edit/UserId=${data.UserId}`,
+            state: data
+        }}
+        style={{textDecoration: 'none', color: "teal"}}>
+        <Tooltip title="Editar"><i className="bx bx-edit bx-xs"></i></Tooltip>
+        </Link>
+        <Link to={{
+            pathname: `/historial-de-pagos/abonado=${data.UserId}`,
+            state: data
+        }}
+        style={{textDecoration: 'none', color: "navy"}}>
+        <Tooltip title="Ver historial de pagos"><i className="bx bx-list-ul bx-xs"></i></Tooltip>
+        </Link>
+        <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Typography>
+        </>,
+    }
+]
     return (
         <>
         <Aside/>
@@ -53,6 +132,21 @@ const ListaAbonadosActivos = () => {
                     )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
                     </TextField>
                 </Grid>
+                <Modal
+                abrirModal={modalDarDeBaja}
+                funcionCerrar={handleChangeModalDarDeBaja}
+                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
+                mensaje={'¿Está seguro que desea dar de baja al abonado?'}
+                botones={
+                <>
+                <Button onClick={()=>
+                    {darDeBajaAbonado(idAbonadoBaja)
+                    setModalDarDeBaja(false)}}
+                    variant="contained"
+                    color="secondary">
+                    Aceptar</Button>
+                <Button onClick={handleChangeModalDarDeBaja}>Cerrar</Button></>}
+                ></Modal>
                 <Datatable
                     columnas={columnasAbonadosActivos}
                     datos={abonados}
