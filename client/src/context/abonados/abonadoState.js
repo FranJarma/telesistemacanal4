@@ -19,7 +19,7 @@ const AbonadoState = (props) => {
             if (resOk.data)
                 dispatch({
                     type: CREAR_ABONADO,
-                    payload: resOk.data.msg
+                    payload: abonado
                 });
                 Swal('Operación completa', resOk.data.msg);
                 history.push('/abonados-activos');
@@ -39,7 +39,7 @@ const AbonadoState = (props) => {
             if (resOk.data)
                 dispatch({
                     type: MODIFICAR_ABONADO,
-                    payload: resOk.data.msg
+                    payload: abonado
                 })
                 Swal('Operación completa', resOk.data.msg);
                 history.push('/abonados-activos');
@@ -53,13 +53,13 @@ const AbonadoState = (props) => {
             }
         })
     }
-    const darDeBajaAbonado = async(id) => {
-        clienteAxios.put(`/api/usuarios/abonados/delete/${id}`, id)
+    const darDeBajaAbonado = async(infoBaja) => {
+        clienteAxios.put(`/api/usuarios/abonados/delete/${infoBaja.idAbonadoBaja}`, infoBaja)
         .then(resOk => {
             if (resOk.data)
                 dispatch({
                     type: DAR_DE_BAJA_ABONADO,
-                    payload: resOk.data.msg
+                    payload: infoBaja
                 })
                 Swal('Operación completa', resOk.data.msg);
                 history.push('/abonados-activos');

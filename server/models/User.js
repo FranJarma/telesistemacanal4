@@ -78,11 +78,11 @@ const User = db.define('_user', {
         allowNull: true
         //agregar usuario de carga
     },
-    deactivateAt: {
+    deletedAt: {
         type: DATE,
         allowNull: true,
     },
-    deactivateBy: {
+    deletedBy: {
         type: UUIDV4,
         allowNull: true,
     },

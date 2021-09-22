@@ -6,19 +6,17 @@ export default (state, action) => {
         case CREAR_ABONADO: {
             return {
                 ...state,
-                abonados: [...state.abonados, action.payload]
             };
         }
         case MODIFICAR_ABONADO: {
             return {
                 ...state,
-                abonados: state.abonados.map(abonado => abonado.UserId === action.payload.UserId ? action.payload : abonado)
             };
         }
         case DAR_DE_BAJA_ABONADO: {
             return {
                 ...state,
-                abonados: state.abonados.map(abonado => abonado.UserId === action.payload.id ? action.payload : abonado)
+                abonados: state.abonados.map(abonado => abonado.UserId === action.payload.idAbonadoBaja ? action.payload : abonado)
             };
         }
         case LISTA_ABONADOS_ACTIVOS:

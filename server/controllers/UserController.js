@@ -151,12 +151,13 @@ exports.AbonadoDelete = async(req, res) => {
     }
     try {
         console.log(req.body)
-        // await db.query('CALL __UserUpdate(:user_id)',
-        // {
-        //     replacements: {
-        //         user_id: abonado.UserId,
-        // }
-        // });
+        await db.query('CALL __UserDelete(:user_id, :motivo_baja)',
+        {
+            replacements: {
+                user_id: req.body.idAbonadoBaja,
+                motivo_baja: req.body.motivoBaja
+        }
+        });
             return res.status(200).json({msg: 'El Abonado ha sido dado de baja correctamente'})
         }   
     catch (error) {

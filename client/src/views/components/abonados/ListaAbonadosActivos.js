@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
@@ -24,17 +24,34 @@ const ListaAbonadosActivos = () => {
     },[]);
 
     const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
-    const [idAbonadoBaja, setIdAbonadoBaja] = useState(null);
     const [modalDarDeBaja, setModalDarDeBaja] = useState(false);
+
+    const [infoBaja, setInfoBaja] = useState({
+        idAbonadoBaja: null,
+        motivoBaja: null
+    });
+
+    const { motivoBaja } = infoBaja;
 
     const handleChangeModalDarDeBaja = (data) => {
         setModalDarDeBaja(!modalDarDeBaja)
         if(!modalDarDeBaja){
-            setIdAbonadoBaja(data.UserId)
+            setInfoBaja({
+                idAbonadoBaja: data.UserId
+            })
         }
         else {
-            setIdAbonadoBaja(null)
+            setInfoBaja({
+                idAbonadoBaja: null
+            })
         }
+    }
+
+    const onChangeInputMotivoBaja = (e) => {
+        setInfoBaja({
+            ...infoBaja,
+            [e.target.name] : e.target.value
+        });
     }
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
@@ -42,6 +59,7 @@ const ListaAbonadosActivos = () => {
     }
 
     const styles = useStyles();
+
     const columnasAbonadosActivos = [
     {
         "name": "id",
@@ -136,17 +154,31 @@ const ListaAbonadosActivos = () => {
                 abrirModal={modalDarDeBaja}
                 funcionCerrar={handleChangeModalDarDeBaja}
                 titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
-                mensaje={'¿Está seguro que desea dar de baja al abonado?'}
                 botones={
                 <>
                 <Button onClick={()=>
-                    {darDeBajaAbonado(idAbonadoBaja)
+                    {darDeBajaAbonado(infoBaja)
                     setModalDarDeBaja(false)}}
                     variant="contained"
                     color="secondary">
                     Aceptar</Button>
                 <Button onClick={handleChangeModalDarDeBaja}>Cerrar</Button></>}
-                ></Modal>
+                formulario={
+                <>
+                <TextField
+                className={styles.inputModal}
+                autoFocus
+                variant="outlined"
+                name="motivoBaja"
+                value={motivoBaja}
+                fullWidth
+                onChange={onChangeInputMotivoBaja}
+                >
+                </TextField>
+                <FormHelperText>Ingrese motivo de baja</FormHelperText>
+                </>}
+                >
+                </Modal>
                 <Datatable
                     columnas={columnasAbonadosActivos}
                     datos={abonados}
