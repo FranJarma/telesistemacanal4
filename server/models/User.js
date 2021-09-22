@@ -71,12 +71,10 @@ const User = db.define('_user', {
     createdAt: {
         type: DATE,
         allowNull: true,
-        defaultValue: NOW
     },
     createdBy: {
         type: UUIDV4,
         allowNull: true
-        //agregar usuario de carga
     },
     deletedAt: {
         type: DATE,
