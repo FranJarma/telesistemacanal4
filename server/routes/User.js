@@ -6,7 +6,7 @@ const User = require('./../models/User');
 const { check } = require('express-validator');
 
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
-router.get('/abonados/inactivos', UserController.AbonadosInactivosListar);
+router.get('/abonados/inactivos/', UserController.AbonadosInactivosListar);
 
 router.post('/abonados/create',
 [       check('nombre', 'El nombre es obligatorio').notEmpty(),

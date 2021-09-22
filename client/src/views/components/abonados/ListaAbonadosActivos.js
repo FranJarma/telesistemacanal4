@@ -3,7 +3,6 @@ import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, 
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
-import ExpandedComponent from './ExpandedComponent';
 import useStyles from '../Styles';
 import Aside from '../design/layout/Aside';
 import { Link } from 'react-router-dom';
@@ -125,6 +124,14 @@ const ListaAbonadosActivos = () => {
         </>,
     }
 ]
+    const ExpandedComponent = ({ data }) =>
+    <>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-map"></i> Barrio: {data.Barrio}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-home"></i> Domicilio: {data.Domicilio}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-plug"></i> Servicio: {data.Servicio}</Typography>
+    </>;
+
     return (
         <>
         <Aside/>

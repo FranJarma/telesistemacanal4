@@ -1,13 +1,9 @@
-import {CREAR_ABONADO, LISTA_ABONADOS_ACTIVOS, MODIFICAR_ABONADO, DAR_DE_BAJA_ABONADO} from '../../types';
+import {CREAR_ABONADO, LISTA_ABONADOS_ACTIVOS, MODIFICAR_ABONADO, DAR_DE_BAJA_ABONADO, LISTA_ABONADOS_INACTIVOS} from '../../types';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
     switch (action.type) {
-        case CREAR_ABONADO: {
-            return {
-                ...state,
-            };
-        }
+        case CREAR_ABONADO:
         case MODIFICAR_ABONADO: {
             return {
                 ...state,
@@ -20,6 +16,7 @@ export default (state, action) => {
             };
         }
         case LISTA_ABONADOS_ACTIVOS:
+        case LISTA_ABONADOS_INACTIVOS:
             return {
                 ...state,
                 abonados: action.payload,

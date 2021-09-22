@@ -86,10 +86,10 @@ const AbonadoState = (props) => {
     };
     const traerAbonadosInactivos = async () => {
         try {
-            const resultado = await clienteAxios.get('/api/abonados/inactivos');
+            const resultado = await clienteAxios.get('/api/usuarios/abonados/inactivos');
             dispatch({
                 type: LISTA_ABONADOS_INACTIVOS,
-                payload: resultado
+                payload: resultado.data
             });
         } catch (error) {
             console.log(error);
