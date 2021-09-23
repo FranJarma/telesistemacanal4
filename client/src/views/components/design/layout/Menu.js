@@ -27,9 +27,6 @@ const MenuAside = () => {
           <li><Link to="/abonados-activos">Activos</Link></li>
           <li><Link to="/abonados-inactivos">Inactivos</Link></li>
           <li><Link to="/caratula-abonado">Nuevo abonado</Link></li>
-          <li><Link to="/caratula-abonado">Cambio de titularidad</Link></li>
-          <li><Link to="/caratula-abonado">Cambio de domicilio</Link></li>
-          <li><Link to="/caratula-abonado">Cambio de servicio</Link></li>
 
         </ul>
       </li>
@@ -42,7 +39,7 @@ const MenuAside = () => {
           <i className='bx bxs-chevron-down arrow' ></i>
         </div>
         <ul className="sub-menu">
-          <li><Link className="link_name" to="/">Técnicos</Link></li>
+        <li><a className="link_name">Técnicos</a></li>
           <li><Link to="/">Asignados</Link></li>
           <li><Link to="/">No Asignados</Link></li>
           <li><Link to="/">Nuevo técnico</Link></li>

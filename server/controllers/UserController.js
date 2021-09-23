@@ -165,3 +165,24 @@ exports.AbonadoDelete = async(req, res) => {
         res.status(400).send({msg: 'Hubo un error al dar de baja el abonado'});
     }
 }
+
+exports.AbonadoCambioDomicilio = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        console.log(req.body)
+        // await db.query('CALL __UserCambioDomicilio(:user_id, :motivo_baja)',
+        // {
+        //     replacements: {
+        //         user_id: req.body.idAbonadoBaja,
+        //         motivo_baja: req.body.motivoBaja
+        // }
+        // });
+            return res.status(200).json({msg: 'El Abonado ha sido dado de baja correctamente'})
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({msg: 'Hubo un error al cambiar el domicilio del abonado'});
+    }
+}

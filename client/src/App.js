@@ -7,6 +7,8 @@ import esLocale from 'date-fns/locale/es';
 import Home from './views/components/Home';
 import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
 import CaratulaAbonado from './views/components/abonados/CaratulaAbonado';
+import CambioDomicilio from './views/components/abonados/CambioDomicilio';
+import CambioTitularidad from './views/components/abonados/CambioTitularidad';
 import ListaPagos from './views/components/pagos/ListaPagos';
 import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosInactivos';
 import ListaDetallesPagos from './views/components/detallesPagos/ListaDetallesPagos';
@@ -89,6 +91,12 @@ function App() {
                           </Route>
                           <Route path="/caratula-abonado">
                             <CaratulaAbonado/>
+                          </Route>
+                          <Route path="/cambio-domicilio">
+                            <CambioDomicilio/>
+                          </Route>
+                          <Route path="/cambio-titularidad">
+                            <CambioTitularidad/>
                           </Route>
                           <Route path="/historial-de-pagos">
                             <ListaPagos/>

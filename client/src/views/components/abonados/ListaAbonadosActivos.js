@@ -111,14 +111,28 @@ const ListaAbonadosActivos = () => {
             state: data
         }}
         style={{textDecoration: 'none', color: "teal"}}>
-        <Tooltip title="Editar"><i className="bx bx-edit bx-xs"></i></Tooltip>
+        <Tooltip title="Editar"><i className="bx bxs-edit bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
-            pathname: `/historial-de-pagos/abonado=${data.UserId}`,
+            pathname: `/cambio-domicilio/UserId=${data.UserId}`,
+            state: data
+        }}
+        style={{textDecoration: 'none', color: "indigo"}}>
+        <Tooltip title="Cambio de domicilio"><i className="bx bxs-home bx-xs"></i></Tooltip>
+        </Link>
+        <Link to={{
+            pathname: `/cambio-titularidad/UserId=${data.UserId}`,
+            state: data
+        }}
+        style={{textDecoration: 'none', color: "coral"}}>
+        <Tooltip title="Cambio de titularidad"><i className="bx bxs-notepad bx-xs"></i></Tooltip>
+        </Link>
+        <Link to={{
+            pathname: `/historial-de-pagos/UserId=${data.UserId}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "navy"}}>
-        <Tooltip title="Ver historial de pagos"><i className="bx bx-list-ul bx-xs"></i></Tooltip>
+        <Tooltip title="Historial de pagos"><i className="bx bx-money bx-xs"></i></Tooltip>
         </Link>
         <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Typography>
         </>,

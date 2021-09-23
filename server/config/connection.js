@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
+const fs  = require('fs');
 require('dotenv').config({path: 'variables.env'});
-
 const db = new Sequelize({
   define: {
     freezeTableName: true
@@ -11,5 +11,4 @@ const db = new Sequelize({
   database: process.env.DB_NAME,
   dialect: 'mysql'
 })
-
 module.exports = db;

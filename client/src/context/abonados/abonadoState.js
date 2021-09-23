@@ -5,7 +5,7 @@ import AbonadoReducer from './abonadoReducer';
 import clienteAxios from '../../config/axios';
 import Toast from './../../views/components/design/components/Toast';
 import Swal from './../../views/components/design/components/Swal';
-import {CREAR_ABONADO, MODIFICAR_ABONADO, DAR_DE_BAJA_ABONADO, LISTA_ABONADOS_ACTIVOS, LISTA_ABONADOS_INACTIVOS} from '../../types';
+import {CREAR_ABONADO, MODIFICAR_ABONADO, DAR_DE_BAJA_ABONADO, CAMBIO_DOMICILIO_ABONADO, LISTA_ABONADOS_ACTIVOS, LISTA_ABONADOS_INACTIVOS} from '../../types';
 
 const AbonadoState = (props) => {
     const initialState = {
@@ -73,6 +73,26 @@ const AbonadoState = (props) => {
             }
         })
     }
+    const cambioDomicilioAbonado = async(infoCambioDomicilio) => {
+        clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${infoCambioDomicilio.idAbonadoBaja}`, infoCambioDomicilio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: CAMBIO_DOMICILIO_ABONADO,
+                    payload: infoCambioDomicilio
+                })
+                Swal('Operación completa', resOk.data.msg);
+                history.push('/abonados-activos');
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else {
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     const traerAbonadosActivos = async () => {
         try {
             const resultado = await clienteAxios.get('/api/usuarios/abonados/activos');
@@ -102,6 +122,7 @@ const AbonadoState = (props) => {
                 crearAbonado,
                 modificarAbonado,
                 darDeBajaAbonado,
+                cambioDomicilioAbonado,
                 traerAbonadosActivos,
                 traerAbonadosInactivos
             }}
