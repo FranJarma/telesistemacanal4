@@ -5,11 +5,13 @@ import AbonadoReducer from './abonadoReducer';
 import clienteAxios from '../../config/axios';
 import Toast from './../../views/components/design/components/Toast';
 import Swal from './../../views/components/design/components/Swal';
-import {CREAR_ABONADO, MODIFICAR_ABONADO, DAR_DE_BAJA_ABONADO, CAMBIO_DOMICILIO_ABONADO, LISTA_ABONADOS_ACTIVOS, LISTA_ABONADOS_INACTIVOS} from '../../types';
+import {CREAR_ABONADO, MODIFICAR_ABONADO, DAR_DE_BAJA_ABONADO, CAMBIO_DOMICILIO_ABONADO, LISTA_ABONADOS_ACTIVOS, LISTA_ABONADOS_INACTIVOS,
+LISTA_DOMICILIOS_ABONADOS} from '../../types';
 
 const AbonadoState = (props) => {
     const initialState = {
-        abonados: []
+        abonados: [],
+        domicilios: []
     };
     const history = useHistory();
     const [state, dispatch] = useReducer(AbonadoReducer, initialState);
@@ -74,7 +76,7 @@ const AbonadoState = (props) => {
         })
     }
     const cambioDomicilioAbonado = async(infoCambioDomicilio) => {
-        clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${infoCambioDomicilio.idAbonadoBaja}`, infoCambioDomicilio)
+        clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${infoCambioDomicilio.userId}`, infoCambioDomicilio)
         .then(resOk => {
             if (resOk.data)
                 dispatch({
@@ -82,7 +84,7 @@ const AbonadoState = (props) => {
                     payload: infoCambioDomicilio
                 })
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/abonados-activos');
+                //history.push('/abonados-activos');
         })
         .catch(err => {
             if(!err.response){
@@ -115,16 +117,29 @@ const AbonadoState = (props) => {
             console.log(error);
         }
     };
+    const traerDomiciliosAbonado = async (id) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/usuarios/abonados/domicilios/${id}`);
+            dispatch({
+                type: LISTA_DOMICILIOS_ABONADOS,
+                payload: resultado.data
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return(
         <AbonadoContext.Provider
             value={{
                 abonados: state.abonados,
+                domicilios: state.domicilios,
                 crearAbonado,
                 modificarAbonado,
                 darDeBajaAbonado,
                 cambioDomicilioAbonado,
                 traerAbonadosActivos,
-                traerAbonadosInactivos
+                traerAbonadosInactivos,
+                traerDomiciliosAbonado
             }}
         >{props.children}
         </AbonadoContext.Provider>

@@ -28,7 +28,6 @@ const CaratulaAbonado = () => {
     const { servicios, traerServicios } = serviciosContext;
     const { condicionesIVA, traerCondicionesIVA } = condicionesIVAContext;
     const location = useLocation();
-    const history = useHistory();
     const styles = useStyles();
     //Observables
     useEffect(() => {

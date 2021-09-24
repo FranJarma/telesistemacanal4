@@ -17,8 +17,9 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
     const itemsFiltrados = datos.filter(item =>
     (item.FullName && item.FullName.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.Documento && item.Documento.toString().includes(textoFiltrado.toLowerCase()))
-    || (item.Barrio && item.Barrio.toLowerCase().includes(textoFiltrado.toLowerCase()))
-    || (item.Domicilio && item.Domicilio.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.BarrioNombre && item.BarrioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.DomicilioCalle && item.DomicilioCalle.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.DomicilioNumero && item.DomicilioNumero.toString().includes(textoFiltrado.toLowerCase()))
     || (item.Servicio && item.Servicio.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.mes && item.mes.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.fechaPago && item.fechaPago.toLowerCase().includes(textoFiltrado.toLowerCase()))

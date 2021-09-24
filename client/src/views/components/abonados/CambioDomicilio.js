@@ -7,7 +7,6 @@ import AbonadoContext from '../../../context/abonados/abonadoContext';
 import ProvinciaContext from '../../../context/provincias/provinciaContext';
 import MunicipioContext from '../../../context/municipios/municipioContext';
 import BarrioContext from '../../../context/barrios/barrioContext';
-import TextFieldBuscador from '../design/components/TextFieldBuscador';
 
 const CambioDomicilio = () => {
     //Context
@@ -16,7 +15,7 @@ const CambioDomicilio = () => {
     const municipiosContext = useContext(MunicipioContext);
     const barriosContext = useContext(BarrioContext);
 
-    const { cambioDomicilioAbonado } = abonadosContext;
+    const { cambioDomicilioAbonado, traerDomiciliosAbonado, domicilios } = abonadosContext;
     const { provincias, traerProvincias } = provinciasContext;
     const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
     const { barrios, traerBarriosPorMunicipio } = barriosContext;
@@ -27,6 +26,7 @@ const CambioDomicilio = () => {
     useEffect(() => {
         traerProvincias();
         traerMunicipiosPorProvincia(provinciaSeleccionadaId);
+        traerDomiciliosAbonado(location.state.UserId);
     }, [])
     //States
     const [abonadoInfo, setAbonadoInfo] = useState({
@@ -55,7 +55,6 @@ const CambioDomicilio = () => {
     }*/
     const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
     const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(0);
-    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState(0);
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
         setBarrioSeleccionadoId(0);
@@ -68,9 +67,12 @@ const CambioDomicilio = () => {
     //SUBMIT
     const onSubmitAbonado = (e) => {
         e.preventDefault();
-        if(!location.state) {
+        if(location.state) {
             cambioDomicilioAbonado({
                 id,
+                //provinciaSeleccionadaId
+                municipioSeleccionadoId,
+                barrioSeleccionadoId,
                 domicilioCalle,
                 domicilioNumero,
                 domicilioPiso,
@@ -85,77 +87,23 @@ const CambioDomicilio = () => {
     <Card className={styles.cartaPrincipal}>
         <CardContent>
             <Typography variant="h1">Cambio de Domicilio: {location.state.FullName}</Typography>
-            <Typography variant="h2"><i className="bx bx-home"></i> Datos del último domicilio registrado</Typography>
+            <Typography variant="h2"><i className="bx bx-history"></i>Historial de cambios de domicilio</Typography>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                    variant="filled"
-                    disabled
-                    //onChange={handleChangeProvinciaSeleccionada}
-                    value={location.state.ProvinciaNombre}
-                    label="Provincia"
-                    fullWidth
-                    >
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                    variant = "filled"
-                    disabled
-                    value={location.state.MunicipioNombre}
-                    label="Municipio"
-                    fullWidth
-                    >
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
-                <TextField
-                    variant = "filled"
-                    disabled
-                    value={location.state.Barrio}
-                    label="Barrio"
-                    fullWidth
-                    >
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <TextField
-                    variant = "filled"
-                    disabled
-                    value={location.state.DomicilioCalle}
-                    fullWidth
-                    label="Calle">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={2} lg={2}>
-                    <TextField
-                    variant = "filled"
-                    disabled
-                    value={location.state.DomicilioNumero}
-                    type="number"
-                    fullWidth
-                    label="Número">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={2} lg={2}>
-                    <TextField
-                    variant = "filled"
-                    disabled
-                    value={location.state.DomicilioPiso}
-                    type="number"
-                    fullWidth
-                    label="Piso">
-                    </TextField>
-                </Grid>
+                {domicilios.map((domicilio)=>(
+                    <>
+                    <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Card key={domicilio.DomicilioId} value={domicilio.DomicilioId}>
+                            <Typography style={{textAlign: 'center', backgroundColor: 'teal', color: '#FFFFFF'}} variant="h6"><b>Dirección: </b>{domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography>
+                            <Typography variant="h6"> <b>Barrio: </b> {domicilio.BarrioNombre} - {domicilio.MunicipioNombre}</Typography>
+                            <Typography variant="h6"> <b>Fecha: </b> {domicilio.CambioDomicilioFecha.split('T')[0]}</Typography>
+                            <Typography variant="h6"> <b>Observaciones: </b> {domicilio.CambioDomicilioObservaciones}</Typography>
+                        </Card>
+                    </Grid>
+                    <br/>
+                    </>
+                ))}
             </Grid>
-            <Typography variant="h2"><i className="bx bx-history"></i> Historial de cambios de domicilio</Typography>
-            <Card>
-                <CardContent>
-                    <Typography><b>a --> b</b> el día <b>03/05/2021</b></Typography>
-                    <Typography><b>b --> c</b> el día <b>21/12/2021</b></Typography>
-                    <Typography><b>c --> d</b> el día <b>31/05/2022</b></Typography>
-                </CardContent>
-            </Card>
+            <FormHelperText>Los domicilios están ordenados por fecha más reciente</FormHelperText>
             <Typography variant="h2"><i className="bx bx-home"></i> Datos del nuevo domicilio</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>

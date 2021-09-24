@@ -86,20 +86,20 @@ const ListaAbonadosActivos = () => {
     },
     {
         "name": "Barrio",
-        "selector": row =>row["Barrio"],
+        "selector": row =>row["BarrioNombre"],
         "sortable": true,
         "hide": "sm"
     },
     {
         "name": "Domicilio",
-        "selector": row =>row["Domicilio"],
+        "selector": row =>row["DomicilioCalle"] + ' ' + row["DomicilioNumero"],
         "sortable": true,
         "hide": "sm",
         "width": '15rem'
     },
     {
         "name": "Servicio",
-        "selector": row =>row["Servicio"],
+        "selector": row =>row["ServicioNombre"],
         "sortable": true,
         "hide": "sm"
     },
@@ -141,9 +141,9 @@ const ListaAbonadosActivos = () => {
     const ExpandedComponent = ({ data }) =>
     <>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-map"></i> Barrio: {data.Barrio}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-home"></i> Domicilio: {data.Domicilio}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-plug"></i> Servicio: {data.Servicio}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-map"></i> Barrio: {data.BarrioNombre}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-home"></i> Domicilio: {data.DomicilioCalle} {data.DomicilioNumero}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-plug"></i> Servicio: {data.ServicioNombre}</Typography>
     </>;
 
     return (

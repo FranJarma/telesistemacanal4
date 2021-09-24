@@ -7,6 +7,7 @@ const { check } = require('express-validator');
 
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos/', UserController.AbonadosInactivosListar);
+router.get('/abonados/domicilios/:id', UserController.AbonadoListarDomicilios);
 
 router.post('/abonados/create',
 [   check('nombre', 'El nombre es obligatorio').notEmpty(),
@@ -27,9 +28,9 @@ router.post('/abonados/create',
             if (user) throw new Error('El CUIT ya se encuentra registrado');
         })
     }),
-    check('condicionIVASeleccionadoId', 'La condición IVA es obligatoria').notEmpty(),
-    check('municipioSeleccionadoId', 'El municipio es obligatorio').notEmpty(),
-    check('barrioSeleccionadoId', 'El barrio es obligatorio').notEmpty(),
+    check('condicionIVASeleccionadoId', 'La condición IVA es obligatoria').not().contains(0),
+    check('municipioSeleccionadoId', 'El municipio es obligatorio').not().contains(0),
+    check('barrioSeleccionadoId', 'El barrio es obligatorio').not().contains(0),
     check('domicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
     check('domicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
     check('servicioSeleccionadoId', 'El tipo de servicio es obligatorio').notEmpty(),
@@ -51,9 +52,10 @@ router.put('/abonados/delete/:id', UserController.AbonadoDelete);
 
 router.put('/abonados/cambio-domicilio/:id',
 [
-    check('municipioSeleccionadoId', 'El municipio es obligatorio').notEmpty(),
-    check('barrioSeleccionadoId', 'El barrio es obligatorio').notEmpty(),
+    check('municipioSeleccionadoId', 'El municipio es obligatorio').not().contains(0),
+    check('barrioSeleccionadoId', 'El barrio es obligatorio').not().contains(0),
     check('domicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
     check('domicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
-])
+],UserController.AbonadoCambioDomicilio);
+
 module.exports = router;

@@ -13,7 +13,6 @@ require('dotenv').config({path: 'variables.env'});
 
 //FUNCIONES PARA ABONADOS
 exports.AbonadosActivosListar = async(req, res) => {
-    console.log(req.params.id);
     try {
         const abonados = await db.query(`CALL _AbonadosActivosReadAll();`);
         res.json(abonados);
@@ -29,6 +28,21 @@ exports.AbonadosInactivosListar = async(req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send('Hubo un error al encontrar los abonados');
+    }
+}
+
+exports.AbonadoListarDomicilios = async(req, res) => {
+    try {
+        const domicilios = await db.query('CALL _AbonadoReadDomicilios(:UserId)',
+        {
+            replacements: {
+                UserId: req.params.id
+        }
+        });
+        res.json(domicilios);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Hubo un error al encontrar los domicilios de los abonados');
     }
 }
 
@@ -172,15 +186,21 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     try {
-        console.log(req.body)
-        // await db.query('CALL __UserCambioDomicilio(:user_id, :motivo_baja)',
-        // {
-        //     replacements: {
-        //         user_id: req.body.idAbonadoBaja,
-        //         motivo_baja: req.body.motivoBaja
-        // }
-        // });
-            return res.status(200).json({msg: 'El Abonado ha sido dado de baja correctamente'})
+        //traemos el id del ultimo domicilio registrado
+        const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioRead();');
+        await db.query('CALL __UserCambioDomicilio(:UserId, :DomicilioId, :BarrioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :CambioDomicilioObservaciones)',
+        {
+            replacements: {
+                UserId: req.body.userId,
+                DomicilioId: ultimoDomicilioId[0].DomicilioId + 1,
+                BarrioId: req.body.barrioSeleccionadoId,
+                DomicilioCalle: req.body.domicilioCalle,
+                DomicilioNumero: req.body.domicilioNumero,
+                DomicilioPiso: req.body.domicilioPiso,
+                CambioDomicilioObservaciones: req.body.observacionesCambio
+        }
+        });
+            return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})
     } catch (error) {
         console.log(error)
         res.status(400).send({msg: 'Hubo un error al cambiar el domicilio del abonado'});
