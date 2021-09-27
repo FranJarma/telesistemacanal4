@@ -75,8 +75,9 @@ const AbonadoState = (props) => {
             }
         })
     }
+
     const cambioDomicilioAbonado = async(infoCambioDomicilio) => {
-        clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${infoCambioDomicilio.userId}`, infoCambioDomicilio)
+        clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${infoCambioDomicilio.id}`, infoCambioDomicilio)
         .then(resOk => {
             if (resOk.data)
                 dispatch({
@@ -84,7 +85,7 @@ const AbonadoState = (props) => {
                     payload: infoCambioDomicilio
                 })
                 Swal('Operación completa', resOk.data.msg);
-                //history.push('/abonados-activos');
+                history.push('/abonados-activos');
         })
         .catch(err => {
             if(!err.response){

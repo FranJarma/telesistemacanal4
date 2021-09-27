@@ -21,7 +21,7 @@ const CaratulaAbonado = () => {
     const serviciosContext = useContext(ServicioContext);
     const condicionesIVAContext = useContext(CondicionesIVAContext);
 
-    const { crearAbonado, modificarAbonado } = abonadosContext;
+    const { domicilios, traerDomiciliosAbonado, crearAbonado, modificarAbonado } = abonadosContext;
     const { provincias, traerProvincias } = provinciasContext;
     const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
     const { barrios, traerBarriosPorMunicipio } = barriosContext;
@@ -44,20 +44,12 @@ const CaratulaAbonado = () => {
                 dni: location.state.Documento,
                 cuit: location.state.Cuit,
                 email: location.state.Email,
-                telefono: location.state.Phone,
-                domicilioCalle: location.state.DomicilioCalle,
-                domicilioNumero: location.state.DomicilioNumero,
-                domicilioPiso: location.state.DomicilioPiso,
+                telefono: location.state.Phone
             });
             setCondicionIVASeleccionadoId(location.state.CondicionIVAId);
             setFechaNacimiento(location.state.FechaNacimiento);
             setFechaBajada(location.state.FechaBajada);
             setFechaContrato(location.state.FechaContrato);
-            //setProvinciaSeleccionadaId(location.state.ProvinciaId);
-            setMunicipioSeleccionadoId(location.state.MunicipioId);
-            traerBarriosPorMunicipio(location.state.MunicipioId);
-            setBarrioSeleccionadoId(location.state.BarrioId);
-            setServicioSeleccionadoId(location.state.ServicioId);
         }
     }, [])
     //States
@@ -254,11 +246,12 @@ const CaratulaAbonado = () => {
                     label="N° Teléfono">
                     </TextField>
                 </Grid>
+                {!location.state ?
+                <>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant="filled"
                     disabled
-                    //onChange={handleChangeProvinciaSeleccionada}
                     value={provinciaSeleccionadaId}
                     label="Provincia"
                     fullWidth
@@ -271,8 +264,7 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
-                    variant = {location.state ? 'filled' : 'outlined'}
-                    disabled={location.state ? true : false}
+                    variant = "outlined"
                     onChange={handleChangeMunicipioSeleccionado}
                     value={municipioSeleccionadoId}
                     label="Municipio"
@@ -284,13 +276,16 @@ const CaratulaAbonado = () => {
                     )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
                     </TextField>
                 </Grid>
+                </>
+                : "" }
             </Grid>
+            {!location.state ?
+            <>
             <Typography variant="h2"><i className="bx bx-home"></i> Datos del domicilio de instalación</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                 <TextField
-                    variant = {location.state ? 'filled' : 'outlined'}
-                    disabled={location.state ? true : false}
+                    variant = "outlined"
                     onChange={handleChangeBarrioSeleccionado}
                     value={barrioSeleccionadoId}
                     label="Barrio"
@@ -304,8 +299,7 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
-                    variant = {location.state ? 'filled' : 'outlined'}
-                    disabled={location.state ? true : false}
+                    variant = "outlined"
                     value={domicilioCalle}
                     name="domicilioCalle"
                     onChange={onInputChange}
@@ -315,8 +309,7 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
-                    variant = {location.state ? 'filled' : 'outlined'}
-                    disabled={location.state ? true : false}
+                    variant = "outlined"
                     value={domicilioNumero}
                     name="domicilioNumero"
                     onChange={onInputChange}
@@ -327,8 +320,7 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
-                    variant = {location.state ? 'filled' : 'outlined'}
-                    disabled={location.state ? true : false}
+                    variant = "outlined"
                     value={domicilioPiso}
                     name="domicilioPiso"
                     onChange={onInputChange}
@@ -338,12 +330,15 @@ const CaratulaAbonado = () => {
                     </TextField>
                 </Grid>
             </Grid>
-            <Typography variant="h2"><i className="bx bx-plug"></i> Datos del servicio a contratar</Typography>
+            </>
+            :""}
+            <Typography  variant="h2"><i className="bx bx-plug"></i> Datos del servicio a contratar</Typography>
             <Grid container spacing={3}>
+            {!location.state ?
+            <>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
-                    variant = {location.state ? 'filled' : 'outlined'}
-                    disabled={location.state ? true : false}
+                    variant = "outlined"
                     value={servicioSeleccionadoId}
                     onChange={handleChangeServicioSeleccionado}
                     label="Tipo de servicio"
@@ -355,6 +350,8 @@ const CaratulaAbonado = () => {
                     ))}
                     </TextField>
                 </Grid>
+            </>
+            : "" }
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <DatePicker 
                     inputVariant="outlined"
@@ -431,7 +428,7 @@ const CaratulaAbonado = () => {
             </>
             : "" }
             <br/>
-            {location.state ? <Alert severity="info">Los datos del domicilio y del servicio sólamente pueden modificarse en las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
+            {location.state ? <Alert severity="info">Para modificar todos los datos del domicilio y del servicio contratado se tiene que ir a las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
         </CardContent>
         <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
             <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}

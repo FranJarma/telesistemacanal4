@@ -191,7 +191,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
         await db.query('CALL __UserCambioDomicilio(:UserId, :DomicilioId, :BarrioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :CambioDomicilioObservaciones)',
         {
             replacements: {
-                UserId: req.body.userId,
+                UserId: req.body.id,
                 DomicilioId: ultimoDomicilioId[0].DomicilioId + 1,
                 BarrioId: req.body.barrioSeleccionadoId,
                 DomicilioCalle: req.body.domicilioCalle,

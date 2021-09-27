@@ -70,7 +70,6 @@ const ListaAbonadosActivos = () => {
         "name": "Nombre Completo",
         "selector": row =>row["FullName"],
         "sortable": true,
-        "width": '11rem'
     },
     {
         "name": "DNI",
@@ -85,23 +84,22 @@ const ListaAbonadosActivos = () => {
         "omit": true,
     },
     {
-        "name": "Barrio",
-        "selector": row =>row["BarrioNombre"],
+        "name": "CUIT",
+        "selector": row =>row["Cuit"],
         "sortable": true,
         "hide": "sm"
     },
     {
-        "name": "Domicilio",
-        "selector": row =>row["DomicilioCalle"] + ' ' + row["DomicilioNumero"],
+        "name": "Condición IVA",
+        "selector": row =>row["CondicionIVADescripcion"],
         "sortable": true,
         "hide": "sm",
-        "width": '15rem'
     },
     {
-        "name": "Servicio",
-        "selector": row =>row["ServicioNombre"],
+        "name": "Fecha de Contrato",
+        "selector": row =>row["FechaContrato"].split('T')[0],
         "sortable": true,
-        "hide": "sm"
+        "hide": "sm",
     },
     {
         cell: (data) =>
@@ -114,11 +112,11 @@ const ListaAbonadosActivos = () => {
         <Tooltip title="Editar"><i className="bx bxs-edit bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
-            pathname: `/cambio-domicilio/UserId=${data.UserId}`,
+            pathname: `/domicilios-abonado/UserId=${data.UserId}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "indigo"}}>
-        <Tooltip title="Cambio de domicilio"><i className="bx bxs-home bx-xs"></i></Tooltip>
+        <Tooltip title="Domicilios"><i className="bx bxs-home bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
             pathname: `/cambio-titularidad/UserId=${data.UserId}`,
@@ -140,12 +138,11 @@ const ListaAbonadosActivos = () => {
 ]
     const ExpandedComponent = ({ data }) =>
     <>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-map"></i> Barrio: {data.BarrioNombre}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-home"></i> Domicilio: {data.DomicilioCalle} {data.DomicilioNumero}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-plug"></i> Servicio: {data.ServicioNombre}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-id-card"></i> CUIT: {data.Cuit}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-wallet"></i> IVA: {data.CondicionIVADescripcion}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Contrato: {data.FechaContrato.split('T')[0]}</Typography>
     </>;
-
     return (
         <>
         <Aside/>

@@ -86,17 +86,18 @@ const CambioDomicilio = () => {
     <form onSubmit={onSubmitAbonado}>
     <Card className={styles.cartaPrincipal}>
         <CardContent>
-            <Typography variant="h1">Cambio de Domicilio: {location.state.FullName}</Typography>
-            <Typography variant="h2"><i className="bx bx-history"></i>Historial de cambios de domicilio</Typography>
+            <Typography variant="h1">Listado de Domicilios del abonado: {location.state.FullName}</Typography>
+            <br/>
             <Grid container spacing={3}>
                 {domicilios.map((domicilio)=>(
                     <>
                     <Grid item xs={12} sm={6} md={6} lg={3}>
-                        <Card key={domicilio.DomicilioId} value={domicilio.DomicilioId}>
-                            <Typography style={{textAlign: 'center', backgroundColor: 'teal', color: '#FFFFFF'}} variant="h6"><b>Dirección: </b>{domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography>
-                            <Typography variant="h6"> <b>Barrio: </b> {domicilio.BarrioNombre} - {domicilio.MunicipioNombre}</Typography>
-                            <Typography variant="h6"> <b>Fecha: </b> {domicilio.CambioDomicilioFecha.split('T')[0]}</Typography>
-                            <Typography variant="h6"> <b>Observaciones: </b> {domicilio.CambioDomicilioObservaciones}</Typography>
+                        <Card className={styles.cartaSecundaria} key={domicilio.DomicilioId} value={domicilio.DomicilioId}>
+                            <Typography variant="h6"> <b> Municipio: </b> {domicilio.MunicipioNombre}</Typography>
+                            <Typography variant="h6"> <b> Barrio: </b> {domicilio.BarrioNombre}</Typography>
+                            <Typography variant="h6"> <b> Dirección: </b> {domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography>
+                            <Typography variant="h6"> <b> Fecha: </b> {domicilio.CambioDomicilioFecha.split('T')[0]}</Typography>
+                            <Typography variant="h6"> <b> Observaciones: </b> {domicilio.CambioDomicilioObservaciones}</Typography>
                         </Card>
                     </Grid>
                     <br/>

@@ -60,49 +60,41 @@ const ListaAbonadosInactivos = () => {
     const styles = useStyles();
 
     const columnasAbonadosActivos = [
-    {
-        "name": "id",
-        "omit": true,
-        "selector": row =>row["UserId"],
-        "sortable": true,
-    },
-    {
-        "name": "Nombre Completo",
-        "selector": row =>row["FullName"],
-        "sortable": true,
-        "width": '11rem'
-    },
-    {
-        "name": "DNI",
-        "selector": row =>row["Documento"],
-        "sortable": true,
-        "hide": "sm"
-    },
-    {
-        "name": "N° teléfono",
-        "selector": row =>row["Phone"],
-        "sortable": true,
-        "omit": true,
-    },
-    {
-        "name": "Barrio",
-        "selector": row =>row["Barrio"],
-        "sortable": true,
-        "hide": "sm"
-    },
-    {
-        "name": "Domicilio",
-        "selector": row =>row["Domicilio"],
-        "sortable": true,
-        "hide": "sm",
-        "width": '15rem'
-    },
-    {
-        "name": "Servicio",
-        "selector": row =>row["Servicio"],
-        "sortable": true,
-        "hide": "sm"
-    },
+        {
+            "name": "id",
+            "omit": true,
+            "selector": row =>row["UserId"],
+            "sortable": true,
+        },
+        {
+            "name": "Nombre Completo",
+            "selector": row =>row["FullName"],
+            "sortable": true,
+        },
+        {
+            "name": "DNI",
+            "selector": row =>row["Documento"],
+            "sortable": true,
+            "hide": "sm"
+        },
+        {
+            "name": "N° teléfono",
+            "selector": row =>row["Phone"],
+            "sortable": true,
+            "omit": true,
+        },
+        {
+            "name": "CUIT",
+            "selector": row =>row["Cuit"],
+            "sortable": true,
+            "hide": "sm"
+        },
+        {
+            "name": "Condición IVA",
+            "selector": row =>row["CondicionIVADescripcion"],
+            "sortable": true,
+            "hide": "sm",
+        },
     {
         "name": "Datos última baja",
         "selector": row =>'Fecha: ' + row["FechaBaja"] + ' | Motivo: ' +  row["MotivoBaja"],
@@ -120,10 +112,10 @@ const ListaAbonadosInactivos = () => {
 ]
 const ExpandedComponent = ({ data }) =>
 <>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-map"></i> Barrio: {data.Barrio}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-home"></i> Domicilio: {data.Domicilio}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-plug"></i> Servicio: {data.Servicio}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-id-card"></i> CUIT: {data.Cuit}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-wallet"></i> IVA: {data.CondicionIVADescripcion}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Contrato: {data.FechaContrato.split('T')[0]}</Typography>
     <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-calendar"></i> Fecha de baja: {data.FechaBaja}</Typography>
     <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-question-mark"></i> Motivo de baja: {data.MotivoBaja}</Typography>
 </>;

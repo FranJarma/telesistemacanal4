@@ -12,6 +12,9 @@ const useStyles = makeStyles(theme =>({
         marginTop: '3rem',
         marginBottom: '3rem'
     },
+    cartaSecundaria: {
+        borderLeft: '3px solid teal'
+    },
     cartaHome: {
         marginLeft: '5rem',
         marginRight: '3rem',
