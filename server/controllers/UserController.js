@@ -46,6 +46,21 @@ exports.AbonadoListarDomicilios = async(req, res) => {
     }
 }
 
+exports.AbonadoUltimoDomicilio = async(req, res) => {
+    try {
+        const domicilio = await db.query('CALL _AbonadoReadUltimoDomicilio(:UserId)',
+        {
+            replacements: {
+                UserId: req.params.id
+        }
+        });
+        res.json(domicilio[0]);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Hubo un error al encontrar el último domicilio del abonado');
+    }
+}
+
 exports.AbonadoCreate = async(req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -53,7 +68,7 @@ exports.AbonadoCreate = async(req, res) => {
     }
     try {
         //traemos el id del ultimo domicilio registrado
-        const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioRead();');
+        const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioIdRead();');
         //creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
         const abonado = new User(req.body);
         abonado.UserId = uuidv4().toUpperCase();
@@ -187,8 +202,8 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
     }
     try {
         //traemos el id del ultimo domicilio registrado
-        const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioRead();');
-        await db.query('CALL __UserCambioDomicilio(:UserId, :DomicilioId, :BarrioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :CambioDomicilioObservaciones)',
+        const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioIdRead();');
+        await db.query('CALL _AbonadoCambioDeDomicilio(:UserId, :DomicilioId, :BarrioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :CambioDomicilioObservaciones)',
         {
             replacements: {
                 UserId: req.body.id,

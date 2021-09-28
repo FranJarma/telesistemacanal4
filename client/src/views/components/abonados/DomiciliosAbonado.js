@@ -93,11 +93,13 @@ const CambioDomicilio = () => {
                     <>
                     <Grid item xs={12} sm={6} md={6} lg={3}>
                         <Card className={styles.cartaSecundaria} key={domicilio.DomicilioId} value={domicilio.DomicilioId}>
-                            <Typography variant="h6"> <b> Municipio: </b> {domicilio.MunicipioNombre}</Typography>
-                            <Typography variant="h6"> <b> Barrio: </b> {domicilio.BarrioNombre}</Typography>
-                            <Typography variant="h6"> <b> Dirección: </b> {domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography>
-                            <Typography variant="h6"> <b> Fecha: </b> {domicilio.CambioDomicilioFecha.split('T')[0]}</Typography>
-                            <Typography variant="h6"> <b> Observaciones: </b> {domicilio.CambioDomicilioObservaciones}</Typography>
+                            <CardContent>
+                                <Typography variant="h6"> <b> Municipio: </b> {domicilio.MunicipioNombre}</Typography>
+                                <Typography variant="h6"> <b> Barrio: </b> {domicilio.BarrioNombre}</Typography>
+                                <Typography variant="h6"> <b> Dirección: </b> {domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography>
+                                <Typography variant="h6"> <b> Fecha: </b> {domicilio.CambioDomicilioFecha.split('T')[0]}</Typography>
+                                <Typography variant="h6"> <b> Observaciones: </b> {domicilio.CambioDomicilioObservaciones}</Typography>
+                            </CardContent>
                         </Card>
                     </Grid>
                     <br/>

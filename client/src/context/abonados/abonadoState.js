@@ -6,12 +6,13 @@ import clienteAxios from '../../config/axios';
 import Toast from './../../views/components/design/components/Toast';
 import Swal from './../../views/components/design/components/Swal';
 import {CREAR_ABONADO, MODIFICAR_ABONADO, DAR_DE_BAJA_ABONADO, CAMBIO_DOMICILIO_ABONADO, LISTA_ABONADOS_ACTIVOS, LISTA_ABONADOS_INACTIVOS,
-LISTA_DOMICILIOS_ABONADOS} from '../../types';
+LISTA_DOMICILIOS_ABONADOS, ULTIMO_DOMICILIO} from '../../types';
 
 const AbonadoState = (props) => {
     const initialState = {
         abonados: [],
-        domicilios: []
+        domicilios: [],
+        domicilio: {}
     };
     const history = useHistory();
     const [state, dispatch] = useReducer(AbonadoReducer, initialState);
@@ -129,18 +130,31 @@ const AbonadoState = (props) => {
             console.log(error);
         }
     };
+    const traerUltimoDomicilioAbonado = async (id) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/usuarios/abonados/domicilio/${id}`);
+            dispatch({
+                type: ULTIMO_DOMICILIO,
+                payload: resultado.data
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return(
         <AbonadoContext.Provider
             value={{
                 abonados: state.abonados,
                 domicilios: state.domicilios,
+                domicilio: state.domicilio,
                 crearAbonado,
                 modificarAbonado,
                 darDeBajaAbonado,
                 cambioDomicilioAbonado,
                 traerAbonadosActivos,
                 traerAbonadosInactivos,
-                traerDomiciliosAbonado
+                traerDomiciliosAbonado,
+                traerUltimoDomicilioAbonado
             }}
         >{props.children}
         </AbonadoContext.Provider>

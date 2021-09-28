@@ -8,6 +8,7 @@ const { check } = require('express-validator');
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos/', UserController.AbonadosInactivosListar);
 router.get('/abonados/domicilios/:id', UserController.AbonadoListarDomicilios);
+router.get('/abonados/domicilio/:id', UserController.AbonadoUltimoDomicilio);
 
 router.post('/abonados/create',
 [   check('nombre', 'El nombre es obligatorio').notEmpty(),
