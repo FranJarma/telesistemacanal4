@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, CardHeader, CardContent, Typography } from '@material-ui/core';
+import { Card, CardContent, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import {pagos} from './DatosTabla';
 import {columnasPagos} from './ColumnasTabla';
@@ -16,6 +16,7 @@ const ListaPagos = () => {
     const saldos = pagos.map((item)=>(
         item.saldo !== 0  ? saldo = saldo + item.total : ""
     ))
+    //TODO: AGREGAR MODAL DE FACTURA
     return (
         <>
         <div className="container">
