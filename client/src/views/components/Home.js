@@ -13,14 +13,14 @@ const Home = () => {
                 <Grid item lg={4} md={4} xs={12}>
                     <Card className={styles.cartaHome}>
                         <CardContent>
-                            <Typography variant="h1">Estadística 1</Typography>
+                            <Typography variant="h1">Ingresos del día</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid item lg={4} md={4} xs={12}>
                     <Card className={styles.cartaHome}>
                         <CardContent>
-                            <Typography variant="h1">Estadística 2</Typography>
+                            <Typography variant="h1">Cortes del día</Typography>
                         </CardContent>
                     </Card>
                 </Grid>

@@ -84,7 +84,9 @@ const CambioTitularidad = () => {
 }
     return ( 
     <>
+    <div className="container">
     <Aside/>
+    <main>
     <form onSubmit={onSubmitAbonado}>
     <Card className={styles.cartaPrincipal}>
         <CardContent>
@@ -319,6 +321,8 @@ const CambioTitularidad = () => {
         </div>
     </Card>
     </form>
+    </main>
+    </div>
     </>
     );
 }

@@ -3,6 +3,7 @@ import Aside from '../design/layout/Aside';
 import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import useStyles from '../Styles';
 import { useLocation } from 'react-router-dom';
+import BreadCrumb from '../design/components/Breadcrumb';
 import AbonadoContext from '../../../context/abonados/abonadoContext';
 import ProvinciaContext from '../../../context/provincias/provinciaContext';
 import MunicipioContext from '../../../context/municipios/municipioContext';
@@ -82,7 +83,9 @@ const CambioDomicilio = () => {
 }
     return ( 
     <>
+    <div className="container">
     <Aside/>
+    <main>
     <form onSubmit={onSubmitAbonado}>
     <Card className={styles.cartaPrincipal}>
         <CardContent>
@@ -208,8 +211,10 @@ const CambioDomicilio = () => {
             variant="contained" color="primary">Modificar
             </Button>
         </div>
-    </Card>
+        </Card>
     </form>
+    </main>
+    </div>
     </>
     );
 }

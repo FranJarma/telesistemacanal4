@@ -5,28 +5,24 @@ export const columnasPagos = [
     {
         "name": "N°",
         "selector": row =>row["id"],
-        "width": '4rem'
+        "omit": true
     },
     {
         "name": "Período",
         "selector": row =>row["mes"]+ " de " +row["año"],
         "sortable": true,
-        "width": '12rem'
     },
     {
         "name": "Vencimiento",
         "selector": row =>row["vencimiento"],
-        "width": '11rem'
     },
     {
         "name": "Total mes",
         "selector": row =>"$" + row["total"],
-        "width": '11rem'
     },
     {
         "name": "Pago completo",
         "selector": row => row["saldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> : <i style={{color: 'red'}} className="bx bx-x bx-md"></i>,
-        "width": '11rem'
     },
     {
         cell: (data) =>

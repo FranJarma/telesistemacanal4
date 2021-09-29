@@ -34,8 +34,9 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
     return (
         <DataTable
             columns={columnas}
-            expandableRows
-            expandableRowsComponent={expandedComponent}
+            dense
+            expandableRows = {expandedComponent ? true : false}
+            expandableRowsComponent={expandedComponent ? expandedComponent : ''}
             data={itemsFiltrados !== "" ? itemsFiltrados : datos}
             highlightOnHover
             noDataComponent="No se encontraron registros"

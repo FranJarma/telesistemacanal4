@@ -6,13 +6,10 @@ const MenuAside = () => {
     return ( 
       <ul className="nav-links">
       <li>
-        <Link to="/">
+        <Link to="/home">
           <i className='bx bx-home' ></i>
           <span className="link_name">Inicio</span>
         </Link>
-        <ul className="sub-menu blank">
-          <li><Link className="link_name" to="/">Inicio</Link></li>
-        </ul>
       </li>
       <li>
         <div className="iocn-link">

@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import esLocale from 'date-fns/locale/es';
 import Home from './views/components/Home';
-import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
-import CaratulaAbonado from './views/components/abonados/CaratulaAbonado';
-import DomiciliosAbonado from './views/components/abonados/DomiciliosAbonado';
-import CambioTitularidad from './views/components/abonados/CambioTitularidad';
 import ListaPagos from './views/components/pagos/ListaPagos';
+import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
 import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosInactivos';
 import ListaDetallesPagos from './views/components/detallesPagos/ListaDetallesPagos';
 import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetallePago';
@@ -20,6 +17,33 @@ import MunicipioState from './context/municipios/municipioState';
 import BarrioState from './context/barrios/barrioState';
 import ServicioState from './context/servicios/servicioState';
 import CondicionesIVAState from './context/condicionesIVA/condicionesIVAState';
+import Cargando from './views/components/design/components/Cargando';
+
+const CaratulaAbonado = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
+    () =>
+      Math.floor(Math.random() * 10) >= 1
+        ? import('./views/components/abonados/CaratulaAbonado')
+        : Promise.reject(new Error())
+  );
+});
+
+const DomiciliosAbonado = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
+    () =>
+      Math.floor(Math.random() * 10) >= 1
+        ? import('./views/components/abonados/DomiciliosAbonado')
+        : Promise.reject(new Error())
+  );
+});
+const CambioTitularidad = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
+    () =>
+      Math.floor(Math.random() * 10) >= 1
+        ? import('./views/components/abonados/CambioTitularidad')
+        : Promise.reject(new Error())
+  );
+});
 
 const theme = createTheme({
   typography: {
@@ -84,19 +108,25 @@ function App() {
                             <Home/>
                           </Route>
                           <Route exact path="/abonados-activos">
-                            <ListaAbonadosActivos/>
+                              <ListaAbonadosActivos/>
                           </Route>
                           <Route exact path="/abonados-inactivos">
                             <ListaAbonadosInactivos/>
                           </Route>
                           <Route path="/caratula-abonado">
-                            <CaratulaAbonado/>
+                            <Suspense fallback={<Cargando/>}>
+                              <CaratulaAbonado/>
+                            </Suspense>
                           </Route>
                           <Route path="/domicilios-abonado">
-                            <DomiciliosAbonado/>
+                            <Suspense fallback={<Cargando/>}>
+                              <DomiciliosAbonado/>
+                            </Suspense>
                           </Route>
                           <Route path="/cambio-titularidad">
-                            <CambioTitularidad/>
+                            <Suspense fallback={<Cargando/>}>
+                              <CambioTitularidad/>
+                            </Suspense>
                           </Route>
                           <Route path="/historial-de-pagos">
                             <ListaPagos/>

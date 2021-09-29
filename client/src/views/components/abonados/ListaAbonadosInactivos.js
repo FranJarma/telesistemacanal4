@@ -8,6 +8,8 @@ import Aside from '../design/layout/Aside';
 import { Link } from 'react-router-dom';
 import AbonadoContext from '../../../context/abonados/abonadoContext';
 import MunicipioContext from '../../../context/municipios/municipioContext';
+import BreadCrumb from '../design/components/Breadcrumb';
+import Footer from '../design/layout/Footer';
 
 const ListaAbonadosInactivos = () => {
     const abonadosContext = useContext(AbonadoContext);
@@ -70,6 +72,7 @@ const ListaAbonadosInactivos = () => {
             "name": "Nombre Completo",
             "selector": row =>row["FullName"],
             "sortable": true,
+            "minWidth": "12rem"
         },
         {
             "name": "DNI",
@@ -121,6 +124,9 @@ const ExpandedComponent = ({ data }) =>
 </>;
     return (
         <>
+        <div className="container">
+        <Aside/>
+        <main>
         <Aside/>
         <Card className={styles.cartaPrincipal}>
             <CardContent>
@@ -176,7 +182,10 @@ const ExpandedComponent = ({ data }) =>
                     expandedComponent={ExpandedComponent}
                 />
             </CardContent>
-        </Card>
+            </Card>
+        </main>
+        <Footer/>
+        </div>
         </>
     );
 }

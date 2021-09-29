@@ -5,6 +5,7 @@ import Alert from '@material-ui/lab/Alert';
 import useStyles from '../Styles';
 import { DatePicker  } from '@material-ui/pickers';
 import { useLocation, useHistory } from 'react-router-dom';
+import BreadCrumb from '../design/components/Breadcrumb';
 import AbonadoContext from '../../../context/abonados/abonadoContext';
 import ProvinciaContext from '../../../context/provincias/provinciaContext';
 import MunicipioContext from '../../../context/municipios/municipioContext';
@@ -146,7 +147,9 @@ const CaratulaAbonado = () => {
     }
     return ( 
     <>
+    <div className="container">
     <Aside/>
+    <main>
     <form onSubmit={onSubmitAbonado}>
     <Card className={styles.cartaPrincipal}>
         <CardContent>
@@ -438,6 +441,8 @@ const CaratulaAbonado = () => {
         </div>
     </Card>
     </form>
+    </main>
+    </div>
     </>
     );
 }

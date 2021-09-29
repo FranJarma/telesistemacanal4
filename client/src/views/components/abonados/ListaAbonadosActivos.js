@@ -10,6 +10,7 @@ import './../design/layout/styles/styles.css';
 import { Link } from 'react-router-dom';
 import AbonadoContext from '../../../context/abonados/abonadoContext';
 import MunicipioContext from '../../../context/municipios/municipioContext';
+import BreadCrumb from '../design/components/Breadcrumb';
 
 const ListaAbonadosActivos = () => {
     const abonadosContext = useContext(AbonadoContext);
@@ -72,6 +73,7 @@ const ListaAbonadosActivos = () => {
         "name": "Nombre Completo",
         "selector": row =>row["FullName"],
         "sortable": true,
+        "minWidth": "9rem"
     },
     {
         "name": "DNI",
@@ -148,7 +150,7 @@ const ListaAbonadosActivos = () => {
     return (
         <>
         <div className="container">
-        <Aside></Aside>
+        <Aside/>
         <main>
         <Card className={styles.cartaPrincipal}>
             <CardHeader
