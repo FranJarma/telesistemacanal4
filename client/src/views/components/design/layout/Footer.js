@@ -1,11 +1,10 @@
 import React from 'react';
 import './styles/styles.css';
-import logo2 from './../../../images/logo2.png';
 
 const Footer = () => {
     return (
         <footer className="footer">
-            <img src={logo2}/>
+            <span><b>Telesistema Canal 4 © </b>| Todos los derechos reservados  </span>
         </footer> );
 }
  

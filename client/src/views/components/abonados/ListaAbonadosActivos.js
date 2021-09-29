@@ -5,6 +5,8 @@ import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import useStyles from '../Styles';
 import Aside from '../design/layout/Aside';
+import Footer from '../design/layout/Footer';
+import './../design/layout/styles/styles.css';
 import { Link } from 'react-router-dom';
 import AbonadoContext from '../../../context/abonados/abonadoContext';
 import MunicipioContext from '../../../context/municipios/municipioContext';
@@ -145,7 +147,9 @@ const ListaAbonadosActivos = () => {
     </>;
     return (
         <>
-        <Aside/>
+        <div className="container">
+        <Aside></Aside>
+        <main>
         <Card className={styles.cartaPrincipal}>
             <CardHeader
             action={<Link style={{textDecoration: 'none'}} to="/caratula-abonado"><Button variant="contained" color="primary">+ Nuevo Abonado</Button></Link>}>
@@ -204,6 +208,9 @@ const ListaAbonadosActivos = () => {
                 />
             </CardContent>
         </Card>
+        </main>
+        <Footer/>
+        </div>
         </>
     );
 }
