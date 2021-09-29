@@ -21,27 +21,18 @@ import Cargando from './views/components/design/components/Cargando';
 
 const CaratulaAbonado = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
-    () =>
-      Math.floor(Math.random() * 10) >= 1
-        ? import('./views/components/abonados/CaratulaAbonado')
-        : Promise.reject(new Error())
+    () => import('./views/components/abonados/CaratulaAbonado')
   );
 });
 
 const DomiciliosAbonado = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
-    () =>
-      Math.floor(Math.random() * 10) >= 1
-        ? import('./views/components/abonados/DomiciliosAbonado')
-        : Promise.reject(new Error())
+    () => import('./views/components/abonados/DomiciliosAbonado')
   );
 });
 const CambioTitularidad = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
-    () =>
-      Math.floor(Math.random() * 10) >= 1
-        ? import('./views/components/abonados/CambioTitularidad')
-        : Promise.reject(new Error())
+    () => import('./views/components/abonados/CambioTitularidad')
   );
 });
 
