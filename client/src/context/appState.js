@@ -137,17 +137,17 @@ const AppState = props => {
             console.log(error);
         }
     };
-    // const traerUltimoDomicilioAbonado = async (id) => {
-    //     try {
-    //         const resultado = await clienteAxios.get(`/api/usuarios/abonados/domicilio/${id}`);
-    //         dispatch({
-    //             type: TYPES.ULTIMO_DOMICILIO,
-    //             payload: resultado.data
-    //         });
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+    const traerUltimoDomicilioAbonado = async (id) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/usuarios/abonados/domicilio/${id}`);
+            dispatch({
+                type: TYPES.ULTIMO_DOMICILIO,
+                payload: resultado.data
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
     //BARRIOS
     const traerBarriosPorMunicipio = async (municipioId) => {
         try {
@@ -221,7 +221,7 @@ const AppState = props => {
             servicios: state.servicios,
             onus: state.onus,
             tiposOnus: state.tiposOnus,
-            crearAbonado, modificarAbonado, darDeBajaAbonado, cambioDomicilioAbonado, traerAbonadosActivos, traerAbonadosInactivos, //traerUltimoDomicilioAbonado,
+            crearAbonado, modificarAbonado, darDeBajaAbonado, cambioDomicilioAbonado, traerAbonadosActivos, traerAbonadosInactivos, traerUltimoDomicilioAbonado,
             traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIVA, traerMunicipiosPorProvincia, traerProvincias, traerServicios
         }}>{props.children}
         </AppContext.Provider>
