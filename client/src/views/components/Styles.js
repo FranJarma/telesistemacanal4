@@ -47,13 +47,13 @@ const useStyles = makeStyles(theme =>({
     inputModal: {
         '& .MuiOutlinedInput-root': {  
             '& fieldset': {           
-                borderColor: 'grey',  
+                border: '1px solid #000000',  
             },
             '&:hover fieldset': {
-                borderColor: 'grey',
+                border: '1px solid #000000',
             },
             '&.Mui-focused fieldset': {
-                borderColor: 'grey',
+                border: '1px solid #000000',
             },
         },
     },

@@ -1,7 +1,7 @@
 const { Sequelize, UUIDV4 } = require('sequelize');
-const sequelize = new Sequelize({dialect: 'mysql', define: { freezeTableName: true}});
+const db = require('../config/connection');
 
-const UserRole = sequelize.define('_userrole', {
+const UserRole = db.define('_userrole', {
     UserId: {
         type: UUIDV4
     },
@@ -10,4 +10,4 @@ const UserRole = sequelize.define('_userrole', {
     }
 });
 
-module.exports = sequelize.model('_userrole', UserRole);
+module.exports = db.model('_userrole', UserRole);

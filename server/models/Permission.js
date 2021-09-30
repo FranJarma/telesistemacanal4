@@ -1,7 +1,7 @@
 const { Sequelize, Datatypes } = require('sequelize');
-const sequelize = new Sequelize({dialect: 'mysql', define: { freezeTableName: true}});
+const db = require('../config/connection');
 
-const Permission = sequelize.define('Permission', {
+const Permission = db.define('Permission', {
     PermissionId: {
         type: Datatypes.UUID,
         defaultValue: Sequelize.UUIDV1

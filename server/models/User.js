@@ -97,6 +97,10 @@ const User = db.define('_user', {
         type: INTEGER,
         allowNull: true
     },
+    OnuId: {
+        type: INTEGER,
+        allowNull: true
+    }
 });
 
 module.exports = User;

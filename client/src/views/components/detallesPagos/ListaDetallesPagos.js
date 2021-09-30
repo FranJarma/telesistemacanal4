@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Card, Button, Grid, NativeSelect, CardContent, CardHeader, TextField, Typography, Select, MenuItem } from '@material-ui/core';
+import { Card, Button, Grid, CardContent, CardHeader, TextField, Typography, MenuItem } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import {detallesPagos} from './DatosTabla';
 import {columnasDetallesPagos} from './ColumnasTabla';
 import useStyles from '../Styles';
 import Aside from '../design/layout/Aside';
 import { useLocation } from 'react-router';
-import { Link } from 'react-router-dom';
 import Modal from './../design/components/Modal';
 import { Alert } from '@material-ui/lab';
 

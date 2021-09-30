@@ -37,7 +37,16 @@ main {
   position: absolute;
   z-index: -1;   
 }
-
+.header{
+  padding: 10px 16px;
+  background: #f8f8f8;
+}
+.header i {
+  margin-left: 85px;
+  color: #11101d;
+  float: right;
+  font-size: 35px;
+}
 .sidebar{
   position: fixed;
   top: 0;
@@ -54,13 +63,13 @@ main {
 .footer {
   padding: 40px;
   height: 20px;
-  background-color: #f8f8f8;
-  color: #1d1b31;
+  background-color: #f1f1f7;
+  color: #11101d;
   text-align: right;
 }
 .footer span{
-font-family: 'Poppins';
-font-size: 12px;
+  font-family: 'Poppins';
+  font-size: 11px;
 }
 .sidebar .nav-links{
   height: 100%;

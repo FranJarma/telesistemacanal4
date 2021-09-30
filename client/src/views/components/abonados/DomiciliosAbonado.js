@@ -8,6 +8,7 @@ import AbonadoContext from '../../../context/abonados/abonadoContext';
 import ProvinciaContext from '../../../context/provincias/provinciaContext';
 import MunicipioContext from '../../../context/municipios/municipioContext';
 import BarrioContext from '../../../context/barrios/barrioContext';
+import Footer from '../design/layout/Footer';
 
 const CambioDomicilio = () => {
     //Context
@@ -214,6 +215,7 @@ const CambioDomicilio = () => {
         </Card>
     </form>
     </main>
+    <Footer/>
     </div>
     </>
     );

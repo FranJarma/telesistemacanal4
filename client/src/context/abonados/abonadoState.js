@@ -25,7 +25,7 @@ const AbonadoState = (props) => {
                     payload: abonado
                 });
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/abonados-activos');
+                //history.push('/abonados-activos');
         })
         .catch(err => {
             if(!err.response){

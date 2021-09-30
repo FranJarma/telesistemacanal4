@@ -1,7 +1,7 @@
 const { Sequelize, STRING } = require('sequelize');
-const sequelize = new Sequelize({dialect: 'mysql', define: { freezeTableName: true}});
+const db = require('../config/connection');
 
-const Provincia = sequelize.define('provincia', {
+const Provincia = db.define('provincia', {
     NombreProvincia: {
         type: STRING(256),
         allowNull: false
@@ -12,4 +12,4 @@ const Provincia = sequelize.define('provincia', {
     }
 });
 
-module.exports = sequelize.model('provincia', Provincia);
+module.exports = db.model('provincia', Provincia);

@@ -4,7 +4,7 @@ import './styles/styles.css';
 const Footer = () => {
     return (
         <footer className="footer">
-            <span><b>Telesistema Canal 4 © </b>| Todos los derechos reservados  </span>
+            <span><b>Telesistema Canal 4 © {new Date().getFullYear()} </b><i>| Todos los derechos reservados</i></span>
         </footer> );
 }
  

@@ -9,6 +9,7 @@ import MunicipioContext from '../../../context/municipios/municipioContext';
 import BarrioContext from '../../../context/barrios/barrioContext';
 import { Alert } from '@material-ui/lab';
 import { DatePicker } from '@material-ui/pickers';
+import Footer from '../design/layout/Footer';
 
 const CambioTitularidad = () => {
     //Context
@@ -322,6 +323,7 @@ const CambioTitularidad = () => {
     </Card>
     </form>
     </main>
+    <Footer/>
     </div>
     </>
     );

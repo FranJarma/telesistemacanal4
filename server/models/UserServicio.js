@@ -1,7 +1,7 @@
 const { Sequelize, UUIDV4, INTEGER, STRING, DATE } = require('sequelize');
-const sequelize = new Sequelize({dialect: 'mysql', define: { freezeTableName: true}});
+const db = require('../config/connection');
 
-const UserServicio = sequelize.define('userservicio', {
+const UserServicio = db.define('userservicio', {
     UserId: {
         type: UUIDV4
     },
@@ -16,4 +16,4 @@ const UserServicio = sequelize.define('userservicio', {
     }
 });
 
-module.exports = sequelize.model('userservicio', UserServicio);
+module.exports = db.model('userservicio', UserServicio);

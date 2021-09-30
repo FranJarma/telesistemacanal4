@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import {pagos} from './DatosTabla';
 import {columnasPagos} from './ColumnasTabla';
@@ -7,7 +7,6 @@ import useStyles from './../Styles';
 import Aside from '../design/layout/Aside';
 import { useLocation } from 'react-router';
 import Footer from '../design/layout/Footer';
-import BreadCrumb from '../design/components/Breadcrumb';
 
 const ListaPagos = () => {
     const styles = useStyles();

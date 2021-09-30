@@ -1,7 +1,7 @@
 const { Sequelize, STRING, INTEGER } = require('sequelize');
-const sequelize = new Sequelize({dialect: 'mysql', define: { freezeTableName: true}});
+const db = require('../config/connection');
 
-const Domicilio = sequelize.define('domicilio', {
+const Domicilio = db.define('domicilio', {
     DomicilioId: {
         type: INTEGER,
         allowNull: false
@@ -24,4 +24,4 @@ const Domicilio = sequelize.define('domicilio', {
     }
 });
 
-module.exports = sequelize.model('domicilio', Domicilio);
+module.exports = db.model('domicilio', Domicilio);

@@ -5,9 +5,11 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const User = require('./../models/User');
 const Domicilio = require('./../models/Domicilio');
+const ModeloOnu = require('./../models/ModeloOnu');
 const UserRole = require('./../models/UserRole');
 const UserServicio = require('./../models/UserServicio');
 const UserDomicilio = require('./../models/UserDomicilio');
+const Onu = require('../models/Onu');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -67,60 +69,74 @@ exports.AbonadoCreate = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     try {
-        //traemos el id del ultimo domicilio registrado
-        const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioIdRead();');
-        //creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
-        const abonado = new User(req.body);
-        abonado.UserId = uuidv4().toUpperCase();
-        abonado.FullName = req.body.apellido + ',' + req.body.nombre;
-        abonado.Documento = req.body.dni;
-        abonado.Cuit = req.body.cuit;
-        abonado.FechaBajada = req.body.fechaBajada;
-        abonado.FechaContrato = req.body.fechaContrato;
-        abonado.FechaNacimiento = req.body.fechaNacimiento;
-        abonado.Phone = req.body.telefono;
-        abonado.Email = req.body.email;
-        abonado.ServicioId = req.body.servicioSeleccionadoId;
-        abonado.CondicionIVAId = req.body.condicionIVASeleccionadoId;
-        const domicilio = new Domicilio();
-        domicilio.DomicilioId = ultimoDomicilioId[0].DomicilioId + 1;
-        domicilio.DomicilioCalle = req.body.domicilioCalle;
-        domicilio.DomicilioNumero = req.body.domicilioNumero;
-        domicilio.DomicilioPiso = req.body.domicilioPiso;
-        domicilio.BarrioId = req.body.barrioSeleccionadoId;
-        const abonadoDomicilio = new UserDomicilio();
-        abonadoDomicilio.UserId = abonado.UserId;
-        abonadoDomicilio.DomicilioId = ultimoDomicilioId[0].DomicilioId + 1;
-        const abonadoRole = new UserRole();
-        abonadoRole.UserId = abonado.UserId;
-        abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
-        const abonadoServicio = new UserServicio();
-        abonadoServicio.UserId = abonado.UserId;
-        abonadoServicio.ServicioId = abonado.ServicioId;
-        await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :BarrioId, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :CondicionIVAId, :ServicioId)',
-        {
-            replacements: {
-                UserId: abonado.UserId,
-                RoleId: abonadoRole.RoleId,
-                UserName: null,
-                Password: null,
-                FullName: abonado.FullName,
-                Documento: abonado.Documento,
-                Cuit: abonado.Cuit,
-                DomicilioId: domicilio.DomicilioId,
-                DomicilioCalle: domicilio.DomicilioCalle,
-                DomicilioNumero: domicilio.DomicilioNumero,
-                DomicilioPiso: domicilio.DomicilioPiso,
-                BarrioId: domicilio.BarrioId,
-                Email: abonado.Email,
-                FechaBajada: abonado.FechaBajada,
-                FechaContrato: abonado.FechaContrato,
-                FechaNacimiento: abonado.FechaNacimiento,
-                Phone: abonado.Phone,
-                CondicionIVAId: abonado.CondicionIVAId,
-                ServicioId: abonado.ServicioId
-        }
+        const modelosOnu = await ModeloOnu.findAll({
+            attributes: {exclude: ['id', 'createdAt', 'updatedAt']},
         });
+        console.log(modelosOnu);
+        //traemos el id del ultimo domicilio registrado y de la ultima onu registrada
+        // const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioIdRead();');
+        // const ultimaOnuId = await db.query('CALL _UltimaOnuIdRead();');
+        // console.log(ultimaOnuId[0].OnuId);
+        // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
+        // const abonado = new User(req.body);
+        // abonado.UserId = uuidv4().toUpperCase();
+        // abonado.FullName = req.body.apellido + ',' + req.body.nombre;
+        // abonado.Documento = req.body.dni;
+        // abonado.Cuit = req.body.cuit;
+        // abonado.FechaBajada = req.body.fechaBajada;
+        // abonado.FechaContrato = req.body.fechaContrato;
+        // abonado.FechaNacimiento = req.body.fechaNacimiento;
+        // abonado.Phone = req.body.telefono;
+        // abonado.Email = req.body.email;
+        // abonado.ServicioId = req.body.servicioSeleccionadoId;
+        // abonado.CondicionIVAId = req.body.condicionIVASeleccionadoId;
+        // const domicilio = new Domicilio();
+        // domicilio.DomicilioCalle = req.body.domicilioCalle;
+        // domicilio.DomicilioNumero = req.body.domicilioNumero;
+        // domicilio.DomicilioPiso = req.body.domicilioPiso;
+        // domicilio.BarrioId = req.body.barrioSeleccionadoId;
+        // const abonadoDomicilio = new UserDomicilio();
+        // abonadoDomicilio.UserId = abonado.UserId;
+        // const abonadoRole = new UserRole();
+        // abonadoRole.UserId = abonado.UserId;
+        // abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
+        // const abonadoServicio = new UserServicio();
+        // abonadoServicio.UserId = abonado.UserId;
+        // abonadoServicio.ServicioId = abonado.ServicioId;
+        // const onu = new Onu();
+        // onu.OnuSerie = req.body.onuSerie;
+        // onu.OnuModelo = req.body.onuModelo;
+        // onu.OnuMac = req.body.onuMac;
+        // onu.ServicioId = req.body.servicioSeleccionadoId;
+        // await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :BarrioId, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :CondicionIVAId, :ServicioId, :OnuId, :OnuSerie, :OnuModelo, :OnuMac)',
+        // {
+        //     replacements: {
+        //         UserId: abonado.UserId,
+        //         RoleId: abonadoRole.RoleId,
+        //         UserName: null,
+        //         Password: null,
+        //         FullName: abonado.FullName,
+        //         Documento: abonado.Documento,
+        //         Cuit: abonado.Cuit,
+        //         DomicilioId: ultimoDomicilioId[0].DomicilioId + 1,
+        //         DomicilioCalle: domicilio.DomicilioCalle,
+        //         DomicilioNumero: domicilio.DomicilioNumero,
+        //         DomicilioPiso: domicilio.DomicilioPiso,
+        //         BarrioId: domicilio.BarrioId,
+        //         Email: abonado.Email,
+        //         FechaBajada: abonado.FechaBajada,
+        //         FechaContrato: abonado.FechaContrato,
+        //         FechaNacimiento: abonado.FechaNacimiento,
+        //         Phone: abonado.Phone,
+        //         CondicionIVAId: abonado.CondicionIVAId,
+        //         ServicioId: abonado.ServicioId,
+        //         OnuId: ultimaOnuId[0].OnuId + 1,
+        //         OnuSerie: onu.OnuSerie,
+        //         OnuModelo: onu.OnuModelo,
+        //         OnuMac: onu.OnuMac,
+        //         OnuServicioId: onu.ServicioId
+        // }
+        // });
             return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
         }   
     catch (error) {

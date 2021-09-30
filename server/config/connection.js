@@ -5,8 +5,8 @@ const db = new Sequelize({
   define: {
     freezeTableName: true
   },
-  host: process.env.DB_host,
   username: process.env.DB_USER,
+  host: process.env.DB_HOST,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   dialect: 'mysql'
