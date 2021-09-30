@@ -1,26 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
+import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
+import Footer from '../design/layout/Footer';
 import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import useStyles from '../Styles';
 import { useLocation } from 'react-router-dom';
-import BreadCrumb from '../design/components/Breadcrumb';
-import AbonadoContext from '../../../context/abonados/abonadoContext';
-import ProvinciaContext from '../../../context/provincias/provinciaContext';
-import MunicipioContext from '../../../context/municipios/municipioContext';
-import BarrioContext from '../../../context/barrios/barrioContext';
-import Footer from '../design/layout/Footer';
+
 
 const CambioDomicilio = () => {
-    //Context
-    const abonadosContext = useContext(AbonadoContext);
-    const provinciasContext = useContext(ProvinciaContext);
-    const municipiosContext = useContext(MunicipioContext);
-    const barriosContext = useContext(BarrioContext);
-
-    const { cambioDomicilioAbonado, traerDomiciliosAbonado, domicilios } = abonadosContext;
-    const { provincias, traerProvincias } = provinciasContext;
-    const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
-    const { barrios, traerBarriosPorMunicipio } = barriosContext;
+    const appContext = useContext(AppContext);
+    const {barrios, domicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
+    traerProvincias, cambioDomicilioAbonado } = appContext;
 
     const location = useLocation();
     const styles = useStyles();
@@ -66,7 +56,6 @@ const CambioDomicilio = () => {
         setBarrioSeleccionadoId(e.target.value);
     }
 
-    //SUBMIT
     const onSubmitAbonado = (e) => {
         e.preventDefault();
         if(location.state) {

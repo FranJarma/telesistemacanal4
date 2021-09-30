@@ -1,36 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
+import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
-import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
-import Alert from '@material-ui/lab/Alert';
-import useStyles from '../Styles';
-import { DatePicker  } from '@material-ui/pickers';
-import { useLocation } from 'react-router-dom';
-import AbonadoContext from '../../../context/abonados/abonadoContext';
-import ProvinciaContext from '../../../context/provincias/provinciaContext';
-import MunicipioContext from '../../../context/municipios/municipioContext';
-import BarrioContext from '../../../context/barrios/barrioContext';
-import ServicioContext from '../../../context/servicios/servicioContext';
-import CondicionesIVAContext from '../../../context/condicionesIVA/condicionesIVAContext';
 import Footer from '../design/layout/Footer';
+import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { DatePicker } from '@material-ui/pickers';
+import useStyles from '../Styles';
+import { useLocation } from 'react-router-dom';
+import { Alert } from '@material-ui/lab';
 
 const CaratulaAbonado = () => {
-    //Context
-    const abonadosContext = useContext(AbonadoContext);
-    const provinciasContext = useContext(ProvinciaContext);
-    const municipiosContext = useContext(MunicipioContext);
-    const barriosContext = useContext(BarrioContext);
-    const serviciosContext = useContext(ServicioContext);
-    const condicionesIVAContext = useContext(CondicionesIVAContext);
-
-    const { crearAbonado, modificarAbonado } = abonadosContext;
-    const { provincias, traerProvincias } = provinciasContext;
-    const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
-    const { barrios, traerBarriosPorMunicipio } = barriosContext;
-    const { servicios, traerServicios } = serviciosContext;
-    const { condicionesIVA, traerCondicionesIVA } = condicionesIVAContext;
+    const appContext = useContext(AppContext);
+    const { barrios, condicionesIVA, municipios, servicios, provincias, traerBarriosPorMunicipio, traerCondicionesIVA, traerMunicipiosPorProvincia, traerServicios,
+    traerProvincias, crearAbonado, modificarAbonado } = appContext;
+    
     const location = useLocation();
     const styles = useStyles();
-    //Observables
+
     useEffect(() => {
         traerProvincias();
         traerMunicipiosPorProvincia(provinciaSeleccionadaId);
@@ -58,7 +43,7 @@ const CaratulaAbonado = () => {
             setFechaContrato(location.state.FechaContrato);
         }
     }, [])
-    //States
+
     const [abonadoInfo, setAbonadoInfo] = useState({
         id: null,
         nombre: null,
@@ -95,6 +80,7 @@ const CaratulaAbonado = () => {
     const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(0);
     const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState(0);
     const [onuServicioSeleccionadoId, setOnuServicioSeleccionadoId] = useState(0);
+
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
         setBarrioSeleccionadoId(0);
@@ -115,7 +101,6 @@ const CaratulaAbonado = () => {
     const [fechaContrato, setFechaContrato] = useState(new Date());
     const [fechaBajada, setFechaBajada] = useState(new Date());
 
-    //SUBMIT
     const onSubmitAbonado = (e) => {
         e.preventDefault();
         if(!location.state) {

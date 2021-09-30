@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import esLocale from 'date-fns/locale/es';
+import AppState from './context/appState';
 import Home from './views/components/Home';
 import ListaPagos from './views/components/pagos/ListaPagos';
 import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
@@ -11,12 +12,6 @@ import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosIna
 import ListaDetallesPagos from './views/components/detallesPagos/ListaDetallesPagos';
 import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetallePago';
 import Login from './views/components/auth/Login';
-import AbonadoState from './context/abonados/abonadoState';
-import ProvinciaState from './context/provincias/provinciaState';
-import MunicipioState from './context/municipios/municipioState';
-import BarrioState from './context/barrios/barrioState';
-import ServicioState from './context/servicios/servicioState';
-import CondicionesIVAState from './context/condicionesIVA/condicionesIVAState';
 import Cargando from './views/components/design/components/Cargando';
 
 const CaratulaAbonado = lazy(() => {
@@ -85,56 +80,46 @@ function App() {
     <ThemeProvider theme={theme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
         <Router>
-          <AbonadoState>
-            <ProvinciaState>
-              <MunicipioState>
-                <BarrioState>
-                  <ServicioState>
-                    <CondicionesIVAState>
-                        <Switch>
-                          <Route exact path="/">
-                            <Login/>
-                          </Route>
-                          <Route exact path="/home">
-                            <Home/>
-                          </Route>
-                          <Route exact path="/abonados-activos">
-                              <ListaAbonadosActivos/>
-                          </Route>
-                          <Route exact path="/abonados-inactivos">
-                            <ListaAbonadosInactivos/>
-                          </Route>
-                          <Route path="/caratula-abonado">
-                            <Suspense fallback={<Cargando/>}>
-                              <CaratulaAbonado/>
-                            </Suspense>
-                          </Route>
-                          <Route path="/domicilios-abonado">
-                            <Suspense fallback={<Cargando/>}>
-                              <DomiciliosAbonado/>
-                            </Suspense>
-                          </Route>
-                          <Route path="/cambio-titularidad">
-                            <Suspense fallback={<Cargando/>}>
-                              <CambioTitularidad/>
-                            </Suspense>
-                          </Route>
-                          <Route path="/historial-de-pagos">
-                            <ListaPagos/>
-                          </Route>
-                          <Route path="/detalles-pago">
-                            <ListaDetallesPagos/>
-                          </Route>
-                          <Route path="/caratula-detalle-pago">
-                            <CaratulaDetallePago/>
-                          </Route>
-                        </Switch>
-                        </CondicionesIVAState>
-                  </ServicioState>
-                </BarrioState>
-              </MunicipioState>
-            </ProvinciaState>
-          </AbonadoState>
+          <AppState>
+            <Switch>
+              <Route exact path="/">
+                <Login/>
+              </Route>
+              <Route exact path="/home">
+                <Home/>
+              </Route>
+              <Route exact path="/abonados-activos">
+                  <ListaAbonadosActivos/>
+              </Route>
+              <Route exact path="/abonados-inactivos">
+                <ListaAbonadosInactivos/>
+              </Route>
+              <Route path="/caratula-abonado">
+                <Suspense fallback={<Cargando/>}>
+                  <CaratulaAbonado/>
+                </Suspense>
+              </Route>
+              <Route path="/domicilios-abonado">
+                <Suspense fallback={<Cargando/>}>
+                  <DomiciliosAbonado/>
+                </Suspense>
+              </Route>
+              <Route path="/cambio-titularidad">
+                <Suspense fallback={<Cargando/>}>
+                  <CambioTitularidad/>
+                </Suspense>
+              </Route>
+              <Route path="/historial-de-pagos">
+                <ListaPagos/>
+              </Route>
+              <Route path="/detalles-pago">
+                <ListaDetallesPagos/>
+              </Route>
+              <Route path="/caratula-detalle-pago">
+                <CaratulaDetallePago/>
+              </Route>
+            </Switch>
+          </AppState>
         </Router>
       </MuiPickersUtilsProvider>
     </ThemeProvider>

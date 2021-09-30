@@ -1,37 +1,26 @@
 import React, { useState, useEffect, useContext } from 'react';
+import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
-import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import Footer from '../design/layout/Footer';
+import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { DatePicker } from '@material-ui/pickers';
 import useStyles from '../Styles';
 import { useLocation } from 'react-router-dom';
-import AbonadoContext from '../../../context/abonados/abonadoContext';
-import ProvinciaContext from '../../../context/provincias/provinciaContext';
-import MunicipioContext from '../../../context/municipios/municipioContext';
-import BarrioContext from '../../../context/barrios/barrioContext';
 import { Alert } from '@material-ui/lab';
-import { DatePicker } from '@material-ui/pickers';
-import Footer from '../design/layout/Footer';
 
 const CambioTitularidad = () => {
-    //Context
-    const abonadosContext = useContext(AbonadoContext);
-    const provinciasContext = useContext(ProvinciaContext);
-    const municipiosContext = useContext(MunicipioContext);
-    const barriosContext = useContext(BarrioContext);
-
-    const { traerUltimoDomicilioAbonado, domicilio } = abonadosContext;
-    const { provincias, traerProvincias } = provinciasContext;
-    const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
-    const { barrios, traerBarriosPorMunicipio } = barriosContext;
-
+    const appContext = useContext(AppContext);
+    const {barrios, municipios, provincias, domicilio, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, traerProvincias, traerUltimoDomicilioAbonado } = appContext;
+    
     const location = useLocation();
     const styles = useStyles();
-    //Observables
+
     useEffect(() => {
         traerProvincias();
         traerMunicipiosPorProvincia(provinciaSeleccionadaId);
         traerUltimoDomicilioAbonado(location.state.UserId);
     }, [])
-    //States
+
     const [abonadoInfo, setAbonadoInfo] = useState({
         id: location.state.UserId,
         domicilioCalle: null,
@@ -67,7 +56,6 @@ const CambioTitularidad = () => {
         setBarrioSeleccionadoId(e.target.value);
     }
 
-    //SUBMIT
     const onSubmitAbonado = (e) => {
         e.preventDefault();
     //     if(location.state) {

@@ -1,20 +1,17 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import AppContext from '../../../context/appContext';
+import Aside from '../design/layout/Aside';
+import Footer from '../design/layout/Footer';
+import './../design/layout/styles/styles.css';
 import { Button, Card, CardContent, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import useStyles from '../Styles';
-import Aside from '../design/layout/Aside';
-import AbonadoContext from '../../../context/abonados/abonadoContext';
-import MunicipioContext from '../../../context/municipios/municipioContext';
-import Footer from '../design/layout/Footer';
 
 const ListaAbonadosInactivos = () => {
-    const abonadosContext = useContext(AbonadoContext);
-    const municipiosContext = useContext(MunicipioContext);
-
-    const { abonados, traerAbonadosInactivos, darDeBajaAbonado } = abonadosContext;
-    const { municipios, traerMunicipiosPorProvincia } = municipiosContext;
+    const appContext = useContext(AppContext);
+    const { abonados, municipios, traerAbonadosInactivos, traerMunicipiosPorProvincia, darDeBajaAbonado } = appContext;
 
     useEffect(() => {
         traerAbonadosInactivos();
