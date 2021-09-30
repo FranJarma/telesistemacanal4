@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('./../controllers/UserController');
-const User = require('./../models/User');
-
 const { check } = require('express-validator');
+const { esDNIValido, esCUITValido } =  require('./../helpers/db-validaciones');
 
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos/', UserController.AbonadosInactivosListar);
@@ -16,19 +15,11 @@ router.post('/abonados/create',
     check('dni', 'El DNI es obligatorio').notEmpty(),
     check('dni', 'El DNI no tiene el formato correcto, debe tener solo números').isNumeric(),
     check('dni', 'El DNI debe tener 7 dígitos como mínimo').isLength({min: 7}),
-    check('dni').custom(dni=>{
-        return User.findOne({where: {Documento: dni}}).then(user=>{
-            if (user) throw new Error('El DNI ingresado ya se encuentra registrado');
-        })
-    }),
+    check('dni').custom(esDNIValido),
     check('cuit', 'El CUIT es obligatorio').notEmpty(),
     check('cuit', 'El CUIT no tiene el formato correcto, debe tener solo números').isNumeric(),
     check('cuit', 'El CUIT debe tener 10 dígitos como mínimo').isLength({min: 10}),
-    check('cuit').custom(cuit=>{
-        return User.findOne({where: {Cuit: cuit}}).then(user=>{
-            if (user) throw new Error('El CUIT ya se encuentra registrado');
-        })
-    }),
+    check('cuit').custom(esCUITValido),
     check('condicionIVASeleccionadoId', 'La condición IVA es obligatoria').not().contains(0),
     check('municipioSeleccionadoId', 'El municipio es obligatorio').not().contains(0),
     check('barrioSeleccionadoId', 'El barrio es obligatorio').not().contains(0),
