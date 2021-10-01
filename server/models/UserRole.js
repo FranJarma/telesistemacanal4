@@ -3,10 +3,12 @@ const db = require('../config/connection');
 
 const UserRole = db.define('_userrole', {
     UserId: {
-        type: UUIDV4
+        type: UUIDV4,
+        primaryKey: true
     },
     RoleId: {
-        type: UUIDV4
+        type: UUIDV4,
+        primaryKey: true
     }
 });
 

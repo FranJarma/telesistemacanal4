@@ -4,7 +4,8 @@ const db = require('../config/connection');
 const Municipio = db.define('municipio', {
     MunicipioNombre: {
         type: STRING(256),
-        allowNull: false
+        allowNull: false,
+        primaryKey: true
     },
     MunicipioSigla: {
         type: STRING(256),

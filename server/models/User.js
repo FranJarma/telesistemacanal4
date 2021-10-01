@@ -1,4 +1,4 @@
-const { Sequelize, UUIDV4, DATE, NOW, STRING, INTEGER, BIGINT,  } = require('sequelize');
+const { UUIDV4, DATE, STRING, INTEGER, BIGINT,  } = require('sequelize');
 const db = require('../config/connection');
 
 const User = db.define('_user', {
@@ -30,7 +30,7 @@ const User = db.define('_user', {
     Email: {
         type: STRING(256),
         unique: true,
-        allowNull: false
+        allowNull: true
     },
     FechaBajada: {
         type: DATE,
@@ -42,11 +42,11 @@ const User = db.define('_user', {
     },
     FechaNacimiento: {
         type: DATE,
-        allowNull: true
+        allowNull: false
     },
     Phone: {
         type: BIGINT,
-        allowNull: false
+        allowNull: true
     },
     FailedPasswordCount: {
         type: INTEGER,
@@ -98,6 +98,10 @@ const User = db.define('_user', {
         allowNull: true
     },
     OnuId: {
+        type: INTEGER,
+        allowNull: true
+    },
+    ServicioId: {
         type: INTEGER,
         allowNull: true
     }

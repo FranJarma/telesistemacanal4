@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('./config/connection');
+const knex = require('./config/knex');
 const cors = require('cors');
 //creamos el server
 

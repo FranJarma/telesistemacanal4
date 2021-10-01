@@ -1,10 +1,11 @@
-const { Sequelize, STRING, INTEGER } = require('sequelize');
+const { STRING, INTEGER, CHAR } = require('sequelize');
 const db = require('../config/connection');
 
 const Domicilio = db.define('domicilio', {
     DomicilioId: {
         type: INTEGER,
-        allowNull: false
+        allowNull: false,
+        primaryKey: true
     },
     DomicilioCalle: {
         type: STRING(256),
@@ -21,7 +22,11 @@ const Domicilio = db.define('domicilio', {
     BarrioId: {
         type: INTEGER,
         allowNull: true
-    }
+    },
+    UserId: {
+        type: CHAR(38),
+        allowNull: true
+    },
 });
 
 module.exports = db.model('domicilio', Domicilio);

@@ -62,17 +62,31 @@ const ListaAbonadosActivos = () => {
         "name": "id",
         "omit": true,
         "selector": row =>row["UserId"],
-        "sortable": true,
     },
     {
         "name": "Nombre Completo",
         "selector": row =>row["FullName"],
-        "sortable": true,
-        "minWidth": "9rem"
+        "hide": "sm"
+
     },
     {
-        "name": "DNI",
-        "selector": row =>row["Documento"],
+        "name": "DomicilioCalle",
+        "selector": row =>row["DomicilioCalle"],
+        "omit": true,
+    },
+    {
+        "name": "DomicilioNumero",
+        "selector": row =>row["DomicilioNumero"],
+        "omit": true,
+    },
+    {
+        "name": "BarrioId",
+        "selector": row =>row["BarrioId"],
+        "omit": true,
+    },
+    {
+        "name": "Domicilio",
+        "selector": row =>row["DomicilioCalle"] + ' ' + row["DomicilioNumero"] + ' - ' + row["BarrioId"],
         "sortable": true,
         "hide": "sm"
     },

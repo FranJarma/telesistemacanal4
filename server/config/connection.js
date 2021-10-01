@@ -3,7 +3,8 @@ const fs  = require('fs');
 require('dotenv').config({path: 'variables.env'});
 const db = new Sequelize({
   define: {
-    freezeTableName: true
+    freezeTableName: true,
+    timestamps: false,
   },
   username: process.env.DB_USER,
   host: process.env.DB_HOST,

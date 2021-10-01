@@ -4,7 +4,8 @@ const db = require('../config/connection');
 const ModeloOnu = db.define('modeloonu', {
     ModeloOnuId: {
         type: INTEGER,
-        allowNull: false
+        allowNull: false,
+        primaryKey: true
     },
     ModeloOnuNombre: {
         type: STRING(256),

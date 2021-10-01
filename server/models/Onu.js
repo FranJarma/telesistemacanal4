@@ -1,16 +1,13 @@
-const { Sequelize, STRING, INTEGER } = require('sequelize');
+const { STRING, INTEGER } = require('sequelize');
 const db = require('../config/connection');
 
 const Onu = db.define('onu', {
     OnuId: {
         type: INTEGER,
-        allowNull: false
+        allowNull: false,
+        primaryKey: true
     },
     OnuSerie: {
-        type: STRING(256),
-        allowNull: false
-    },
-    OnuModelo: {
         type: STRING(256),
         allowNull: false
     },
@@ -19,6 +16,11 @@ const Onu = db.define('onu', {
         allowNull: false
     },
     ServicioId: {
+        type: INTEGER,
+        allowNull: false
+    },
+    //fk
+    ModeloOnuId: {
         type: INTEGER,
         allowNull: false
     },
