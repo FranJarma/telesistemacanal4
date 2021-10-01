@@ -22,11 +22,7 @@ const Domicilio = db.define('domicilio', {
     BarrioId: {
         type: INTEGER,
         allowNull: true
-    },
-    UserId: {
-        type: CHAR(38),
-        allowNull: true
-    },
+    }
 });
 
 module.exports = db.model('domicilio', Domicilio);

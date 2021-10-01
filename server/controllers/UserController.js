@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const User = require('./../models/User');
 const Domicilio = require('./../models/Domicilio');
+const UserDomicilio = require('./../models/UserDomicilio');
+const UserServicio = require('./../models/UserServicio');
 const ModeloOnu = require('./../models/ModeloOnu');
 const UserRole = require('./../models/UserRole');
 const Onu = require('../models/Onu');
@@ -17,10 +19,17 @@ require('dotenv').config({path: 'variables.env'});
 exports.AbonadosActivosListar = async(req, res) => {
     try {
 
-        const abonados = await knex.from('domicilio').select("*");
-        console.log(abonados);
+        const abonados = await knex.select('*').from('_user as u')
+        .join('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
+        .join('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+        .join('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
+        .join('domicilio as d', 'd.DomicilioId', 'u.DomicilioId')
+        .join('barrio as b', 'b.BarrioId', 'd.BarrioId')
+        .join('municipio as m', 'b.MunicipioId', 'm.MunicipioId')
+        .where('r.RoleId', '=', process.env.ID_ROL_ABONADO);
         res.json(abonados);
     } catch (error) {
+        console.log(error);
         res.status(500).send('Hubo un error al encontrar los abonados');
     }
 }
@@ -81,13 +90,20 @@ exports.AbonadoCreate = async(req, res) => {
         // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
         const abonado = new User(req.body);
         abonado.UserId = uuidv4().toUpperCase();
-        abonado.FullName = req.body.Apellido + ',' + req.body.Nombre;
+        abonado.DomicilioId = ultimoDomicilioId + 1;
         const domicilio = new Domicilio(req.body);
-        domicilio.UserId = abonado.UserId;
         domicilio.DomicilioId = ultimoDomicilioId + 1;
         const abonadoRole = new UserRole();
         abonadoRole.UserId = abonado.UserId;
         abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
+        const abonadoDomicilio = new UserDomicilio();
+        abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
+        abonadoDomicilio.UserId = abonado.UserId;
+        abonadoDomicilio.CambioDomicilioObservaciones = 'Primer Domicilio';
+        const abonadoServicio = new UserServicio();
+        abonadoServicio.ServicioId = req.body.ServicioId;
+        abonadoServicio.UserId = abonado.UserId;
+        abonadoServicio.CambioServicioObservaciones = 'Primer Servicio contratado';
         // Si es Cable, no Instanciar ONU
         if(req.body.ServicioId !== 1) {
             let ultimaOnuId = 0;
@@ -101,11 +117,13 @@ exports.AbonadoCreate = async(req, res) => {
             onu.OnuId = ultimaOnuId;
             onu.ServicioId = req.body.ServicioId;
         };
-        await abonado.save();
         await domicilio.save();
+        await abonado.save();
         await abonadoRole.save();
+        await abonadoDomicilio.save();
+        await abonadoServicio.save();
         //await transaction.commit();
-            return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
+        return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
         }   
     catch (error) {
         console.log(error);
@@ -120,37 +138,13 @@ exports.AbonadoUpdate = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     try {
-        //creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
-        const abonado = new User(req.body);
-        abonado.UserId = req.body.id;
-        abonado.FullName = req.body.apellido + ',' + req.body.nombre;
-        abonado.Documento = req.body.dni;
-        abonado.Cuit = req.body.cuit;
-        abonado.FechaBajada = req.body.fechaBajada;
-        abonado.FechaContrato = req.body.fechaContrato;
-        abonado.FechaNacimiento = req.body.fechaNacimiento;
-        abonado.Phone = req.body.telefono;
-        abonado.Email = req.body.email;
-        abonado.ServicioId = req.body.servicioSeleccionadoId;
-        abonado.CondicionIVAId = req.body.condicionIVASeleccionadoId;
-        await db.query('CALL __UserUpdate(:user_id, :UserName, :FullName, :Password, :Documento, :Cuit, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :CondicionIVAId)',
-        {
-            replacements: {
-                user_id: abonado.UserId,
-                UserName: null,
-                FullName: abonado.FullName,
-                Password: null,
-                Documento: abonado.Documento,
-                Cuit: abonado.Cuit,
-                Email: abonado.Email,
-                FechaBajada: abonado.FechaBajada,
-                FechaContrato: abonado.FechaContrato,
-                FechaNacimiento: abonado.FechaNacimiento,
-                Phone: abonado.Phone,
-                CondicionIVAId: abonado.CondicionIVAId,
-        }
-        });
-            return res.status(200).json({msg: 'El Abonado ha sido modificado correctamente'})
+        //buscamos el abonado por su Id
+        const abonado = await User.findByPk( req.body.UserId );
+        await abonado.update(req.body);
+        // abonado.UserId = uuidv4().toUpperCase();
+        // abonado.FullName = req.body.Apellido + ',' + req.body.Nombre;
+        // await abonado.save();
+        return res.status(200).send({msg: 'El Abonado ha sido modificado correctamente'})
         }   
     catch (error) {
         console.log(error)
@@ -164,7 +158,6 @@ exports.AbonadoDelete = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     try {
-        console.log(req.body)
         await db.query('CALL __UserDelete(:user_id, :motivo_baja)',
         {
             replacements: {

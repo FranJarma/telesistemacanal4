@@ -60,60 +60,84 @@ const ListaAbonadosActivos = () => {
     const columnasAbonadosActivos = [
     {
         "name": "id",
-        "omit": true,
         "selector": row =>row["UserId"],
+        "omit": true,
+    },
+    {
+        "name": "Nombre",
+        "selector": row =>row["Nombre"],
+        "omit": true
+    },
+    {
+        "name": "Apellido",
+        "selector": row =>row["Apellido"],
+        "omit": true
     },
     {
         "name": "Nombre Completo",
-        "selector": row =>row["FullName"],
-        "hide": "sm"
-
-    },
-    {
-        "name": "DomicilioCalle",
-        "selector": row =>row["DomicilioCalle"],
-        "omit": true,
-    },
-    {
-        "name": "DomicilioNumero",
-        "selector": row =>row["DomicilioNumero"],
-        "omit": true,
+        "selector": row => row["Apellido"] + ', ' + row["Nombre"]
     },
     {
         "name": "BarrioId",
-        "selector": row =>row["BarrioId"],
-        "omit": true,
+        "selector": row => row["BarrioId"],
+        "omit": true
+    },
+    {
+        "name": "MunicipioId",
+        "selector": row => row["MunicipioId"],
+        "omit": true
+    },
+    {
+        "name": "DomicilioId",
+        "selector": row => row["DomicilioId"],
+        "omit": true
+    },
+    {
+        "name": "Domicilio Calle",
+        "selector": row => row["DomicilioCalle"],
+        "omit": true
+    },
+    {
+        "name": "Domicilio Numero",
+        "selector": row => row["DomicilioNumero"],
+        "omit": true
     },
     {
         "name": "Domicilio",
-        "selector": row =>row["DomicilioCalle"] + ' ' + row["DomicilioNumero"] + ' - ' + row["BarrioId"],
-        "sortable": true,
-        "hide": "sm"
+        "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"]
     },
     {
         "name": "N° teléfono",
-        "selector": row =>row["Phone"],
-        "sortable": true,
+        "selector": row =>row["Telefono"],
         "omit": true,
     },
     {
-        "name": "CUIT",
-        "selector": row =>row["Cuit"],
+        "name": "DNI",
+        "selector": row =>row["Documento"],
         "sortable": true,
         "hide": "sm"
     },
     {
-        "name": "Condición IVA",
-        "selector": row =>row["CondicionIVADescripcion"],
+        "name": "ServicioId",
+        "selector": row =>row["ServicioId"],
+        "omit": true
+    },
+    {
+        "name": "Servicio",
+        "selector": row =>row["ServicioNombre"],
         "sortable": true,
         "hide": "sm",
     },
-    // {
-    //     "name": "Fecha de Contrato",
-    //     "selector": row =>row["FechaContrato"].split('T')[0],
-    //     "sortable": true,
-    //     "hide": "sm",
-    // },
+    {
+        "name": "Fecha de Contrato",
+        "selector": row =>row["FechaContrato"].split('T')[0],
+        "omit": true
+    },
+    {
+        "name": "Fecha de Bajada",
+        "selector": row =>row["FechaBajada"].split('T')[0],
+        "omit": true,
+    },
     // {
     //     "name": "ONU MAC",
     //     "selector": row =>row["OnuMac"],
@@ -135,7 +159,7 @@ const ListaAbonadosActivos = () => {
             state: data
         }}
         style={{textDecoration: 'none', color: "indigo"}}>
-        <Tooltip title="Domicilios"><i className="bx bxs-home bx-xs"></i></Tooltip>
+        <Tooltip title="Cambio de domicilio"><i className="bx bxs-home bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
             pathname: `/cambio-titularidad/UserId=${data.UserId}`,
@@ -157,10 +181,9 @@ const ListaAbonadosActivos = () => {
 ]
     const ExpandedComponent = ({ data }) =>
     <>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Domicilio: {data.DomicilioCalle} {data.DomicilioNumero} - {data.BarrioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-id-card"></i> CUIT: {data.Cuit}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-wallet"></i> IVA: {data.CondicionIVADescripcion}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Contrato: {data.FechaContrato.split('T')[0]}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-plug"></i> Servicio: {data.ServicioNombre}</Typography>
     </>;
     return (
         <>

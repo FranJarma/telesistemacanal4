@@ -20,7 +20,7 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
     || (item.BarrioNombre && item.BarrioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.DomicilioCalle && item.DomicilioCalle.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.DomicilioNumero && item.DomicilioNumero.toString().includes(textoFiltrado.toLowerCase()))
-    || (item.Servicio && item.Servicio.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.ServicioNombre && item.ServicioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.mes && item.mes.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.fechaPago && item.fechaPago.toLowerCase().includes(textoFiltrado.toLowerCase()))
     );

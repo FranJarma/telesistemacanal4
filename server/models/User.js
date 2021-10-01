@@ -6,16 +6,20 @@ const User = db.define('_user', {
         type: UUIDV4,
         primaryKey: true
     },
-    UserName: {
+    NombreUsuario: {
         type: STRING(256),
         unique: true,
         allowNull: true,
     },
-    FullName: {
+    Nombre: {
         type: STRING(256),
         allowNull: false
     },
-    Password: {
+    Apellido: {
+        type: STRING(256),
+        allowNull: false
+    },
+    Contraseña: {
         type: STRING(256),
         allowNull: true,
     },
@@ -44,27 +48,19 @@ const User = db.define('_user', {
         type: DATE,
         allowNull: false
     },
-    Phone: {
+    Telefono: {
         type: BIGINT,
         allowNull: true
     },
-    FailedPasswordCount: {
+    IntentosFallidos: {
         type: INTEGER,
         defaultValue: 0
     },
-    IsActive: {
+    EsUsuarioDePrueba: {
         type: INTEGER,
         defaultValue: 1
     },
-    IsLocked: {
-        type: INTEGER,
-        defaultValue: 0
-    },
-    IsTestUser: {
-        type: INTEGER,
-        defaultValue: 1
-    },
-    LastLoginDate: {
+    UltimoInicioDeSesion: {
         type: DATE,
         allowNull: true
     },
@@ -102,6 +98,10 @@ const User = db.define('_user', {
         allowNull: true
     },
     ServicioId: {
+        type: INTEGER,
+        allowNull: true
+    },
+    DomicilioId: {
         type: INTEGER,
         allowNull: true
     }

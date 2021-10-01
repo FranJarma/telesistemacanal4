@@ -1,12 +1,14 @@
-const { Sequelize, UUIDV4, INTEGER, STRING, DATE } = require('sequelize');
+const { UUIDV4, INTEGER, STRING, DATE } = require('sequelize');
 const db = require('../config/connection');
 
 const UserDomicilio = db.define('userdomicilio', {
     UserId: {
-        type: UUIDV4
+        type: UUIDV4,
+        primaryKey: true
     },
     DomicilioId: {
-        type: INTEGER
+        type: INTEGER,
+        primaryKey: true
     },
     CambioDomicilioFecha: {
         type: DATE
