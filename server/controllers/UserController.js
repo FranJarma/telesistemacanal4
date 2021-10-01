@@ -1,5 +1,6 @@
 const db = require('./../config/connection');
-const knex = require('./../');
+const options =require('./../config/knex');
+const knex = require('knex')(options);
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
@@ -16,7 +17,8 @@ require('dotenv').config({path: 'variables.env'});
 exports.AbonadosActivosListar = async(req, res) => {
     try {
 
-        const abonados = await knex('domicilio');
+        const abonados = await knex.from('domicilio').select("*");
+        console.log(abonados);
         res.json(abonados);
     } catch (error) {
         res.status(500).send('Hubo un error al encontrar los abonados');

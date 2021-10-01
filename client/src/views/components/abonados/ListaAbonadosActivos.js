@@ -108,18 +108,18 @@ const ListaAbonadosActivos = () => {
         "sortable": true,
         "hide": "sm",
     },
-    {
-        "name": "Fecha de Contrato",
-        "selector": row =>row["FechaContrato"].split('T')[0],
-        "sortable": true,
-        "hide": "sm",
-    },
-    {
-        "name": "ONU MAC",
-        "selector": row =>row["OnuMac"],
-        "sortable": true,
-        "omit": true
-    },
+    // {
+    //     "name": "Fecha de Contrato",
+    //     "selector": row =>row["FechaContrato"].split('T')[0],
+    //     "sortable": true,
+    //     "hide": "sm",
+    // },
+    // {
+    //     "name": "ONU MAC",
+    //     "selector": row =>row["OnuMac"],
+    //     "sortable": true,
+    //     "omit": true
+    // },
     {
         cell: (data) =>
         <>
