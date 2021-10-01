@@ -18,7 +18,7 @@ const CaratulaAbonado = () => {
 
     useEffect(() => {
         traerProvincias();
-        traerMunicipiosPorProvincia(provinciaSeleccionadaId);
+        traerMunicipiosPorProvincia(ProvinciaId);
         traerServicios();
         traerCondicionesIVA();
         if(location.state)
@@ -26,18 +26,18 @@ const CaratulaAbonado = () => {
             console.log(location.state);
             setAbonadoInfo({
                 id: location.state.UserId,
-                nombre: location.state.FullName.split(',')[1],
-                apellido: location.state.FullName.split(',')[0],
-                dni: location.state.Documento,
-                cuit: location.state.Cuit,
-                email: location.state.Email,
-                telefono: location.state.Phone,
-                onuMac: location.state.OnuMac,
-                onuModelo: location.state.OnuModelo,
-                onuSerie: location.state.OnuSerie
+                Nombre: location.state.FullName.split(',')[1],
+                Apellido: location.state.FullName.split(',')[0],
+                Documento: location.state.Documento,
+                Cuit: location.state.Cuit,
+                Email: location.state.Email,
+                Phone: location.state.Phone,
+                OnuMac: location.state.OnuMac,
+                OnuModelo: location.state.OnuModelo,
+                OnuSerie: location.state.OnuSerie
             });
-            setServicioSeleccionadoId(location.state.ServicioId);
-            setCondicionIVASeleccionadoId(location.state.CondicionIVAId);
+            setServicioId(location.state.ServicioId);
+            setCondicionIVAId(location.state.CondicionIVAId);
             setFechaNacimiento(location.state.FechaNacimiento);
             setFechaBajada(location.state.FechaBajada);
             setFechaContrato(location.state.FechaContrato);
@@ -46,18 +46,18 @@ const CaratulaAbonado = () => {
 
     const [abonadoInfo, setAbonadoInfo] = useState({
         id: null,
-        nombre: null,
-        apellido: null,
-        dni: null,
-        cuit: null,
-        email: null,
-        telefono: null,
-        domicilioCalle: null,
-        domicilioNumero: null,
-        domicilioPiso: null,
-        onuMac: null,
-        onuSerie: null,
-        onuModelo: null
+        Nombre: null,
+        Apellido: null,
+        Documento: null,
+        Cuit: null,
+        Email: null,
+        Phone: null,
+        DomicilioCalle: null,
+        DomicilioNumero: null,
+        DomicilioPiso: null,
+        OnuMac: null,
+        OnuSerie: null,
+        OnuModelo: null
     })
     const onInputChange = (e) => {
         setAbonadoInfo({
@@ -65,85 +65,85 @@ const CaratulaAbonado = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { id, nombre, apellido, dni, cuit, email, telefono, domicilioCalle, domicilioNumero, domicilioPiso, onuMac, onuSerie, onuModelo} = abonadoInfo;
+    const { id, Nombre, Apellido, Documento, Cuit, Email, Phone, DomicilioCalle, DomicilioNumero, DomicilioPiso, OnuMac, OnuSerie, OnuModelo} = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
-    const [provinciaSeleccionadaId, setProvinciaSeleccionadaId] = useState(10);
+    const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
     /*
     const handleChangeProvinciaSeleccionada = (e) => {
-        setProvinciaSeleccionadaId(e.target.value);
-        setMunicipioSeleccionadoId(0);
-        setBarrioSeleccionadoId(0);
+        setProvinciaId(e.target.value);
+        setMunicipioId(0);
+        setBarrioId(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
-    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(0);
-    const [servicioSeleccionadoId, setServicioSeleccionadoId] = useState(0);
-    const [onuServicioSeleccionadoId, setOnuServicioSeleccionadoId] = useState(0);
+    const [MunicipioId, setMunicipioId] = useState(0);
+    const [BarrioId, setBarrioId] = useState(0);
+    const [ServicioId, setServicioId] = useState(0);
+    const [CondicionIVAId, setCondicionIVAId] = useState(0);
+    const [OnuId, setOnuId] = useState(0);
+    const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
+    const [FechaContrato, setFechaContrato] = useState(new Date());
+    const [FechaBajada, setFechaBajada] = useState(new Date());
 
     const handleChangeMunicipioSeleccionado = (e) => {
-        setMunicipioSeleccionadoId(e.target.value);
-        setBarrioSeleccionadoId(0);
+        setMunicipioId(e.target.value);
+        setBarrioId(0);
         traerBarriosPorMunicipio(e.target.value);
     }
     const handleChangeBarrioSeleccionado = (e) => {
-        setBarrioSeleccionadoId(e.target.value);
+        setBarrioId(e.target.value);
     }
     const handleChangeServicioSeleccionado = (e) => {
-        setServicioSeleccionadoId(e.target.value);
-        setOnuServicioSeleccionadoId(e.target.value);
+        setServicioId(e.target.value);
+        setOnuId(e.target.value);
     }
-    const [condicionIVASeleccionadoId, setCondicionIVASeleccionadoId] = useState(0);
     const handleChangeCondicionIVASeleccionado = (e) => {
-        setCondicionIVASeleccionadoId(e.target.value);
+        setCondicionIVAId(e.target.value);
     }
-    const [fechaNacimiento, setFechaNacimiento] = useState(new Date());
-    const [fechaContrato, setFechaContrato] = useState(new Date());
-    const [fechaBajada, setFechaBajada] = useState(new Date());
 
     const onSubmitAbonado = (e) => {
         e.preventDefault();
         if(!location.state) {
             crearAbonado({
-                nombre,
-                apellido,
-                dni,
-                cuit,
-                email,
-                telefono,
-                domicilioCalle,
-                domicilioNumero,
-                domicilioPiso,
-                fechaNacimiento,
-                fechaContrato,
-                fechaBajada,
-                condicionIVASeleccionadoId,
-                provinciaSeleccionadaId,
-                municipioSeleccionadoId,
-                barrioSeleccionadoId,
-                servicioSeleccionadoId,
-                onuSerie,
-                onuMac,
-                onuModelo
+                Nombre,
+                Apellido,
+                Documento,
+                Cuit,
+                Email,
+                Phone,
+                DomicilioCalle,
+                DomicilioNumero,
+                DomicilioPiso,
+                FechaNacimiento,
+                FechaContrato,
+                FechaBajada,
+                CondicionIVAId,
+                ProvinciaId,
+                MunicipioId,
+                BarrioId,
+                ServicioId,
+                OnuSerie,
+                OnuMac,
+                OnuModelo
             });
         }
         else {
             modificarAbonado({
                 id,
-                nombre,
-                apellido,
-                dni,
-                cuit,
-                email,
-                telefono,
-                fechaNacimiento,
-                fechaContrato,
-                fechaBajada,
-                condicionIVASeleccionadoId,
-                servicioSeleccionadoId,
-                onuSerie,
-                onuMac,
-                onuModelo
+                Nombre,
+                Apellido,
+                Documento,
+                Cuit,
+                Email,
+                Phone,
+                FechaNacimiento,
+                FechaContrato,
+                FechaBajada,
+                CondicionIVAId,
+                ServicioId,
+                OnuSerie,
+                OnuMac,
+                OnuModelo
             });
         }
     }
@@ -162,8 +162,8 @@ const CaratulaAbonado = () => {
                     <TextField
                     autoFocus
                     variant="outlined"
-                    value={nombre}
-                    name="nombre"
+                    value={Nombre}
+                    name="Nombre"
                     onChange={onInputChange}
                     fullWidth
                     label="Nombre">
@@ -172,8 +172,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant="outlined"
-                    value={apellido}
-                    name="apellido"
+                    value={Apellido}
+                    name="Apellido"
                     onChange={onInputChange}
                     fullWidth
                     label="Apellido">
@@ -182,8 +182,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
                     variant="outlined"
-                    value={dni}
-                    name="dni"
+                    value={Documento}
+                    name="Documento"
                     inputProps={{ maxLength: 8 }}
                     onChange={onInputChange}
                     fullWidth
@@ -193,8 +193,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
                     variant="outlined"
-                    value={cuit}
-                    name="cuit"
+                    value={Cuit}
+                    name="Cuit"
                     inputProps={{ maxLength: 11 }}
                     onChange={onInputChange}
                     fullWidth
@@ -205,7 +205,7 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     variant="outlined"
-                    value={condicionIVASeleccionadoId}
+                    value={CondicionIVAId}
                     onChange={handleChangeCondicionIVASeleccionado}
                     fullWidth
                     select
@@ -219,8 +219,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     variant="outlined"
-                    value={email}
-                    name="email"
+                    value={Email}
+                    name="Email"
                     onChange={onInputChange}
                     fullWidth
                     label="Email"
@@ -230,7 +230,7 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <DatePicker 
                     inputVariant="outlined"
-                    value={fechaNacimiento}
+                    value={FechaNacimiento}
                     onChange={(fecha)=>setFechaNacimiento(fecha)}
                     disableFuture
                     format="dd/MM/yyyy"
@@ -243,8 +243,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     variant="outlined"
-                    value={telefono}
-                    name="telefono"
+                    value={Phone}
+                    name="Phone"
                     onChange={onInputChange}
                     type="number"
                     fullWidth
@@ -257,7 +257,7 @@ const CaratulaAbonado = () => {
                     <TextField
                     variant="filled"
                     disabled
-                    value={provinciaSeleccionadaId}
+                    value={ProvinciaId}
                     label="Provincia"
                     fullWidth
                     select
@@ -271,7 +271,7 @@ const CaratulaAbonado = () => {
                     <TextField
                     variant = "outlined"
                     onChange={handleChangeMunicipioSeleccionado}
-                    value={municipioSeleccionadoId}
+                    value={MunicipioId}
                     label="Municipio"
                     fullWidth
                     select
@@ -292,7 +292,7 @@ const CaratulaAbonado = () => {
                 <TextField
                     variant = "outlined"
                     onChange={handleChangeBarrioSeleccionado}
-                    value={barrioSeleccionadoId}
+                    value={BarrioId}
                     label="Barrio"
                     fullWidth
                     select
@@ -305,8 +305,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant = "outlined"
-                    value={domicilioCalle}
-                    name="domicilioCalle"
+                    value={DomicilioCalle}
+                    name="DomicilioCalle"
                     onChange={onInputChange}
                     fullWidth
                     label="Calle">
@@ -315,8 +315,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
                     variant = "outlined"
-                    value={domicilioNumero}
-                    name="domicilioNumero"
+                    value={DomicilioNumero}
+                    name="DomicilioNumero"
                     onChange={onInputChange}
                     type="number"
                     fullWidth
@@ -326,8 +326,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
                     variant = "outlined"
-                    value={domicilioPiso}
-                    name="domicilioPiso"
+                    value={DomicilioPiso}
+                    name="DomicilioPiso"
                     onChange={onInputChange}
                     type="number"
                     fullWidth
@@ -344,7 +344,7 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant = "outlined"
-                    value={servicioSeleccionadoId}
+                    value={ServicioId}
                     onChange={handleChangeServicioSeleccionado}
                     label="Tipo de servicio"
                     fullWidth
@@ -360,7 +360,7 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <DatePicker 
                     inputVariant="outlined"
-                    value={fechaContrato}
+                    value={FechaContrato}
                     onChange={(fecha)=>setFechaContrato(fecha)}
                     format="dd/MM/yyyy"
                     fullWidth
@@ -371,7 +371,7 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <DatePicker 
                     inputVariant="outlined"
-                    value={fechaBajada}
+                    value={FechaBajada}
                     onChange={(fecha)=>setFechaBajada(fecha)}
                     format="dd/MM/yyyy"
                     fullWidth
@@ -380,14 +380,14 @@ const CaratulaAbonado = () => {
                     </DatePicker >
                 </Grid>
             </Grid>
-            {servicioSeleccionadoId !== 1 ?
+            {ServicioId !== 1 ?
             <>
             <Typography variant="h2"><i className='bx bx-broadcast'></i> Datos de ONU</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={3} lg={3}>
                     <TextField
                     variant="outlined"
-                    value={servicioSeleccionadoId}
+                    value={ServicioId}
                     label="Tipo de ONU"
                     fullWidth
                     select
@@ -401,8 +401,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     variant="outlined"
-                    name="onuModelo"
-                    value={onuModelo}
+                    name="OnuModelo"
+                    value={OnuModelo}
                     onChange={onInputChange}
                     label="Modelo"
                     fullWidth
@@ -412,9 +412,9 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                 <TextField
                     variant="outlined"
-                    name= "onuMac"
+                    name= "OnuMac"
                     inputProps={{ maxLength: 12 }}
-                    value={onuMac}
+                    value={OnuMac}
                     onChange={onInputChange}
                     label="MAC"
                     fullWidth
@@ -424,8 +424,8 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                 <TextField
                     variant="outlined"
-                    name="onuSerie"
-                    value={onuSerie}
+                    name="OnuSerie"
+                    value={OnuSerie}
                     onChange={onInputChange}
                     label="Nº de serie"
                     fullWidth

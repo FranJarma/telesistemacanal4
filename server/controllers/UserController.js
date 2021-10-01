@@ -1,4 +1,6 @@
 const db = require('./../config/connection');
+const options =require('./../config/knex');
+const knex = require('knex')(options);
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
@@ -7,8 +9,6 @@ const User = require('./../models/User');
 const Domicilio = require('./../models/Domicilio');
 const ModeloOnu = require('./../models/ModeloOnu');
 const UserRole = require('./../models/UserRole');
-const UserServicio = require('./../models/UserServicio');
-const UserDomicilio = require('./../models/UserDomicilio');
 const Onu = require('../models/Onu');
 
 require('dotenv').config({path: 'variables.env'});
@@ -16,7 +16,9 @@ require('dotenv').config({path: 'variables.env'});
 //FUNCIONES PARA ABONADOS
 exports.AbonadosActivosListar = async(req, res) => {
     try {
-        const abonados = await db.query(`CALL _AbonadosActivosReadAll();`);
+
+        const abonados = await knex.from('domicilio').select("*");
+        console.log(abonados);
         res.json(abonados);
     } catch (error) {
         res.status(500).send('Hubo un error al encontrar los abonados');
@@ -68,79 +70,46 @@ exports.AbonadoCreate = async(req, res) => {
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
     }
+    //const transaction = await db.transaction();
     try {
-        const modelosOnu = await ModeloOnu.findAll({
-            attributes: {exclude: ['id', 'createdAt', 'updatedAt']},
-        });
-        console.log(modelosOnu);
         //traemos el id del ultimo domicilio registrado y de la ultima onu registrada
-        // const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioIdRead();');
-        // const ultimaOnuId = await db.query('CALL _UltimaOnuIdRead();');
-        // console.log(ultimaOnuId[0].OnuId);
+        let ultimoDomicilioId = 0;
+        const ultimoDomicilio = await Domicilio.findOne({
+            order: [['DomicilioId', 'DESC']],
+        });
+        if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
         // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
-        // const abonado = new User(req.body);
-        // abonado.UserId = uuidv4().toUpperCase();
-        // abonado.FullName = req.body.apellido + ',' + req.body.nombre;
-        // abonado.Documento = req.body.dni;
-        // abonado.Cuit = req.body.cuit;
-        // abonado.FechaBajada = req.body.fechaBajada;
-        // abonado.FechaContrato = req.body.fechaContrato;
-        // abonado.FechaNacimiento = req.body.fechaNacimiento;
-        // abonado.Phone = req.body.telefono;
-        // abonado.Email = req.body.email;
-        // abonado.ServicioId = req.body.servicioSeleccionadoId;
-        // abonado.CondicionIVAId = req.body.condicionIVASeleccionadoId;
-        // const domicilio = new Domicilio();
-        // domicilio.DomicilioCalle = req.body.domicilioCalle;
-        // domicilio.DomicilioNumero = req.body.domicilioNumero;
-        // domicilio.DomicilioPiso = req.body.domicilioPiso;
-        // domicilio.BarrioId = req.body.barrioSeleccionadoId;
-        // const abonadoDomicilio = new UserDomicilio();
-        // abonadoDomicilio.UserId = abonado.UserId;
-        // const abonadoRole = new UserRole();
-        // abonadoRole.UserId = abonado.UserId;
-        // abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
-        // const abonadoServicio = new UserServicio();
-        // abonadoServicio.UserId = abonado.UserId;
-        // abonadoServicio.ServicioId = abonado.ServicioId;
-        // const onu = new Onu();
-        // onu.OnuSerie = req.body.onuSerie;
-        // onu.OnuModelo = req.body.onuModelo;
-        // onu.OnuMac = req.body.onuMac;
-        // onu.ServicioId = req.body.servicioSeleccionadoId;
-        // await db.query('CALL __UserCreate(:UserId, :RoleId, :UserName, :FullName, :Password, :Documento, :Cuit, :DomicilioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :BarrioId, :Email, :FechaBajada, :FechaContrato, :FechaNacimiento,:Phone, :CondicionIVAId, :ServicioId, :OnuId, :OnuSerie, :OnuModelo, :OnuMac)',
-        // {
-        //     replacements: {
-        //         UserId: abonado.UserId,
-        //         RoleId: abonadoRole.RoleId,
-        //         UserName: null,
-        //         Password: null,
-        //         FullName: abonado.FullName,
-        //         Documento: abonado.Documento,
-        //         Cuit: abonado.Cuit,
-        //         DomicilioId: ultimoDomicilioId[0].DomicilioId + 1,
-        //         DomicilioCalle: domicilio.DomicilioCalle,
-        //         DomicilioNumero: domicilio.DomicilioNumero,
-        //         DomicilioPiso: domicilio.DomicilioPiso,
-        //         BarrioId: domicilio.BarrioId,
-        //         Email: abonado.Email,
-        //         FechaBajada: abonado.FechaBajada,
-        //         FechaContrato: abonado.FechaContrato,
-        //         FechaNacimiento: abonado.FechaNacimiento,
-        //         Phone: abonado.Phone,
-        //         CondicionIVAId: abonado.CondicionIVAId,
-        //         ServicioId: abonado.ServicioId,
-        //         OnuId: ultimaOnuId[0].OnuId + 1,
-        //         OnuSerie: onu.OnuSerie,
-        //         OnuModelo: onu.OnuModelo,
-        //         OnuMac: onu.OnuMac,
-        //         OnuServicioId: onu.ServicioId
-        // }
-        // });
+        const abonado = new User(req.body);
+        abonado.UserId = uuidv4().toUpperCase();
+        abonado.FullName = req.body.Apellido + ',' + req.body.Nombre;
+        const domicilio = new Domicilio(req.body);
+        domicilio.UserId = abonado.UserId;
+        domicilio.DomicilioId = ultimoDomicilioId + 1;
+        const abonadoRole = new UserRole();
+        abonadoRole.UserId = abonado.UserId;
+        abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
+        // Si es Cable, no Instanciar ONU
+        if(req.body.ServicioId !== 1) {
+            let ultimaOnuId = 0;
+            // traemos el de la ultima onu registrada
+            const ultimaOnu = await Onu.findOne({
+                order: [['OnuId', 'DESC']],
+                attributes: { exclude: ['createdAt', 'updatedAt']}
+            });
+            if (ultimaOnu) ultimaOnuId = ultimaOnu.OnuId;
+            const onu = new Onu(req.body);
+            onu.OnuId = ultimaOnuId;
+            onu.ServicioId = req.body.ServicioId;
+        };
+        await abonado.save();
+        await domicilio.save();
+        await abonadoRole.save();
+        //await transaction.commit();
             return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
         }   
     catch (error) {
-        console.log(error)
+        console.log(error);
+        //await transaction.rollback();
         res.status(400).send({msg: 'Hubo un error al registrar el abonado'});
     }
 }
