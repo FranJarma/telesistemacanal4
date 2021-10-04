@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import Modal from '../design/components/Modal';
+import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import useStyles from '../Styles';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import Datatable from '../design/components/Datatable';
 
 
 const CambioDomicilio = () => {
@@ -17,43 +19,57 @@ const CambioDomicilio = () => {
     //Observables
     useEffect(() => {
         traerProvincias();
-        traerMunicipiosPorProvincia(provinciaSeleccionadaId);
+        traerMunicipiosPorProvincia(ProvinciaId);
         traerDomiciliosAbonado(location.state.UserId);
     }, [])
     //States
-    const [abonadoInfo, setAbonadoInfo] = useState({
+    const [domicilioInfo, setDomicilioInfo] = useState({
         id: location.state.UserId,
-        domicilioCalle: null,
-        domicilioNumero: null,
-        domicilioPiso: null,
-        observacionesCambio: null
+        DomicilioCalle: null,
+        DomicilioNumero: null,
+        DomicilioPiso: null,
+        CambioDomicilioObservaciones: null
     })
     const onInputChange = (e) => {
-        setAbonadoInfo({
-            ...abonadoInfo,
+        setDomicilioInfo({
+            ...domicilioInfo,
             [e.target.name] : e.target.value
         });
     }
-    const { id, domicilioCalle, domicilioNumero, domicilioPiso, observacionesCambio} = abonadoInfo;
+    const { id, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioObservaciones} = domicilioInfo;
     //seteamos en 10 para que traiga jujuy directamente
-    const [provinciaSeleccionadaId, setProvinciaSeleccionadaId] = useState(10);
+    const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
     /*
     const handleChangeProvinciaSeleccionada = (e) => {
-        setProvinciaSeleccionadaId(e.target.value);
-        setMunicipioSeleccionadoId(0);
-        setBarrioSeleccionadoId(0);
+        setProvinciaId(e.target.value);
+        setMunicipioId(0);
+        setBarrioId(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
-    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(0);
+    const [MunicipioId, setMunicipioId] = useState(0);
+    const [BarrioId, setBarrioId] = useState(0);
+    const [modalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
     const handleChangeMunicipioSeleccionado = (e) => {
-        setMunicipioSeleccionadoId(e.target.value);
-        setBarrioSeleccionadoId(0);
+        setMunicipioId(e.target.value);
+        setBarrioId(0);
         traerBarriosPorMunicipio(e.target.value);
     }
     const handleChangeBarrioSeleccionado = (e) => {
-        setBarrioSeleccionadoId(e.target.value);
+        setBarrioId(e.target.value);
+    }
+    const handleChangeModalNuevoDomicilio = (data) => {
+        setModalNuevoDomicilio(!modalNuevoDomicilio)
+        if(!modalNuevoDomicilio){
+            setDomicilioInfo({
+                id: data.UserId
+            })
+        }
+        else {
+            setDomicilioInfo({
+                id: null
+            })
+        }
     }
 
     const onSubmitAbonado = (e) => {
@@ -61,53 +77,96 @@ const CambioDomicilio = () => {
         if(location.state) {
             cambioDomicilioAbonado({
                 id,
-                //provinciaSeleccionadaId
-                municipioSeleccionadoId,
-                barrioSeleccionadoId,
-                domicilioCalle,
-                domicilioNumero,
-                domicilioPiso,
-                observacionesCambio
+                //ProvinciaId
+                MunicipioId,
+                BarrioId,
+                DomicilioCalle,
+                DomicilioNumero,
+                DomicilioPiso,
+                CambioDomicilioObservaciones
             })
     }
 }
+    const columnasDomicilios = [
+        {
+            "name": "id",
+            "selector": row =>row["UserId"],
+            "omit": true,
+        },
+        {
+            "name": "Dirección",
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"]
+        },
+        {
+            "name": "Barrio",
+            "selector": row =>row["BarrioNombre"],
+            "hide": "sm"
+        },
+        {
+            "name": "Municipio",
+            "selector": row =>row["MunicipioNombre"],
+        },
+        {
+            "name": "Fecha de Cambio",
+            "selector": row =>row["CambioDomicilioFecha"].split('T')[0],
+            "hide": "sm"
+        },
+        {
+            "name": "Observaciones",
+            "selector": row =>row["CambioDomicilioObservaciones"],
+            "hide": "sm"
+        },
+    ]
+    const ExpandedComponent = ({ data }) =>
+    <>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Dirección: {data.DomicilioCalle} {data.DomicilioNumero}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-home"></i> Barrio: {data.BarrioNombre}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-building-house"></i> Municipio: {data.MunicipioNombre}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.CambioDomicilioFecha.split('T')[0]}</Typography>
+    </>;
     return ( 
     <>
     <div className="container">
     <Aside/>
     <main>
-    <form onSubmit={onSubmitAbonado}>
     <Card className={styles.cartaPrincipal}>
+        <CardHeader
+            action={<Button onClick={setModalNuevoDomicilio} variant="contained" color="primary">+ Nuevo Domicilio</Button>}>
+        </CardHeader>
         <CardContent>
             <Typography variant="h1">Listado de Domicilios del abonado: {location.state.FullName}</Typography>
             <br/>
-            <Grid container spacing={3}>
-                {domicilios.map((domicilio)=>(
-                    <>
-                    <Grid item xs={12} sm={6} md={6} lg={3}>
-                        <Card className={styles.cartaSecundaria} key={domicilio.DomicilioId} value={domicilio.DomicilioId}>
-                            <CardContent>
-                                <Typography variant="h6"> <b> Municipio: </b> {domicilio.MunicipioNombre}</Typography>
-                                <Typography variant="h6"> <b> Barrio: </b> {domicilio.BarrioNombre}</Typography>
-                                <Typography variant="h6"> <b> Dirección: </b> {domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography>
-                                <Typography variant="h6"> <b> Fecha: </b> {domicilio.CambioDomicilioFecha.split('T')[0]}</Typography>
-                                <Typography variant="h6"> <b> Observaciones: </b> {domicilio.CambioDomicilioObservaciones}</Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <br/>
-                    </>
-                ))}
-            </Grid>
+            <Datatable
+            expandedComponent={ExpandedComponent}
+            datos={domicilios}
+            columnas={columnasDomicilios}>
+            </Datatable>
             <FormHelperText>Los domicilios están ordenados por fecha más reciente</FormHelperText>
-            <Typography variant="h2"><i className="bx bx-home"></i> Datos del nuevo domicilio</Typography>
+            <br/>
+        </CardContent>
+        <Modal
+        abrirModal={modalNuevoDomicilio}
+        funcionCerrar={handleChangeModalNuevoDomicilio}
+        botones={
+        <>
+        <Button onClick={()=>
+            {
+            setModalNuevoDomicilio(false)}}
+            variant="contained"
+            color="primary">
+            Agregar</Button>
+        <Button onClick={handleChangeModalNuevoDomicilio}>Cerrar</Button></>}
+        formulario={
+            <>
+            <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-home"></i> Datos del nuevo domicilio</Typography>
+            <form onSubmit={onSubmitAbonado}>   
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
                     variant="filled"
                     disabled
                     //onChange={handleChangeProvinciaSeleccionada}
-                    value={provinciaSeleccionadaId}
+                    value={ProvinciaId}
                     label="Provincia"
                     fullWidth
                     select
@@ -121,7 +180,7 @@ const CambioDomicilio = () => {
                     <TextField
                     variant = "outlined"
                     onChange={handleChangeMunicipioSeleccionado}
-                    value={municipioSeleccionadoId}
+                    value={MunicipioId}
                     label="Municipio"
                     fullWidth
                     select
@@ -131,11 +190,11 @@ const CambioDomicilio = () => {
                     )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                 <TextField
                     variant = "outlined"
                     onChange={handleChangeBarrioSeleccionado}
-                    value={barrioSeleccionadoId}
+                    value={BarrioId}
                     label="Barrio"
                     fullWidth
                     select
@@ -145,32 +204,32 @@ const CambioDomicilio = () => {
                     )): <MenuItem disabled>No se encontraron barrios</MenuItem>}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
+                <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
                     variant = "outlined"
-                    value={domicilioCalle}
-                    name="domicilioCalle"
+                    value={DomicilioCalle}
+                    name="DomicilioCalle"
                     onChange={onInputChange}
                     fullWidth
                     label="Calle">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={2} lg={2}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant = "outlined"
-                    value={domicilioNumero}
-                    name="domicilioNumero"
+                    value={DomicilioNumero}
+                    name="DomicilioNumero"
                     onChange={onInputChange}
                     type="number"
                     fullWidth
                     label="Número">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={2} lg={2}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant = "outlined"
-                    value={domicilioPiso}
-                    name="domicilioPiso"
+                    value={DomicilioPiso}
+                    name="DomicilioPiso"
                     onChange={onInputChange}
                     type="number"
                     fullWidth
@@ -182,8 +241,8 @@ const CambioDomicilio = () => {
                     variant = "outlined"
                     multiline
                     minRows={3}
-                    value={observacionesCambio}
-                    name="observacionesCambio"
+                    value={CambioDomicilioObservaciones}
+                    name="CambioDomicilioObservaciones"
                     inputProps={{
                         maxLength: 100
                     }}
@@ -194,15 +253,10 @@ const CambioDomicilio = () => {
                     <FormHelperText>Ingrese hasta 100 palabras</FormHelperText>
                 </Grid>
             </Grid>
-            <br/>
-        </CardContent>
-        <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
-            <Button type="submit" startIcon={<i className="bx bx-edit"></i>}
-            variant="contained" color="primary">Modificar
-            </Button>
-        </div>
+            </form>
+            </>
+        }></Modal>
         </Card>
-    </form>
     </main>
     <Footer/>
     </div>

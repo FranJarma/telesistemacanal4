@@ -18,7 +18,6 @@ require('dotenv').config({path: 'variables.env'});
 //FUNCIONES PARA ABONADOS
 exports.AbonadosActivosListar = async(req, res) => {
     try {
-
         const abonados = await knex.select('*').from('_user as u')
         .join('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
         .join('_role as r', 'r.RoleId', '=', 'ur.RoleId')
@@ -36,7 +35,12 @@ exports.AbonadosActivosListar = async(req, res) => {
 
 exports.AbonadosInactivosListar = async(req, res) => {
     try {
-        const abonados = await db.query('CALL _AbonadosInactivosReadAll();');
+        const abonados = await knex.select('*').from('userdomicilio as ud')
+        .join('_user as u', 'u.UserId', '=', 'ud.UserId')
+        .join('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
+        .join('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .join('municipio as m', 'm.MunicipioId', '=', 'b.MunicipioId')
+        .orderBy('ud.CambioDomicilioFecha', 'desc')
         res.json(abonados);
     } catch (error) {
         console.log(error);
@@ -46,12 +50,13 @@ exports.AbonadosInactivosListar = async(req, res) => {
 
 exports.AbonadoListarDomicilios = async(req, res) => {
     try {
-        const domicilios = await db.query('CALL _AbonadoReadDomicilios(:UserId)',
-        {
-            replacements: {
-                UserId: req.params.id
-        }
-        });
+        const domicilios = await knex.select('*').from('userdomicilio as ud')
+        .join('_user as u', 'u.UserId', '=', 'ud.UserId')
+        .join('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
+        .join('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .join('municipio as m', 'm.MunicipioId', '=', 'b.MunicipioId')
+        .where('u.UserId', '=', req.params.id)
+        .orderBy('ud.CambioDomicilioFecha', 'desc');
         res.json(domicilios);
     } catch (error) {
         console.log(error);
@@ -179,20 +184,26 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     try {
-        //traemos el id del ultimo domicilio registrado
-        const ultimoDomicilioId = await db.query('CALL _UltimoDomicilioIdRead();');
-        await db.query('CALL _AbonadoCambioDeDomicilio(:UserId, :DomicilioId, :BarrioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :CambioDomicilioObservaciones)',
-        {
-            replacements: {
-                UserId: req.body.id,
-                DomicilioId: ultimoDomicilioId[0].DomicilioId + 1,
-                BarrioId: req.body.barrioSeleccionadoId,
-                DomicilioCalle: req.body.domicilioCalle,
-                DomicilioNumero: req.body.domicilioNumero,
-                DomicilioPiso: req.body.domicilioPiso,
-                CambioDomicilioObservaciones: req.body.observacionesCambio
-        }
+        //traemos el id del ultimo domicilio registrado y de la ultima onu registrada
+        let ultimoDomicilioId = 0;
+        const ultimoDomicilio = await Domicilio.findOne({
+            order: [['DomicilioId', 'DESC']],
         });
+        if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
+        const domicilio = new Domicilio(req.body);
+        console.log(domicilio);
+        // await db.query('CALL _AbonadoCambioDeDomicilio(:UserId, :DomicilioId, :BarrioId, :DomicilioCalle, :DomicilioNumero, :DomicilioPiso, :CambioDomicilioObservaciones)',
+        // {
+        //     replacements: {
+        //         UserId: req.body.id,
+        //         DomicilioId: ultimoDomicilioId[0].DomicilioId + 1,
+        //         BarrioId: req.body.barrioSeleccionadoId,
+        //         DomicilioCalle: req.body.domicilioCalle,
+        //         DomicilioNumero: req.body.domicilioNumero,
+        //         DomicilioPiso: req.body.domicilioPiso,
+        //         CambioDomicilioObservaciones: req.body.observacionesCambio
+        // }
+        // });
             return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})
     } catch (error) {
         console.log(error)
