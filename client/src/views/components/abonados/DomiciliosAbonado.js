@@ -5,9 +5,8 @@ import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import useStyles from '../Styles';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
-
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
@@ -24,7 +23,7 @@ const CambioDomicilio = () => {
     }, [])
     //States
     const [domicilioInfo, setDomicilioInfo] = useState({
-        id: location.state.UserId,
+        UserId: location.state.UserId,
         DomicilioCalle: null,
         DomicilioNumero: null,
         DomicilioPiso: null,
@@ -36,7 +35,7 @@ const CambioDomicilio = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { id, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioObservaciones} = domicilioInfo;
+    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioObservaciones} = domicilioInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -47,8 +46,8 @@ const CambioDomicilio = () => {
         setBarrioId(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [MunicipioId, setMunicipioId] = useState(0);
     const [BarrioId, setBarrioId] = useState(0);
+    const [MunicipioId, setMunicipioId] = useState(0);
     const [modalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
@@ -59,15 +58,15 @@ const CambioDomicilio = () => {
         setBarrioId(e.target.value);
     }
     const handleChangeModalNuevoDomicilio = (data) => {
-        setModalNuevoDomicilio(!modalNuevoDomicilio)
+        setModalNuevoDomicilio(!modalNuevoDomicilio);
         if(!modalNuevoDomicilio){
             setDomicilioInfo({
-                id: data.UserId
+                UserId: data.UserId
             })
         }
         else {
             setDomicilioInfo({
-                id: null
+                UserId: null
             })
         }
     }
@@ -76,15 +75,16 @@ const CambioDomicilio = () => {
         e.preventDefault();
         if(location.state) {
             cambioDomicilioAbonado({
-                id,
+                UserId,
                 //ProvinciaId
-                MunicipioId,
                 BarrioId,
+                MunicipioId,
                 DomicilioCalle,
                 DomicilioNumero,
                 DomicilioPiso,
                 CambioDomicilioObservaciones
             })
+            setModalNuevoDomicilio(false);
     }
 }
     const columnasDomicilios = [
@@ -106,11 +106,11 @@ const CambioDomicilio = () => {
             "name": "Municipio",
             "selector": row =>row["MunicipioNombre"],
         },
-        {
-            "name": "Fecha de Cambio",
-            "selector": row =>row["CambioDomicilioFecha"].split('T')[0],
-            "hide": "sm"
-        },
+        // {
+        //     "name": "Fecha de Cambio",
+        //     "selector": row =>row["CambioDomicilioFecha"].split('T')[0],
+        //     "hide": "sm"
+        // },
         {
             "name": "Observaciones",
             "selector": row =>row["CambioDomicilioObservaciones"],
@@ -134,7 +134,7 @@ const CambioDomicilio = () => {
             action={<Button onClick={setModalNuevoDomicilio} variant="contained" color="primary">+ Nuevo Domicilio</Button>}>
         </CardHeader>
         <CardContent>
-            <Typography variant="h1">Listado de Domicilios del abonado: {location.state.FullName}</Typography>
+            <Typography variant="h1">Listado de Domicilios del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
             <br/>
             <Datatable
             expandedComponent={ExpandedComponent}
@@ -149,17 +149,15 @@ const CambioDomicilio = () => {
         funcionCerrar={handleChangeModalNuevoDomicilio}
         botones={
         <>
-        <Button onClick={()=>
-            {
-            setModalNuevoDomicilio(false)}}
+        <Button
             variant="contained"
-            color="primary">
+            color="primary"
+            onClick={onSubmitAbonado}>
             Agregar</Button>
         <Button onClick={handleChangeModalNuevoDomicilio}>Cerrar</Button></>}
         formulario={
             <>
             <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-home"></i> Datos del nuevo domicilio</Typography>
-            <form onSubmit={onSubmitAbonado}>   
             <Grid container spacing={3}>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
@@ -253,7 +251,6 @@ const CambioDomicilio = () => {
                     <FormHelperText>Ingrese hasta 100 palabras</FormHelperText>
                 </Grid>
             </Grid>
-            </form>
             </>
         }></Modal>
         </Card>

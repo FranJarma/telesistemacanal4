@@ -8,6 +8,7 @@ import AppState from './context/appState';
 import Home from './views/components/Home';
 import ListaPagos from './views/components/pagos/ListaPagos';
 import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
+import DomiciliosAbonado from './views/components/abonados/DomiciliosAbonado';
 import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosInactivos';
 import ListaDetallesPagos from './views/components/detallesPagos/ListaDetallesPagos';
 import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetallePago';
@@ -20,11 +21,6 @@ const CaratulaAbonado = lazy(() => {
   );
 });
 
-const DomiciliosAbonado = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
-    () => import('./views/components/abonados/DomiciliosAbonado')
-  );
-});
 const CambioTitularidad = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
     () => import('./views/components/abonados/CambioTitularidad')

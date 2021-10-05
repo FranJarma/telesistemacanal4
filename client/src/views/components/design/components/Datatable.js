@@ -18,6 +18,7 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
     (item.FullName && item.FullName.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.Documento && item.Documento.toString().includes(textoFiltrado.toLowerCase()))
     || (item.BarrioNombre && item.BarrioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.MunicipioNombre && item.MunicipioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.DomicilioCalle && item.DomicilioCalle.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.DomicilioNumero && item.DomicilioNumero.toString().includes(textoFiltrado.toLowerCase()))
     || (item.ServicioNombre && item.ServicioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
@@ -30,11 +31,9 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
         selectAllRowsItem: true,
         selectAllRowsItemText: 'Mostrar todos'
     }
-
     return (
         <DataTable
             columns={columnas}
-            dense
             expandableRows = {expandedComponent ? true : false}
             expandableRowsComponent={expandedComponent ? expandedComponent : ''}
             data={itemsFiltrados !== "" ? itemsFiltrados : datos}
@@ -49,6 +48,7 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
             subHeaderComponent={
                 <Buscador onFiltrar={e => setTextoFiltrado(e.target.value)} textoFiltrado={textoFiltrado}/>
             }
+            striped
         >
         </DataTable>
     );

@@ -7,6 +7,7 @@ export default (state, action) => {
         case TYPES.CAMBIO_DOMICILIO_ABONADO: {
             return {
                 ...state,
+                domicilios: [action.payload, ...state.domicilios]
             };
         }
         case TYPES.DAR_DE_BAJA_ABONADO: {

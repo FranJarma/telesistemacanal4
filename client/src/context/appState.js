@@ -64,13 +64,13 @@ const AppState = props => {
             }
         })
     }
-    const darDeBajaAbonado = async(infoBaja) => {
-        clienteAxios.put(`/api/usuarios/abonados/delete/${infoBaja.idAbonadoBaja}`, infoBaja)
+    const darDeBajaAbonado = async(abonado) => {
+        clienteAxios.put(`/api/usuarios/abonados/delete/${abonado.idAbonadoBaja}`, abonado)
         .then(resOk => {
             if (resOk.data)
                 dispatch({
                     type: TYPES.DAR_DE_BAJA_ABONADO,
-                    payload: infoBaja
+                    payload: abonado
                 })
                 Swal('Operación completa', resOk.data.msg);
                 history.push('/abonados-activos');
@@ -84,16 +84,15 @@ const AppState = props => {
             }
         })
     }
-    const cambioDomicilioAbonado = async(infoCambioDomicilio) => {
-        clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${infoCambioDomicilio.id}`, infoCambioDomicilio)
+    const cambioDomicilioAbonado = async(domicilio) => {
+        clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${domicilio.UserId}`, domicilio)
         .then(resOk => {
             if (resOk.data)
                 dispatch({
                     type: TYPES.CAMBIO_DOMICILIO_ABONADO,
-                    payload: infoCambioDomicilio
+                    payload: domicilio
                 })
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/abonados-activos');
         })
         .catch(err => {
             if(!err.response){

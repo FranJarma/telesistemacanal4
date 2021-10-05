@@ -56,7 +56,6 @@ const ListaAbonadosActivos = () => {
     }
 
     const styles = useStyles();
-
     const columnasAbonadosActivos = [
     {
         "name": "id",
@@ -104,7 +103,8 @@ const ListaAbonadosActivos = () => {
     },
     {
         "name": "Domicilio",
-        "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"]
+        "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+        "wrap": true,
     },
     {
         "name": "N° teléfono",
