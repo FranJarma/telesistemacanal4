@@ -8,7 +8,8 @@ import AppState from './context/appState';
 import Home from './views/components/Home';
 import ListaPagos from './views/components/pagos/ListaPagos';
 import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
-import DomiciliosAbonado from './views/components/abonados/DomiciliosAbonado';
+import CambioDomicilio from './views/components/abonados/CambioDomicilio';
+import CambioServicio from './views/components/abonados/CambioServicio';
 import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosInactivos';
 import ListaDetallesPagos from './views/components/detallesPagos/ListaDetallesPagos';
 import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetallePago';
@@ -95,10 +96,11 @@ function App() {
                   <CaratulaAbonado/>
                 </Suspense>
               </Route>
-              <Route path="/domicilios-abonado">
-                <Suspense fallback={<Cargando/>}>
-                  <DomiciliosAbonado/>
-                </Suspense>
+              <Route path="/cambio-domicilio">
+                  <CambioDomicilio/>
+              </Route>
+              <Route path="/cambio-servicio">
+                  <CambioServicio/>
               </Route>
               <Route path="/cambio-titularidad">
                 <Suspense fallback={<Cargando/>}>

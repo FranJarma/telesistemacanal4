@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const User = require('./../models/User');
 const Domicilio = require('./../models/Domicilio');
+const Servicio = require('./../models/Servicio');
 const UserDomicilio = require('./../models/UserDomicilio');
 const UserServicio = require('./../models/UserServicio');
 const ModeloOnu = require('./../models/ModeloOnu');
@@ -84,7 +85,7 @@ exports.AbonadoCreate = async(req, res) => {
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
     }
-    //const transaction = await db.transaction();
+    const transaction = await db.transaction();
     try {
         //traemos el id del ultimo domicilio registrado y de la ultima onu registrada
         let ultimoDomicilioId = 0;
@@ -127,12 +128,12 @@ exports.AbonadoCreate = async(req, res) => {
         await abonadoRole.save();
         await abonadoDomicilio.save();
         await abonadoServicio.save();
-        //await transaction.commit();
+        await transaction.commit();
         return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
         }   
     catch (error) {
         console.log(error);
-        //await transaction.rollback();
+        await transaction.rollback();
         res.status(400).send({msg: 'Hubo un error al registrar el abonado'});
     }
 }
@@ -142,17 +143,17 @@ exports.AbonadoUpdate = async(req, res) => {
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
     }
+    const transaction = await db.transaction();
     try {
         //buscamos el abonado por su Id
         const abonado = await User.findByPk( req.body.UserId );
         await abonado.update(req.body);
-        // abonado.UserId = uuidv4().toUpperCase();
-        // abonado.FullName = req.body.Apellido + ',' + req.body.Nombre;
-        // await abonado.save();
+        await transaction.commit();
         return res.status(200).send({msg: 'El Abonado ha sido modificado correctamente'})
         }   
     catch (error) {
         console.log(error)
+        await transaction.rollback();
         res.status(400).send({msg: 'Hubo un error al registrar el abonado'});
     }
 }
@@ -209,5 +210,29 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
         console.log(error);
         await t.rollback();
         res.status(400).send({msg: 'Hubo un error al cambiar el domicilio del abonado'});
+    }
+}
+
+exports.AbonadoCambioServicio = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    const t = await db.transaction();
+    try {
+        //buscamos el usuario para actualizarle el domicilio
+        const abonado = await User.findByPk( req.body.UserId );
+        abonado.ServicioId = req.body.ServicioId;
+        //await abonado.update(req.body.DomicilioId);
+        const abonadoServicio = new UserServicio(req.body);
+        abonadoDomicilio.ServicioId = req.body.ServicioId;
+        await abonado.save();
+        await abonadoServicio.save();
+        await t.commit();
+        return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
+    } catch (error) {
+        console.log(error);
+        await t.rollback();
+        res.status(400).send({msg: 'Hubo un error al cambiar el servicio del abonado'});
     }
 }

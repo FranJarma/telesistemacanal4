@@ -155,18 +155,25 @@ const ListaAbonadosActivos = () => {
         <Tooltip title="Editar"><i className="bx bxs-edit bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
-            pathname: `/domicilios-abonado/UserId=${data.UserId}`,
+            pathname: `/cambio-domicilio/UserId=${data.UserId}`,
+            state: data
+        }}
+        style={{textDecoration: 'none', color: "navy"}}>
+        <Tooltip title="Cambio de Domicilio"><i className="bx bxs-home bx-xs"></i></Tooltip>
+        </Link>
+        <Link to={{
+            pathname: `/cambio-servicio/UserId=${data.UserId}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "indigo"}}>
-        <Tooltip title="Cambio de domicilio"><i className="bx bxs-home bx-xs"></i></Tooltip>
+        <Tooltip title="Cambio de Servicio"><i className="bx bx-plug bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
             pathname: `/cambio-titularidad/UserId=${data.UserId}`,
             state: data
         }}
-        style={{textDecoration: 'none', color: "coral"}}>
-        <Tooltip title="Cambio de titularidad"><i className="bx bxs-notepad bx-xs"></i></Tooltip>
+        style={{textDecoration: 'none', color: "teal"}}>
+        <Tooltip title="Cambio de Titularidad"><i className="bx bxs-notepad bx-xs"></i></Tooltip>
         </Link>
         <Link to={{
             pathname: `/historial-de-pagos/UserId=${data.UserId}`,

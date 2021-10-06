@@ -8,7 +8,7 @@ import useStyles from '../Styles';
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 
-const CambioDomicilio = () => {
+const CambioServicio = () => {
     const appContext = useContext(AppContext);
     const {barrios, domicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
     traerProvincias, cambioDomicilioAbonado } = appContext;
@@ -141,17 +141,17 @@ const CambioDomicilio = () => {
     <main>
     <Card className={styles.cartaPrincipal}>
         <CardHeader
-            action={<Button onClick={setModalNuevoDomicilio} variant="contained" color="primary">+ Nuevo Domicilio</Button>}>
+            action={<Button onClick={setModalNuevoDomicilio} variant="contained" color="primary">+ Nuevo servicio</Button>}>
         </CardHeader>
         <CardContent>
-            <Typography variant="h1">Listado de Domicilios del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
+            <Typography variant="h1">Historial de cambios de servicio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
             <br/>
             <Datatable
             expandedComponent={ExpandedComponent}
             datos={domicilios}
             columnas={columnasDomicilios}>
             </Datatable>
-            <FormHelperText>Los domicilios están ordenados por fecha más reciente</FormHelperText>
+            <FormHelperText>Los servicios están ordenados por fecha más reciente</FormHelperText>
             <br/>
         </CardContent>
         <Modal
@@ -167,7 +167,7 @@ const CambioDomicilio = () => {
         <Button onClick={handleChangeModalNuevoDomicilio}>Cerrar</Button></>}
         formulario={
             <>
-            <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-home"></i> Datos del nuevo domicilio</Typography>
+            <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-plug"></i> Datos del nuevo servicio</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
@@ -273,4 +273,4 @@ const CambioDomicilio = () => {
     );
 }
  
-export default CambioDomicilio;
+export default CambioServicio;
