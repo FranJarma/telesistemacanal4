@@ -47,12 +47,20 @@ const CambioDomicilio = () => {
         traerMunicipiosPorProvincia(e.target.value);
     }*/
     const [BarrioId, setBarrioId] = useState(0);
+    const [BarrioNombre, setBarrioNombre] = useState('')
     const [MunicipioId, setMunicipioId] = useState(0);
+    const [MunicipioNombre, setMunicipioNombre] = useState('')
     const [modalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
         setBarrioId(0);
         traerBarriosPorMunicipio(e.target.value);
+    }
+    const handleFocusMunicipioSeleccionado = (e) => {
+        setMunicipioNombre(e.target.innerHTML)
+    }
+    const handleFocusBarrioSeleccionado = (e) => {
+        setBarrioNombre(e.target.innerHTML)
     }
     const handleChangeBarrioSeleccionado = (e) => {
         setBarrioId(e.target.value);
@@ -78,7 +86,9 @@ const CambioDomicilio = () => {
                 UserId,
                 //ProvinciaId
                 BarrioId,
+                BarrioNombre,
                 MunicipioId,
+                MunicipioNombre,
                 DomicilioCalle,
                 DomicilioNumero,
                 DomicilioPiso,
@@ -182,6 +192,7 @@ const CambioDomicilio = () => {
                     label="Municipio"
                     fullWidth
                     select
+                    onFocus={handleFocusMunicipioSeleccionado}
                     >
                     {municipios.length > 0 ? municipios.map((municipio)=>(
                         <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
@@ -196,6 +207,7 @@ const CambioDomicilio = () => {
                     label="Barrio"
                     fullWidth
                     select
+                    onFocus={handleFocusBarrioSeleccionado}
                     >
                     {barrios.length > 0 ? barrios.map((barrio)=>(
                         <MenuItem key={barrio.BarrioId} value={barrio.BarrioId}>{barrio.BarrioNombre}</MenuItem>
