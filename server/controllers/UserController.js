@@ -192,7 +192,6 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             order: [['DomicilioId', 'DESC']],
         });
         if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
-        console.log(ultimoDomicilio);
         const domicilio = new Domicilio(req.body);
         domicilio.DomicilioId = ultimoDomicilioId + 1;
         //buscamos el usuario para actualizarle el domicilio

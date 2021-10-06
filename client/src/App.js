@@ -17,7 +17,7 @@ import Login from './views/components/auth/Login';
 import Cargando from './views/components/design/components/Cargando';
 
 const CaratulaAbonado = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(
     () => import('./views/components/abonados/CaratulaAbonado')
   );
 });

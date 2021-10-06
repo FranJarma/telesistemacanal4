@@ -37,7 +37,7 @@ router.put('/abonados/update/:id',
     check('Cuit', 'El CUIT es obligatorio').notEmpty(),
     check('Cuit', 'El CUIT no tiene el formato correcto, debe tener solo números').isNumeric(),
     check('Cuit', 'El CUIT debe tener 10 dígitos como mínimo').isLength({min: 10}),
-    check('CondicionIVAId', 'La condición IVA es obligatoria').notEmpty(),
+    check('CondicionIVAId', 'La condición IVA es obligatoria').not().contains(0),
 ],UserController.AbonadoUpdate);
 
 router.put('/abonados/delete/:id', UserController.AbonadoDelete);

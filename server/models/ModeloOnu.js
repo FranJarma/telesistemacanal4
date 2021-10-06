@@ -14,12 +14,6 @@ const ModeloOnu = db.define('modeloonu', {
     ModeloOnuDescripcion: {
         type: STRING(256),
         allowNull: false
-    },
-    createdAt: {
-        type: DATE
-    },
-    updatedAt: {
-        type: DATE
     }
 });
 

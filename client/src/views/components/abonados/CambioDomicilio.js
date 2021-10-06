@@ -27,7 +27,8 @@ const CambioDomicilio = () => {
         DomicilioCalle: null,
         DomicilioNumero: null,
         DomicilioPiso: null,
-        CambioDomicilioObservaciones: null
+        CambioDomicilioFecha: new Date().toJSON(),
+        CambioDomicilioObservaciones: null,
     })
     const onInputChange = (e) => {
         setDomicilioInfo({
@@ -35,7 +36,7 @@ const CambioDomicilio = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioObservaciones} = domicilioInfo;
+    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioFecha, CambioDomicilioObservaciones} = domicilioInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -92,6 +93,7 @@ const CambioDomicilio = () => {
                 DomicilioCalle,
                 DomicilioNumero,
                 DomicilioPiso,
+                CambioDomicilioFecha,
                 CambioDomicilioObservaciones
             })
             setModalNuevoDomicilio(false);
@@ -116,11 +118,11 @@ const CambioDomicilio = () => {
             "name": "Municipio",
             "selector": row =>row["MunicipioNombre"],
         },
-        // {
-        //     "name": "Fecha de Cambio",
-        //     "selector": row =>row["CambioDomicilioFecha"].split('T')[0],
-        //     "hide": "sm"
-        // },
+        {
+            "name": "Fecha de Cambio",
+            "selector": row =>row["CambioDomicilioFecha"].split('T')[0].split('-').reverse().join('/'),
+            "hide": "sm"
+        },
         {
             "name": "Observaciones",
             "selector": row =>row["CambioDomicilioObservaciones"],
@@ -132,7 +134,7 @@ const CambioDomicilio = () => {
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Dirección: {data.DomicilioCalle} {data.DomicilioNumero}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-home"></i> Barrio: {data.BarrioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-building-house"></i> Municipio: {data.MunicipioNombre}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.CambioDomicilioFecha.split('T')[0]}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.CambioDomicilioFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
     </>;
     return ( 
     <>

@@ -13,12 +13,12 @@ const AppState = props => {
         domicilios: [],
         domicilio: {},
         barrios: [],
-        condicionesIVA: [],
+        condicionesIva: [],
         municipios: [],
         provincias: [],
         servicios: [],
         onus: [],
-        tiposOnus: []
+        modelosOnu: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -160,9 +160,9 @@ const AppState = props => {
         }
     };
     //CONDICIONES IVA
-    const traerCondicionesIVA = async () => {
+    const traerCondicionesIva = async () => {
         try {
-            const resultado = await clienteAxios.get(`/api/condicionesIVA`);
+            const resultado = await clienteAxios.get(`/api/condicionesIva`);
             dispatch({
                 type: TYPES.LISTA_CONDICIONES_IVA,
                 payload: resultado.data
@@ -207,6 +207,18 @@ const AppState = props => {
             console.log(error);
         }
     };
+    //MODELOS ONU
+    const traerModelosONU = async () => {
+        try {
+            const resultado = await clienteAxios.get('/api/modelosOnu');
+            dispatch({
+                type: TYPES.LISTA_MODELOS_ONU,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return(
         <AppContext.Provider
         value={{
@@ -214,14 +226,14 @@ const AppState = props => {
             domicilios: state.domicilios,
             domicilio: state.domicilio,
             barrios: state.barrios,
-            condicionesIVA: state.condicionesIVA,
+            condicionesIva: state.condicionesIva,
             municipios: state.municipios,
             provincias: state.provincias,
             servicios: state.servicios,
             onus: state.onus,
-            tiposOnus: state.tiposOnus,
+            modelosOnu: state.modelosOnu,
             crearAbonado, modificarAbonado, darDeBajaAbonado, cambioDomicilioAbonado, traerAbonadosActivos, traerAbonadosInactivos, traerUltimoDomicilioAbonado,
-            traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIVA, traerMunicipiosPorProvincia, traerProvincias, traerServicios
+            traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerProvincias, traerServicios, traerModelosONU
         }}>{props.children}
         </AppContext.Provider>
     )

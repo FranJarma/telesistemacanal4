@@ -1,12 +1,10 @@
-const db = require('./../config/connection');
-const bcrypt = require('bcrypt');
-const { validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
+const options =require('./../config/knex');
+const knex = require('knex')(options);
 require('dotenv').config({path: 'variables.env'});
 
 exports.BarriosListarPorMunicipio = async(req, res) => {
     try {
-        const barrios = await db.query(`CALL _BarrioReadAllByMunicipio(${req.params.id});`);
+        const barrios = await knex.select('*').from('barrio').where('MunicipioId', '=', req.params.id);
         res.json(barrios);
     } catch (error) {
         console.log(error);

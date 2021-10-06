@@ -27,7 +27,9 @@ app.use('/api/barrios', require('./routes/Barrio.js'));
 //SERVICIOS
 app.use('/api/servicios', require('./routes/Servicio.js'));
 //CONDICIONES IVA
-app.use('/api/condicionesIVA', require('./routes/CondicionesIVA.js'));
+app.use('/api/condicionesIva', require('./routes/CondicionIva.js'));
+//MODELOS ONU
+app.use('/api/modelosOnu', require('./routes/ModeloOnu.js'));
 //pág principal
 app.get('/', (req, res)=>{
     res.send(`Conectado a: ${process.env.DB_NAME} en puerto: ${PORT}`)

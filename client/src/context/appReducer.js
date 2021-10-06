@@ -41,7 +41,7 @@ export default (state, action) => {
         case TYPES.LISTA_CONDICIONES_IVA:
             return {
                 ...state,
-                condicionesIVA: action.payload,
+                condicionesIva: action.payload,
         }
         case TYPES.LISTA_MUNICIPIOS:
             return {
@@ -57,7 +57,12 @@ export default (state, action) => {
             return {
                 ...state,
                 servicios: action.payload,
-        }   
+        } 
+        case TYPES.LISTA_MODELOS_ONU:
+            return {
+                ...state,
+                modelosONU: action.payload
+            }
         default:
             return state;
     }

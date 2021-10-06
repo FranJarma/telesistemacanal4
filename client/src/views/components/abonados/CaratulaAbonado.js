@@ -10,45 +10,11 @@ import { Alert } from '@material-ui/lab';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
-    const { barrios, condicionesIVA, municipios, servicios, provincias, traerBarriosPorMunicipio, traerCondicionesIVA, traerMunicipiosPorProvincia, traerServicios,
-    traerProvincias, crearAbonado, modificarAbonado } = appContext;
+    const { barrios, condicionesIva, municipios, servicios, provincias, modelosOnu, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
+    traerProvincias, traerModelosONU, crearAbonado, modificarAbonado } = appContext;
     
     const location = useLocation();
     const styles = useStyles();
-
-    useEffect(() => {
-        traerProvincias();
-        traerMunicipiosPorProvincia(ProvinciaId);
-        traerBarriosPorMunicipio(MunicipioId);
-        traerServicios();
-        traerCondicionesIVA();
-        if(location.state)
-        {
-            console.log(location.state);
-            setAbonadoInfo({
-                UserId: location.state.UserId,
-                Nombre: location.state.Nombre,
-                Apellido: location.state.Apellido,
-                Documento: location.state.Documento,
-                Cuit: location.state.Cuit,
-                Email: location.state.Email,
-                Telefono: location.state.Telefono,
-                DomicilioCalle: location.state.DomicilioCalle,
-                DomicilioNumero: location.state.DomicilioNumero,
-                DomicilioPiso: location.state.DomicilioPiso,
-                OnuMac: location.state.OnuMac,
-                OnuModelo: location.state.OnuModelo,
-                OnuSerie: location.state.OnuSerie
-            });
-            setMunicipioId(location.state.MunicipioId);
-            setBarrioId(location.state.BarrioId);
-            setServicioId(location.state.ServicioId);
-            setCondicionIVAId(location.state.CondicionIVAId);
-            setFechaNacimiento(location.state.FechaNacimiento);
-            setFechaBajada(location.state.FechaBajada);
-            setFechaContrato(location.state.FechaContrato);
-        }
-    }, [])
 
     const [abonadoInfo, setAbonadoInfo] = useState({
         UserId: null,
@@ -62,8 +28,7 @@ const CaratulaAbonado = () => {
         DomicilioNumero: null,
         DomicilioPiso: null,
         OnuMac: null,
-        OnuSerie: null,
-        OnuModelo: null
+        OnuSerie: null
     })
     const onInputChange = (e) => {
         setAbonadoInfo({
@@ -71,7 +36,7 @@ const CaratulaAbonado = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, OnuMac, OnuSerie, OnuModelo} = abonadoInfo;
+    const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, OnuMac, OnuSerie } = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -85,8 +50,8 @@ const CaratulaAbonado = () => {
     const [MunicipioId, setMunicipioId] = useState(0);
     const [BarrioId, setBarrioId] = useState(0);
     const [ServicioId, setServicioId] = useState(0);
-    const [CondicionIVAId, setCondicionIVAId] = useState(0);
-    const [OnuId, setOnuId] = useState(0);
+    const [CondicionIvaId, setCondicionIvaId] = useState(0);
+    const [ModeloOnuId, setModeloOnuId] = useState(0);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [FechaBajada, setFechaBajada] = useState(new Date());
@@ -101,11 +66,47 @@ const CaratulaAbonado = () => {
     }
     const handleChangeServicioSeleccionado = (e) => {
         setServicioId(e.target.value);
-        setOnuId(e.target.value);
     }
     const handleChangeCondicionIVASeleccionado = (e) => {
-        setCondicionIVAId(e.target.value);
+        setCondicionIvaId(e.target.value);
     }
+    const handleChangeModeloONUSeleccionado = (e) => {
+        setModeloOnuId(e.target.value);
+    }
+
+    useEffect(() => {
+        traerProvincias();
+        traerMunicipiosPorProvincia(ProvinciaId);
+        traerBarriosPorMunicipio(MunicipioId);
+        traerServicios();
+        traerCondicionesIva();
+        traerModelosONU();
+        if(location.state)
+        {
+            setAbonadoInfo({
+                UserId: location.state.UserId,
+                Nombre: location.state.Nombre,
+                Apellido: location.state.Apellido,
+                Documento: location.state.Documento,
+                Cuit: location.state.Cuit,
+                Email: location.state.Email,
+                Telefono: location.state.Telefono,
+                DomicilioCalle: location.state.DomicilioCalle,
+                DomicilioNumero: location.state.DomicilioNumero,
+                DomicilioPiso: location.state.DomicilioPiso,
+                OnuMac: location.state.OnuMac,
+                OnuSerie: location.state.OnuSerie
+            });
+            setMunicipioId(location.state.MunicipioId);
+            setBarrioId(location.state.BarrioId);
+            setServicioId(location.state.ServicioId);
+            setCondicionIvaId(location.state.CondicionIvaId);
+            setModeloOnuId(location.state.ModeloOnuId);
+            setFechaNacimiento(location.state.FechaNacimiento);
+            setFechaBajada(location.state.FechaBajada);
+            setFechaContrato(location.state.FechaContrato);
+        }
+    }, [BarrioId])
 
     const onSubmitAbonado = (e) => {
         e.preventDefault();
@@ -123,14 +124,14 @@ const CaratulaAbonado = () => {
                 FechaNacimiento,
                 FechaContrato,
                 FechaBajada,
-                CondicionIVAId,
+                CondicionIvaId,
                 ProvinciaId,
                 MunicipioId,
                 BarrioId,
                 ServicioId,
+                ModeloOnuId,
                 OnuSerie,
-                OnuMac,
-                OnuModelo
+                OnuMac
             });
         }
         else {
@@ -145,11 +146,10 @@ const CaratulaAbonado = () => {
                 FechaNacimiento,
                 FechaContrato,
                 FechaBajada,
-                CondicionIVAId,
+                CondicionIvaId,
                 ServicioId,
                 OnuSerie,
-                OnuMac,
-                OnuModelo
+                OnuMac
             });
         }
     }
@@ -211,14 +211,14 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     variant="outlined"
-                    value={CondicionIVAId}
+                    value={CondicionIvaId}
                     onChange={handleChangeCondicionIVASeleccionado}
                     fullWidth
                     select
                     label="Condición IVA"
                     >
-                    {condicionesIVA.map((condicionIVA)=>(
-                        <MenuItem key={condicionIVA.CondicionIVAId} value={condicionIVA.CondicionIVAId}>{condicionIVA.CondicionIVADescripcion}</MenuItem>
+                    {condicionesIva.map((condicionIva)=>(
+                        <MenuItem key={condicionIva.CondicionIvaId} value={condicionIva.CondicionIvaId}>{condicionIva.CondicionIvaNombre}</MenuItem>
                     ))}
                     </TextField>
                 </Grid>
@@ -380,6 +380,8 @@ const CaratulaAbonado = () => {
                     </DatePicker >
                 </Grid>
             </Grid>
+            {ServicioId !== 1 && ServicioId !== 0 ?
+            <>
             <Typography variant="h2"><i className='bx bx-broadcast'></i> Datos de ONU</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={3} lg={3}>
@@ -396,17 +398,19 @@ const CaratulaAbonado = () => {
                     ))}
                     </TextField>
                 </Grid>
-                {ServicioId !== 1 ?
-                <>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
-                    <TextField
-                    variant="outlined"
-                    name="OnuModelo"
-                    value={OnuModelo}
-                    onChange={onInputChange}
+                <TextField
+                    variant = {location.state ? "filled" : "outlined"}
+                    disabled = {location.state ? true : false}
+                    value={ModeloOnuId}
+                    onChange={handleChangeModeloONUSeleccionado}
                     label="Modelo"
                     fullWidth
+                    select
                     >
+                    {modelosOnu.map((modeloONU)=>(
+                        <MenuItem key={modeloONU.ModeloOnuId} value={modeloONU.ModeloOnuId}>{modeloONU.ModeloOnuNombre}</MenuItem>
+                    ))}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
@@ -432,9 +436,9 @@ const CaratulaAbonado = () => {
                     >
                 </TextField>
                 </Grid>
-                </>
-                : ""}
             </Grid>
+            </>
+            : ""}
             <br/>
             {location.state ? <Alert severity="info">Para modificar todos los datos del domicilio y del servicio contratado se tiene que ir a las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
         </CardContent>
