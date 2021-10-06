@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('./../controllers/UserController');
 const { check } = require('express-validator');
-const { esDNIValido, esCUITValido } =  require('./../helpers/db-validaciones');
+const { esDNIValido, esCUITValido, esOnuValida } =  require('./../helpers/db-validaciones');
 
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos/', UserController.AbonadosInactivosListar);
@@ -26,7 +26,8 @@ router.post('/abonados/create',
     check('DomicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
     check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
     check('ServicioId', 'El tipo de servicio es obligatorio').notEmpty(),
-],UserController.AbonadoCreate);
+    check('OnuMac').custom(esOnuValida),
+], UserController.AbonadoCreate);
 
 router.put('/abonados/update/:id',
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),

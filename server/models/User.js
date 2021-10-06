@@ -89,7 +89,7 @@ const User = db.define('_user', {
         allowNull: true,
     },
     //Columnas Relacionadas por fk
-    CondicionIVAId: {
+    CondicionIvaId: {
         type: INTEGER,
         allowNull: true
     },

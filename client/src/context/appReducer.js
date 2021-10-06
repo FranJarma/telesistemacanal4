@@ -61,7 +61,7 @@ export default (state, action) => {
         case TYPES.LISTA_MODELOS_ONU:
             return {
                 ...state,
-                modelosONU: action.payload
+                modelosOnu: action.payload
             }
         default:
             return state;

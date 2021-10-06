@@ -26,6 +26,8 @@ exports.AbonadosActivosListar = async(req, res) => {
         .join('domicilio as d', 'd.DomicilioId', 'u.DomicilioId')
         .join('barrio as b', 'b.BarrioId', 'd.BarrioId')
         .join('municipio as m', 'b.MunicipioId', 'm.MunicipioId')
+        .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
+        .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
         .where('r.RoleId', '=', process.env.ID_ROL_ABONADO);
         res.json(abonados);
     } catch (error) {
@@ -102,13 +104,15 @@ exports.AbonadoCreate = async(req, res) => {
         const abonadoRole = new UserRole();
         abonadoRole.UserId = abonado.UserId;
         abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
-        const abonadoDomicilio = new UserDomicilio();
+        const abonadoDomicilio = new UserDomicilio(req.body);
         abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
         abonadoDomicilio.UserId = abonado.UserId;
+        abonadoDomicilio.CambioDomicilioFecha = new Date().toString();
         abonadoDomicilio.CambioDomicilioObservaciones = 'Primer Domicilio';
         const abonadoServicio = new UserServicio();
         abonadoServicio.ServicioId = req.body.ServicioId;
         abonadoServicio.UserId = abonado.UserId;
+        abonadoServicio.CambioServicioFecha = new Date().toString();
         abonadoServicio.CambioServicioObservaciones = 'Primer Servicio contratado';
         // Si es Cable, no Instanciar ONU
         if(req.body.ServicioId !== 1) {
@@ -120,8 +124,9 @@ exports.AbonadoCreate = async(req, res) => {
             });
             if (ultimaOnu) ultimaOnuId = ultimaOnu.OnuId;
             const onu = new Onu(req.body);
-            onu.OnuId = ultimaOnuId;
-            onu.ServicioId = req.body.ServicioId;
+            onu.OnuId = ultimaOnuId + 1;
+            abonado.OnuId = ultimaOnuId + 1;
+            await onu.save();
         };
         await domicilio.save();
         await abonado.save();

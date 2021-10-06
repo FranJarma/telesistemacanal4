@@ -106,7 +106,7 @@ const CaratulaAbonado = () => {
             setFechaBajada(location.state.FechaBajada);
             setFechaContrato(location.state.FechaContrato);
         }
-    }, [BarrioId])
+    }, [BarrioId, ModeloOnuId])
 
     const onSubmitAbonado = (e) => {
         e.preventDefault();
@@ -415,7 +415,8 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                 <TextField
-                    variant="outlined"
+                    variant = {location.state ? "filled" : "outlined"}
+                    disabled = {location.state ? true : false}
                     name= "OnuMac"
                     inputProps={{ maxLength: 12 }}
                     value={OnuMac}
@@ -427,7 +428,8 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                 <TextField
-                    variant="outlined"
+                    variant = {location.state ? "filled" : "outlined"}
+                    disabled = {location.state ? true : false}
                     name="OnuSerie"
                     value={OnuSerie}
                     onChange={onInputChange}
