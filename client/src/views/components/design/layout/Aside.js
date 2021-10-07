@@ -31,11 +31,12 @@ const Aside = () => {
     return (   
     <>
     <ProSidebar collapsed={Collapsed} breakPoint="md">
+    <img alt="" src={logo2}/>
       <Menu iconShape="square">
         <SidebarHeader>
         <div
           style={{
-            padding: '24px',
+            paddingLeft: '24px',
             textTransform: 'uppercase',
             fontWeight: 'bold',
             fontSize: 14,
@@ -45,7 +46,20 @@ const Aside = () => {
             whiteSpace: 'nowrap',
           }}
         >
-        Bienvenido
+        Francisco Jarma
+        </div>
+        <div
+          style={{
+            paddingLeft: '24px',
+            paddingBottom: '10px',
+            fontSize: 11,
+            letterSpacing: '1px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+        Mesa de entrada
         </div>
         </SidebarHeader>
         <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
@@ -64,17 +78,9 @@ const Aside = () => {
           <MenuItem icon={<i class='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
         </SubMenu>
         <MenuItem icon={<i className="bx bx-broadcast"></i>}>ONUS<Link to="/onus"></Link></MenuItem>
-        <SidebarFooter style={{ textAlign: 'center' }}>
-        <div
-          className="sidebar-btn-wrapper"
-          style={{
-            padding: '20px 24px',
-          }}
-        >
-            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-              <img alt="" src={logo2}/>
-            </span>
-        </div>
+        <MenuItem icon={<i className="bx bx-lock"></i>}>Mi cuenta<Link to="/mi-cuenta"></Link></MenuItem>
+        <SidebarFooter>
+        <MenuItem icon={<i className='bx bx-log-out-circle'></i>}>Salir<Link to="/"></Link></MenuItem>
       </SidebarFooter>
       </Menu>
     </ProSidebar>

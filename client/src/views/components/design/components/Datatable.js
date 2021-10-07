@@ -15,7 +15,8 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
     //state para buscador
     const [textoFiltrado, setTextoFiltrado] = useState('');
     const itemsFiltrados = datos.filter(item =>
-    (item.FullName && item.FullName.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    (item.Nombre && item.Nombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.Apellido && item.Apellido.toString().includes(textoFiltrado.toLowerCase()))
     || (item.Documento && item.Documento.toString().includes(textoFiltrado.toLowerCase()))
     || (item.BarrioNombre && item.BarrioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.MunicipioNombre && item.MunicipioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))

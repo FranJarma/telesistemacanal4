@@ -77,7 +77,7 @@ const CambioTitularidad = () => {
     <Aside/>
     <main>
     <form onSubmit={onSubmitAbonado}>
-    <Card className={styles.cartaPrincipal}>
+    <Card>
         <CardContent>
             <Typography variant="h1">Cambio titularidad: {location.state.FullName}</Typography>
             <Grid container spacing={3}>

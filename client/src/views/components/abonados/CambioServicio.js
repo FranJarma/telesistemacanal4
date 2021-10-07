@@ -139,7 +139,7 @@ const CambioServicio = () => {
     <div className="container">
     <Aside/>
     <main>
-    <Card className={styles.cartaPrincipal}>
+    <Card>
         <CardHeader
             action={<Button onClick={setModalNuevoDomicilio} variant="contained" color="primary">+ Nuevo servicio</Button>}>
         </CardHeader>
