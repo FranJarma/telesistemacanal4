@@ -5,7 +5,6 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import esLocale from 'date-fns/locale/es';
 import AppState from './context/appState';
-import Home from './views/components/Home';
 import ListaPagos from './views/components/pagos/ListaPagos';
 import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
 import CambioDomicilio from './views/components/abonados/CambioDomicilio';
@@ -16,6 +15,11 @@ import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetall
 import Login from './views/components/auth/Login';
 import Cargando from './views/components/design/components/Cargando';
 
+const Home = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+    () => import('./views/components/Home')
+  );
+});
 const CaratulaAbonado = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
     () => import('./views/components/abonados/CaratulaAbonado')
@@ -83,7 +87,9 @@ function App() {
                 <Login/>
               </Route>
               <Route exact path="/home">
-                <Home/>
+                <Suspense fallback={<Cargando/>}>
+                  <Home/>
+                </Suspense>
               </Route>
               <Route exact path="/abonados-activos">
                   <ListaAbonadosActivos/>
