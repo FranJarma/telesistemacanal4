@@ -8,30 +8,35 @@ const Home = () => {
     const styles = useStyles();
     return (
         <>
-            <Aside></Aside>
-            <Grid container>
-                <Grid item lg={4} md={4} xs={12}>
-                    <Card className={styles.cartaHome}>
-                        <CardContent>
-                            <Typography variant="h1">Ingresos del día</Typography>
-                        </CardContent>
-                    </Card>
+        <div className="container">
+            <Aside/>
+            <main>
+                <Grid container>
+                    <Grid item lg={4} md={4} xs={12}>
+                        <Card className={styles.cartaHome}>
+                            <CardContent>
+                                <Typography variant="h1">Ingresos del día</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item lg={4} md={4} xs={12}>
+                        <Card className={styles.cartaHome}>
+                            <CardContent>
+                                <Typography variant="h1">Cortes del día</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item lg={4} md={4} xs={12}>
+                        <Card className={styles.cartaHome}>
+                            <CardContent>
+                                <Typography variant="h1">Estadística 3</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                 </Grid>
-                <Grid item lg={4} md={4} xs={12}>
-                    <Card className={styles.cartaHome}>
-                        <CardContent>
-                            <Typography variant="h1">Cortes del día</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item lg={4} md={4} xs={12}>
-                    <Card className={styles.cartaHome}>
-                        <CardContent>
-                            <Typography variant="h1">Estadística 3</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+            </main>
+            <Footer/>
+        </div>
         </>
     );
 }

@@ -159,7 +159,7 @@ const CaratulaAbonado = () => {
     <Aside/>
     <main>
     <form onSubmit={onSubmitAbonado}>
-    <Card className={styles.cartaPrincipal}>
+    <Card>
         <CardContent>
             <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Agregar abonado"}</Typography>
             <Typography variant="h2"><i className="bx bx-user"></i> Datos del abonado</Typography>

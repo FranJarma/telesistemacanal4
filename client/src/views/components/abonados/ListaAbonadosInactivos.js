@@ -122,8 +122,7 @@ const ExpandedComponent = ({ data }) =>
         <div className="container">
         <Aside/>
         <main>
-        <Aside/>
-        <Card className={styles.cartaPrincipal}>
+        <Card>
             <CardContent>
                 <Typography variant="h1">Abonados Inactivos</Typography>
                 <br/>

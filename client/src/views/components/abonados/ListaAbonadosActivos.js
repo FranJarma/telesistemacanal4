@@ -74,7 +74,8 @@ const ListaAbonadosActivos = () => {
     },
     {
         "name": "Nombre Completo",
-        "selector": row => row["Apellido"] + ', ' + row["Nombre"]
+        "selector": row => row["Apellido"] + ', ' + row["Nombre"],
+        "wrap": true,
     },
     {
         "name": "BarrioId",
@@ -197,7 +198,7 @@ const ListaAbonadosActivos = () => {
         <div className="container">
         <Aside/>
         <main>
-        <Card className={styles.cartaPrincipal}>
+        <Card>
             <CardHeader
             action={<Link style={{textDecoration: 'none'}} to="/caratula-abonado"><Button variant="contained" color="primary">+ Nuevo Abonado</Button></Link>}>
             </CardHeader>
