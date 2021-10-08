@@ -4,6 +4,7 @@ const UserController = require('./../controllers/UserController');
 const { check } = require('express-validator');
 const { esDNIValido, esCUITValido, esOnuValida } =  require('./../helpers/db-validaciones');
 
+router.get('/abonados/inscriptos/', UserController.AbonadosInscriptosListar);
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos/', UserController.AbonadosInactivosListar);
 router.get('/abonados/domicilios/:id', UserController.AbonadoListarDomicilios);
@@ -41,7 +42,7 @@ router.put('/abonados/update/:id',
     check('CondicionIVAId', 'La condición IVA es obligatoria').not().contains(0),
 ],UserController.AbonadoUpdate);
 
-router.put('/abonados/delete/:id', UserController.AbonadoDelete);
+router.put('/abonados/cambiar-estado/:id', UserController.AbonadoCambiarEstado);
 
 router.put('/abonados/cambio-domicilio/:id',
 [

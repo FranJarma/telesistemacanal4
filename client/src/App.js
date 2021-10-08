@@ -14,6 +14,7 @@ import ListaDetallesPagos from './views/components/detallesPagos/ListaDetallesPa
 import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetallePago';
 import Login from './views/components/auth/Login';
 import Cargando from './views/components/design/components/Cargando';
+import ListaAbonadosInscriptos from './views/components/abonados/ListaAbonadosInscriptos';
 
 const Home = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
@@ -90,6 +91,9 @@ function App() {
                 <Suspense fallback={<Cargando/>}>
                   <Home/>
                 </Suspense>
+              </Route>
+              <Route exact path="/abonados-inscriptos">
+                  <ListaAbonadosInscriptos/>
               </Route>
               <Route exact path="/abonados-activos">
                   <ListaAbonadosActivos/>

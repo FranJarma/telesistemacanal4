@@ -10,12 +10,13 @@ export default (state, action) => {
                 domicilios: [action.payload, ...state.domicilios]
             };
         }
-        case TYPES.DAR_DE_BAJA_ABONADO: {
+        case TYPES.CAMBIAR_ESTADO_ABONADO: {
             return {
                 ...state,
-                abonados: state.abonados.map(abonado => abonado.UserId === action.payload.idAbonadoBaja ? action.payload : abonado)
+                abonados: state.abonados.map(abonado => abonado.UserId === action.payload.UserId ? action.payload : abonado)
             };
         }
+        case TYPES.LISTA_ABONADOS_INSCRIPTOS:
         case TYPES.LISTA_ABONADOS_ACTIVOS:
         case TYPES.LISTA_ABONADOS_INACTIVOS:
             return {

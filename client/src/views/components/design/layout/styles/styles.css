@@ -34,6 +34,7 @@
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
   }
   .pro-sidebar img {
+    margin-top: 24px;
     padding-left: 24px;
     width: 100px;
   }
@@ -124,7 +125,7 @@
     .pro-sidebar .pro-menu a:hover {
       color: #d8d8d8; }
   .pro-sidebar .pro-menu .pro-menu-item {
-    font-size: 15px; }
+    font-size: 13px; }
     .pro-sidebar .pro-menu .pro-menu-item.active {
       color: #d8d8d8; }
     .pro-sidebar .pro-menu .pro-menu-item .suffix-wrapper {
@@ -340,8 +341,8 @@ main {
 }
 .fondo::after {
   content: "";
-  background: url('C:\Users\super\Desktop\Proyectos\telesistemacanal4\client\src\views\images\fondo.jpg') no-repeat center center fixed;
-  /* background: url('D:\Proyectos de React\telesistemasrl\client\src\views\images\fondo.jpg') no-repeat center center fixed; */
+  /* background: url('C:\Users\super\Desktop\Proyectos\telesistemacanal4\client\src\views\images\fondo.jpg') no-repeat center center fixed; */
+  background: url('D:\Proyectos de React\telesistemasrl\client\src\views\images\fondo.jpg') no-repeat center center fixed;
   top: 0;
   left: 0;
   bottom: 0;
@@ -376,8 +377,14 @@ main {
 }
 @media (min-width: 768px) {
   main {
-    margin-left: 280px;
-    margin-right: 10px;
+    margin-left: 300px;
+    margin-right: 30px;
+  }
+  .pro-sidebar {
+    z-index: 10000;
+  }
+  .header {
+    display: none;
   }
   .header i {
     visibility: hidden;

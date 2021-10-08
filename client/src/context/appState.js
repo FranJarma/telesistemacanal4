@@ -33,7 +33,7 @@ const AppState = props => {
                     payload: abonado
                 });
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/abonados-activos');
+                history.push('/abonados-inscriptos');
         })
         .catch(err => {
             if(!err.response){
@@ -64,16 +64,16 @@ const AppState = props => {
             }
         })
     }
-    const darDeBajaAbonado = async(abonado) => {
-        clienteAxios.put(`/api/usuarios/abonados/delete/${abonado.idAbonadoBaja}`, abonado)
+    const cambiarEstadoAbonado = async(abonado) => {
+        clienteAxios.put(`/api/usuarios/abonados/cambiar-estado/${abonado.UserId}`, abonado)
         .then(resOk => {
             if (resOk.data)
                 dispatch({
-                    type: TYPES.DAR_DE_BAJA_ABONADO,
+                    type: TYPES.CAMBIAR_ESTADO_ABONADO,
                     payload: abonado
                 })
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/abonados-activos');
+                abonado.EstadoId === 1 ? history.push('/abonados-inscriptos') : abonado.EstadoId === 2 ? history.push('/abonados-activos') : history.push('/abonados-inactivos');
         })
         .catch(err => {
             if(!err.response){
@@ -103,6 +103,17 @@ const AppState = props => {
             }
         })
     }
+    const traerAbonadosInscriptos = async () => {
+        try {
+            const resultado = await clienteAxios.get('/api/usuarios/abonados/inscriptos');
+            dispatch({
+                type: TYPES.LISTA_ABONADOS_INSCRIPTOS,
+                payload: resultado.data
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
     const traerAbonadosActivos = async () => {
         try {
             const resultado = await clienteAxios.get('/api/usuarios/abonados/activos');
@@ -137,7 +148,7 @@ const AppState = props => {
         }
     };
     const traerUltimoDomicilioAbonado = async (id) => {
-        try {
+        try { 
             const resultado = await clienteAxios.get(`/api/usuarios/abonados/domicilio/${id}`);
             dispatch({
                 type: TYPES.ULTIMO_DOMICILIO,
@@ -232,7 +243,7 @@ const AppState = props => {
             servicios: state.servicios,
             onus: state.onus,
             modelosOnu: state.modelosOnu,
-            crearAbonado, modificarAbonado, darDeBajaAbonado, cambioDomicilioAbonado, traerAbonadosActivos, traerAbonadosInactivos, traerUltimoDomicilioAbonado,
+            crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, traerAbonadosInscriptos, traerAbonadosActivos, traerAbonadosInactivos, traerUltimoDomicilioAbonado,
             traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerProvincias, traerServicios, traerModelosONU
         }}>{props.children}
         </AppContext.Provider>

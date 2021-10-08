@@ -104,6 +104,10 @@ const User = db.define('_user', {
     DomicilioId: {
         type: INTEGER,
         allowNull: true
+    },
+    EstadoId: {
+        type: INTEGER,
+        allowNull: false
     }
 });
 

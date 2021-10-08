@@ -4,7 +4,6 @@ import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
-import useStyles from '../Styles';
 import { useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 
@@ -14,7 +13,6 @@ const CaratulaAbonado = () => {
     traerProvincias, traerModelosONU, crearAbonado, modificarAbonado } = appContext;
     
     const location = useLocation();
-    const styles = useStyles();
 
     const [abonadoInfo, setAbonadoInfo] = useState({
         UserId: null,

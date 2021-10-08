@@ -9,6 +9,7 @@ const User = require('./../models/User');
 const Domicilio = require('./../models/Domicilio');
 const Servicio = require('./../models/Servicio');
 const UserDomicilio = require('./../models/UserDomicilio');
+const UserEstado = require('./../models/UserEstado');
 const UserServicio = require('./../models/UserServicio');
 const ModeloOnu = require('./../models/ModeloOnu');
 const UserRole = require('./../models/UserRole');
@@ -17,6 +18,27 @@ const Onu = require('../models/Onu');
 require('dotenv').config({path: 'variables.env'});
 
 //FUNCIONES PARA ABONADOS
+exports.AbonadosInscriptosListar = async(req, res) => {
+    try {
+        const abonados = await knex.select('*').from('_user as u')
+        .join('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
+        .join('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+        .join('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
+        .join('domicilio as d', 'd.DomicilioId', 'u.DomicilioId')
+        .join('barrio as b', 'b.BarrioId', 'd.BarrioId')
+        .join('municipio as m', 'b.MunicipioId', 'm.MunicipioId')
+        .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
+        .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
+        .where({
+            'r.RoleId': process.env.ID_ROL_ABONADO,
+            'u.EstadoId': process.env.ESTADO_ID_ABONADO_INSCRIPTO
+        });
+        res.json(abonados);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Hubo un error al encontrar los abonados');
+    }
+}
 exports.AbonadosActivosListar = async(req, res) => {
     try {
         const abonados = await knex.select('*').from('_user as u')
@@ -28,7 +50,10 @@ exports.AbonadosActivosListar = async(req, res) => {
         .join('municipio as m', 'b.MunicipioId', 'm.MunicipioId')
         .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
         .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
-        .where('r.RoleId', '=', process.env.ID_ROL_ABONADO);
+        .where({
+            'r.RoleId': process.env.ID_ROL_ABONADO,
+            'u.EstadoId': process.env.ESTADO_ID_ABONADO_ACTIVO
+        });
         res.json(abonados);
     } catch (error) {
         console.log(error);
@@ -38,12 +63,18 @@ exports.AbonadosActivosListar = async(req, res) => {
 
 exports.AbonadosInactivosListar = async(req, res) => {
     try {
-        const abonados = await knex.select('*').from('userdomicilio as ud')
-        .join('_user as u', 'u.UserId', '=', 'ud.UserId')
-        .join('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
-        .join('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
-        .join('municipio as m', 'm.MunicipioId', '=', 'b.MunicipioId')
-        .orderBy('ud.CambioDomicilioFecha', 'desc')
+        const abonados = await knex.select('*').from('_user as u')
+        .join('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
+        .join('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+        .join('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
+        .join('domicilio as d', 'd.DomicilioId', 'u.DomicilioId')
+        .join('barrio as b', 'b.BarrioId', 'd.BarrioId')
+        .join('municipio as m', 'b.MunicipioId', 'm.MunicipioId')
+        .join('userestado as ue', 'u.UserId', '=', 'ue.UserId')
+        .where({
+            'r.RoleId': process.env.ID_ROL_ABONADO,
+            'ue.EstadoId': process.env.ESTADO_ID_ABONADO_INACTIVO
+        });
         res.json(abonados);
     } catch (error) {
         console.log(error);
@@ -99,6 +130,7 @@ exports.AbonadoCreate = async(req, res) => {
         const abonado = new User(req.body);
         abonado.UserId = uuidv4().toUpperCase();
         abonado.DomicilioId = ultimoDomicilioId + 1;
+        abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
         const domicilio = new Domicilio(req.body);
         domicilio.DomicilioId = ultimoDomicilioId + 1;
         const abonadoRole = new UserRole();
@@ -114,6 +146,11 @@ exports.AbonadoCreate = async(req, res) => {
         abonadoServicio.UserId = abonado.UserId;
         abonadoServicio.CambioServicioFecha = new Date().toString();
         abonadoServicio.CambioServicioObservaciones = 'Primer Servicio contratado';
+        const abonadoEstado = new UserEstado();
+        abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
+        abonadoEstado.UserId = abonado.UserId;
+        abonadoEstado.CambioEstadoFecha = new Date().toString();
+        abonadoEstado.CambioEstadoObservaciones = 'Primer Inscripción';
         // Si es Cable, no Instanciar ONU
         if(req.body.ServicioId !== 1) {
             let ultimaOnuId = 0;
@@ -133,6 +170,7 @@ exports.AbonadoCreate = async(req, res) => {
         await abonadoRole.save();
         await abonadoDomicilio.save();
         await abonadoServicio.save();
+        await abonadoEstado.save();
         await transaction.commit();
         return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
         }   
@@ -163,20 +201,25 @@ exports.AbonadoUpdate = async(req, res) => {
     }
 }
 
-exports.AbonadoDelete = async(req, res) => {
+exports.AbonadoCambiarEstado = async(req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
     }
+    const transaction = await db.transaction();
     try {
-        await db.query('CALL __UserDelete(:user_id, :motivo_baja)',
-        {
-            replacements: {
-                user_id: req.body.idAbonadoBaja,
-                motivo_baja: req.body.motivoBaja
+        //buscamos el abonado por su Id
+        const abonado = await User.findByPk( req.body.UserId );
+        const abonadoEstado = new UserEstado( req.body );
+        await abonado.update(req.body);
+        await abonadoEstado.save();
+        await transaction.commit();
+        if(req.body.EstadoId === 2) {
+            return res.status(200).json({msg: 'El Abonado ha sido activado correctamente'})
         }
-        });
+        else if (req.body.EstadoId === 3){
             return res.status(200).json({msg: 'El Abonado ha sido dado de baja correctamente'})
+        }
         }   
     catch (error) {
         console.log(error)

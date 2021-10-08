@@ -64,10 +64,19 @@ const ListaAbonadosInactivos = () => {
             "sortable": true,
         },
         {
+            "name": "Nombre",
+            "selector": row =>row["Nombre"],
+            "omit": true
+        },
+        {
+            "name": "Apellido",
+            "selector": row =>row["Apellido"],
+            "omit": true
+        },
+        {
             "name": "Nombre Completo",
-            "selector": row =>row["FullName"],
-            "sortable": true,
-            "minWidth": "12rem"
+            "selector": row => row["Apellido"] + ', ' + row["Nombre"],
+            "wrap": true,
         },
         {
             "name": "DNI",
@@ -82,24 +91,27 @@ const ListaAbonadosInactivos = () => {
             "omit": true,
         },
         {
-            "name": "CUIT",
-            "selector": row =>row["Cuit"],
-            "sortable": true,
-            "hide": "sm"
+            "name": "Domicilio Calle",
+            "selector": row => row["DomicilioCalle"],
+            "omit": true
         },
         {
-            "name": "Condición IVA",
-            "selector": row =>row["CondicionIVADescripcion"],
+            "name": "Domicilio Numero",
+            "selector": row => row["DomicilioNumero"],
+            "omit": true
+        },
+        {
+            "name": "Domicilio",
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+            "wrap": true,
+        },
+        {
+            "name": "Datos última baja",
+            "selector": row =>'Fecha: ' + row["CambioEstadoFecha"].split('T')[0].split('-').reverse().join('/') + ' | Motivo: ' +  row["CambioEstadoObservaciones"],
             "sortable": true,
             "hide": "sm",
+            "wrap": true
         },
-    {
-        "name": "Datos última baja",
-        "selector": row =>'Fecha: ' + row["FechaBaja"] + ' | Motivo: ' +  row["MotivoBaja"],
-        "sortable": true,
-        "hide": "sm",
-        "width": '25rem'
-    },
     {
         cell: (data) =>
         <>
@@ -111,11 +123,9 @@ const ListaAbonadosInactivos = () => {
 const ExpandedComponent = ({ data }) =>
 <>
     <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-id-card"></i> CUIT: {data.Cuit}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-wallet"></i> IVA: {data.CondicionIVADescripcion}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Contrato: {data.FechaContrato.split('T')[0]}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-calendar"></i> Fecha de baja: {data.FechaBaja}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-question-mark"></i> Motivo de baja: {data.MotivoBaja}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Domicilio: {data.DomicilioCalle} {data.DomicilioNumero} | Barrio {data.BarrioNombre} | {data.MunicipioNombre}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-calendar"></i> Fecha de baja: {data.CambioEstadoFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-question-mark"></i> Motivo de baja: {data.CambioEstadoObservaciones}</Typography>
 </>;
     return (
         <>
@@ -124,8 +134,9 @@ const ExpandedComponent = ({ data }) =>
         <main>
         <Card>
             <CardContent>
-                <Typography variant="h1">Abonados Inactivos</Typography>
-                <br/>
+                <Typography variant="h1">Abonados Inactivos <Tooltip arrow title="Los abonados inactivos son aquellos que fueron dados de baja por diversos motivos. Por ej: Mora, conexión Clandestina, etc">
+                <i style={{color: 'grey'}} className="bx bx-help-circle bx-tada-hover bx-sm"></i></Tooltip>
+                </Typography>                <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
                     onChange={handleChangeMunicipioSeleccionado}

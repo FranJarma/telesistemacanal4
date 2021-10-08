@@ -3,25 +3,26 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import './../design/layout/styles/styles.css';
-import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import { Link } from 'react-router-dom';
 import useStyles from '../Styles';
 
-const ListaAbonadosActivos = () => {
+const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
-    const { abonados, municipios, traerAbonadosActivos, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    const { abonados, municipios, traerAbonadosInscriptos, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
 
     useEffect(() => {
-        traerAbonadosActivos();
+        traerAbonadosInscriptos();
         //10 para que traiga los de jujuy
         traerMunicipiosPorProvincia(10);
     },[]);
 
     const [MunicipioId, setMunicipioId] = useState(0);
     const [modalDarDeBaja, setModalDarDeBaja] = useState(false);
+    const [modalConfirmarInstalacion, setModalConfirmarInstalacion] = useState(false);
 
     const [AbonadoInfo, setAbonadoInfo] = useState({
         UserId: null,
@@ -48,6 +49,22 @@ const ListaAbonadosActivos = () => {
         }
     }
 
+    const handleChangeModalConfirmarInstalacion = (data) => {
+        setModalConfirmarInstalacion(!modalConfirmarInstalacion)
+        if(!modalConfirmarInstalacion){
+            setAbonadoInfo({
+                EstadoId: 2,
+                CambioEstadoFecha: new Date().toJSON(),
+                UserId: data.UserId
+            })
+        }
+        else {
+            setAbonadoInfo({
+                UserId: null
+            })
+        }
+    }
+
     const onChangeInputEstadoObservaciones = (e) => {
         setAbonadoInfo({
             ...AbonadoInfo,
@@ -56,7 +73,7 @@ const ListaAbonadosActivos = () => {
     }
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
-        traerAbonadosActivos(e.target.value);
+        traerAbonadosInscriptos(e.target.value);
     }
 
     const styles = useStyles();
@@ -174,13 +191,7 @@ const ListaAbonadosActivos = () => {
         style={{textDecoration: 'none', color: "teal"}}>
         <Tooltip title="Cambio de Titularidad"><i className="bx bxs-notepad bx-xs"></i></Tooltip>
         </Link>
-        <Link to={{
-            pathname: `/historial-de-pagos/UserId=${data.UserId}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "navy"}}>
-        <Tooltip title="Historial de pagos"><i className="bx bx-money bx-xs"></i></Tooltip>
-        </Link>
+        <Typography onClick={()=>handleChangeModalConfirmarInstalacion(data)} style={{textDecoration: 'none', color: "orange", cursor: "pointer"}}><Tooltip title="Confirmar Instalación"><i className='bx bxs-wrench bx-xs'></i></Tooltip></Typography>
         <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Typography>
         </>,
     }
@@ -197,9 +208,12 @@ const ListaAbonadosActivos = () => {
         <Aside/>
         <main>
         <Card>
+            <CardHeader
+            action={<Link style={{textDecoration: 'none'}} to="/caratula-abonado"><Button variant="contained" color="primary">+ Inscribir abonado</Button></Link>}>
+            </CardHeader>
             <CardContent>
-                <Typography variant="h1">Abonados Activos <Tooltip arrow title="Los abonados activos son aquellos a los cuáles se le realizó la instalación correspondiente">
-                <i style={{color: 'grey'}} className="bx bx-help-circle bx-tada-hover bx-sm"></i></Tooltip>
+                <Typography variant="h1">Abonados Inscriptos <Tooltip arrow title="Los abonados inscriptos son aquellos que fueron dados de alta pero no se les realizó la instalación correspondiente">
+                    <i style={{color: 'grey'}} className="bx bx-help-circle bx-tada-hover bx-sm"></i></Tooltip>
                 </Typography>
                 <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
@@ -246,6 +260,35 @@ const ListaAbonadosActivos = () => {
                 </>}
                 >
                 </Modal>
+                <Modal
+                abrirModal={modalConfirmarInstalacion}
+                funcionCerrar={handleChangeModalConfirmarInstalacion}
+                titulo={<Alert severity="info" icon={<i className="bx bxs-user-check bx-sm"></i>}>Si confirma la instalación, el abonado pasará al listado de <b>Abonados Activos</b></Alert>}
+                botones={
+                <>
+                <Button onClick={()=>
+                    {cambiarEstadoAbonado(AbonadoInfo)
+                    setModalDarDeBaja(false)}}
+                    variant="contained"
+                    color="primary">
+                    Aceptar</Button>
+                <Button onClick={handleChangeModalConfirmarInstalacion}>Cerrar</Button></>}
+                formulario={
+                <>
+                <TextField
+                className={styles.inputModal}
+                autoFocus
+                variant="outlined"
+                name="CambioEstadoObservaciones"
+                value={CambioEstadoObservaciones}
+                fullWidth
+                onChange={onChangeInputEstadoObservaciones}
+                >
+                </TextField>
+                <FormHelperText>Observaciones</FormHelperText>
+                </>}
+                >
+                </Modal>
                 <Datatable
                     columnas={columnasAbonadosActivos}
                     datos={abonados}
@@ -260,4 +303,4 @@ const ListaAbonadosActivos = () => {
     );
 }
  
-export default ListaAbonadosActivos;
+export default ListaAbonadosInscriptos;
