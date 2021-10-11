@@ -39,7 +39,7 @@ exports.AbonadosInscriptosListar = async(req, res) => {
         res.json(abonados);
     } catch (error) {
         console.log(error);
-        res.status(500).send('Hubo un error al encontrar los abonados');
+        res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
 exports.AbonadosActivosListar = async(req, res) => {
@@ -62,7 +62,7 @@ exports.AbonadosActivosListar = async(req, res) => {
         res.json(abonados);
     } catch (error) {
         console.log(error);
-        res.status(500).send('Hubo un error al encontrar los abonados');
+        res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
 
@@ -84,7 +84,7 @@ exports.AbonadosInactivosListar = async(req, res) => {
         res.json(abonados);
     } catch (error) {
         console.log(error);
-        res.status(500).send('Hubo un error al encontrar los abonados');
+        res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
 
@@ -100,7 +100,7 @@ exports.AbonadoListarDomicilios = async(req, res) => {
         res.json(domicilios);
     } catch (error) {
         console.log(error);
-        res.status(500).send('Hubo un error al encontrar los domicilios de los abonados');
+        res.status(500).json({ msg: 'Hubo un error al encontrar los domicilios de los abonados'});
     }
 }
 
@@ -167,7 +167,7 @@ exports.AbonadoCreate = async(req, res) => {
         }   
     catch (error) {
         console.log(error);
-        res.status(400).send({msg: 'Hubo un error al registrar el abonado'});
+        res.status(400).json({msg: 'Hubo un error al registrar el abonado'});
     }
 }
 
@@ -181,12 +181,11 @@ exports.AbonadoUpdate = async(req, res) => {
             //buscamos el abonado por su Id
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
             await abonado.update(req.body, {transaction: t});
-            return res.status(200).send({msg: 'El Abonado ha sido modificado correctamente'})
+            return res.status(200).json({msg: 'El Abonado ha sido modificado correctamente'})
         })
         }   
     catch (error) {
-        console.log(error)
-        res.status(400).send({msg: 'Hubo un error al registrar el abonado'});
+        res.status(400).json({msg: 'Hubo un error al registrar el abonado'});
     }
 }
 
@@ -214,8 +213,7 @@ exports.AbonadoCambiarEstado = async(req, res) => {
         })
         }   
     catch (error) {
-        console.log(error)
-        res.status(400).send({msg: 'Hubo un error al dar de baja el abonado'});
+        res.status(400).json({msg: 'Hubo un error al dar de baja el abonado'});
     }
 }
 
@@ -248,7 +246,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(400).send({msg: 'Hubo un error al cambiar el domicilio del abonado'});
+        res.status(400).json({msg: 'Hubo un error al cambiar el domicilio del abonado'});
     }
 }
 
@@ -271,6 +269,6 @@ exports.AbonadoCambioServicio = async(req, res) => {
         })
     } catch (error) {
         console.log(error);
-        res.status(400).send({msg: 'Hubo un error al cambiar el servicio del abonado'});
+        res.status(400).json({msg: 'Hubo un error al cambiar el servicio del abonado'});
     }
 }

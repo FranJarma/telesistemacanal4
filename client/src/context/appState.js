@@ -38,7 +38,10 @@ const AppState = props => {
             if(!err.response){
                 Toast('Error de conexión', 'error');
             }
-            else {
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'error');
+            }
+            else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
             }
         })
@@ -58,7 +61,10 @@ const AppState = props => {
             if(!err.response){
                 Toast('Error de conexión', 'error');
             }
-            else {
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'error');
+            }
+            else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
             }
         })
@@ -75,10 +81,14 @@ const AppState = props => {
                 abonado.EstadoId === 1 ? history.push('/abonados-inscriptos') : abonado.EstadoId === 2 ? history.push('/abonados-activos') : history.push('/abonados-inactivos');
         })
         .catch(err => {
+            console.log(err.response.data.msg);
             if(!err.response){
                 Toast('Error de conexión', 'error');
             }
-            else {
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'error');
+            }
+            else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
             }
         })
@@ -97,7 +107,10 @@ const AppState = props => {
             if(!err.response){
                 Toast('Error de conexión', 'error');
             }
-            else {
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'error');
+            }
+            else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
             }
         })
