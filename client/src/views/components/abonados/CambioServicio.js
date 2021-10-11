@@ -9,69 +9,49 @@ import Datatable from '../design/components/Datatable';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const {barrios, domicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
-    traerProvincias, cambioDomicilioAbonado } = appContext;
+    const {historialServicios, servicios, modelosOnu, traerServicios, traerServiciosAbonado, traerModelosONU, cambioDomicilioAbonado } = appContext;
 
     const location = useLocation();
     //Observables
     useEffect(() => {
-        traerProvincias();
-        traerMunicipiosPorProvincia(ProvinciaId);
-        traerDomiciliosAbonado(location.state.UserId);
+        traerServicios();
+        traerModelosONU();
+        traerServiciosAbonado(location.state.UserId);
     }, [])
     //States
-    const [domicilioInfo, setDomicilioInfo] = useState({
+    const [ServicioInfo, setServicioInfo] = useState({
         UserId: location.state.UserId,
-        DomicilioCalle: null,
-        DomicilioNumero: null,
-        DomicilioPiso: null,
-        CambioDomicilioObservaciones: null
+        CambioServicioFecha: new Date().toJSON(),
+        CambioServicioObservaciones: null,
+        OnuMac: null,
+        OnuSerie: null
     })
     const onInputChange = (e) => {
-        setDomicilioInfo({
-            ...domicilioInfo,
+        setServicioInfo({
+            ...ServicioInfo,
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioObservaciones} = domicilioInfo;
-    //seteamos en 10 para que traiga jujuy directamente
-    const [ProvinciaId, setProvinciaId] = useState(10);
-    //para más adelante cuando vayan a otras provincias
-    /*
-    const handleChangeProvinciaSeleccionada = (e) => {
-        setProvinciaId(e.target.value);
-        setMunicipioId(0);
-        setBarrioId(0);
-        traerMunicipiosPorProvincia(e.target.value);
-    }*/
-    const [BarrioId, setBarrioId] = useState(0);
-    const [BarrioNombre, setBarrioNombre] = useState('')
-    const [MunicipioId, setMunicipioId] = useState(0);
-    const [MunicipioNombre, setMunicipioNombre] = useState('')
-    const [modalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
-    const handleChangeMunicipioSeleccionado = (e) => {
-        setMunicipioId(e.target.value);
-        setBarrioId(0);
-        traerBarriosPorMunicipio(e.target.value);
+    const { UserId, OnuMac, OnuSerie, CambioServicioObservaciones} = ServicioInfo;
+    const [ServicioId, setServicioId] = useState(1);
+    const [ModeloOnuId, setModeloOnuId] = useState(0);
+    const [ModalNuevoServicio, setModalNuevoServicio] = useState(false);
+
+    const handleChangeServicioSeleccionado = (e) => {
+        setServicioId(e.target.value);
     }
-    const handleFocusMunicipioSeleccionado = (e) => {
-        setMunicipioNombre(e.target.innerHTML)
+    const handleChangeModeloONUSeleccionado = (e) => {
+        setModeloOnuId(e.target.value);
     }
-    const handleFocusBarrioSeleccionado = (e) => {
-        setBarrioNombre(e.target.innerHTML)
-    }
-    const handleChangeBarrioSeleccionado = (e) => {
-        setBarrioId(e.target.value);
-    }
-    const handleChangeModalNuevoDomicilio = (data) => {
-        setModalNuevoDomicilio(!modalNuevoDomicilio);
-        if(!modalNuevoDomicilio){
-            setDomicilioInfo({
+    const handleChangeModalNuevoServicio = (data) => {
+        setModalNuevoServicio(!ModalNuevoServicio);
+        if(!ModalNuevoServicio){
+            setServicioInfo({
                 UserId: data.UserId
             })
         }
         else {
-            setDomicilioInfo({
+            setServicioInfo({
                 UserId: null
             })
         }
@@ -82,55 +62,40 @@ const CambioServicio = () => {
         if(location.state) {
             cambioDomicilioAbonado({
                 UserId,
-                //ProvinciaId
-                BarrioId,
-                BarrioNombre,
-                MunicipioId,
-                MunicipioNombre,
-                DomicilioCalle,
-                DomicilioNumero,
-                DomicilioPiso,
-                CambioDomicilioObservaciones
+                ServicioId,
+                CambioServicioObservaciones
             })
-            setModalNuevoDomicilio(false);
+            setModalNuevoServicio(false);
     }
 }
-    const columnasDomicilios = [
+    const columnasServicios = [
         {
             "name": "id",
             "selector": row =>row["UserId"],
             "omit": true,
         },
         {
-            "name": "Dirección",
-            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"]
-        },
-        {
-            "name": "Barrio",
-            "selector": row =>row["BarrioNombre"],
+            "name": "Servicio",
+            "selector": row =>row["ServicioNombre"],
             "hide": "sm"
         },
         {
-            "name": "Municipio",
-            "selector": row =>row["MunicipioNombre"],
+            "name": "Fecha de Cambio",
+            "selector": row =>row["CambioServicioFecha"].split('T')[0].split('-').reverse().join('/'),
+            "hide": "sm"
         },
-        // {
-        //     "name": "Fecha de Cambio",
-        //     "selector": row =>row["CambioDomicilioFecha"].split('T')[0],
-        //     "hide": "sm"
-        // },
         {
             "name": "Observaciones",
-            "selector": row =>row["CambioDomicilioObservaciones"],
-            "hide": "sm"
+            "selector": row =>row["CambioServicioObservaciones"],
+            "hide": "sm",
+            "wrap": true
         },
     ]
     const ExpandedComponent = ({ data }) =>
     <>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Dirección: {data.DomicilioCalle} {data.DomicilioNumero}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-home"></i> Barrio: {data.BarrioNombre}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-building-house"></i> Municipio: {data.MunicipioNombre}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.CambioDomicilioFecha.split('T')[0]}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Servicio: {data.ServicioNombre}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.CambioServicioFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-clipboard"></i> Observaciones: {data.CambioServicioObservaciones}</Typography>
     </>;
     return ( 
     <>
@@ -139,22 +104,22 @@ const CambioServicio = () => {
     <main>
     <Card>
         <CardHeader
-            action={<Button onClick={setModalNuevoDomicilio} variant="contained" color="primary">+ Nuevo servicio</Button>}>
+            action={<Button onClick={setModalNuevoServicio} variant="contained" color="primary">+ Nuevo servicio</Button>}>
         </CardHeader>
         <CardContent>
             <Typography variant="h1">Historial de cambios de servicio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
             <br/>
             <Datatable
             expandedComponent={ExpandedComponent}
-            datos={domicilios}
-            columnas={columnasDomicilios}>
+            datos={historialServicios}
+            columnas={columnasServicios}>
             </Datatable>
             <FormHelperText>Los servicios están ordenados por fecha más reciente</FormHelperText>
             <br/>
         </CardContent>
         <Modal
-        abrirModal={modalNuevoDomicilio}
-        funcionCerrar={handleChangeModalNuevoDomicilio}
+        abrirModal={ModalNuevoServicio}
+        funcionCerrar={handleChangeModalNuevoServicio}
         botones={
         <>
         <Button
@@ -162,95 +127,91 @@ const CambioServicio = () => {
             color="primary"
             onClick={onSubmitAbonado}>
             Agregar</Button>
-        <Button onClick={handleChangeModalNuevoDomicilio}>Cerrar</Button></>}
+        <Button onClick={handleChangeModalNuevoServicio}>Cerrar</Button></>}
         formulario={
             <>
             <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-plug"></i> Datos del nuevo servicio</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
-                    variant="filled"
-                    disabled
-                    //onChange={handleChangeProvinciaSeleccionada}
-                    value={ProvinciaId}
-                    label="Provincia"
+                    variant="outlined"
+                    onChange={handleChangeServicioSeleccionado}
+                    value={ServicioId}
+                    label="Servicio"
                     fullWidth
                     select
                     >
-                    {provincias.map((provincia)=>(
-                        <MenuItem key={provincia.ProvinciaId} value={provincia.ProvinciaId}>{provincia.ProvinciaNombre}</MenuItem>
+                    {servicios.map((servicio)=>(
+                        <MenuItem key={servicio.ServicioId} value={servicio.ServicioId}>{servicio.ServicioNombre}</MenuItem>
                     ))}
                     </TextField>
                 </Grid>
+            </Grid>
+            {ServicioId !== 1 ?
+            <>
+            <Typography variant="h2"><i className='bx bx-broadcast'></i> Datos de ONU</Typography>
+            <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
-                    variant = "outlined"
-                    onChange={handleChangeMunicipioSeleccionado}
-                    value={MunicipioId}
-                    label="Municipio"
+                    variant="outlined"
+                    value={ServicioId}
+                    label="Tipo de ONU"
                     fullWidth
                     select
-                    onFocus={handleFocusMunicipioSeleccionado}
                     >
-                    {municipios.length > 0 ? municipios.map((municipio)=>(
-                        <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
-                    )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
+                    {servicios.map((servicio)=>(
+                        <MenuItem key={servicio.ServicioId} value={servicio.ServicioId}>{servicio.ServicioNombre}</MenuItem>
+                    ))}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                 <TextField
                     variant = "outlined"
-                    onChange={handleChangeBarrioSeleccionado}
-                    value={BarrioId}
-                    label="Barrio"
+                    value={ModeloOnuId}
+                    onChange={handleChangeModeloONUSeleccionado}
+                    label="Modelo"
                     fullWidth
                     select
-                    onFocus={handleFocusBarrioSeleccionado}
                     >
-                    {barrios.length > 0 ? barrios.map((barrio)=>(
-                        <MenuItem key={barrio.BarrioId} value={barrio.BarrioId}>{barrio.BarrioNombre}</MenuItem>
-                    )): <MenuItem disabled>No se encontraron barrios</MenuItem>}
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
-                    <TextField
-                    variant = "outlined"
-                    value={DomicilioCalle}
-                    name="DomicilioCalle"
-                    onChange={onInputChange}
-                    fullWidth
-                    label="Calle">
+                    {modelosOnu.map((modeloONU)=>(
+                        <MenuItem key={modeloONU.ModeloOnuId} value={modeloONU.ModeloOnuId}>{modeloONU.ModeloOnuNombre}</MenuItem>
+                    ))}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
+                <TextField
                     variant = "outlined"
-                    value={DomicilioNumero}
-                    name="DomicilioNumero"
+                    name= "OnuMac"
+                    inputProps={{ maxLength: 12 }}
+                    value={OnuMac}
                     onChange={onInputChange}
-                    type="number"
+                    label="MAC"
                     fullWidth
-                    label="Número">
-                    </TextField>
+                    >
+                </TextField>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
+                <TextField
                     variant = "outlined"
-                    value={DomicilioPiso}
-                    name="DomicilioPiso"
+                    name="OnuSerie"
+                    value={OnuSerie}
                     onChange={onInputChange}
-                    type="number"
+                    label="Nº de serie"
                     fullWidth
-                    label="Piso">
-                    </TextField>
+                    >
+                </TextField>
                 </Grid>
+            </Grid>
+            </>
+            : "" }
+            <Grid container spacing={3}>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
                     variant = "outlined"
                     multiline
                     minRows={3}
-                    value={CambioDomicilioObservaciones}
-                    name="CambioDomicilioObservaciones"
+                    value={CambioServicioObservaciones}
+                    name="CambioServicioObservaciones"
                     inputProps={{
                         maxLength: 100
                     }}

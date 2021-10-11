@@ -9,7 +9,7 @@ import Datatable from '../design/components/Datatable';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
-    const {barrios, domicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
+    const {barrios, historialDomicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
     traerProvincias, cambioDomicilioAbonado } = appContext;
 
     const location = useLocation();
@@ -20,7 +20,7 @@ const CambioDomicilio = () => {
         traerDomiciliosAbonado(location.state.UserId);
     }, [])
     //States
-    const [domicilioInfo, setDomicilioInfo] = useState({
+    const [DomicilioInfo, setDomicilioInfo] = useState({
         UserId: location.state.UserId,
         DomicilioCalle: null,
         DomicilioNumero: null,
@@ -30,11 +30,11 @@ const CambioDomicilio = () => {
     })
     const onInputChange = (e) => {
         setDomicilioInfo({
-            ...domicilioInfo,
+            ...DomicilioInfo,
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioFecha, CambioDomicilioObservaciones} = domicilioInfo;
+    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioFecha, CambioDomicilioObservaciones} = DomicilioInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -49,7 +49,7 @@ const CambioDomicilio = () => {
     const [BarrioNombre, setBarrioNombre] = useState('')
     const [MunicipioId, setMunicipioId] = useState(0);
     const [MunicipioNombre, setMunicipioNombre] = useState('')
-    const [modalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
+    const [ModalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
         setBarrioId(0);
@@ -65,8 +65,8 @@ const CambioDomicilio = () => {
         setBarrioId(e.target.value);
     }
     const handleChangeModalNuevoDomicilio = (data) => {
-        setModalNuevoDomicilio(!modalNuevoDomicilio);
-        if(!modalNuevoDomicilio){
+        setModalNuevoDomicilio(!ModalNuevoDomicilio);
+        if(!ModalNuevoDomicilio){
             setDomicilioInfo({
                 UserId: data.UserId
             })
@@ -135,6 +135,7 @@ const CambioDomicilio = () => {
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-home"></i> Barrio: {data.BarrioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-building-house"></i> Municipio: {data.MunicipioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.CambioDomicilioFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-clipboard"></i> Observaciones: {data.CambioDomicilioObservaciones}</Typography>
     </>;
     return ( 
     <>
@@ -150,14 +151,14 @@ const CambioDomicilio = () => {
             <br/>
             <Datatable
             expandedComponent={ExpandedComponent}
-            datos={domicilios}
+            datos={historialDomicilios}
             columnas={columnasDomicilios}>
             </Datatable>
             <FormHelperText>Los domicilios están ordenados por fecha más reciente</FormHelperText>
             <br/>
         </CardContent>
         <Modal
-        abrirModal={modalNuevoDomicilio}
+        abrirModal={ModalNuevoDomicilio}
         funcionCerrar={handleChangeModalNuevoDomicilio}
         botones={
         <>

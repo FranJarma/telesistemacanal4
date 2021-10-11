@@ -35,10 +35,8 @@ exports.AbonadosInscriptosListar = async(req, res) => {
             'r.RoleId': process.env.ID_ROL_ABONADO,
             'u.EstadoId': process.env.ESTADO_ID_ABONADO_INSCRIPTO
         });
-        console.log(abonados);
         res.json(abonados);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
@@ -61,7 +59,6 @@ exports.AbonadosActivosListar = async(req, res) => {
         });
         res.json(abonados);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
@@ -83,7 +80,6 @@ exports.AbonadosInactivosListar = async(req, res) => {
         });
         res.json(abonados);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
@@ -99,8 +95,21 @@ exports.AbonadoListarDomicilios = async(req, res) => {
         .orderBy('ud.CambioDomicilioFecha', 'desc');
         res.json(domicilios);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los domicilios de los abonados'});
+    }
+}
+
+exports.AbonadoListarServicios = async(req, res) => {
+    try {
+        const servicios = await knex.select('*').from('userservicio as us')
+        .innerJoin('_user as u', 'u.UserId', '=', 'us.UserId')
+        .innerJoin('servicio as s', 's.ServicioId', '=', 'us.ServicioId')
+        .where('us.UserId', '=', req.params.id)
+        .orderBy('us.CambioServicioFecha', 'desc');
+        res.json(servicios);
+        console.log(servicios);
+    } catch (error) {
+        res.status(500).json({ msg: 'Hubo un error al encontrar los servicios de los abonados'});
     }
 }
 
@@ -166,7 +175,6 @@ exports.AbonadoCreate = async(req, res) => {
         })
         }   
     catch (error) {
-        console.log(error);
         res.status(400).json({msg: 'Hubo un error al registrar el abonado'});
     }
 }
@@ -245,7 +253,6 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
         res.status(400).json({msg: 'Hubo un error al cambiar el domicilio del abonado'});
     }
 }
@@ -268,7 +275,6 @@ exports.AbonadoCambioServicio = async(req, res) => {
             return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
         })
     } catch (error) {
-        console.log(error);
         res.status(400).json({msg: 'Hubo un error al cambiar el servicio del abonado'});
     }
 }

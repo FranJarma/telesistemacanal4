@@ -23,16 +23,15 @@ export default (state, action) => {
                 ...state,
                 abonados: action.payload,
         }
-        case TYPES.LISTA_DOMICILIOS_ABONADOS: 
+        case TYPES.LISTA_DOMICILIOS_ABONADO: 
             return {
                 ...state,
-                domicilios: action.payload
+                historialDomicilios: action.payload
             }
-        case TYPES.ULTIMO_DOMICILIO: {
+        case TYPES.LISTA_SERVICIOS_ABONADO: 
             return {
                 ...state,
-                domicilio: action.payload
-            }
+                historialServicios: action.payload
         }
         case TYPES.LISTA_BARRIOS:
             return {

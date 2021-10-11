@@ -17,7 +17,9 @@ const AppState = props => {
         provincias: [],
         servicios: [],
         onus: [],
-        modelosOnu: []
+        modelosOnu: [],
+        historialDomicilios: [],
+        historialServicios: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -152,24 +154,25 @@ const AppState = props => {
         try {
             const resultado = await clienteAxios.get(`/api/usuarios/abonados/domicilios/${id}`);
             dispatch({
-                type: TYPES.LISTA_DOMICILIOS_ABONADOS,
+                type: TYPES.LISTA_DOMICILIOS_ABONADO,
                 payload: resultado.data
             });
         } catch (error) {
             console.log(error);
         }
     };
-    const traerUltimoDomicilioAbonado = async (id) => {
-        try { 
-            const resultado = await clienteAxios.get(`/api/usuarios/abonados/domicilio/${id}`);
+    const traerServiciosAbonado = async (id) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/usuarios/abonados/servicios/${id}`);
             dispatch({
-                type: TYPES.ULTIMO_DOMICILIO,
+                type: TYPES.LISTA_SERVICIOS_ABONADO,
                 payload: resultado.data
             });
         } catch (error) {
             console.log(error);
         }
     };
+
     //BARRIOS
     const traerBarriosPorMunicipio = async (municipioId) => {
         try {
@@ -247,7 +250,6 @@ const AppState = props => {
         value={{
             abonados: state.abonados,
             domicilios: state.domicilios,
-            domicilio: state.domicilio,
             barrios: state.barrios,
             condicionesIva: state.condicionesIva,
             municipios: state.municipios,
@@ -255,7 +257,9 @@ const AppState = props => {
             servicios: state.servicios,
             onus: state.onus,
             modelosOnu: state.modelosOnu,
-            crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, traerAbonadosInscriptos, traerAbonadosActivos, traerAbonadosInactivos, traerUltimoDomicilioAbonado,
+            historialDomicilios: state.historialDomicilios,
+            historialServicios: state.historialServicios,
+            crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, traerAbonadosInscriptos, traerAbonadosActivos, traerAbonadosInactivos, traerServiciosAbonado,
             traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerProvincias, traerServicios, traerModelosONU
         }}>{props.children}
         </AppContext.Provider>
