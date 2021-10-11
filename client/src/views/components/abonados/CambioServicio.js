@@ -9,7 +9,7 @@ import Datatable from '../design/components/Datatable';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const {historialServicios, servicios, modelosOnu, traerServicios, traerServiciosAbonado, traerModelosONU, cambioDomicilioAbonado } = appContext;
+    const {historialServicios, servicios, modelosOnu, traerServicios, traerServiciosAbonado, traerModelosONU, cambioServicioAbonado } = appContext;
 
     const location = useLocation();
     //Observables
@@ -32,7 +32,7 @@ const CambioServicio = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, OnuMac, OnuSerie, CambioServicioObservaciones} = ServicioInfo;
+    const { UserId, OnuMac, OnuSerie, CambioServicioFecha, CambioServicioObservaciones} = ServicioInfo;
     const [ServicioId, setServicioId] = useState(1);
     const [ModeloOnuId, setModeloOnuId] = useState(0);
     const [ModalNuevoServicio, setModalNuevoServicio] = useState(false);
@@ -60,10 +60,14 @@ const CambioServicio = () => {
     const onSubmitAbonado = (e) => {
         e.preventDefault();
         if(location.state) {
-            cambioDomicilioAbonado({
+            cambioServicioAbonado({
                 UserId,
                 ServicioId,
-                CambioServicioObservaciones
+                CambioServicioFecha,
+                CambioServicioObservaciones,
+                ModeloOnuId,
+                OnuMac,
+                OnuSerie
             })
             setModalNuevoServicio(false);
     }
@@ -76,13 +80,12 @@ const CambioServicio = () => {
         },
         {
             "name": "Servicio",
-            "selector": row =>row["ServicioNombre"],
-            "hide": "sm"
+            "selector": row =>row["OnuId"] ? row["ServicioNombre"] + ' | ' + "MAC Onu:" + ' ' + row["OnuMac"] : row["ServicioNombre"],
+            "wrap": true
         },
         {
             "name": "Fecha de Cambio",
             "selector": row =>row["CambioServicioFecha"].split('T')[0].split('-').reverse().join('/'),
-            "hide": "sm"
         },
         {
             "name": "Observaciones",
@@ -154,6 +157,7 @@ const CambioServicio = () => {
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant="outlined"
+                    disabled
                     value={ServicioId}
                     label="Tipo de ONU"
                     fullWidth
@@ -168,6 +172,7 @@ const CambioServicio = () => {
                 <TextField
                     variant = "outlined"
                     value={ModeloOnuId}
+                    required
                     onChange={handleChangeModeloONUSeleccionado}
                     label="Modelo"
                     fullWidth
@@ -182,6 +187,7 @@ const CambioServicio = () => {
                 <TextField
                     variant = "outlined"
                     name= "OnuMac"
+                    required
                     inputProps={{ maxLength: 12 }}
                     value={OnuMac}
                     onChange={onInputChange}
@@ -194,6 +200,7 @@ const CambioServicio = () => {
                 <TextField
                     variant = "outlined"
                     name="OnuSerie"
+                    required
                     value={OnuSerie}
                     onChange={onInputChange}
                     label="Nº de serie"

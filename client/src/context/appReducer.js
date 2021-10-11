@@ -7,7 +7,13 @@ export default (state, action) => {
         case TYPES.CAMBIO_DOMICILIO_ABONADO: {
             return {
                 ...state,
-                domicilios: [action.payload, ...state.domicilios]
+                historialDomicilios: [action.payload, ...state.historialDomicilios]
+            };
+        }
+        case TYPES.CAMBIO_SERVICIO_ABONADO: {
+            return {
+                ...state,
+                historialServicios: [action.payload, ...state.historialServicios]
             };
         }
         case TYPES.CAMBIAR_ESTADO_ABONADO: {

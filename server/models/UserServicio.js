@@ -12,6 +12,9 @@ const UserServicio = db.define('userservicio', {
     ServicioId: {
         type: INTEGER
     },
+    OnuId: {
+        type: INTEGER
+    },
     CambioServicioFecha: {
         type: DATE
     },

@@ -41,7 +41,7 @@ const AppState = props => {
                 Toast('Error de conexión', 'error');
             }
             else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'error');
+                Toast(err.response.data.msg, 'warning');
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -64,7 +64,7 @@ const AppState = props => {
                 Toast('Error de conexión', 'error');
             }
             else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'error');
+                Toast(err.response.data.msg, 'warning');
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -88,7 +88,7 @@ const AppState = props => {
                 Toast('Error de conexión', 'error');
             }
             else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'error');
+                Toast(err.response.data.msg, 'warning');
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -110,7 +110,29 @@ const AppState = props => {
                 Toast('Error de conexión', 'error');
             }
             else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'error');
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const cambioServicioAbonado = async(servicio) => {
+        clienteAxios.put(`/api/usuarios/abonados/cambio-servicio/${servicio.UserId}`, servicio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CAMBIO_SERVICIO_ABONADO,
+                    payload: servicio
+                })
+                Swal('Operación completa', resOk.data.msg);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -259,8 +281,9 @@ const AppState = props => {
             modelosOnu: state.modelosOnu,
             historialDomicilios: state.historialDomicilios,
             historialServicios: state.historialServicios,
-            crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, traerAbonadosInscriptos, traerAbonadosActivos, traerAbonadosInactivos, traerServiciosAbonado,
-            traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerProvincias, traerServicios, traerModelosONU
+            crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, traerAbonadosInscriptos, traerAbonadosActivos,
+            traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
+            traerProvincias, traerServicios, traerModelosONU
         }}>{props.children}
         </AppContext.Provider>
     )

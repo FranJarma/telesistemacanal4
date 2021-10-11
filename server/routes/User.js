@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('./../controllers/UserController');
 const { check } = require('express-validator');
-const { esDNIValido, esCUITValido, esOnuValida } =  require('./../helpers/db-validaciones');
+const { esDNIValido, esCUITValido, esOnuValida, mismoServicio } =  require('./../helpers/db-validaciones');
 
 router.get('/abonados/inscriptos/', UserController.AbonadosInscriptosListar);
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
@@ -51,5 +51,10 @@ router.put('/abonados/cambio-domicilio/:id',
     check('DomicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
     check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
 ],UserController.AbonadoCambioDomicilio);
+
+router.put('/abonados/cambio-servicio/:id',
+[
+    check('ServicioId', 'El servicio es obligatorio').not().contains(0)
+],UserController.AbonadoCambioServicio);
 
 module.exports = router;

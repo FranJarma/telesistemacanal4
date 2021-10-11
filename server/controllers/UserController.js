@@ -101,13 +101,14 @@ exports.AbonadoListarDomicilios = async(req, res) => {
 
 exports.AbonadoListarServicios = async(req, res) => {
     try {
-        const servicios = await knex.select('*').from('userservicio as us')
+        const servicios = await knex.select('*').select('us.OnuId').from('userservicio as us')
         .innerJoin('_user as u', 'u.UserId', '=', 'us.UserId')
         .innerJoin('servicio as s', 's.ServicioId', '=', 'us.ServicioId')
+        .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
+        .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
         .where('us.UserId', '=', req.params.id)
         .orderBy('us.CambioServicioFecha', 'desc');
         res.json(servicios);
-        console.log(servicios);
     } catch (error) {
         res.status(500).json({ msg: 'Hubo un error al encontrar los servicios de los abonados'});
     }
@@ -123,7 +124,7 @@ exports.AbonadoCreate = async(req, res) => {
         //traemos el id del ultimo domicilio registrado y de la ultima onu registrada
             let ultimoDomicilioId = 0;
             const ultimoDomicilio = await Domicilio.findOne({
-                order: [['DomicilioId', 'DESC']],
+                order: [['DomicilioId', 'DESC']]
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
             // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
@@ -163,7 +164,7 @@ exports.AbonadoCreate = async(req, res) => {
                 const onu = new Onu(req.body);
                 onu.OnuId = ultimaOnuId + 1;
                 abonado.OnuId = ultimaOnuId + 1;
-                await onu.save();
+                await onu.save({transaction: t});
             };
             await domicilio.save({transaction: t});
             await abonado.save({transaction: t});
@@ -266,15 +267,32 @@ exports.AbonadoCambioServicio = async(req, res) => {
         await db.transaction(async(t)=>{
             //buscamos el usuario para actualizarle el domicilio
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
+            if (abonado.ServicioId === req.body.ServicioId)
+            return res.status(400).json({msg: 'Seleccione un servicio diferente al que ya tiene el abonado actualmente'});
+            const abonadoServicio = new UserServicio(req.body, {transaction: t});
+            abonadoServicio.ServicioId = req.body.ServicioId;
+            if(req.body.ServicioId !== 1) {
+                let ultimaOnuId = 0;
+                // traemos el de la ultima onu registrada
+                const ultimaOnu = await Onu.findOne({
+                    order: [['OnuId', 'DESC']],
+                    attributes: { exclude: ['createdAt', 'updatedAt']}
+                });
+                if (ultimaOnu) ultimaOnuId = ultimaOnu.OnuId;
+                const onu = new Onu(req.body);
+                onu.OnuId = ultimaOnuId + 1;
+                abonado.OnuId = ultimaOnuId + 1;
+                abonadoServicio.OnuId = ultimaOnuId + 1;
+                await onu.save({transaction: t});
+            };
             abonado.ServicioId = req.body.ServicioId;
             //await abonado.update(req.body.DomicilioId);
-            const abonadoServicio = new UserServicio(req.body, {transaction: t});
-            abonadoDomicilio.ServicioId = req.body.ServicioId;
             await abonado.save({transaction: t});
             await abonadoServicio.save({transaction: t});
             return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
         })
     } catch (error) {
+        console.log(error);
         res.status(400).json({msg: 'Hubo un error al cambiar el servicio del abonado'});
     }
 }
