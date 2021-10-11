@@ -79,6 +79,9 @@ const CaratulaAbonado = () => {
         traerServicios();
         traerCondicionesIva();
         traerModelosONU();
+    }, [])
+    
+    useEffect(() => {
         if(location.state)
         {
             setAbonadoInfo({
@@ -95,16 +98,13 @@ const CaratulaAbonado = () => {
                 OnuMac: location.state.OnuMac,
                 OnuSerie: location.state.OnuSerie
             });
-            setMunicipioId(location.state.MunicipioId);
-            setBarrioId(location.state.BarrioId);
             setServicioId(location.state.ServicioId);
             setCondicionIvaId(location.state.CondicionIvaId);
-            setModeloOnuId(location.state.ModeloOnuId);
             setFechaNacimiento(location.state.FechaNacimiento);
             setFechaBajada(location.state.FechaBajada);
             setFechaContrato(location.state.FechaContrato);
         }
-    }, [BarrioId, ModeloOnuId])
+    }, [location.state])
 
     const onSubmitAbonado = (e) => {
         e.preventDefault();
@@ -257,16 +257,16 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
-                    variant="filled"
-                    disabled
-                    value={ProvinciaId}
+                    variant = {location.state ? "filled" : "outlined"}
+                    disabled = {location.state ? true : false}
+                    value={location.state ? location.state.ProvinciaNombre : ProvinciaId}
                     label="Provincia"
                     fullWidth
-                    select
+                    select = {location.state ? false : true}
                     >
-                    {provincias.map((provincia)=>(
+                    {!location.state ? provincias.map((provincia)=>(
                         <MenuItem key={provincia.ProvinciaId} value={provincia.ProvinciaId}>{provincia.ProvinciaNombre}</MenuItem>
-                    ))}
+                    )): ""}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
@@ -274,14 +274,14 @@ const CaratulaAbonado = () => {
                     variant = {location.state ? "filled" : "outlined"}
                     disabled = {location.state ? true : false}
                     onChange={handleChangeMunicipioSeleccionado}
-                    value={MunicipioId}
+                    value={location.state ? location.state.MunicipioNombre : MunicipioId}
                     label="Municipio"
                     fullWidth
-                    select
+                    select = {location.state ? false : true}
                     >
-                    {municipios.length > 0 ? municipios.map((municipio)=>(
+                    {!location.state ? municipios.length > 0 ? municipios.map((municipio)=>(
                         <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
-                    )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
+                    )): <MenuItem disabled>No se encontraron municipios</MenuItem> : ""}
                     </TextField>
                 </Grid>
             </Grid>
@@ -292,14 +292,14 @@ const CaratulaAbonado = () => {
                     variant = {location.state ? "filled" : "outlined"}
                     disabled = {location.state ? true : false}
                     onChange={handleChangeBarrioSeleccionado}
-                    value={BarrioId}
+                    value={location.state ? location.state.BarrioNombre : BarrioId}
                     label="Barrio"
                     fullWidth
-                    select
+                    select = {location.state ? false : true}
                     >
-                    {barrios.length > 0 ? barrios.map((barrio)=>(
+                    {!location.state ? barrios.length > 0 ? barrios.map((barrio)=>(
                         <MenuItem key={barrio.BarrioId} value={barrio.BarrioId}>{barrio.BarrioNombre}</MenuItem>
-                    )): <MenuItem disabled>No se encontraron barrios</MenuItem>}
+                    )): <MenuItem disabled>No se encontraron barrios</MenuItem> : ""}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
@@ -344,15 +344,15 @@ const CaratulaAbonado = () => {
                     <TextField
                     variant = {location.state ? "filled" : "outlined"}
                     disabled = {location.state ? true : false}
-                    value={ServicioId}
+                    value={location.state ? location.state.ServicioNombre : ServicioId}
                     onChange={handleChangeServicioSeleccionado}
                     label="Tipo de servicio"
                     fullWidth
-                    select
+                    select = {location.state ? false : true}
                     >
-                    {servicios.map((servicio)=>(
+                    {!location.state ? servicios.map((servicio)=>(
                         <MenuItem key={servicio.ServicioId} value={servicio.ServicioId}>{servicio.ServicioNombre}</MenuItem>
-                    ))}
+                    )): ""}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
@@ -378,7 +378,7 @@ const CaratulaAbonado = () => {
                     </DatePicker >
                 </Grid>
             </Grid>
-            {ServicioId !== 1 && ServicioId !== 0 ?
+            {ServicioId !== 1 ?
             <>
             <Typography variant="h2"><i className='bx bx-broadcast'></i> Datos de ONU</Typography>
             <Grid container spacing={3}>
@@ -440,7 +440,7 @@ const CaratulaAbonado = () => {
             </>
             : ""}
             <br/>
-            {location.state ? <Alert severity="info">Para modificar todos los datos del domicilio y del servicio contratado se tiene que ir a las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
+            {location.state ? <Alert severity="info">Para modificar todos los datos del domicilio y del servicio contratado se tiene que realizar desde las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
         </CardContent>
         <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
             <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}

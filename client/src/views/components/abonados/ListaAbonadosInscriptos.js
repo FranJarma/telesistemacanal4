@@ -213,7 +213,7 @@ const ListaAbonadosInscriptos = () => {
             </CardHeader>
             <CardContent>
                 <Typography variant="h1">Abonados Inscriptos <Tooltip arrow title="Los abonados inscriptos son aquellos que fueron dados de alta pero no se les realizó la instalación correspondiente">
-                    <i style={{color: 'grey'}} className="bx bx-help-circle bx-tada-hover bx-sm"></i></Tooltip>
+                    <i style={{color: 'blue'}} className="bx bxs-help-circle bx-tada-hover bx-sm"></i></Tooltip>
                 </Typography>
                 <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>

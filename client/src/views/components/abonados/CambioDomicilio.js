@@ -105,7 +105,8 @@ const CambioDomicilio = () => {
         },
         {
             "name": "Dirección",
-            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"]
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"],
+            "wrap": true
         },
         {
             "name": "Barrio",
@@ -124,7 +125,8 @@ const CambioDomicilio = () => {
         {
             "name": "Observaciones",
             "selector": row =>row["CambioDomicilioObservaciones"],
-            "hide": "sm"
+            "hide": "sm",
+            "wrap": true
         },
     ]
     const ExpandedComponent = ({ data }) =>

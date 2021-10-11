@@ -8,7 +8,6 @@ router.get('/abonados/inscriptos/', UserController.AbonadosInscriptosListar);
 router.get('/abonados/activos/', UserController.AbonadosActivosListar);
 router.get('/abonados/inactivos/', UserController.AbonadosInactivosListar);
 router.get('/abonados/domicilios/:id', UserController.AbonadoListarDomicilios);
-router.get('/abonados/domicilio/:id', UserController.AbonadoUltimoDomicilio);
 
 router.post('/abonados/create',
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),

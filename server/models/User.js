@@ -72,22 +72,6 @@ const User = db.define('_user', {
         type: UUIDV4,
         allowNull: true
     },
-    deletedAt: {
-        type: DATE,
-        allowNull: true,
-    },
-    deletedBy: {
-        type: UUIDV4,
-        allowNull: true,
-    },
-    updatedAt: {
-        type: DATE,
-        allowNull: true,
-    },
-    updatedBy: {
-        type: UUIDV4,
-        allowNull: true,
-    },
     //Columnas Relacionadas por fk
     CondicionIvaId: {
         type: INTEGER,

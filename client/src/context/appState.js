@@ -11,7 +11,6 @@ const AppState = props => {
     const initialState = {
         abonados: [],
         domicilios: [],
-        domicilio: {},
         barrios: [],
         condicionesIva: [],
         municipios: [],
@@ -53,7 +52,7 @@ const AppState = props => {
                     payload: abonado
                 })
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/abonados-activos');
+                history.push('/abonados-inscriptos');
         })
         .catch(err => {
             if(!err.response){

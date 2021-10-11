@@ -3,15 +3,14 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import './../design/layout/styles/styles.css';
-import { Button, Card, CardContent, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
-import useStyles from '../Styles';
 
 const ListaAbonadosInactivos = () => {
     const appContext = useContext(AppContext);
-    const { abonados, municipios, traerAbonadosInactivos, traerMunicipiosPorProvincia, darDeBajaAbonado } = appContext;
+    const { abonados, municipios, traerAbonadosInactivos, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
 
     useEffect(() => {
         traerAbonadosInactivos();
@@ -20,32 +19,36 @@ const ListaAbonadosInactivos = () => {
     },[]);
 
     const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
-    const [modalDarDeBaja, setModalDarDeBaja] = useState(false);
+    const [modalDarDeAlta, setModalDarDeAlta] = useState(false);
 
-    const [infoBaja, setInfoBaja] = useState({
-        idAbonadoBaja: null,
-        motivoBaja: null
+    const [AbonadoInfo, setAbonadoInfo] = useState({
+        UserId: null,
+        EstadoId: null,
+        CambioEstadoFecha: null,
+        CambioEstadoObservaciones: null
     });
 
-    const { motivoBaja } = infoBaja;
+    const { CambioEstadoObservaciones } = AbonadoInfo;
 
-    const handleChangeModalDarDeBaja = (data) => {
-        setModalDarDeBaja(!modalDarDeBaja)
-        if(!modalDarDeBaja){
-            setInfoBaja({
-                idAbonadoBaja: data.UserId
+    const handleChangeModalDarDeAlta = (data) => {
+        setModalDarDeAlta(!modalDarDeAlta)
+        if(!modalDarDeAlta){
+            setAbonadoInfo({
+                UserId: data.UserId,
+                EstadoId: 1,
+                CambioEstadoFecha: new Date().toJSON(),
             })
         }
         else {
-            setInfoBaja({
-                idAbonadoBaja: null
+            setAbonadoInfo({
+                UserId: null
             })
         }
     }
 
-    const onChangeInputMotivoBaja = (e) => {
-        setInfoBaja({
-            ...infoBaja,
+    const onChangeInputEstadoObservaciones = (e) => {
+        setAbonadoInfo({
+            ...AbonadoInfo,
             [e.target.name] : e.target.value
         });
     }
@@ -54,9 +57,7 @@ const ListaAbonadosInactivos = () => {
         traerAbonadosInactivos(e.target.value);
     }
 
-    const styles = useStyles();
-
-    const columnasAbonadosActivos = [
+    const columnaAbonadosInactivos = [
         {
             "name": "id",
             "omit": true,
@@ -105,18 +106,11 @@ const ListaAbonadosInactivos = () => {
             "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
             "wrap": true,
         },
-        {
-            "name": "Datos última baja",
-            "selector": row =>'Fecha: ' + row["CambioEstadoFecha"].split('T')[0].split('-').reverse().join('/') + ' | Motivo: ' +  row["CambioEstadoObservaciones"],
-            "sortable": true,
-            "hide": "sm",
-            "wrap": true
-        },
     {
         cell: (data) =>
         <>
-        <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><Tooltip title="Historial de bajas"><i className='bx bx-task-x'></i></Tooltip></Typography>
-        <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><Tooltip title="Dar de alta"><i className='bx bxs-user-check bx-xs'></i></Tooltip></Typography>
+        <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><Tooltip title="Historial de bajas"><i className='bx bx-task-x'></i></Tooltip></Typography>
+        <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><Tooltip title="Dar de alta"><i className='bx bxs-user-check bx-xs'></i></Tooltip></Typography>
         </>,
     }
 ]
@@ -135,7 +129,7 @@ const ExpandedComponent = ({ data }) =>
         <Card>
             <CardContent>
                 <Typography variant="h1">Abonados Inactivos <Tooltip arrow title="Los abonados inactivos son aquellos que fueron dados de baja por diversos motivos. Por ej: Mora, conexión Clandestina, etc">
-                <i style={{color: 'grey'}} className="bx bx-help-circle bx-tada-hover bx-sm"></i></Tooltip>
+                <i style={{color: 'blue'}} className="bx bx-help-circle bx-tada-hover bx-sm"></i></Tooltip>
                 </Typography>                <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
@@ -153,36 +147,35 @@ const ExpandedComponent = ({ data }) =>
                     </TextField>
                 </Grid>
                 <Modal
-                abrirModal={modalDarDeBaja}
-                funcionCerrar={handleChangeModalDarDeBaja}
-                titulo={<Alert severity="success" icon={<i className="bx bxs-user-check bx-sm"></i>}>Si usted da de alta al abonado, pasará al listado de <b>Abonados Activos</b></Alert>}
+                abrirModal={modalDarDeAlta}
+                funcionCerrar={handleChangeModalDarDeAlta}
+                titulo={<Alert severity="success" icon={<i className="bx bxs-user-check bx-sm"></i>}>Si usted da de alta al abonado, pasará al listado de <b>Abonados Inscriptos</b></Alert>}
                 botones={
                 <>
                 <Button onClick={()=>
-                    {darDeBajaAbonado(infoBaja)
-                    setModalDarDeBaja(false)}}
+                    {cambiarEstadoAbonado(AbonadoInfo)
+                    setModalDarDeAlta(false)}}
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalDarDeBaja}>Cerrar</Button></>}
-                // formulario={
-                // <>
-                // <TextField
-                // className={styles.inputModal}
-                // autoFocus
-                // variant="outlined"
-                // name="motivoBaja"
-                // value={motivoBaja}
-                // fullWidth
-                // onChange={onChangeInputMotivoBaja}
-                // >
-                // </TextField>
-                // <FormHelperText>Ingrese motivo de alta</FormHelperText>
-                // </>}
+                <Button onClick={handleChangeModalDarDeAlta}>Cerrar</Button></>}
+                formulario={
+                <>
+                <TextField
+                autoFocus
+                variant="outlined"
+                name="CambioEstadoObservaciones"
+                value={CambioEstadoObservaciones}
+                fullWidth
+                onChange={onChangeInputEstadoObservaciones}
+                >
+                </TextField>
+                <FormHelperText>Ingrese motivo de alta</FormHelperText>
+                </>}
                 >
                 </Modal>
                 <Datatable
-                    columnas={columnasAbonadosActivos}
+                    columnas={columnaAbonadosInactivos}
                     datos={abonados}
                     expandedComponent={ExpandedComponent}
                 />
