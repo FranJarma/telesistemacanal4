@@ -6,6 +6,8 @@ import Modal from '../design/components/Modal';
 import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
+import { Alert } from '@material-ui/lab';
+import { DatePicker } from '@material-ui/pickers';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
@@ -50,6 +52,8 @@ const CambioDomicilio = () => {
     const [MunicipioId, setMunicipioId] = useState(0);
     const [MunicipioNombre, setMunicipioNombre] = useState('')
     const [ModalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
+    const [FechaBajada, setFechaBajada] = useState(new Date());
+
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
         setBarrioId(0);
@@ -91,6 +95,7 @@ const CambioDomicilio = () => {
                 DomicilioCalle,
                 DomicilioNumero,
                 DomicilioPiso,
+                FechaBajada,
                 CambioDomicilioFecha,
                 CambioDomicilioObservaciones
             })
@@ -172,6 +177,17 @@ const CambioDomicilio = () => {
             <>
             <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-home"></i> Datos del nuevo domicilio</Typography>
             <Grid container spacing={3}>
+                <Grid item xs={12} md={12} lg={12} xl={12}>
+                    <DatePicker
+                    inputVariant="outlined"
+                    value={FechaBajada}
+                    onChange={(fecha)=>setFechaBajada(fecha)}
+                    format="dd/MM/yyyy"
+                    fullWidth
+                    label="Fecha de Bajada"
+                    >
+                    </DatePicker>
+                </Grid>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
                     variant="filled"
@@ -264,6 +280,7 @@ const CambioDomicilio = () => {
                     label="Observaciones">
                     </TextField>
                     <FormHelperText>Ingrese hasta 100 palabras</FormHelperText>
+                    {location.state.EstadoId !== 1 ? <Alert severity="warning">Al cambiar el domicilio, el abonado pasará al listado de <b>Abonados Inscriptos</b>, ya que se tiene que realizar el corte correspondiente.</Alert> : "" }
                 </Grid>
             </Grid>
             </>

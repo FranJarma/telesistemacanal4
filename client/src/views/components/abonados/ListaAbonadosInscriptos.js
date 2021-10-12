@@ -157,8 +157,7 @@ const ListaAbonadosInscriptos = () => {
     },
     {
         "name": "Fecha de Bajada",
-        "selector": row =>row["FechaBajada"].split('T')[0],
-        "omit": true,
+        "selector": row =>row["FechaBajada"].split('T')[0].split('-').reverse().join('/')
     },
     {
         cell: (data) =>

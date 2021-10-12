@@ -240,19 +240,27 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
             const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
-            //buscamos el usuario para actualizarle el domicilio
+            //buscamos el usuario para actualizarle el domicilio y el estado
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
             abonado.DomicilioId = ultimoDomicilioId + 1;
+            abonado.EstadoId = 1;
+            abonado.FechaBajada = req.body.FechaBajada;
             //await abonado.update(req.body.DomicilioId);
             const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
             abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
+            const abonadoEstado = new UserEstado(req.body, {transaction: t});
+            abonadoEstado.EstadoId = 1;
+            abonadoEstado.CambioEstadoFecha = new Date().toString();
+            abonadoEstado.CambioEstadoObservaciones = 'Cambio de Domicilio';
             await domicilio.save({transaction: t}),
             await abonado.save({transaction: t});
             await abonadoDomicilio.save({transaction: t});
+            await abonadoEstado.save({transaction: t});
             return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})
         })
 
     } catch (error) {
+        console.log(error);
         res.status(400).json({msg: 'Hubo un error al cambiar el domicilio del abonado'});
     }
 }
@@ -268,27 +276,35 @@ exports.AbonadoCambioServicio = async(req, res) => {
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
             if (abonado.ServicioId === req.body.ServicioId)
             return res.status(400).json({msg: 'Seleccione un servicio diferente al que ya tiene el abonado actualmente'});
-            const abonadoServicio = new UserServicio(req.body, {transaction: t});
-            abonadoServicio.ServicioId = req.body.ServicioId;
-            if(req.body.ServicioId !== 1) {
-                let ultimaOnuId = 0;
-                // traemos el de la ultima onu registrada
-                const ultimaOnu = await Onu.findOne({
-                    order: [['OnuId', 'DESC']],
-                    attributes: { exclude: ['createdAt', 'updatedAt']}
-                });
-                if (ultimaOnu) ultimaOnuId = ultimaOnu.OnuId;
-                const onu = new Onu(req.body);
-                onu.OnuId = ultimaOnuId + 1;
-                abonado.OnuId = ultimaOnuId + 1;
-                abonadoServicio.OnuId = ultimaOnuId + 1;
-                await onu.save({transaction: t});
-            };
-            abonado.ServicioId = req.body.ServicioId;
-            //await abonado.update(req.body.DomicilioId);
-            await abonado.save({transaction: t});
-            await abonadoServicio.save({transaction: t});
-            return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
+            else {
+                const abonadoServicio = new UserServicio(req.body, {transaction: t});
+                abonadoServicio.ServicioId = req.body.ServicioId;
+                if(req.body.ServicioId !== 1) {
+                    let ultimaOnuId = 0;
+                    // traemos el de la ultima onu registrada
+                    const ultimaOnu = await Onu.findOne({
+                        order: [['OnuId', 'DESC']],
+                        attributes: { exclude: ['createdAt', 'updatedAt']}
+                    });
+                    if (ultimaOnu) ultimaOnuId = ultimaOnu.OnuId;
+                    const onu = new Onu(req.body);
+                    onu.OnuId = ultimaOnuId + 1;
+                    abonado.OnuId = ultimaOnuId + 1;
+                    abonadoServicio.OnuId = ultimaOnuId + 1;
+                    await onu.save({transaction: t});
+                };
+                abonado.EstadoId = 1;
+                abonado.ServicioId = req.body.ServicioId;
+                abonado.FechaBajada = req.body.FechaBajada;
+                const abonadoEstado = new UserEstado(req.body, {transaction: t});
+                abonadoEstado.EstadoId = 1;
+                abonadoEstado.CambioEstadoFecha = new Date().toString();
+                abonadoEstado.CambioEstadoObservaciones = 'Cambio de Servicio';
+                await abonado.save({transaction: t});
+                await abonadoServicio.save({transaction: t});
+                await abonadoEstado.save({transaction: t});
+                return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
+            }
         })
     } catch (error) {
         res.status(400).json({msg: 'Hubo un error al cambiar el servicio del abonado'});
