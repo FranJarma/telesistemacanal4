@@ -34,11 +34,15 @@ const CambioServicio = () => {
     }
     const { UserId, OnuMac, OnuSerie, CambioServicioFecha, CambioServicioObservaciones} = ServicioInfo;
     const [ServicioId, setServicioId] = useState(1);
+    const [ServicioNombre, setServicioNombre] = useState('Cable');
     const [ModeloOnuId, setModeloOnuId] = useState(0);
     const [ModalNuevoServicio, setModalNuevoServicio] = useState(false);
 
     const handleChangeServicioSeleccionado = (e) => {
         setServicioId(e.target.value);
+    }
+    const handleFocusServicioSeleccionado = (e) => {
+        setServicioNombre(e.target.innerHTML);
     }
     const handleChangeModeloONUSeleccionado = (e) => {
         setModeloOnuId(e.target.value);
@@ -63,6 +67,7 @@ const CambioServicio = () => {
             cambioServicioAbonado({
                 UserId,
                 ServicioId,
+                ServicioNombre,
                 CambioServicioFecha,
                 CambioServicioObservaciones,
                 ModeloOnuId,
@@ -80,7 +85,7 @@ const CambioServicio = () => {
         },
         {
             "name": "Servicio",
-            "selector": row =>row["OnuId"] ? row["ServicioNombre"] + ' | ' + "MAC Onu:" + ' ' + row["OnuMac"] : row["ServicioNombre"],
+            "selector": row =>row["OnuMac"] ? row["ServicioNombre"] + ' | ' + "MAC Onu:" + ' ' + row["OnuMac"] : row["ServicioNombre"],
             "wrap": true
         },
         {
@@ -96,8 +101,6 @@ const CambioServicio = () => {
     ]
     const ExpandedComponent = ({ data }) =>
     <>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Servicio: {data.ServicioNombre}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.CambioServicioFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-clipboard"></i> Observaciones: {data.CambioServicioObservaciones}</Typography>
     </>;
     return ( 
@@ -139,6 +142,7 @@ const CambioServicio = () => {
                     <TextField
                     variant="outlined"
                     onChange={handleChangeServicioSeleccionado}
+                    onFocus={handleFocusServicioSeleccionado}
                     value={ServicioId}
                     label="Servicio"
                     fullWidth

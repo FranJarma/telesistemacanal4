@@ -2,8 +2,6 @@ import * as TYPES from '../types';
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
     switch (action.type) {
-        case TYPES.CREAR_ABONADO:
-        case TYPES.MODIFICAR_ABONADO:
         case TYPES.CAMBIO_DOMICILIO_ABONADO: {
             return {
                 ...state,

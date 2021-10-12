@@ -23,6 +23,7 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
     || (item.DomicilioCalle && item.DomicilioCalle.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.DomicilioNumero && item.DomicilioNumero.toString().includes(textoFiltrado.toLowerCase()))
     || (item.ServicioNombre && item.ServicioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.OnuMac && item.OnuMac.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.mes && item.mes.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.fechaPago && item.fechaPago.toLowerCase().includes(textoFiltrado.toLowerCase()))
     );

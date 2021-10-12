@@ -37,6 +37,7 @@ exports.AbonadosInscriptosListar = async(req, res) => {
         });
         res.json(abonados);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
@@ -101,11 +102,9 @@ exports.AbonadoListarDomicilios = async(req, res) => {
 
 exports.AbonadoListarServicios = async(req, res) => {
     try {
-        const servicios = await knex.select('*').select('us.OnuId').from('userservicio as us')
-        .innerJoin('_user as u', 'u.UserId', '=', 'us.UserId')
+        const servicios = await knex.select('us.CambioServicioFecha', 'us.CambioServicioObservaciones', 's.ServicioNombre', 'o.OnuMac').from('userservicio as us')
         .innerJoin('servicio as s', 's.ServicioId', '=', 'us.ServicioId')
-        .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
-        .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
+        .leftJoin('onu as o', 'o.OnuId', '=','us.OnuId')
         .where('us.UserId', '=', req.params.id)
         .orderBy('us.CambioServicioFecha', 'desc');
         res.json(servicios);
@@ -292,7 +291,6 @@ exports.AbonadoCambioServicio = async(req, res) => {
             return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
         })
     } catch (error) {
-        console.log(error);
         res.status(400).json({msg: 'Hubo un error al cambiar el servicio del abonado'});
     }
 }
