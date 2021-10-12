@@ -178,8 +178,9 @@ const ExpandedComponent = ({ data }) =>
                     columnas={columnaAbonadosInactivos}
                     datos={abonados}
                     expandedComponent={ExpandedComponent}
-                />
-            </CardContent>
+                    paginacion={true}
+                    buscar={true}/>
+                </CardContent>
             </Card>
         </main>
         <Footer/>

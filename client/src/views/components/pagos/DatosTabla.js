@@ -27,3 +27,22 @@ export const pagos =
       "total": 750,
       "saldo": 0,
   }]
+  export const detallesPagos = 
+    [{
+      "id": 1,
+      "monto": 500,
+      "fechaPago": "20/01/10",
+      "formaPago": "Efectivo"
+    },
+    {
+      "id": 2,
+      "monto": 240,
+      "fechaPago": "20/01/10",
+      "formaPago": "CBU"
+    },
+    {
+      "id": 3,
+      "monto": 100,
+      "fechaPago": "20/01/10",
+      "formaPago": "Débito"
+    }]

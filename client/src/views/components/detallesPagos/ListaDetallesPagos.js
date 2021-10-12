@@ -29,7 +29,8 @@ const ListaDetallesPagos = () => {
                     <Datatable
                         columnas={columnasDetallesPagos}
                         datos={detallesPagos}
-                    />
+                        paginacion={true}
+                        buscar={true}/>
                 </CardContent>
             </Card>
             <Modal

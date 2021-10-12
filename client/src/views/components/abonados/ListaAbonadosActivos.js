@@ -250,7 +250,7 @@ const ListaAbonadosActivos = () => {
                     columnas={columnasAbonadosActivos}
                     datos={abonados}
                     expandedComponent={ExpandedComponent}
-                />
+                    paginacion={true}/>
             </CardContent>
         </Card>
         </main>

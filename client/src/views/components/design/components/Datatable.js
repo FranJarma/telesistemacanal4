@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Spinner from './Spinner';
 import Buscador from './Buscador';
 
-const Datatable = ({columnas, datos, expandedComponent}) => {
+const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar}) => {
     //state y effect para spinner
     const [cargando, setCargando] = useState(true);
     useEffect(()=>{
@@ -41,14 +41,16 @@ const Datatable = ({columnas, datos, expandedComponent}) => {
             data={itemsFiltrados !== "" ? itemsFiltrados : datos}
             highlightOnHover
             noDataComponent="No se encontraron registros"
-            pagination
-            paginationComponentOptions={paginacionOpciones}
+            pagination = {paginacion ? true : false}
+            paginationComponentOptions={paginacion ? paginacionOpciones : ""}
             progressComponent={<Spinner/>}
             progressPending={cargando}
             responsive
-            subHeader
+            subHeader = {buscar ? true : false}
             subHeaderComponent={
+                buscar ? 
                 <Buscador onFiltrar={e => setTextoFiltrado(e.target.value)} textoFiltrado={textoFiltrado}/>
+                : ""
             }
             striped
         >

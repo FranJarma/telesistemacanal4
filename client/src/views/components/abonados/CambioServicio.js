@@ -50,11 +50,11 @@ const CambioServicio = () => {
     const handleChangeModeloONUSeleccionado = (e) => {
         setModeloOnuId(e.target.value);
     }
-    const handleChangeModalNuevoServicio = (data) => {
+    const handleChangeModalNuevoServicio = () => {
         setModalNuevoServicio(!ModalNuevoServicio);
         if(!ModalNuevoServicio){
             setServicioInfo({
-                UserId: data.UserId
+                UserId: location.state.UserId
             })
         }
         else {
@@ -122,8 +122,9 @@ const CambioServicio = () => {
             <Datatable
             expandedComponent={ExpandedComponent}
             datos={historialServicios}
-            columnas={columnasServicios}>
-            </Datatable>
+            columnas={columnasServicios}
+            paginacion={true}
+            buscar={true}/>
             <FormHelperText>Los servicios están ordenados por fecha más reciente</FormHelperText>
             <br/>
         </CardContent>

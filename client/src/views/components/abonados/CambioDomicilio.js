@@ -68,18 +68,11 @@ const CambioDomicilio = () => {
     const handleChangeBarrioSeleccionado = (e) => {
         setBarrioId(e.target.value);
     }
-    const handleChangeModalNuevoDomicilio = (data) => {
+    const handleChangeModalNuevoDomicilio = () => {
         setModalNuevoDomicilio(!ModalNuevoDomicilio);
-        if(!ModalNuevoDomicilio){
-            setDomicilioInfo({
-                UserId: data.UserId
-            })
-        }
-        else {
-            setDomicilioInfo({
-                UserId: null
-            })
-        }
+        setDomicilioInfo({
+            UserId: location.state.UserId
+        })
     }
 
     const onSubmitAbonado = (e) => {
@@ -157,8 +150,9 @@ const CambioDomicilio = () => {
             <Datatable
             expandedComponent={ExpandedComponent}
             datos={historialDomicilios}
-            columnas={columnasDomicilios}>
-            </Datatable>
+            columnas={columnasDomicilios}
+            paginacion={true}
+            buscar={true}/>
             <FormHelperText>Los domicilios están ordenados por fecha más reciente</FormHelperText>
             <br/>
         </CardContent>
