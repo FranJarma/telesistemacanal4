@@ -341,7 +341,8 @@ main {
 }
 .fondo::after {
   content: "";
-  background: url('C:\Users\super\Desktop\Proyectos\telesistemacanal4\client\src\views\images\fondo.jpg') no-repeat center center fixed;
+  background: url('https://exelium.eu/wp-content/uploads/2020/07/lwl-4393369-scaled.jpg') no-repeat center center fixed;
+  /* background: url('C:\Users\super\Desktop\Proyectos\telesistemacanal4\client\src\views\images\fondo.jpg') no-repeat center center fixed; */
   /* background: url('D:\Proyectos de React\telesistemasrl\client\src\views\images\fondo.jpg') no-repeat center center fixed; */
   top: 0;
   left: 0;
