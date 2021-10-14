@@ -1,4 +1,4 @@
-export const pagos = 
+export const pagoos = 
     [{
       "id": 1,
       "nombreCompleto": "Samsom Addison",
@@ -27,7 +27,7 @@ export const pagos =
       "total": 750,
       "saldo": 0,
   }]
-  export const detallesPagos = 
+  export const detallespagoos = 
     [{
       "id": 1,
       "monto": 500,

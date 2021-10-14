@@ -1,6 +1,5 @@
 const express = require('express');
 const db = require('./config/connection');
-const knex = require('./config/knex');
 const cors = require('cors');
 //creamos el server
 
@@ -30,6 +29,10 @@ app.use('/api/servicios', require('./routes/Servicio.js'));
 app.use('/api/condicionesIva', require('./routes/CondicionIva.js'));
 //MODELOS ONU
 app.use('/api/modelosOnu', require('./routes/ModeloOnu.js'));
+//PAGOS
+app.use('/api/pagos', require('./routes/Pago.js'));
+//MEDIOS DE PAGO
+app.use('/api/mediosPago', require('./routes/MedioPago.js'));
 //pág principal
 app.get('/', (req, res)=>{
     res.send(`Conectado a: ${process.env.DB_NAME} en puerto: ${PORT}`)

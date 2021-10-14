@@ -66,7 +66,12 @@ export default (state, action) => {
             return {
                 ...state,
                 modelosOnu: action.payload
-            }
+        }
+        case TYPES.LISTA_MEDIOS_DE_PAGO:
+            return {
+                ...state,
+                mediosPago: action.payload
+        }
         default:
             return state;
     }

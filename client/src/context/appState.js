@@ -19,7 +19,10 @@ const AppState = props => {
         onus: [],
         modelosOnu: [],
         historialDomicilios: [],
-        historialServicios: []
+        historialServicios: [],
+        mediosPago: [],
+        pagos: [],
+        detallesPagos: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -194,7 +197,51 @@ const AppState = props => {
             console.log(error);
         }
     };
-
+    const traerPagosPorAbonado = async (id) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/usuarios/abonados/pagos/${id}`);
+            dispatch({
+                type: TYPES.LISTA_PAGOS_ABONADO,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerDetallesPago = async (id) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/usuarios/abonados/pagos/detallesPagos/${id}`);
+            dispatch({
+                type: TYPES.LISTA_DETALLES_PAGO_ABONADO,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    //PAGOS
+    const crearPago = async(pago) => {
+        clienteAxios.post('/api/pagos/create', pago)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_PAGO,
+                    payload: pago
+                });
+                Swal('Operación completa', resOk.data.msg);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     //BARRIOS
     const traerBarriosPorMunicipio = async (municipioId) => {
         try {
@@ -267,6 +314,18 @@ const AppState = props => {
             console.log(error);
         }
     }
+    //MEDIOS PAGO
+    const traerMediosPago = async () => {
+        try {
+            const resultado = await clienteAxios.get('/api/mediosPago');
+            dispatch({
+                type: TYPES.LISTA_MEDIOS_DE_PAGO,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return(
         <AppContext.Provider
         value={{
@@ -281,9 +340,12 @@ const AppState = props => {
             modelosOnu: state.modelosOnu,
             historialDomicilios: state.historialDomicilios,
             historialServicios: state.historialServicios,
-            crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, traerAbonadosInscriptos, traerAbonadosActivos,
+            mediosPago: state.mediosPago,
+            pagos: state.pagos,
+            detallesPagos: state.detallesPagos,
+            crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, crearPago, traerAbonadosInscriptos, traerAbonadosActivos,
             traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
-            traerProvincias, traerServicios, traerModelosONU
+            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerDetallesPago
         }}>{props.children}
         </AppContext.Provider>
     )

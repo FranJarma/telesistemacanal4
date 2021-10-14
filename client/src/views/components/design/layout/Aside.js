@@ -88,9 +88,11 @@ const Aside = () => {
           <MenuItem icon={<i class='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
         </SubMenu>
         <SubMenu onClick={onClickMenuAdministracion} open={SubMenuAdministracion} title="Administración" icon={<i className="bx bxs-brightness"></i>}>
+        <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
         <MenuItem icon={<i className="bx bx-map"></i>}>Barrios<Link to="/barrios"></Link></MenuItem>
         <MenuItem icon={<i className="bx bx-map-pin"></i>}>Municipios<Link to="/municipios"></Link></MenuItem>
         <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus<Link to="/onus"></Link></MenuItem>
+        <MenuItem icon={<i className="bx bx-wallet"></i>}>Medios de Pago<Link to="/medios-de-pago"></Link></MenuItem>
         </SubMenu>
         <SidebarFooter>
         <MenuItem icon={<i className='bx bx-log-out-circle'></i>}>Salir<Link to="/"></Link></MenuItem>

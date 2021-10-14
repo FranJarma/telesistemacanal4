@@ -3,7 +3,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 
 const Modal = ({abrirModal, funcionCerrar, titulo, mensaje, formulario, botones}) => {
     return (
-        <Dialog open={abrirModal} onClose={funcionCerrar}>
+        <Dialog style={{zIndex: 0}} open={abrirModal} onClose={funcionCerrar}>
             <DialogTitle>{titulo}</DialogTitle>
             <DialogContent>
                 <DialogContentText>{mensaje}</DialogContentText>
