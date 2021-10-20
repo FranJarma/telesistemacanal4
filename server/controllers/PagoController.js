@@ -7,7 +7,7 @@ exports.PagoCreate = async(req,res) => {
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
     }
-    if(req.body.DetallePagoMonto < 0) return res.status(400).json({msg: 'El monto tiene que ser mayor a 0'});
+    if(req.body.DetallePagoMonto <= 0) return res.status(400).json({msg: 'El monto tiene que ser mayor a 0'});
     if(req.body.DetallePagoMonto > req.body.PagoTotal) return res.status(400).json({msg: 'El monto no puede superar al total'});
     try {
         await db.transaction(async(t)=>{
