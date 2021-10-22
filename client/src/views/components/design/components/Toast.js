@@ -6,8 +6,7 @@ const Toast = (mensaje, categoria) => {
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
+        timer: 4000,
         icon: `${categoria}`,
         title: `<a style="font-family: Poppins">${mensaje}</a>`
       })

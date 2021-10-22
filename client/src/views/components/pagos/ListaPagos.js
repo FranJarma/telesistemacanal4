@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
-import {pagoos, detallespagoos} from './DatosTabla';
 import Aside from '../design/layout/Aside';
 import { useLocation } from 'react-router';
 import Footer from '../design/layout/Footer';
@@ -13,20 +12,22 @@ import { Link } from "react-router-dom";
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, detallesPagos, mediosPago, crearPago, traerMediosPago } = appContext;
-
+    const { pagos, detallesPagos, mediosPago, crearPago, traerPagosPorAbonado, traerMediosPago } = appContext;
     const location = useLocation();
+
+    const diaActual = new Date().getDate();
     const [PagoInfo, setPagoInfo] = useState({
         UserId: null,
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         DetallePagoObservaciones: '',
         MedioPagoId: 1,
-        PagoTotal: location.state.ServicioPrecioUnitario
+        PagoRecargo: diaActual >=21 ? 50 : '',
+        PagoTotal: diaActual >= 21 ? location.state.ServicioPrecioUnitario + 50 : location.state.ServicioPrecioUnitario
     });
+
     const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
-    
-    const { DetallePagoMonto, DetallePagoObservaciones} = PagoInfo;
+    const { PagoRecargo, DetallePagoMonto, DetallePagoObservaciones} = PagoInfo;
 
     const [modalNuevoPago, setModalNuevoPago] = useState(false);
     const [modalDetallesPago, setModalDetallesPago] = useState(false);
@@ -41,7 +42,7 @@ const ListaPagos = () => {
             ...PagoInfo,
             MedioPagoId: e.target.value});
     }
-    const handleChangeNuevoPago = (data) => {
+    const handleChangeNuevoPago = () => {
         setModalNuevoPago(!modalNuevoPago)
         if(!modalNuevoPago){
             setPagoInfo({
@@ -60,36 +61,33 @@ const ListaPagos = () => {
     const handleChangeModalDetallesPago = () => {
         setModalDetallesPago(!modalDetallesPago);
     }
-    const diaActual = new Date().getDate();
-    let saldo = 0;
-    const saldos = pagos.map((item)=>(
-        item.saldo !== 0  ? saldo = saldo + item.total : ""
-    ))
-    useEffect(()=>{
-        traerMediosPago();
-    },[])
 
+    useEffect(()=>{
+        traerPagosPorAbonado(location.state.UserId);
+        traerMediosPago();
+    },[]);
+    
     const columnasPagos = [
         {
             "name": "N°",
-            "selector": row =>row["id"],
+            "selector": row =>row["PagoId"],
             "omit": true
         },
         {
             "name": "Período",
-            "selector": row =>row["mes"]+ " de " +row["año"],
+            "selector": row =>row["PagoPeriodo"],
             "sortable": true,
             "wrap": true
         },
         {
             "name": "Total mes",
-            "selector": row =>"$" + row["total"],
+            "selector": row =>"$" + row["PagoTotal"],
             "sortable": true,
             "wrap": true
         },
         {
             "name": "Completo",
-            "selector": row => row["saldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> : <i style={{color: 'red'}} className="bx bx-x bx-md"></i>,
+            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> : <i style={{color: 'red'}} className="bx bx-x bx-md"></i>,
             "wrap": true
         },
         {
@@ -161,11 +159,14 @@ const ListaPagos = () => {
                 <Modal
                 abrirModal={modalNuevoPago}
                 funcionCerrar={handleChangeNuevoPago}
-                //titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
                 botones={
                 <>
                 <Button onClick={()=>
-                    {crearPago(PagoInfo)}}
+                    {
+                    crearPago(
+                        {...PagoInfo,
+                        PagoPeriodo
+                    })}}
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
@@ -173,10 +174,14 @@ const ListaPagos = () => {
                 formulario={
                 <>
                 <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>
-                <Alert severity="success"><b>Total por servicio contratado({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario}</Alert>
+                <Alert severity="info">
+                    {diaActual >= 21 ? 
+                    <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario} + <b>Recargo: </b> $ {PagoRecargo} = ${location.state.ServicioPrecioUnitario + PagoRecargo}</Typography>
+                    : <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario}</Typography>
+                }
+                </Alert>
                 <br/>
-                {diaActual >= 21 ? <Alert severity="warning"><b>Recargo por pago fuera de término(21 de cada mes):</b> $50</Alert> : ""}
-                <br/>
+                
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} sm={12} lg={12}>
                         <DatePicker
@@ -235,9 +240,7 @@ const ListaPagos = () => {
                     </Grid>
                 </Grid>
                 <br/>
-                {location.state.ServicioPrecioUnitario >= DetallePagoMonto ? <Alert severity="info"><b>
-                    Saldo restante del mes: ${location.state.ServicioPrecioUnitario - DetallePagoMonto}
-                </b></Alert> : <Alert severity="error"><b>Monto Incorrecto!</b></Alert>}
+                <br/>
                 </>}
                 >
                 </Modal>

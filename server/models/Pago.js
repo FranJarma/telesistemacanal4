@@ -1,18 +1,25 @@
-const { STRING, INTEGER, FLOAT } = require('sequelize');
+const { STRING, INTEGER, FLOAT, DATE } = require('sequelize');
 const db = require('../config/connection');
 
 const Pago = db.define('pago', {
     PagoId: {
         type: INTEGER,
-        allowNull: false,
         primaryKey: true
     },
     PagoSaldo: {
         type: FLOAT,
         allowNull: false
     },
+    PagoRecargo: {
+        type: FLOAT,
+        allowNull: false
+    },
+    PagoTotal: {
+        type: FLOAT,
+        allowNull: false
+    },
     PagoPeriodo: {
-        type: DATE,
+        type: STRING,
         allowNull: false
     },
     //fk

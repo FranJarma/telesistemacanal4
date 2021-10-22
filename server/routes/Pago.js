@@ -3,6 +3,8 @@ const router = express.Router();
 const PagoController = require('../controllers/PagoController');
 const { check } = require('express-validator');
 
+router.get('/:id', PagoController.PagosListarPorUsuario);
+
 router.post('/create',
 [
     check('MedioPagoId', 'El medio de pago es obligatorio').not().contains(0),

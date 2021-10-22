@@ -1,10 +1,9 @@
-const { STRING, INTEGER, FLOAT } = require('sequelize');
+const { STRING, INTEGER, FLOAT, DATE } = require('sequelize');
 const db = require('../config/connection');
 
 const DetallePago = db.define('detallepago', {
     DetallePagoId: {
         type: INTEGER,
-        allowNull: false,
         primaryKey: true
     },
     DetallePagoFecha: {
@@ -15,6 +14,10 @@ const DetallePago = db.define('detallepago', {
         type: FLOAT,
         allowNull: false
     },
+    DetallePagoObservaciones: {
+        type: STRING,
+        allowNull: true
+    },
     //fk
     PagoId: {
         type: INTEGER,
@@ -23,11 +26,7 @@ const DetallePago = db.define('detallepago', {
     MedioPagoId: {
         type: INTEGER,
         allowNull: false
-    },
-    UserId: {
-        type: STRING(38),
-        allowNull: false
-    },
+    }
 });
 
 module.exports = db.model('detallepago', DetallePago);

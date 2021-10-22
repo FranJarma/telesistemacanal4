@@ -199,7 +199,7 @@ const AppState = props => {
     };
     const traerPagosPorAbonado = async (id) => {
         try {
-            const resultado = await clienteAxios.get(`/api/usuarios/abonados/pagos/${id}`);
+            const resultado = await clienteAxios.get(`/api/pagos/${id}`);
             dispatch({
                 type: TYPES.LISTA_PAGOS_ABONADO,
                 payload: resultado.data
@@ -210,7 +210,7 @@ const AppState = props => {
     }
     const traerDetallesPago = async (id) => {
         try {
-            const resultado = await clienteAxios.get(`/api/usuarios/abonados/pagos/detallesPagos/${id}`);
+            const resultado = await clienteAxios.get(`/api/pagos/detallesPagos/${id}`);
             dispatch({
                 type: TYPES.LISTA_DETALLES_PAGO_ABONADO,
                 payload: resultado.data

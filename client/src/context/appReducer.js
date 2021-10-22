@@ -72,6 +72,11 @@ export default (state, action) => {
                 ...state,
                 mediosPago: action.payload
         }
+        case TYPES.LISTA_PAGOS_ABONADO:
+            return {
+                ...state,
+                pagos: action.payload
+        }
         default:
             return state;
     }
