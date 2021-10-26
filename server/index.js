@@ -31,6 +31,8 @@ app.use('/api/condicionesIva', require('./routes/CondicionIva.js'));
 app.use('/api/modelosOnu', require('./routes/ModeloOnu.js'));
 //PAGOS
 app.use('/api/pagos', require('./routes/Pago.js'));
+//DETALLES PAGOS
+app.use('/api/detallesPago', require('./routes/DetallePago'));
 //MEDIOS DE PAGO
 app.use('/api/mediosPago', require('./routes/MedioPago.js'));
 //pág principal

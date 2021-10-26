@@ -74,18 +74,18 @@ const Aside = () => {
         </SidebarHeader>
         <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
         <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
-          <MenuItem icon={<i class='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
-          <MenuItem icon={<i class='bx bx-user-check' ></i>}>Activos<Link to="/abonados-activos"></Link></MenuItem>
-          <MenuItem icon={<i class='bx bx-user-x' ></i>}>Inactivos<Link to="/abonados-inactivos"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bx-user-check' ></i>}>Activos<Link to="/abonados-activos"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bx-user-x' ></i>}>Inactivos<Link to="/abonados-inactivos"></Link></MenuItem>
         </SubMenu>
         <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Técnicos y Cobradores" icon={<i className="bx bx-wrench"></i>}>
-          <MenuItem icon={<i class='bx bx-wifi-off'></i>}>Cortes a realizar<Link to="/cortes"></Link></MenuItem>
-          <MenuItem icon={<i class='bx bxs-plug'></i>}>Bajadas a realizar<Link to="/bajadas"></Link></MenuItem>
-          <MenuItem icon={<i class='bx bx-dollar' ></i>}>Cobros en domiclio<Link to="/cobros"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bx-wifi-off'></i>}>Cortes a realizar<Link to="/cortes"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bxs-plug'></i>}>Bajadas a realizar<Link to="/bajadas"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bx-dollar' ></i>}>Cobros en domiclio<Link to="/cobros"></Link></MenuItem>
         </SubMenu>
         <SubMenu onClick={onClickMenuUsuarios} open={SubMenuUsuarios} title="Usuarios" icon={<i className="bx bx-group"></i>}>
-          <MenuItem icon={<i class='bx bxs-user'></i>}>Usuarios<Link to="/usuarios"></Link></MenuItem>
-          <MenuItem icon={<i class='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bxs-user'></i>}>Usuarios<Link to="/usuarios"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
         </SubMenu>
         <SubMenu onClick={onClickMenuAdministracion} open={SubMenuAdministracion} title="Administración" icon={<i className="bx bxs-brightness"></i>}>
         <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>

@@ -13,7 +13,6 @@ const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
     const {barrios, historialDomicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
     traerProvincias, cambioDomicilioAbonado } = appContext;
-
     const location = useLocation();
     //Observables
     useEffect(() => {

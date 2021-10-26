@@ -10,10 +10,12 @@ require('dotenv').config({path: 'variables.env'});
 exports.PagosListarPorUsuario = async(req,res) => {
     try {
         const pagos = await knex.select('*').from('pago as p')
-        .where('p.UserId','=', req.params.id);
+        .where('p.UserId','=', req.params.id)
+        .orderBy('p.PagoPeriodo', 'desc');
         res.json(pagos);
     } catch (error) {
         console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
     }
 }
 exports.PagoCreate = async(req,res) => {
@@ -44,7 +46,7 @@ exports.PagoCreate = async(req,res) => {
                 });
                 if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
                 //verificamos que el monto ingresado no supere el saldo restante
-                if(req.body.DetallePagoMonto >= pagoBuscar.PagoSaldo) return res.status(400).json({msg: `El monto no puede ser mayor al saldo restante de: $ ${pagoBuscar.PagoSaldo}`})
+                if(req.body.DetallePagoMonto > pagoBuscar.PagoSaldo) return res.status(400).json({msg: `El monto no puede ser mayor al saldo restante de: $ ${pagoBuscar.PagoSaldo}`})
                 pagoBuscar.PagoSaldo = pagoBuscar.PagoSaldo - req.body.DetallePagoMonto;
                 const detallePago = new DetallePago(req.body, {transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
@@ -56,7 +58,7 @@ exports.PagoCreate = async(req,res) => {
             //si no encuentra el pago, se lo registra desde 0, con un nuevo detalle de pago
                 let ultimoPagoId = 0;
                 const ultimoPago = await Pago.findOne({
-                //     order: [['PagoId', 'DESC']],
+                    order: [['PagoId', 'DESC']],
                 });
                 if (ultimoPago) ultimoPagoId = ultimoPago.PagoId;
                 const pago = new Pago(req.body, {transaction: t});

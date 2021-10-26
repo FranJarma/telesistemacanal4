@@ -9,7 +9,7 @@ const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar}) => 
     useEffect(()=>{
         const timeout = setTimeout(()=>{
             setCargando(false);
-        }, 2000);
+        }, 2500);
         return () => clearTimeout(timeout);
     },[])
     //state para buscador
@@ -24,8 +24,12 @@ const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar}) => 
     || (item.DomicilioNumero && item.DomicilioNumero.toString().includes(textoFiltrado.toLowerCase()))
     || (item.ServicioNombre && item.ServicioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.OnuMac && item.OnuMac.toLowerCase().includes(textoFiltrado.toLowerCase()))
-    || (item.mes && item.mes.toLowerCase().includes(textoFiltrado.toLowerCase()))
-    || (item.fechaPago && item.fechaPago.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.PagoSaldo && item.PagoSaldo.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.PagoPeriodo && item.PagoPeriodo.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.PagoRecargo && item.PagoRecargo.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.PagoTotal && item.PagoTotal.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.DetallePagoMonto && item.DetallePagoMonto.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.DetallePagoFecha && item.DetallePagoFecha.toString().includes(textoFiltrado.toLowerCase()))
     );
     const paginacionOpciones = {
         rowsPerPageText: 'Registros por página',

@@ -118,8 +118,8 @@ const ExpandedComponent = ({ data }) =>
 <>
     <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
     <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Domicilio: {data.DomicilioCalle} {data.DomicilioNumero} | Barrio {data.BarrioNombre} | {data.MunicipioNombre}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-calendar"></i> Fecha de baja: {data.CambioEstadoFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i class="bx bx-question-mark"></i> Motivo de baja: {data.CambioEstadoObservaciones}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de baja: {data.CambioEstadoFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
+    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-question-mark"></i> Motivo de baja: {data.CambioEstadoObservaciones}</Typography>
 </>;
     return (
         <>

@@ -22,7 +22,7 @@ const AppState = props => {
         historialServicios: [],
         mediosPago: [],
         pagos: [],
-        detallesPagos: []
+        detallesPago: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -210,7 +210,7 @@ const AppState = props => {
     }
     const traerDetallesPago = async (id) => {
         try {
-            const resultado = await clienteAxios.get(`/api/pagos/detallesPagos/${id}`);
+            const resultado = await clienteAxios.get(`/api/detallesPago/${id}`);
             dispatch({
                 type: TYPES.LISTA_DETALLES_PAGO_ABONADO,
                 payload: resultado.data
@@ -229,6 +229,7 @@ const AppState = props => {
                     payload: pago
                 });
                 Swal('Operación completa', resOk.data.msg);
+                window.location.reload();
         })
         .catch(err => {
             if(!err.response){
@@ -342,7 +343,7 @@ const AppState = props => {
             historialServicios: state.historialServicios,
             mediosPago: state.mediosPago,
             pagos: state.pagos,
-            detallesPagos: state.detallesPagos,
+            detallesPago: state.detallesPago,
             crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, crearPago, traerAbonadosInscriptos, traerAbonadosActivos,
             traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
             traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerDetallesPago

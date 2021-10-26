@@ -3,7 +3,7 @@ import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Toolt
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import { DatePicker } from '@material-ui/pickers';
@@ -12,12 +12,18 @@ import { Link } from "react-router-dom";
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, detallesPagos, mediosPago, crearPago, traerPagosPorAbonado, traerMediosPago } = appContext;
+    const { pagos, detallesPago, mediosPago, crearPago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago } = appContext;
+
     const location = useLocation();
+
+    useEffect(()=>{
+        traerMediosPago();
+        traerPagosPorAbonado(location.state.UserId);
+    },[]);
 
     const diaActual = new Date().getDate();
     const [PagoInfo, setPagoInfo] = useState({
-        UserId: null,
+        UserId: location.state.UserId,
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         DetallePagoObservaciones: '',
@@ -58,36 +64,32 @@ const ListaPagos = () => {
             })
         }
     }
-    const handleChangeModalDetallesPago = () => {
+    const handleChangeModalDetallesPago = (data) => {
+        traerDetallesPago(data.PagoId);
         setModalDetallesPago(!modalDetallesPago);
     }
-
-    useEffect(()=>{
-        traerPagosPorAbonado(location.state.UserId);
-        traerMediosPago();
-    },[]);
     
     const columnasPagos = [
         {
             "name": "N°",
-            "selector": row =>row["PagoId"],
+            "selector": row => row["PagoId"],
             "omit": true
         },
         {
-            "name": "Período",
-            "selector": row =>row["PagoPeriodo"],
+            "name": "Periodo",
+            "selector": row => row["PagoPeriodo"],
             "sortable": true,
             "wrap": true
         },
         {
-            "name": "Total mes",
-            "selector": row =>"$" + row["PagoTotal"],
+            "name": "Total",
+            "selector": row => "$ " + row["PagoTotal"],
             "sortable": true,
             "wrap": true
         },
         {
             "name": "Completo",
-            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> : <i style={{color: 'red'}} className="bx bx-x bx-md"></i>,
+            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> :<><i style={{color: 'red'}} className="bx bx-x bx-md"></i><Typography><b>Saldo:</b> ${row["PagoSaldo"]}</Typography></>,
             "wrap": true
         },
         {
@@ -105,28 +107,27 @@ const ListaPagos = () => {
     const columnasDetallesPagos = [
         {
             "name": "N°",
-            "selector": row =>row["id"],
+            "selector": row =>row["DetallePagoId"],
             "omit": true
         },
         {
             "name": "Monto",
-            "selector": row =>"$" + row["monto"],
+            "selector": row =>"$" + row["DetallePagoMonto"],
             "sortable": true,
             "wrap": true
         },
         {
-            "name": "Fecha de Pago",
-            "selector": row =>row["fechaPago"],
+            "name": "Fecha ",
+            "selector": row =>row["DetallePagoFecha"].split('T')[0].split('-').reverse().join('/'),
             "wrap": true,
             "sortable": true,
-            "width": "10rem"
         },
         {
             "name": "Forma de pago",
-            "selector": row => row["formaPago"],
+            "selector": row => row["MedioPagoNombre"],
             "wrap": true,
+            "width": "10rem",
             "sortable": true,
-            "width": "10rem"
         },
         {
             cell: (data) => 
@@ -148,8 +149,6 @@ const ListaPagos = () => {
                     action={<Button variant="contained" color="primary" onClick={handleChangeNuevoPago}>+ Asentar pago</Button>}>
                 </CardHeader>
                 <Typography variant="h1">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
-                <Typography variant="h2">Saldo total acumulado: $ {1800}
-                </Typography>
                 <Datatable
                     columnas={columnasPagos}
                     datos={pagos}
@@ -247,18 +246,18 @@ const ListaPagos = () => {
                 <Modal
                 abrirModal={modalDetallesPago}
                 funcionCerrar={handleChangeModalDetallesPago}
-                //titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
                 botones={
                 <>
                 <Button onClick={handleChangeModalDetallesPago}>Cerrar</Button></>}
                 formulario={
                 <>
-                <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-dollar"></i> Pagos realizados</Typography>
+                <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-list-ol"></i> Detalles de pago</Typography>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} sm={12} lg={12}>
                         <Datatable
                         columnas={columnasDetallesPagos}
-                        datos={detallesPagos}/>
+                        datos={detallesPago}
+                        buscar={true}/>
                     </Grid>
                 </Grid>
                 <br/>
