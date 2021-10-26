@@ -21,19 +21,20 @@ const ListaPagos = () => {
         traerPagosPorAbonado(location.state.UserId);
     },[]);
 
-    const diaActual = new Date().getDate();
+    const [DiaActual, setDiaActual] = useState(new Date().getDate());
+
     const [PagoInfo, setPagoInfo] = useState({
         UserId: location.state.UserId,
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         DetallePagoObservaciones: '',
         MedioPagoId: 1,
-        PagoRecargo: diaActual >=21 ? 50 : '',
-        PagoTotal: diaActual >= 21 ? location.state.ServicioPrecioUnitario + 50 : location.state.ServicioPrecioUnitario
+        PagoRecargo: DiaActual >=21 ? 50 : 0,
+        PagoTotal: DiaActual >= 21 ? location.state.ServicioPrecioUnitario + 50 : location.state.ServicioPrecioUnitario
     });
 
     const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
-    const { PagoRecargo, DetallePagoMonto, DetallePagoObservaciones} = PagoInfo;
+    const { PagoRecargo, DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
     const [modalNuevoPago, setModalNuevoPago] = useState(false);
     const [modalDetallesPago, setModalDetallesPago] = useState(false);
@@ -174,7 +175,7 @@ const ListaPagos = () => {
                 <>
                 <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>
                 <Alert severity="info">
-                    {diaActual >= 21 ? 
+                    {DiaActual >= 21 ? 
                     <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario} + <b>Recargo: </b> $ {PagoRecargo} = ${location.state.ServicioPrecioUnitario + PagoRecargo}</Typography>
                     : <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario}</Typography>
                 }
