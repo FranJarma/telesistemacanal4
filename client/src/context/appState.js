@@ -320,6 +320,29 @@ const AppState = props => {
             console.log(error);
         }
     };
+    const crearServicio = async(servicio) => {
+        clienteAxios.post('/api/servicios/create', servicio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_SERVICIO,
+                    payload: servicio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                window.location.reload();
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     //MODELOS ONU
     const traerModelosONU = async () => {
         try {
@@ -364,7 +387,7 @@ const AppState = props => {
             detallesPago: state.detallesPago,
             crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, crearPago, traerAbonadosInscriptos, traerAbonadosActivos,
             traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
-            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago
+            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago, crearServicio
         }}>{props.children}
         </AppContext.Provider>
     )

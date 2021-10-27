@@ -199,7 +199,7 @@ const ListaPagos = () => {
                         disableFuture
                         >
                         </DatePicker>
-                        {pago.length > 0 ? <FormHelperText style={{color: 'teal'}}>Saldo del mes seleccionado: ${pago[0].PagoSaldo}</FormHelperText>: ""}
+                        {pago.length > 0 && pago[0].PagoSaldo !== 0 ? <FormHelperText style={{color: 'teal'}}>Saldo del mes seleccionado: ${pago[0].PagoSaldo}</FormHelperText>: pago.length > 0 && pago[0].PagoSaldo === 0 ? <FormHelperText style={{color: 'teal'}}>Saldado!</FormHelperText>:""}
                 </Grid>
                     <Grid item xs={6} md={6} sm={6} lg={6}>
                         <TextField

@@ -61,6 +61,11 @@ export default (state, action) => {
             return {
                 ...state,
                 servicios: action.payload,
+        }
+        case TYPES.CREAR_SERVICIO:
+            return {
+                ...state,
+                servicios: [action.payload, ...state.servicios],
         } 
         case TYPES.LISTA_MODELOS_ONU:
             return {

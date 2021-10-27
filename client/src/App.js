@@ -6,6 +6,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import esLocale from 'date-fns/locale/es';
 import AppState from './context/appState';
 import ListaPagos from './views/components/pagos/ListaPagos';
+import ListaServicios from './views/components/servicios/ListaServicios';
 import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
 import CambioDomicilio from './views/components/abonados/CambioDomicilio';
 import CambioServicio from './views/components/abonados/CambioServicio';
@@ -125,6 +126,9 @@ function App() {
               </Route>
               <Route path="/caratula-detalle-pago">
                 <CaratulaDetallePago/>
+              </Route>
+              <Route path="/servicios">
+                <ListaServicios/>
               </Route>
             </Switch>
           </AppState>
