@@ -22,6 +22,7 @@ const AppState = props => {
         historialServicios: [],
         mediosPago: [],
         pagos: [],
+        pago: {},
         detallesPago: []
     }
     const history = useHistory();
@@ -197,11 +198,27 @@ const AppState = props => {
             console.log(error);
         }
     };
-    const traerPagosPorAbonado = async (id) => {
+    const traerPagosPorAbonado = async (UserId) => {
         try {
-            const resultado = await clienteAxios.get(`/api/pagos/${id}`);
+            const resultado = await clienteAxios.get(`/api/pagos/${UserId}`);
             dispatch({
                 type: TYPES.LISTA_PAGOS_ABONADO,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerPago = async (UserId, PagoPeriodo) => {
+        try {
+            const resultado = await clienteAxios.get('/api/pagos',{
+                params: {
+                    UserId,
+                    PagoPeriodo
+                }
+            });
+            dispatch({
+                type: TYPES.TRAER_PAGO,
                 payload: resultado.data
             })
         } catch (error) {
@@ -343,10 +360,11 @@ const AppState = props => {
             historialServicios: state.historialServicios,
             mediosPago: state.mediosPago,
             pagos: state.pagos,
+            pago: state.pago,
             detallesPago: state.detallesPago,
             crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, crearPago, traerAbonadosInscriptos, traerAbonadosActivos,
             traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
-            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerDetallesPago
+            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago
         }}>{props.children}
         </AppContext.Provider>
     )

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
@@ -12,14 +12,9 @@ import { Link } from "react-router-dom";
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, detallesPago, mediosPago, crearPago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago } = appContext;
+    const { pago, pagos, detallesPago, mediosPago, crearPago, traerPagosPorAbonado, traerPago, traerDetallesPago, traerMediosPago } = appContext;
 
     const location = useLocation();
-
-    useEffect(()=>{
-        traerMediosPago();
-        traerPagosPorAbonado(location.state.UserId);
-    },[]);
 
     const [DiaActual, setDiaActual] = useState(new Date().getDate());
 
@@ -38,6 +33,13 @@ const ListaPagos = () => {
 
     const [modalNuevoPago, setModalNuevoPago] = useState(false);
     const [modalDetallesPago, setModalDetallesPago] = useState(false);
+    
+    useEffect(()=>{
+        traerPago(location.state.UserId, PagoPeriodo.toJSON().split('T')[0].split('-')[1] + '-' +PagoPeriodo.toJSON().split('T')[0].split('-')[0]);
+        traerMediosPago();
+        traerPagosPorAbonado(location.state.UserId);
+    },[]);
+
     const onInputChange = (e) => {
         setPagoInfo({
             ...PagoInfo,
@@ -50,7 +52,7 @@ const ListaPagos = () => {
             MedioPagoId: e.target.value});
     }
     const handleChangeNuevoPago = () => {
-        setModalNuevoPago(!modalNuevoPago)
+        setModalNuevoPago(!modalNuevoPago);
         if(!modalNuevoPago){
             setPagoInfo({
                 ...PagoInfo,
@@ -119,8 +121,9 @@ const ListaPagos = () => {
         },
         {
             "name": "Fecha ",
-            "selector": row =>row["DetallePagoFecha"].split('T')[0].split('-').reverse().join('/'),
+            "selector": row =>row["DetallePagoFecha"].split('T')[0].split('-').reverse().join('-'),
             "wrap": true,
+            "width": "10rem",
             "sortable": true,
         },
         {
@@ -181,20 +184,23 @@ const ListaPagos = () => {
                 }
                 </Alert>
                 <br/>
-                
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} sm={12} lg={12}>
                         <DatePicker
                         inputVariant="outlined"
                         value={PagoPeriodo}
-                        onChange={(periodo)=>setPagoPeriodo(periodo)}
+                        onChange={(periodo)=>{
+                            setPagoPeriodo(periodo)
+                            traerPago(location.state.UserId, periodo.toJSON().split('T')[0].split('-')[1] + '-' +periodo.toJSON().split('T')[0].split('-')[0]);
+                        }}
                         fullWidth
                         views={["year", "month"]}
                         label="Período de Pago"
                         disableFuture
                         >
                         </DatePicker>
-                    </Grid>
+                        {pago.length > 0 ? <FormHelperText style={{color: 'teal'}}>Saldo del mes seleccionado: ${pago[0].PagoSaldo}</FormHelperText>: ""}
+                </Grid>
                     <Grid item xs={6} md={6} sm={6} lg={6}>
                         <TextField
                             variant="outlined"

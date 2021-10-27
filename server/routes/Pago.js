@@ -3,7 +3,8 @@ const router = express.Router();
 const PagoController = require('../controllers/PagoController');
 const { check } = require('express-validator');
 
-router.get('/:id', PagoController.PagosListarPorUsuario);
+router.get('/:UserId', PagoController.PagosListarPorUsuario);
+router.get('/', PagoController.GetPago);
 
 router.post('/create',
 [

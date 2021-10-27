@@ -10,12 +10,25 @@ require('dotenv').config({path: 'variables.env'});
 exports.PagosListarPorUsuario = async(req,res) => {
     try {
         const pagos = await knex.select('*').from('pago as p')
-        .where('p.UserId','=', req.params.id)
+        .where('p.UserId','=', req.params.UserId)
         .orderBy('p.PagoPeriodo', 'desc');
         res.json(pagos);
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
+    }
+}
+exports.GetPago = async(req,res) => {
+    try {
+        const pago = await knex.select('*').from('pago as p')
+        .where({
+            'p.UserId': req.query.UserId,
+            'p.PagoPeriodo': req.query.PagoPeriodo
+        });
+        res.json(pago);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({msg: 'Hubo un error al consultar el pago de este período'})
     }
 }
 exports.PagoCreate = async(req,res) => {
@@ -24,7 +37,7 @@ exports.PagoCreate = async(req,res) => {
         return res.status(400).json({errors: errors.array()})
     }
     if(req.body.DetallePagoMonto <= 0) return res.status(400).json({msg: 'El monto tiene que ser mayor a 0'});
-    let periodo = req.body.PagoPeriodo.split('T')[0].split('-')[1] + '/' + req.body.PagoPeriodo.split('T')[0].split('-')[0];
+    let periodo = req.body.PagoPeriodo.split('T')[0].split('-')[1] + '-' + req.body.PagoPeriodo.split('T')[0].split('-')[0];
     try {
         await db.transaction(async(t)=>{
             let ultimoDetallePagoId = 0;
