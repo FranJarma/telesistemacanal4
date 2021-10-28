@@ -66,6 +66,16 @@ export default (state, action) => {
             return {
                 ...state,
                 servicios: [action.payload, ...state.servicios],
+        }
+        case TYPES.EDITAR_SERVICIO:
+            return {
+                ...state,
+                servicios: state.servicios.map(servicio => servicio.ServicioId === action.payload.ServicioId ? action.payload : servicio),
+        } 
+        case TYPES.ELIMINAR_SERVICIO:
+            return {
+                ...state,
+                servicios: state.servicios.filter(servicio => servicio.ServicioId !== action.payload.ServicioId),
         } 
         case TYPES.LISTA_MODELOS_ONU:
             return {

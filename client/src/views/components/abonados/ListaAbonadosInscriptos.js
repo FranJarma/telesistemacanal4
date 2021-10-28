@@ -167,7 +167,7 @@ const ListaAbonadosInscriptos = () => {
             state: data
         }}
         style={{textDecoration: 'none', color: "teal"}}>
-        <Tooltip title="Editar"><i className="bx bxs-edit bx-xs"></i></Tooltip>
+        <Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip>
         </Link>
         <Link to={{
             pathname: `/cambio-domicilio/UserId=${data.UserId}`,

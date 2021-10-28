@@ -16,9 +16,8 @@ const useStyles = makeStyles(theme =>({
         borderLeft: '3px solid teal'
     },
     cartaHome: {
-        marginLeft: '5rem',
-        marginRight: '3rem',
-        marginTop: '3rem'
+        marginTop: '3rem',
+        borderLeft: '3px solid teal'
     },
     cartaLogin: {
         backgroundColor: 'rgba(255,255,255,0.9)',

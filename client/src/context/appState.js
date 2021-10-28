@@ -320,7 +320,7 @@ const AppState = props => {
             console.log(error);
         }
     };
-    const crearServicio = async(servicio) => {
+    const crearServicio = async(servicio, cerrarModal) => {
         clienteAxios.post('/api/servicios/create', servicio)
         .then(resOk => {
             if (resOk.data)
@@ -329,7 +329,53 @@ const AppState = props => {
                     payload: servicio
                 });
                 Swal('Operación completa', resOk.data.msg);
-                window.location.reload();
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const modificarServicio = async(servicio, cerrarModal) => {
+        clienteAxios.put('/api/servicios/update', servicio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.EDITAR_SERVICIO,
+                    payload: servicio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarServicio = async(servicio, cerrarModal) => {
+        clienteAxios.put('/api/servicios/delete', servicio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_SERVICIO,
+                    payload: servicio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
         })
         .catch(err => {
             if(!err.response){
@@ -387,7 +433,7 @@ const AppState = props => {
             detallesPago: state.detallesPago,
             crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, crearPago, traerAbonadosInscriptos, traerAbonadosActivos,
             traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
-            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago, crearServicio
+            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago, crearServicio, modificarServicio, eliminarServicio
         }}>{props.children}
         </AppContext.Provider>
     )

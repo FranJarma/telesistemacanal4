@@ -136,7 +136,7 @@ const ListaPagos = () => {
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeNuevoPago(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-edit bx-xs"></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeNuevoPago(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
             <Typography style={{color: "slategrey", cursor: 'pointer'}}><Tooltip title="Generar recibo"><i className="bx bxs-receipt bx-xs"></i></Tooltip></Typography>
             </>,
         }

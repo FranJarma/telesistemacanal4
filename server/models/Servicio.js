@@ -18,6 +18,10 @@ const Servicio = db.define('servicio', {
     ServicioDescripcion: {
         type: STRING(256),
         allowNull: false
+    },
+    ServicioEliminado: {
+        type: INTEGER,
+        defaultValue: 0
     }
 });
 
