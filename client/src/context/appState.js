@@ -261,9 +261,80 @@ const AppState = props => {
         })
     }
     //BARRIOS
+    const crearBarrio = async(barrio, cerrarModal) => {
+        clienteAxios.post('/api/barrios/create', barrio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_BARRIO,
+                    payload: barrio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            console.log(err);
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const modificarBarrio = async(barrio, cerrarModal) => {
+        clienteAxios.put('/api/barrios/update', barrio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.EDITAR_BARRIO,
+                    payload: barrio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarBarrio = async(barrio, cerrarModal) => {
+        clienteAxios.put('/api/barrios/delete', barrio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_BARRIO,
+                    payload: barrio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     const traerBarriosPorMunicipio = async (municipioId) => {
         try {
-            const resultado = await clienteAxios.get(`/api/barrios/municipio=${municipioId}`);
+            let resultado = null;
+            municipioId === 0 ? resultado = await clienteAxios.get('/api/barrios') : resultado = await clienteAxios.get(`/api/barrios/municipio=${municipioId}`);
             dispatch({
                 type: TYPES.LISTA_BARRIOS,
                 payload: resultado.data
@@ -285,6 +356,76 @@ const AppState = props => {
         }
     };
     //MUNICIPIOS
+    const crearMunicipio = async(municipio, cerrarModal) => {
+        clienteAxios.post('/api/municipios/create', municipio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_MUNICIPIO,
+                    payload: municipio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            console.log(err);
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const modificarMunicipio = async(municipio, cerrarModal) => {
+        clienteAxios.put('/api/municipios/update', municipio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.EDITAR_MUNICIPIO,
+                    payload: municipio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarMunicipio = async(municipio, cerrarModal) => {
+        clienteAxios.put('/api/municipios/delete', municipio)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_MUNICIPIO,
+                    payload: municipio
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     const traerMunicipiosPorProvincia = async (provinciaId) => {
         try {
             const resultado = await clienteAxios.get(`/api/municipios/provincia=${provinciaId}`);
@@ -433,7 +574,8 @@ const AppState = props => {
             detallesPago: state.detallesPago,
             crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, crearPago, traerAbonadosInscriptos, traerAbonadosActivos,
             traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
-            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago, crearServicio, modificarServicio, eliminarServicio
+            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago, crearServicio, modificarServicio, eliminarServicio,
+            crearBarrio, modificarBarrio, eliminarBarrio, crearMunicipio, modificarMunicipio, eliminarMunicipio
         }}>{props.children}
         </AppContext.Provider>
     )

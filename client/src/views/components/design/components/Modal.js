@@ -5,7 +5,7 @@ const Modal = ({abrirModal, funcionCerrar, titulo, mensaje, formulario, botones}
     return (
         <Dialog style={{zIndex: 0}} open={abrirModal} onClose={funcionCerrar}>
             <DialogTitle>{titulo}</DialogTitle>
-            <DialogContent>
+            <DialogContent style={{overflow: 'hidden'}}>
                 <DialogContentText>{mensaje}</DialogContentText>
                     {formulario}
             </DialogContent>

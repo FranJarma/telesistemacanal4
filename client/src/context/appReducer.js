@@ -42,6 +42,21 @@ export default (state, action) => {
                 ...state,
                 barrios: action.payload,
         }
+        case TYPES.CREAR_BARRIO:
+            return {
+                ...state,
+                barrios: [action.payload, ...state.barrios],
+        }
+        case TYPES.EDITAR_BARRIO:
+            return {
+                ...state,
+                barrios: state.barrios.map(barrio => barrio.BarrioId === action.payload.BarrioId ? action.payload : barrio),
+        } 
+        case TYPES.ELIMINAR_BARRIO:
+            return {
+                ...state,
+                barrios: state.barrios.filter(barrio => barrio.BarrioId !== action.payload.BarrioId),
+        } 
         case TYPES.LISTA_CONDICIONES_IVA:
             return {
                 ...state,
@@ -52,6 +67,21 @@ export default (state, action) => {
                 ...state,
                 municipios: action.payload,
         }
+        case TYPES.CREAR_MUNICIPIO:
+            return {
+                ...state,
+                municipios: [action.payload, ...state.municipios],
+        }
+        case TYPES.EDITAR_MUNICIPIO:
+            return {
+                ...state,
+                municipios: state.municipios.map(servicio => servicio.MunicipioId === action.payload.MunicipioId ? action.payload : servicio),
+        } 
+        case TYPES.ELIMINAR_MUNICIPIO:
+            return {
+                ...state,
+                municipios: state.municipios.filter(servicio => servicio.MunicipioId !== action.payload.MunicipioId),
+        } 
         case TYPES.LISTA_PROVINCIAS:
             return {
                 ...state,

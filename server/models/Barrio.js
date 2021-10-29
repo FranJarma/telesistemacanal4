@@ -1,13 +1,21 @@
-const { Sequelize, STRING } = require('sequelize');
+const { STRING, INTEGER } = require('sequelize');
 const db = require('../config/connection');
 
 const Barrio = db.define('barrio', {
-    NombreBarrio: {
+    BarrioId: {
+        type: INTEGER,
+        primaryKey: true
+    },
+    BarrioNombre: {
         type: STRING(256),
         allowNull: false
     },
-    SiglaProvincia: {
-        type: STRING(256),
+    BarrioEliminado: {
+        type: INTEGER,
+        defaultValue: 0
+    },
+    MunicipioId: {
+        type: INTEGER,
         allowNull: true
     }
 });

@@ -89,8 +89,7 @@ const Aside = () => {
         </SubMenu>
         <SubMenu onClick={onClickMenuAdministracion} open={SubMenuAdministracion} title="Administración" icon={<i className="bx bxs-brightness"></i>}>
         <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
-        <MenuItem icon={<i className="bx bx-map"></i>}>Barrios<Link to="/barrios"></Link></MenuItem>
-        <MenuItem icon={<i className="bx bx-map-pin"></i>}>Municipios<Link to="/municipios"></Link></MenuItem>
+        <MenuItem icon={<i className="bx bx-map"></i>}>Barrios y Municipios<Link to="/barrios-municipios"></Link></MenuItem>
         <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus<Link to="/onus"></Link></MenuItem>
         <MenuItem icon={<i className="bx bx-wallet"></i>}>Medios de Pago<Link to="/medios-de-pago"></Link></MenuItem>
         </SubMenu>

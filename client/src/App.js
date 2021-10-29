@@ -16,6 +16,7 @@ import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetall
 import Login from './views/components/auth/Login';
 import Cargando from './views/components/design/components/Cargando';
 import ListaAbonadosInscriptos from './views/components/abonados/ListaAbonadosInscriptos';
+import BarriosMunicipios from './views/components/barrios-municipios/BarriosMunicipios';
 
 const Home = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
@@ -129,6 +130,9 @@ function App() {
               </Route>
               <Route path="/servicios">
                 <ListaServicios/>
+              </Route>
+              <Route path="/barrios-municipios">
+                <BarriosMunicipios/>
               </Route>
             </Switch>
           </AppState>

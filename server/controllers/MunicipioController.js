@@ -1,6 +1,60 @@
+const { validationResult } = require('express-validator');
+const db = require('../config/connection');
 const options =require('./../config/knex');
+const Municipio = require('./../models/Municipio');
 const knex = require('knex')(options);
 require('dotenv').config({path: 'variables.env'});
+
+exports.MunicipioCreate = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        await db.transaction(async(t)=>{
+            const ultimoMunicipio = await Municipio.findOne({
+                order: [['MunicipioId', 'DESC']]
+            });
+            let ultimoMunicipioId = ultimoMunicipio.MunicipioId + 1;
+            const municipio = new Municipio(req.body);
+            municipio.MunicipioId = ultimoMunicipioId;
+            // await municipio.save({transaction: t});
+            return res.status(200).json({msg: 'El Municipio ha sido registrado correctamente'})
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({msg: 'Hubo un error al registrar el municipio'});
+    }
+}
+exports.MunicipioUpdate = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        await db.transaction(async(t)=>{
+            const municipio = await Municipio.findByPk(req.body.MunicipioId, {transaction: t});
+            await municipio.update(req.body, {transaction: t});
+            return res.status(200).json({msg: 'El Municipio ha sido modificado correctamente'})
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({msg: 'Hubo un error al modificar el municipio'});
+    }
+}
+exports.MunicipioDelete = async(req, res) => {
+    try {
+        await db.transaction(async(t)=>{
+            const municipio = await Municipio.findByPk(req.body.MunicipioId, {transaction: t});
+            municipio.MunicipioEliminado = 1;
+            await municipio.save({transaction: t});
+            return res.status(200).json({msg: 'El Municipio ha sido eliminado correctamente'})
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({msg: 'Hubo un error al eliminar el municipio'});
+    }
+}
 
 exports.MunicipiosListarPorProvincia = async(req, res) => {
     try {
