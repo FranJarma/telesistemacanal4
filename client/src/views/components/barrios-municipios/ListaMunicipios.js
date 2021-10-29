@@ -10,19 +10,24 @@ const ListaMunicipios = () => {
     const { municipios, provincias, traerProvincias, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio } = appContext;
     useEffect(()=>{
         traerProvincias();
-        setProvinciaId(10);
         traerMunicipiosPorProvincia(10);
     },[]);
 
-    const [ProvinciaId, setProvinciaId] = useState('');
-    const [ModalMunicipio, setModalMunicipio] = useState(false);
-    const [ModalEliminarMunicipio, setModalEliminarMunicipio] = useState(false);
-    const [EditMode, setEditMode] = useState(false);
     const [MunicipioInfo, setMunicipioInfo] = useState({
+        MunicipioId: '',
         MunicipioNombre: '',
         MunicipioSigla: '',
         MunicipioCodigoPostal: ''
     })
+    const [ProvinciaIdVieja, setProvinciaIdVieja] = useState('');
+    const [ProvinciaId, setProvinciaId] = useState(10);
+    const [ProvinciaNombre, setProvinciaNombre] = useState('Jujuy');
+    const [ProvinciaIdModal, setProvinciaIdModal] = useState(10);
+    const [ProvinciaNombreModal, setProvinciaNombreModal] = useState('Jujuy');
+    const [ModalMunicipio, setModalMunicipio] = useState(false);
+    const [ModalEliminarMunicipio, setModalEliminarMunicipio] = useState(false);
+    const [EditMode, setEditMode] = useState(false);
+
     const { MunicipioNombre, MunicipioSigla, MunicipioCodigoPostal } = MunicipioInfo;
 
     const onInputChange= (e) =>{
@@ -34,14 +39,25 @@ const ListaMunicipios = () => {
     
     const handleChangeProvinciaSeleccionada = (e) => {
         setProvinciaId(e.target.value);
+        traerMunicipiosPorProvincia(e.target.value);
+    }
+    const handleChangeProvinciaSeleccionadaModal = (e) => {
+        setProvinciaIdModal(e.target.value);
+    }
+
+    const handleFocusProvinciaSeleccionadaModal = (e) => {
+        setProvinciaNombreModal(e.target.innerHTML)
     }
 
     const handleChangeModalMunicipio = (data = '') => {
         setModalMunicipio(!ModalMunicipio);
         setModalEliminarMunicipio(false);
         if(data !== '') {
+            setProvinciaIdVieja(data.ProvinciaId);
             setEditMode(true);
             setMunicipioInfo(data);
+            setProvinciaIdModal(data.ProvinciaId); //para que cargue JUJUY por defecto
+            setProvinciaNombreModal(data.ProvinciaNombre);
         }
         else {
             setEditMode(false);
@@ -57,7 +73,7 @@ const ListaMunicipios = () => {
     const columnasMunicipios = [
         {
             "name": "id",
-            "selector": row => row["BarrioId"],
+            "selector": row => row["MunicipioId"],
             "omit": true
         },
         {
@@ -100,6 +116,21 @@ const ListaMunicipios = () => {
                     action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalMunicipio()}} >+ Nuevo municipio</Button>}>
                 </CardHeader>
                 <br/>
+                <Grid item xs={12} md={2} lg={2} xl={2}>
+                    <TextField
+                    onChange={handleChangeProvinciaSeleccionada}
+                    value={ProvinciaId}
+                    label="Provincia"
+                    fullWidth
+                    select
+                    variant="outlined"
+                    >
+                    <MenuItem value={0}>Todas</MenuItem>
+                    {provincias.length > 0 ? provincias.map((provincia)=>(
+                        <MenuItem key={provincia.ProvinciaId} value={provincia.ProvinciaId}>{provincia.ProvinciaNombre}</MenuItem>
+                    )): <MenuItem disabled>No se encontraron provincias</MenuItem>}
+                    </TextField>
+                </Grid>
                 <Datatable
                     datos={municipios}
                     columnas={columnasMunicipios}
@@ -150,12 +181,13 @@ const ListaMunicipios = () => {
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>
                     <TextField
-                    onChange={handleChangeProvinciaSeleccionada}
-                    value={ProvinciaId}
+                    onChange={handleChangeProvinciaSeleccionadaModal}
+                    value={ProvinciaIdModal}
                     label="Provincia"
                     fullWidth
                     select
                     variant="outlined"
+                    onFocus={handleFocusProvinciaSeleccionadaModal}
                     >
                     {provincias.length > 0 ? provincias.map((provincia)=>(
                         <MenuItem key={provincia.ProvinciaId} value={provincia.ProvinciaId}>{provincia.ProvinciaNombre}</MenuItem>
@@ -167,9 +199,9 @@ const ListaMunicipios = () => {
         botones={
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ?
-            modificarMunicipio({...MunicipioInfo, ProvinciaId}, handleChangeModalMunicipio)
+            modificarMunicipio({...MunicipioInfo, ProvinciaIdVieja, ProvinciaNombreModal, ProvinciaIdModal}, handleChangeModalMunicipio)
             :
-            crearMunicipio({...MunicipioInfo, ProvinciaId}, handleChangeModalMunicipio)}}
+            crearMunicipio({...MunicipioInfo, ProvinciaNombreModal, ProvinciaIdModal}, handleChangeModalMunicipio)}}
             >{EditMode ? "Editar" : "Agregar"}</Button>
             <Button variant="text" color="inherit" >Cerrar</Button>
             </>

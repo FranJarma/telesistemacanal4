@@ -14,14 +14,14 @@ const BarriosMunicipios = () => {
         <main>
         <Tabs>
             <TabList>
-            <Tab><i style={{color: 'teal'}} className="bx bx-map"></i> Barrios</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bx-map-alt'></i> Municipios</Tab>
+            <Tab><i style={{color: 'teal'}} className="bx bx-map"></i> Municipios</Tab>
+            <Tab><i style={{color: 'teal'}} className='bx bx-map-alt'></i> Barrios</Tab>
             </TabList>
             <TabPanel>
-            <ListaBarrios/>
+            <ListaMunicipios/>
             </TabPanel>
             <TabPanel>
-            <ListaMunicipios/>
+            <ListaBarrios/>
             </TabPanel>
         </Tabs>
     </main>

@@ -1,4 +1,4 @@
-const { Sequelize, STRING } = require('sequelize');
+const { STRING } = require('sequelize');
 const db = require('../config/connection');
 
 const Provincia = db.define('provincia', {

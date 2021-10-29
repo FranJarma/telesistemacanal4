@@ -357,6 +357,7 @@ const AppState = props => {
     };
     //MUNICIPIOS
     const crearMunicipio = async(municipio, cerrarModal) => {
+        console.log(municipio);
         clienteAxios.post('/api/municipios/create', municipio)
         .then(resOk => {
             if (resOk.data)
@@ -390,6 +391,7 @@ const AppState = props => {
                 });
                 Swal('Operación completa', resOk.data.msg);
                 cerrarModal(true);
+                window.location.reload();
         })
         .catch(err => {
             if(!err.response){
@@ -428,7 +430,19 @@ const AppState = props => {
     }
     const traerMunicipiosPorProvincia = async (provinciaId) => {
         try {
-            const resultado = await clienteAxios.get(`/api/municipios/provincia=${provinciaId}`);
+            let resultado = null;
+            provinciaId === 0 ? resultado = await clienteAxios.get('/api/municipios') : resultado = await clienteAxios.get(`/api/municipios/provincia=${provinciaId}`);
+            dispatch({
+                type: TYPES.LISTA_MUNICIPIOS,
+                payload: resultado.data
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const traerMunicipios = async () => {
+        try {
+            const resultado = await clienteAxios.get(`/api/municipios`);
             dispatch({
                 type: TYPES.LISTA_MUNICIPIOS,
                 payload: resultado.data
@@ -575,7 +589,7 @@ const AppState = props => {
             crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, crearPago, traerAbonadosInscriptos, traerAbonadosActivos,
             traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
             traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago, crearServicio, modificarServicio, eliminarServicio,
-            crearBarrio, modificarBarrio, eliminarBarrio, crearMunicipio, modificarMunicipio, eliminarMunicipio
+            crearBarrio, modificarBarrio, eliminarBarrio, crearMunicipio, modificarMunicipio, eliminarMunicipio, traerMunicipios
         }}>{props.children}
         </AppContext.Provider>
     )

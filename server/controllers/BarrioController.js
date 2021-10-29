@@ -15,18 +15,17 @@ exports.BarrioCreate = async(req, res) => {
             const barrioBuscar = await Barrio.findOne({
                 where: {
                     BarrioNombre: req.body.BarrioNombre,
-                    MunicipioId: req.body.MunicipioIdModificar
+                    MunicipioId: req.body.MunicipioIdModal
                 }
             }
             );
-            if (barrioBuscar) return res.status(400).json({msg: 'Ya existe un barrio con ese nombre y ese municipio'});
+            if (barrioBuscar) return res.status(400).json({msg: 'Ya existe un barrio con ese nombre en ese municipio'});
             const ultimoBarrio = await Barrio.findOne({
                 order: [['BarrioId', 'DESC']]
             });
-            let ultimoBarrioId = ultimoBarrio.BarrioId + 1;
             const barrio = new Barrio(req.body);
-            barrio.BarrioId = ultimoBarrioId;
-            barrio.MunicipioId = req.body.MunicipioIdModificar;
+            barrio.BarrioId = ultimoBarrio.BarrioId + 1;
+            barrio.MunicipioId = req.body.MunicipioIdModal;
             await barrio.save({transaction: t});
             return res.status(200).json({msg: 'El Barrio ha sido registrado correctamente'})
         })
@@ -43,7 +42,7 @@ exports.BarrioUpdate = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             const barrio = await Barrio.findByPk(req.body.BarrioId, {transaction: t});
-            barrio.MunicipioId = req.body.MunicipioIdModificar;
+            barrio.MunicipioId = req.body.MunicipioIdModal;
             barrio.BarrioNombre = req.body.BarrioNombre;
             await barrio.save({transaction: t});
             return res.status(200).json({msg: 'El Barrio ha sido modificado correctamente'})

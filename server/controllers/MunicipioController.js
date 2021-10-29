@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const db = require('../config/connection');
+const ProvinciaMunicipio = require('../models/ProvinciaMunicipio');
 const options =require('./../config/knex');
 const Municipio = require('./../models/Municipio');
 const knex = require('knex')(options);
@@ -12,13 +13,22 @@ exports.MunicipioCreate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
+            const municipioBuscar = await Municipio.findOne({
+                where: {
+                    MunicipioCodigoPostal: req.body.MunicipioCodigoPostal
+                }
+            }, {transaction: t})
+            if(municipioBuscar) return res.status(400).json({msg: 'Ya existe un municipio con ese codigo postal'});
             const ultimoMunicipio = await Municipio.findOne({
                 order: [['MunicipioId', 'DESC']]
             });
-            let ultimoMunicipioId = ultimoMunicipio.MunicipioId + 1;
             const municipio = new Municipio(req.body);
-            municipio.MunicipioId = ultimoMunicipioId;
-            // await municipio.save({transaction: t});
+            municipio.MunicipioId = ultimoMunicipio.MunicipioId + 1;
+            const provinciaMunicipio = new ProvinciaMunicipio(req.body);
+            provinciaMunicipio.MunicipioId = ultimoMunicipio.MunicipioId + 1;
+            provinciaMunicipio.ProvinciaId = req.body.ProvinciaIdModal;
+            await municipio.save({transaction: t});
+            await provinciaMunicipio.save({transaction: t});
             return res.status(200).json({msg: 'El Municipio ha sido registrado correctamente'})
         })
     } catch (error) {
@@ -34,8 +44,16 @@ exports.MunicipioUpdate = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             const municipio = await Municipio.findByPk(req.body.MunicipioId, {transaction: t});
+            const provinciaMunicipio = await ProvinciaMunicipio.findOne({
+                where: {
+                    ProvinciaId: req.body.ProvinciaIdVieja,
+                    MunicipioId: req.body.MunicipioId
+                }
+            }, {transaction: t});
+            provinciaMunicipio.ProvinciaId = req.body.ProvinciaIdModal;
             await municipio.update(req.body, {transaction: t});
-            return res.status(200).json({msg: 'El Municipio ha sido modificado correctamente'})
+            await provinciaMunicipio.save({transaction: t});
+            return res.status(200).json({msg: 'El Municipio ha sido modificado correctamente'});
         })
     } catch (error) {
         console.log(error);
@@ -61,7 +79,22 @@ exports.MunicipiosListarPorProvincia = async(req, res) => {
         const municipios = await knex.select('*').from('municipio as m')
         .join('provinciamunicipio as pm', 'm.MunicipioId', '=', 'pm.MunicipioId')
         .join('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
-        .where('p.ProvinciaId', '=', req.params.id);
+        .where({
+            'p.ProvinciaId': req.params.id,
+            'm.MunicipioEliminado': 0
+        });
+        res.json(municipios);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Hubo un error al encontrar los municipios');
+    }
+}
+exports.MunicipiosGet = async(req, res) => {
+    try {
+        const municipios = await knex.select('*').from('municipio as m')
+        .join('provinciamunicipio as pm', 'm.MunicipioId', '=', 'pm.MunicipioId')
+        .join('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
+        .where('m.MunicipioEliminado', '=', 0);
         res.json(municipios);
     } catch (error) {
         console.log(error);

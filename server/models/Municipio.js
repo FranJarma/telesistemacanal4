@@ -1,11 +1,14 @@
-const { Sequelize, STRING } = require('sequelize');
+const { STRING, INTEGER } = require('sequelize');
 const db = require('../config/connection');
 
 const Municipio = db.define('municipio', {
+    MunicipioId: {
+        type: INTEGER,
+        primaryKey: true
+    },
     MunicipioNombre: {
         type: STRING(256),
         allowNull: false,
-        primaryKey: true
     },
     MunicipioSigla: {
         type: STRING(256),
@@ -13,8 +16,12 @@ const Municipio = db.define('municipio', {
     },
     MunicipioCodigoPostal: {
         type: STRING(256),
-        allowNull: true
-    }
+        allowNull: false
+    },
+    MunicipioEliminado: {
+        type: INTEGER,
+        defaultValue: 0
+    },
 });
 
 module.exports = db.model('municipio', Municipio);

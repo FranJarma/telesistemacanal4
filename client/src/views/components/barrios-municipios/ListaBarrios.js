@@ -9,15 +9,13 @@ const ListaBarrios = () => {
     const appContext = useContext(AppContext);
     const { barrios, municipios, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, crearBarrio, modificarBarrio, eliminarBarrio } = appContext;
     useEffect(()=>{
-        setMunicipioIdModificar(1);
-        setMunicipioNombre('El Carmen');
         traerMunicipiosPorProvincia(10);
         traerBarriosPorMunicipio(0);
     },[]);
 
     const [MunicipioId, setMunicipioId] = useState(0);
-    const [MunicipioIdModificar, setMunicipioIdModificar] = useState('');
-    const [MunicipioNombre, setMunicipioNombre] = useState('');
+    const [MunicipioNombre, setMunicipioNombre] = useState('El Carmen');
+    const [MunicipioIdModal, setMunicipioIdModal] = useState(1);
     const [ModalBarrio, setModalBarrio] = useState(false);
     const [ModalEliminarBarrio, setModalEliminarBarrio] = useState(false);
     const [EditMode, setEditMode] = useState(false);
@@ -40,7 +38,7 @@ const ListaBarrios = () => {
         if(data !== '') {
             setEditMode(true);
             setBarrioInfo(data);
-            setMunicipioIdModificar(data.MunicipioId);
+            setMunicipioIdModal(data.MunicipioId);
             setMunicipioNombre(data.MunicipioNombre);
         }
         else {
@@ -63,8 +61,8 @@ const ListaBarrios = () => {
         setMunicipioNombre(e.target.innerHTML)
     }
 
-    const handleChangeMunicipioSeleccionadoModificarBarrio = (e) => {
-        setMunicipioIdModificar(e.target.value);
+    const handleChangeMunicipioIdModal = (e) => {
+        setMunicipioIdModal(e.target.value);
     }
 
     const columnasBarrios = [
@@ -144,8 +142,8 @@ const ListaBarrios = () => {
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>
                     <TextField
-                    onChange={handleChangeMunicipioSeleccionadoModificarBarrio}
-                    value={MunicipioIdModificar}
+                    onChange={handleChangeMunicipioIdModal}
+                    value={MunicipioIdModal}
                     label="Municipio"
                     fullWidth
                     select
@@ -161,8 +159,8 @@ const ListaBarrios = () => {
         }
         botones={
             <>
-            <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModificar}, handleChangeModalBarrio)
-            : crearBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModificar}, handleChangeModalBarrio)}}>{EditMode ? "Editar" : "Agregar"}</Button>
+            <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModal}, handleChangeModalBarrio)
+            : crearBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModal}, handleChangeModalBarrio)}}>{EditMode ? "Editar" : "Agregar"}</Button>
             <Button variant="text" color="inherit" onClick={handleChangeModalBarrio} >Cerrar</Button>
             </>
         }
