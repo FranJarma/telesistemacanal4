@@ -4,12 +4,12 @@ import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
-    const { barrios, condicionesIva, municipios, servicios, provincias, modelosOnu, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
+    const { barrios, condicionesIva, municipios, servicios, provincias, modelosONU, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
     traerProvincias, traerModelosONU, crearAbonado, modificarAbonado } = appContext;
     
     const location = useLocation();
@@ -406,7 +406,12 @@ const CaratulaAbonado = () => {
                     fullWidth
                     select
                     >
-                    {modelosOnu.map((modeloONU)=>(
+                    <Link style={{textDecoration: 'none'}} to={{
+                        pathname: 'onus-modelosONUs',
+                        state: true
+                    }}>
+                    <Button variant="text" fullWidth color="primary"> + Nueva ONU</Button></Link>
+                    {modelosONU.map((modeloONU)=>(
                         <MenuItem key={modeloONU.ModeloOnuId} value={modeloONU.ModeloOnuId}>{modeloONU.ModeloOnuNombre}</MenuItem>
                     ))}
                     </TextField>

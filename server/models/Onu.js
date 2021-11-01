@@ -15,6 +15,10 @@ const Onu = db.define('onu', {
         type: STRING(256),
         allowNull: false
     },
+    OnuEliminada: {
+        type: INTEGER,
+        defaultValue: 0
+    },
     ServicioId: {
         type: INTEGER,
         allowNull: false

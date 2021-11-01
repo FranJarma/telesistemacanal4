@@ -24,6 +24,8 @@ const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar}) => 
     || (item.DomicilioNumero && item.DomicilioNumero.toString().includes(textoFiltrado.toLowerCase()))
     || (item.ServicioNombre && item.ServicioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.OnuMac && item.OnuMac.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.OnuSerie && item.OnuSerie.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.ModeloOnuNombre && item.ModeloOnuNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.PagoSaldo && item.PagoSaldo.toString().includes(textoFiltrado.toLowerCase()))
     || (item.PagoPeriodo && item.PagoPeriodo.toString().includes(textoFiltrado.toLowerCase()))
     || (item.PagoRecargo && item.PagoRecargo.toString().includes(textoFiltrado.toLowerCase()))

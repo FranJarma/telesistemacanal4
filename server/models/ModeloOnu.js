@@ -14,6 +14,10 @@ const ModeloOnu = db.define('modeloonu', {
     ModeloOnuDescripcion: {
         type: STRING(256),
         allowNull: false
+    },
+    ModeloOnuEliminado: {
+        type: INTEGER,
+        defaultValue: 0
     }
 });
 

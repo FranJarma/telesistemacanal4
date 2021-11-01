@@ -27,8 +27,10 @@ app.use('/api/barrios', require('./routes/Barrio.js'));
 app.use('/api/servicios', require('./routes/Servicio.js'));
 //CONDICIONES IVA
 app.use('/api/condicionesIva', require('./routes/CondicionIva.js'));
+//ONU
+app.use('/api/onus', require('./routes/Onu.js'));
 //MODELOS ONU
-app.use('/api/modelosOnu', require('./routes/ModeloOnu.js'));
+app.use('/api/modelosONU', require('./routes/ModeloOnu.js'));
 //PAGOS
 app.use('/api/pagos', require('./routes/Pago.js'));
 //DETALLES PAGOS

@@ -17,7 +17,7 @@ const AppState = props => {
         provincias: [],
         servicios: [],
         onus: [],
-        modelosOnu: [],
+        modelosONU: [],
         historialDomicilios: [],
         historialServicios: [],
         mediosPago: [],
@@ -544,10 +544,91 @@ const AppState = props => {
             }
         })
     }
+    //ONUS
+    const traerONUS = async () => {
+        try {
+            const resultado = await clienteAxios.get(`/api/onus`);
+            dispatch({
+                type: TYPES.LISTA_ONUS,
+                payload: resultado.data
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const crearONU = async(onu, cerrarModal) => {
+        clienteAxios.post('/api/onus/create', onu)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_ONU,
+                    payload: onu
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const modificarONU = async(onu, cerrarModal) => {
+        clienteAxios.put('/api/onus/update', onu)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.EDITAR_ONU,
+                    payload: onu
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarONU = async(onu, cerrarModal) => {
+        clienteAxios.put('/api/onus/delete', onu)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_ONU,
+                    payload: onu
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     //MODELOS ONU
     const traerModelosONU = async () => {
         try {
-            const resultado = await clienteAxios.get('/api/modelosOnu');
+            const resultado = await clienteAxios.get('/api/modelosONU');
             dispatch({
                 type: TYPES.LISTA_MODELOS_ONU,
                 payload: resultado.data
@@ -555,6 +636,75 @@ const AppState = props => {
         } catch (error) {
             console.log(error);
         }
+    }
+    const crearModeloONU = async(modeloONU, cerrarModal) => {
+        clienteAxios.post('/api/modelosONU/create', modeloONU)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_MODELO_ONU,
+                    payload: modeloONU
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const modificarModeloONU = async(modeloOnu, cerrarModal) => {
+        clienteAxios.put('/api/modelosONU/update', modeloOnu)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.EDITAR_MODELO_ONU,
+                    payload: modeloOnu
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarModeloONU = async(modeloOnu, cerrarModal) => {
+        clienteAxios.put('/api/modelosONU/delete', modeloOnu)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_MODELO_ONU,
+                    payload: modeloOnu
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
     }
     //MEDIOS PAGO
     const traerMediosPago = async () => {
@@ -579,17 +729,26 @@ const AppState = props => {
             provincias: state.provincias,
             servicios: state.servicios,
             onus: state.onus,
-            modelosOnu: state.modelosOnu,
+            modelosONU: state.modelosONU,
             historialDomicilios: state.historialDomicilios,
             historialServicios: state.historialServicios,
             mediosPago: state.mediosPago,
             pagos: state.pagos,
             pago: state.pago,
             detallesPago: state.detallesPago,
-            crearAbonado, modificarAbonado, cambiarEstadoAbonado, cambioDomicilioAbonado, cambioServicioAbonado, crearPago, traerAbonadosInscriptos, traerAbonadosActivos,
-            traerAbonadosInactivos, traerServiciosAbonado, traerDomiciliosAbonado, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia,
-            traerProvincias, traerServicios, traerModelosONU, traerMediosPago, traerPagosPorAbonado, traerPago, traerDetallesPago, crearServicio, modificarServicio, eliminarServicio,
-            crearBarrio, modificarBarrio, eliminarBarrio, crearMunicipio, modificarMunicipio, eliminarMunicipio, traerMunicipios
+            traerAbonadosActivos, traerAbonadosInactivos, traerAbonadosInscriptos, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,
+            cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
+            traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 
+            traerCondicionesIva,
+            traerMunicipios, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio,
+            traerProvincias,
+            traerServicios, crearServicio, modificarServicio, eliminarServicio,
+            traerONUS, crearONU, modificarONU, eliminarONU,
+            traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
+            traerMediosPago,
+            traerPagosPorAbonado,
+            traerPago,
+            traerDetallesPago
         }}>{props.children}
         </AppContext.Provider>
     )

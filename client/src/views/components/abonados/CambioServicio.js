@@ -11,7 +11,7 @@ import { DatePicker } from '@material-ui/pickers';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const {historialServicios, servicios, modelosOnu, traerServicios, traerServiciosAbonado, traerModelosONU, cambioServicioAbonado } = appContext;
+    const {historialServicios, servicios, modelosONU, traerServicios, traerServiciosAbonado, traerModelosONU, cambioServicioAbonado } = appContext;
 
     const location = useLocation();
     //Observables
@@ -198,7 +198,7 @@ const CambioServicio = () => {
                     fullWidth
                     select
                     >
-                    {modelosOnu.map((modeloONU)=>(
+                    {modelosONU.map((modeloONU)=>(
                         <MenuItem key={modeloONU.ModeloOnuId} value={modeloONU.ModeloOnuId}>{modeloONU.ModeloOnuNombre}</MenuItem>
                     ))}
                     </TextField>

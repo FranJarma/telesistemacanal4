@@ -17,6 +17,7 @@ import Login from './views/components/auth/Login';
 import Cargando from './views/components/design/components/Cargando';
 import ListaAbonadosInscriptos from './views/components/abonados/ListaAbonadosInscriptos';
 import BarriosMunicipios from './views/components/barrios-municipios/BarriosMunicipios';
+import OnusModelosOnus from './views/components/onus/OnusModelosOnus';
 
 const Home = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
@@ -133,6 +134,9 @@ function App() {
               </Route>
               <Route path="/barrios-municipios">
                 <BarriosMunicipios/>
+              </Route>
+              <Route path="/onus-modelosOnus">
+                <OnusModelosOnus/>
               </Route>
             </Switch>
           </AppState>

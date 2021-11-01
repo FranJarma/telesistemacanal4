@@ -107,11 +107,46 @@ export default (state, action) => {
                 ...state,
                 servicios: state.servicios.filter(servicio => servicio.ServicioId !== action.payload.ServicioId),
         } 
+        case TYPES.LISTA_ONUS:
+            return {
+                ...state,
+                onus: action.payload
+        }
+        case TYPES.CREAR_ONU:
+            return {
+                ...state,
+                onus: [action.payload, ...state.onus],
+        }
+        case TYPES.EDITAR_ONU:
+            return {
+                ...state,
+                onus: state.onus.map(onu => onu.OnuId === action.payload.OnuId ? action.payload : onu),
+        } 
+        case TYPES.ELIMINAR_ONU:
+            return {
+                ...state,
+                onus: state.onus.filter(onu => onu.OnuId !== action.payload.OnuId),
+        } 
         case TYPES.LISTA_MODELOS_ONU:
             return {
                 ...state,
-                modelosOnu: action.payload
+                modelosONU: action.payload
         }
+        case TYPES.CREAR_MODELO_ONU:
+            return {
+                ...state,
+                modelosONU: [action.payload, ...state.modelosONU],
+        }
+        case TYPES.EDITAR_MODELO_ONU:
+            return {
+                ...state,
+                modelosONU: state.modelosONU.map(modeloONU => modeloONU.ModeloOnuId === action.payload.ModeloOnuId ? action.payload : modeloONU),
+        } 
+        case TYPES.ELIMINAR_MODELO_ONU:
+            return {
+                ...state,
+                modelosONU: state.modelosONU.filter(modeloONU => modeloONU.ModeloOnuId !== action.payload.ModeloOnuId),
+        } 
         case TYPES.LISTA_MEDIOS_DE_PAGO:
             return {
                 ...state,
