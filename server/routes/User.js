@@ -2,11 +2,9 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('./../controllers/UserController');
 const { check } = require('express-validator');
-const { esDNIValido, esCUITValido, esOnuValida, mismoServicio } =  require('./../helpers/db-validaciones');
+const { esDNIValido, esCUITValido, esOnuValida } =  require('./../helpers/db-validaciones');
 
-router.get('/abonados/inscriptos/', UserController.AbonadosInscriptosListar);
-router.get('/abonados/activos/', UserController.AbonadosActivosListar);
-router.get('/abonados/inactivos/', UserController.AbonadosInactivosListar);
+router.get('/abonados/municipio=:municipioId&estado=:estadoId', UserController.AbonadosGet);
 router.get('/abonados/domicilios/:id', UserController.AbonadoListarDomicilios);
 router.get('/abonados/servicios/:id', UserController.AbonadoListarServicios);
 

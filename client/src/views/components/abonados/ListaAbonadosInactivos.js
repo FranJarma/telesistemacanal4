@@ -10,10 +10,10 @@ import Modal from '../design/components/Modal';
 
 const ListaAbonadosInactivos = () => {
     const appContext = useContext(AppContext);
-    const { abonados, municipios, traerAbonadosInactivos, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    const { abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
 
     useEffect(() => {
-        traerAbonadosInactivos();
+        traerAbonados(3);
         //10 para que traiga los de jujuy
         traerMunicipiosPorProvincia(10);
     },[]);
@@ -54,7 +54,7 @@ const ListaAbonadosInactivos = () => {
     }
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
-        traerAbonadosInactivos(e.target.value);
+        traerAbonados(3, e.target.value);
     }
 
     const columnaAbonadosInactivos = [

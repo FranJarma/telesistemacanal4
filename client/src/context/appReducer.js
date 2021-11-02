@@ -20,6 +20,7 @@ export default (state, action) => {
                 abonados: state.abonados.map(abonado => abonado.UserId === action.payload.UserId ? action.payload : abonado)
             };
         }
+        case TYPES.LISTA_ABONADOS:
         case TYPES.LISTA_ABONADOS_INSCRIPTOS:
         case TYPES.LISTA_ABONADOS_ACTIVOS:
         case TYPES.LISTA_ABONADOS_INACTIVOS:

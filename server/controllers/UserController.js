@@ -18,9 +18,11 @@ const Onu = require('../models/Onu');
 require('dotenv').config({path: 'variables.env'});
 
 //FUNCIONES PARA ABONADOS
-exports.AbonadosInscriptosListar = async(req, res) => {
+exports.AbonadosGet = async(req, res) => {
+    let abonados = '';
     try {
-        const abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
+        req.params.municipioId != 0 && req.params.estadoId != 0 ?
+        abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
         .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
         .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
@@ -33,54 +35,58 @@ exports.AbonadosInscriptosListar = async(req, res) => {
         .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
         .where({
             'r.RoleId': process.env.ID_ROL_ABONADO,
-            'u.EstadoId': process.env.ESTADO_ID_ABONADO_INSCRIPTO
-        });
+            'm.MunicipioId': req.params.municipioId,
+            'u.estadoId': req.params.estadoId
+        })
+        : req.params.municipioId == 0 && req.params.estadoId != 0 ?
+        abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
+        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
+        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+        .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
+        .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
+        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
+        .innerJoin('provinciamunicipio as pm', 'pm.MunicipioId', '=', 'm.MunicipioId')
+        .innerJoin('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
+        .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
+        .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
+        .where({
+            'r.RoleId': process.env.ID_ROL_ABONADO,
+            'u.estadoId': req.params.estadoId
+        })
+        : req.params.municipioId != 0 && req.params.estadoId == 0 ?
+        abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
+        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
+        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+        .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
+        .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
+        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
+        .innerJoin('provinciamunicipio as pm', 'pm.MunicipioId', '=', 'm.MunicipioId')
+        .innerJoin('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
+        .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
+        .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
+        .where({
+            'r.RoleId': process.env.ID_ROL_ABONADO,
+            'm.MunicipioId': req.params.municipioId,
+        })
+        : abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
+        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
+        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+        .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
+        .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
+        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
+        .innerJoin('provinciamunicipio as pm', 'pm.MunicipioId', '=', 'm.MunicipioId')
+        .innerJoin('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
+        .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
+        .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
+        .where({
+            'r.RoleId': process.env.ID_ROL_ABONADO
+        })
         res.json(abonados);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
-    }
-}
-exports.AbonadosActivosListar = async(req, res) => {
-    try {
-        const abonados = await knex.select('*').from('_user as u')
-        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
-        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
-        .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
-        .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
-        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
-        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
-        .innerJoin('provinciamunicipio as pm', 'pm.MunicipioId', '=', 'm.MunicipioId')
-        .innerJoin('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
-        .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
-        .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
-        .where({
-            'r.RoleId': process.env.ID_ROL_ABONADO,
-            'u.EstadoId': process.env.ESTADO_ID_ABONADO_ACTIVO
-        });
-        res.json(abonados);
-    } catch (error) {
-        res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
-    }
-}
-
-exports.AbonadosInactivosListar = async(req, res) => {
-    try {
-        const abonados = await knex.select('*').from('_user as u')
-        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
-        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
-        .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
-        .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
-        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
-        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
-        .innerJoin('provinciamunicipio as pm', 'pm.MunicipioId', '=', 'm.MunicipioId')
-        .innerJoin('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
-        .where({
-            'r.RoleId': process.env.ID_ROL_ABONADO,
-            'u.EstadoId': process.env.ESTADO_ID_ABONADO_INACTIVO
-        });
-        res.json(abonados);
-    } catch (error) {
         res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }

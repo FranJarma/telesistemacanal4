@@ -143,39 +143,17 @@ const AppState = props => {
             }
         })
     }
-    const traerAbonadosInscriptos = async () => {
+    const traerAbonados = async (estadoId = 0, municipioId = 0) => {
         try {
-            const resultado = await clienteAxios.get('/api/usuarios/abonados/inscriptos');
+            const resultado =  await clienteAxios.get(`/api/usuarios/abonados/municipio=${municipioId}&estado=${estadoId}`);
             dispatch({
-                type: TYPES.LISTA_ABONADOS_INSCRIPTOS,
+                type: TYPES.LISTA_ABONADOS,
                 payload: resultado.data
-            });
+            })
         } catch (error) {
             console.log(error);
         }
-    };
-    const traerAbonadosActivos = async () => {
-        try {
-            const resultado = await clienteAxios.get('/api/usuarios/abonados/activos');
-            dispatch({
-                type: TYPES.LISTA_ABONADOS_ACTIVOS,
-                payload: resultado.data
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    const traerAbonadosInactivos = async () => {
-        try {
-            const resultado = await clienteAxios.get('/api/usuarios/abonados/inactivos');
-            dispatch({
-                type: TYPES.LISTA_ABONADOS_INACTIVOS,
-                payload: resultado.data
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    }
     const traerDomiciliosAbonado = async (id) => {
         try {
             const resultado = await clienteAxios.get(`/api/usuarios/abonados/domicilios/${id}`);
@@ -734,9 +712,9 @@ const AppState = props => {
             historialServicios: state.historialServicios,
             mediosPago: state.mediosPago,
             pagos: state.pagos,
-            pago: state.pago,
+            pago: state.pago, 
             detallesPago: state.detallesPago,
-            traerAbonadosActivos, traerAbonadosInactivos, traerAbonadosInscriptos, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,
+            traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,
             cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
             traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 
             traerCondicionesIva,
@@ -746,8 +724,7 @@ const AppState = props => {
             traerONUS, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago,
-            traerPagosPorAbonado,
-            traerPago,
+            traerPagosPorAbonado, traerPago, crearPago,
             traerDetallesPago
         }}>{props.children}
         </AppContext.Provider>

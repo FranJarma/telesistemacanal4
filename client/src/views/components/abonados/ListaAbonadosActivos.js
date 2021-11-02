@@ -12,10 +12,10 @@ import useStyles from '../Styles';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
-    const { abonados, municipios, traerAbonadosActivos, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    const { abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
 
     useEffect(() => {
-        traerAbonadosActivos();
+        traerAbonados(2);
         //10 para que traiga los de jujuy
         traerMunicipiosPorProvincia(10);
     },[]);
@@ -56,7 +56,7 @@ const ListaAbonadosActivos = () => {
     }
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
-        traerAbonadosActivos(e.target.value);
+        traerAbonados(2, e.target.value);
     }
 
     const styles = useStyles();
