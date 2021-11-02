@@ -36,6 +36,7 @@ export const CREAR_SERVICIO = 'CREAR_SERVICIO';
 export const EDITAR_SERVICIO = 'EDITAR_SERVICIO';
 export const ELIMINAR_SERVICIO = 'ELIMINAR_SERVICIO';
 //ONUS
+export const TRAER_ONU = 'TRAER_ONU';
 export const LISTA_ONUS = 'LISTA_ONUS';
 export const CREAR_ONU = 'CREAR_ONU';
 export const EDITAR_ONU = 'EDITAR_ONU';

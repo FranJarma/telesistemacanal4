@@ -28,6 +28,9 @@ const Onu = db.define('onu', {
         type: INTEGER,
         allowNull: false
     },
+    EstadoId: {
+        type: INTEGER
+    }
 });
 
 module.exports = db.model('onu', Onu);

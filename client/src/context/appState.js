@@ -16,6 +16,7 @@ const AppState = props => {
         municipios: [],
         provincias: [],
         servicios: [],
+        onu: {},
         onus: [],
         modelosONU: [],
         historialDomicilios: [],
@@ -523,11 +524,22 @@ const AppState = props => {
         })
     }
     //ONUS
-    const traerONUS = async () => {
+    const traerONUS = async (estadoId = 0) => {
         try {
-            const resultado = await clienteAxios.get(`/api/onus`);
+            const resultado = await clienteAxios.get(`/api/onus/estado=${estadoId}`);
             dispatch({
                 type: TYPES.LISTA_ONUS,
+                payload: resultado.data
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const traerONUPorId = async (id) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/onus/${id}`);
+            dispatch({
+                type: TYPES.TRAER_ONU,
                 payload: resultado.data
             });
         } catch (error) {
@@ -706,6 +718,7 @@ const AppState = props => {
             municipios: state.municipios,
             provincias: state.provincias,
             servicios: state.servicios,
+            onu: state.onu,
             onus: state.onus,
             modelosONU: state.modelosONU,
             historialDomicilios: state.historialDomicilios,
@@ -721,7 +734,7 @@ const AppState = props => {
             traerMunicipios, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio,
             traerProvincias,
             traerServicios, crearServicio, modificarServicio, eliminarServicio,
-            traerONUS, crearONU, modificarONU, eliminarONU,
+            traerONUS, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago,
             traerPagosPorAbonado, traerPago, crearPago,

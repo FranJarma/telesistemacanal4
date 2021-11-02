@@ -2,15 +2,15 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
 import { Link, useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
-    const { barrios, condicionesIva, municipios, servicios, provincias, modelosONU, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
-    traerProvincias, traerModelosONU, crearAbonado, modificarAbonado } = appContext;
+    const { barrios, condicionesIva, municipios, servicios, provincias, onus, onu, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
+    traerProvincias, traerONUS, traerONUPorId, crearAbonado, modificarAbonado } = appContext;
     
     const location = useLocation();
 
@@ -24,9 +24,7 @@ const CaratulaAbonado = () => {
         Telefono: null,
         DomicilioCalle: null,
         DomicilioNumero: null,
-        DomicilioPiso: null,
-        OnuMac: null,
-        OnuSerie: null
+        DomicilioPiso: null
     })
     const onInputChange = (e) => {
         setAbonadoInfo({
@@ -34,7 +32,7 @@ const CaratulaAbonado = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, OnuMac, OnuSerie } = abonadoInfo;
+    const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso} = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -49,7 +47,7 @@ const CaratulaAbonado = () => {
     const [BarrioId, setBarrioId] = useState(0);
     const [ServicioId, setServicioId] = useState(0);
     const [CondicionIvaId, setCondicionIvaId] = useState(0);
-    const [ModeloOnuId, setModeloOnuId] = useState(0);
+    const [OnuId, setOnuId] = useState(0);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [FechaBajada, setFechaBajada] = useState(new Date());
@@ -68,17 +66,19 @@ const CaratulaAbonado = () => {
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIvaId(e.target.value);
     }
-    const handleChangeModeloONUSeleccionado = (e) => {
-        setModeloOnuId(e.target.value);
+    const handleChangeOnuSeleccionada = (e) => {
+        setOnuId(e.target.value);
+        traerONUPorId(e.target.value);
     }
 
     useEffect(() => {
         traerProvincias();
         traerMunicipiosPorProvincia(ProvinciaId);
-        traerBarriosPorMunicipio(MunicipioId);
+        //traerBarriosPorMunicipio(MunicipioId);
+        setServicioId(1);
         traerServicios();
         traerCondicionesIva();
-        traerModelosONU();
+        traerONUS(5); //hay que traer ONUS no asignadas a ningún abonado
     }, [])
     
     useEffect(() => {
@@ -94,15 +94,14 @@ const CaratulaAbonado = () => {
                 Telefono: location.state.Telefono,
                 DomicilioCalle: location.state.DomicilioCalle,
                 DomicilioNumero: location.state.DomicilioNumero,
-                DomicilioPiso: location.state.DomicilioPiso,
-                OnuMac: location.state.OnuMac,
-                OnuSerie: location.state.OnuSerie
+                DomicilioPiso: location.state.DomicilioPiso
             });
             setServicioId(location.state.ServicioId);
             setCondicionIvaId(location.state.CondicionIvaId);
             setFechaNacimiento(location.state.FechaNacimiento);
             setFechaBajada(location.state.FechaBajada);
             setFechaContrato(location.state.FechaContrato);
+            traerONUPorId(location.state.OnuId);
         }
     }, [location.state])
 
@@ -127,9 +126,7 @@ const CaratulaAbonado = () => {
                 MunicipioId,
                 BarrioId,
                 ServicioId,
-                ModeloOnuId,
-                OnuSerie,
-                OnuMac
+                OnuId
             });
         }
         else {
@@ -145,9 +142,7 @@ const CaratulaAbonado = () => {
                 FechaContrato,
                 FechaBajada,
                 CondicionIvaId,
-                ServicioId,
-                OnuSerie,
-                OnuMac
+                ServicioId
             });
         }
     }
@@ -279,6 +274,11 @@ const CaratulaAbonado = () => {
                     fullWidth
                     select = {location.state ? false : true}
                     >
+                    <Link style={{textDecoration: 'none'}} to={{
+                            pathname: 'barrios-municipios',
+                            state: true
+                    }}>
+                    <Button variant="text" fullWidth color="primary"> + Nuevo municipio</Button></Link>
                     {!location.state ? municipios.length > 0 ? municipios.map((municipio)=>(
                         <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
                     )): <MenuItem disabled>No se encontraron municipios</MenuItem> : ""}
@@ -297,6 +297,11 @@ const CaratulaAbonado = () => {
                     fullWidth
                     select = {location.state ? false : true}
                     >
+                    <Link style={{textDecoration: 'none'}} to={{
+                            pathname: 'barrios-municipios',
+                            state: true
+                    }}>
+                    <Button variant="text" fullWidth color="primary"> + Nuevo barrio</Button></Link>
                     {!location.state ? barrios.length > 0 ? barrios.map((barrio)=>(
                         <MenuItem key={barrio.BarrioId} value={barrio.BarrioId}>{barrio.BarrioNombre}</MenuItem>
                     )): <MenuItem disabled>No se encontraron barrios</MenuItem> : ""}
@@ -400,46 +405,22 @@ const CaratulaAbonado = () => {
                 <TextField
                     variant = {location.state ? "filled" : "outlined"}
                     disabled = {location.state ? true : false}
-                    value={ModeloOnuId}
-                    onChange={handleChangeModeloONUSeleccionado}
-                    label="Modelo"
+                    value={location.state ? location.state.OnuMac : OnuId }
+                    onChange={handleChangeOnuSeleccionada}
+                    label={location.state ? "MAC ONU Asignada" : "MAC ONU a asignar"}
                     fullWidth
-                    select
+                    select = {location.state ? false : true}
                     >
                     <Link style={{textDecoration: 'none'}} to={{
                         pathname: 'onus-modelosONUs',
                         state: true
                     }}>
                     <Button variant="text" fullWidth color="primary"> + Nueva ONU</Button></Link>
-                    {modelosONU.map((modeloONU)=>(
-                        <MenuItem key={modeloONU.ModeloOnuId} value={modeloONU.ModeloOnuId}>{modeloONU.ModeloOnuNombre}</MenuItem>
-                    ))}
+                    {onus.length > 0 ? onus.map((onu)=>(
+                        <MenuItem key={onu.OnuId} value={onu.OnuId}>{onu.OnuMac}</MenuItem>
+                        )): <MenuItem disabled>No se encontraron ONUS disponibles para asignar</MenuItem>}
                     </TextField>
-                </Grid>
-                <Grid item xs={12} md={3} lg={3} xl={3}>
-                <TextField
-                    variant = {location.state ? "filled" : "outlined"}
-                    disabled = {location.state ? true : false}
-                    name= "OnuMac"
-                    inputProps={{ maxLength: 12 }}
-                    value={OnuMac}
-                    onChange={onInputChange}
-                    label="MAC"
-                    fullWidth
-                    >
-                </TextField>
-                </Grid>
-                <Grid item xs={12} md={3} lg={3} xl={3}>
-                <TextField
-                    variant = {location.state ? "filled" : "outlined"}
-                    disabled = {location.state ? true : false}
-                    name="OnuSerie"
-                    value={OnuSerie}
-                    onChange={onInputChange}
-                    label="Nº de serie"
-                    fullWidth
-                    >
-                </TextField>
+                    {onu ? <FormHelperText style={{color: 'teal'}}><b>Modelo: </b>{onu.ModeloOnuNombre}</FormHelperText>: ''}
                 </Grid>
             </Grid>
             </>

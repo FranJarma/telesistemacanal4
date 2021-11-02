@@ -108,6 +108,11 @@ export default (state, action) => {
                 ...state,
                 servicios: state.servicios.filter(servicio => servicio.ServicioId !== action.payload.ServicioId),
         } 
+        case TYPES.TRAER_ONU:
+            return {
+                ...state,
+                onu: action.payload
+        }
         case TYPES.LISTA_ONUS:
             return {
                 ...state,

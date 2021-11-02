@@ -24,7 +24,8 @@ exports.GetPago = async(req,res) => {
         .where({
             'p.UserId': req.query.UserId,
             'p.PagoPeriodo': req.query.PagoPeriodo
-        });
+        })
+        .first();
         res.json(pago);
     } catch (error) {
         console.log(error);
