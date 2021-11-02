@@ -47,11 +47,13 @@ router.put('/abonados/cambio-domicilio/:id',
     check('BarrioId', 'El barrio es obligatorio').not().contains(0),
     check('DomicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
     check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
+    check('CambioServicioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
 ],UserController.AbonadoCambioDomicilio);
 
 router.put('/abonados/cambio-servicio/:id',
 [
-    check('ServicioId', 'El servicio es obligatorio').not().contains(0)
+    check('ServicioId', 'El servicio es obligatorio').not().contains(0),
+    check('CambioDomicilioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
 ],UserController.AbonadoCambioServicio);
 
 module.exports = router;

@@ -132,9 +132,6 @@ exports.AbonadoCreate = async(req, res) => {
                 order: [['DomicilioId', 'DESC']]
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
-            //traemos la ONU por id y actualizamos su estado para que pase a ASIGNADA
-            const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
-            onu.EstadoId = 4;
             // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
             const abonado = new User(req.body);
             abonado.UserId = uuidv4().toUpperCase();
@@ -160,13 +157,18 @@ exports.AbonadoCreate = async(req, res) => {
             abonadoEstado.UserId = abonado.UserId;
             abonadoEstado.CambioEstadoFecha = new Date().toString();
             abonadoEstado.CambioEstadoObservaciones = 'Primer Inscripción';
+            //traemos la ONU por id y actualizamos su estado para que pase a ASIGNADA
+            if(req.body.OnuId != 0) {
+                const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
+                onu.EstadoId = 4;
+                await onu.save({transaction: t});
+            }
             await domicilio.save({transaction: t});
             await abonado.save({transaction: t});
             await abonadoRole.save({transaction: t});
             await abonadoDomicilio.save({transaction: t});
             await abonadoServicio.save({transaction: t});
             await abonadoEstado.save({transaction: t});
-            await onu.save({transaction: t});
             return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
         })
         }   
@@ -276,20 +278,6 @@ exports.AbonadoCambioServicio = async(req, res) => {
             else {
                 const abonadoServicio = new UserServicio(req.body, {transaction: t});
                 abonadoServicio.ServicioId = req.body.ServicioId;
-                if(req.body.ServicioId !== 1) {
-                    let ultimaOnuId = 0;
-                    // traemos el de la ultima onu registrada
-                    const ultimaOnu = await Onu.findOne({
-                        order: [['OnuId', 'DESC']],
-                        attributes: { exclude: ['createdAt', 'updatedAt']}
-                    });
-                    if (ultimaOnu) ultimaOnuId = ultimaOnu.OnuId;
-                    const onu = new Onu(req.body);
-                    onu.OnuId = ultimaOnuId + 1;
-                    abonado.OnuId = ultimaOnuId + 1;
-                    abonadoServicio.OnuId = ultimaOnuId + 1;
-                    await onu.save({transaction: t});
-                };
                 abonado.EstadoId = 1;
                 abonado.ServicioId = req.body.ServicioId;
                 abonado.FechaBajada = req.body.FechaBajada;
@@ -300,6 +288,11 @@ exports.AbonadoCambioServicio = async(req, res) => {
                 await abonado.save({transaction: t});
                 await abonadoServicio.save({transaction: t});
                 await abonadoEstado.save({transaction: t});
+                //traemos la ONU por id y actualizamos su estado para que pase a ASIGNADA
+                if(req.body.OnuId != 0) {
+                    const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
+                    onu.EstadoId = 4;
+                }
                 return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
             }
         })

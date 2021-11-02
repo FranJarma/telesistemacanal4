@@ -90,8 +90,7 @@ const CambioDomicilio = () => {
                 FechaBajada,
                 CambioDomicilioFecha,
                 CambioDomicilioObservaciones
-            })
-            setModalNuevoDomicilio(false);
+            }, setModalNuevoDomicilio)
     }
 }
     const columnasDomicilios = [
@@ -266,13 +265,13 @@ const CambioDomicilio = () => {
                     value={CambioDomicilioObservaciones}
                     name="CambioDomicilioObservaciones"
                     inputProps={{
-                        maxLength: 100
+                        maxLength: 1000
                     }}
                     onChange={onInputChange}
                     fullWidth
                     label="Observaciones">
                     </TextField>
-                    <FormHelperText>Ingrese hasta 100 palabras</FormHelperText>
+                    <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
                     {location.state.EstadoId !== 1 ? <Alert severity="warning">Al cambiar el domicilio, el abonado pasará al listado de <b>Abonados Inscriptos</b>, ya que se tiene que realizar el corte correspondiente.</Alert> : "" }
                 </Grid>
             </Grid>

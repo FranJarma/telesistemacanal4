@@ -100,7 +100,7 @@ const AppState = props => {
             }
         })
     }
-    const cambioDomicilioAbonado = async(domicilio) => {
+    const cambioDomicilioAbonado = async(domicilio, setModalNuevoDomicilio) => {
         clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${domicilio.UserId}`, domicilio)
         .then(resOk => {
             if (resOk.data)
@@ -109,6 +109,7 @@ const AppState = props => {
                     payload: domicilio
                 })
                 Swal('Operación completa', resOk.data.msg);
+                setModalNuevoDomicilio(false);
         })
         .catch(err => {
             if(!err.response){
@@ -122,7 +123,7 @@ const AppState = props => {
             }
         })
     }
-    const cambioServicioAbonado = async(servicio) => {
+    const cambioServicioAbonado = async(servicio, setModalNuevoServicio) => {
         clienteAxios.put(`/api/usuarios/abonados/cambio-servicio/${servicio.UserId}`, servicio)
         .then(resOk => {
             if (resOk.data)
@@ -131,6 +132,7 @@ const AppState = props => {
                     payload: servicio
                 })
                 Swal('Operación completa', resOk.data.msg);
+                setModalNuevoServicio(false);
         })
         .catch(err => {
             if(!err.response){

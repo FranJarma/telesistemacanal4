@@ -4,29 +4,29 @@ import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { Alert } from '@material-ui/lab';
 import { DatePicker } from '@material-ui/pickers';
+import useStyles from './../Styles';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const {historialServicios, servicios, modelosONU, traerServicios, traerServiciosAbonado, traerModelosONU, cambioServicioAbonado } = appContext;
+    const {historialServicios, servicios, onus, onu, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId, cambioServicioAbonado } = appContext;
 
     const location = useLocation();
+    const styles = useStyles();
     //Observables
     useEffect(() => {
         traerServicios();
-        traerModelosONU();
+        traerONUS(5);
         traerServiciosAbonado(location.state.UserId);
     }, [])
     //States
     const [ServicioInfo, setServicioInfo] = useState({
         UserId: location.state.UserId,
         CambioServicioFecha: new Date().toJSON(),
-        CambioServicioObservaciones: null,
-        OnuMac: null,
-        OnuSerie: null
+        CambioServicioObservaciones: null
     })
     const onInputChange = (e) => {
         setServicioInfo({
@@ -34,12 +34,12 @@ const CambioServicio = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, OnuMac, OnuSerie, CambioServicioFecha, CambioServicioObservaciones} = ServicioInfo;
+    const { UserId, CambioServicioFecha, CambioServicioObservaciones} = ServicioInfo;
     const [ServicioId, setServicioId] = useState(1);
     const [ServicioNombre, setServicioNombre] = useState('Cable');
-    const [ModeloOnuId, setModeloOnuId] = useState(0);
     const [ModalNuevoServicio, setModalNuevoServicio] = useState(false);
     const [FechaBajada, setFechaBajada] = useState(new Date());
+    const [OnuId, setOnuId] = useState(0);
 
     const handleChangeServicioSeleccionado = (e) => {
         setServicioId(e.target.value);
@@ -47,9 +47,11 @@ const CambioServicio = () => {
     const handleFocusServicioSeleccionado = (e) => {
         setServicioNombre(e.target.innerHTML);
     }
-    const handleChangeModeloONUSeleccionado = (e) => {
-        setModeloOnuId(e.target.value);
+    const handleChangeOnuSeleccionada = (e) => {
+        setOnuId(e.target.value);
+        traerONUPorId(e.target.value);
     }
+
     const handleChangeModalNuevoServicio = () => {
         setModalNuevoServicio(!ModalNuevoServicio);
         if(!ModalNuevoServicio){
@@ -73,12 +75,9 @@ const CambioServicio = () => {
                 ServicioNombre,
                 FechaBajada,
                 CambioServicioFecha,
-                CambioServicioObservaciones,
-                ModeloOnuId,
-                OnuMac,
-                OnuSerie
-            })
-            setModalNuevoServicio(false);
+                CambioServicioObservaciones
+            }, setModalNuevoServicio)
+            traerONUPorId(location.state.OnuId);
     }
 }
     const columnasServicios = [
@@ -141,9 +140,31 @@ const CambioServicio = () => {
         <Button onClick={handleChangeModalNuevoServicio}>Cerrar</Button></>}
         formulario={
             <>
+            <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-info-square"></i> Datos importantes</Typography>
+            <Grid container spacing={3}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <Card className={styles.cartaSecundaria}>
+                        <CardContent>
+                            <Typography variant="h6"><b>Domicilio actual: </b>{location.state.DomicilioCalle}, {location.state.DomicilioNumero}</Typography>
+                            <Typography variant="h6"><b>Barrio: </b>{location.state.BarrioNombre}</Typography>
+                            <Typography variant="h6"><b>Municipio: </b> {location.state.MunicipioNombre}</Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <Card className={styles.cartaSecundaria}>
+                        <CardContent>
+                            <Typography variant="h6"><b>Servicio actual: </b> {location.state.ServicioNombre}</Typography>
+                            <Typography variant="h6"><b>Fecha de contrato: </b> {location.state.FechaContrato.split('T')[0].split('-').reverse().join('/')}</Typography>
+                            {location.state.OnuMac !== '' ? <Typography variant="h6"><b>MAC ONU: </b> {location.state.OnuMac}</Typography> : ""}
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+            <br/>
             <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-plug"></i> Datos del nuevo servicio</Typography>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
+                <Grid item xs={6} md={6} lg={6} xl={6}>
                     <DatePicker
                     inputVariant="outlined"
                     value={FechaBajada}
@@ -154,7 +175,7 @@ const CambioServicio = () => {
                     >
                     </DatePicker>
                 </Grid>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
+                <Grid item xs={6} md={6} lg={6} xl={6}>
                     <TextField
                     variant="outlined"
                     onChange={handleChangeServicioSeleccionado}
@@ -174,7 +195,7 @@ const CambioServicio = () => {
             <>
             <Typography variant="h2"><i className='bx bx-broadcast'></i> Datos de ONU</Typography>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
                     variant="outlined"
                     disabled
@@ -188,45 +209,25 @@ const CambioServicio = () => {
                     ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={12} lg={12} xl={12}>
                 <TextField
                     variant = "outlined"
-                    value={ModeloOnuId}
-                    required
-                    onChange={handleChangeModeloONUSeleccionado}
-                    label="Modelo"
+                    value={OnuId}
+                    onChange={handleChangeOnuSeleccionada}
+                    label="MAC ONU a asignar"
                     fullWidth
                     select
                     >
-                    {modelosONU.map((modeloONU)=>(
-                        <MenuItem key={modeloONU.ModeloOnuId} value={modeloONU.ModeloOnuId}>{modeloONU.ModeloOnuNombre}</MenuItem>
-                    ))}
+                    <Link style={{textDecoration: 'none'}} to={{
+                        pathname: 'onus-modelosONUs',
+                        state: true
+                    }}>
+                    <Button variant="text" fullWidth color="primary"> + Nueva ONU</Button></Link>
+                    {onus.length > 0 ? onus.map((onu)=>(
+                        <MenuItem key={onu.OnuId} value={onu.OnuId}>{onu.OnuMac}</MenuItem>
+                        )): <MenuItem disabled>No se encontraron ONUS disponibles para asignar</MenuItem>}
                     </TextField>
-                </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                <TextField
-                    variant = "outlined"
-                    name= "OnuMac"
-                    required
-                    inputProps={{ maxLength: 12 }}
-                    value={OnuMac}
-                    onChange={onInputChange}
-                    label="MAC"
-                    fullWidth
-                    >
-                </TextField>
-                </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                <TextField
-                    variant = "outlined"
-                    name="OnuSerie"
-                    required
-                    value={OnuSerie}
-                    onChange={onInputChange}
-                    label="Nº de serie"
-                    fullWidth
-                    >
-                </TextField>
+                    {onu ? <FormHelperText style={{color: 'teal'}}><b>Modelo: </b>{onu.ModeloOnuNombre}</FormHelperText>: ''}
                 </Grid>
             </Grid>
             </>
@@ -240,13 +241,13 @@ const CambioServicio = () => {
                     value={CambioServicioObservaciones}
                     name="CambioServicioObservaciones"
                     inputProps={{
-                        maxLength: 100
+                        maxLength: 1000
                     }}
                     onChange={onInputChange}
                     fullWidth
                     label="Observaciones">
                     </TextField>
-                    <FormHelperText>Ingrese hasta 100 palabras</FormHelperText>
+                    <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
                 {location.state.EstadoId !== 1 ? <Alert severity="warning">Al cambiar el servicio, el abonado pasará al listado de <b>Abonados Inscriptos</b>, ya que se tiene que realizar el corte correspondiente.</Alert> : "" }
                 </Grid>
             </Grid>
