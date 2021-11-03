@@ -214,7 +214,7 @@ const ListaMunicipios = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarMunicipio(MunicipioInfo, handleChangeModalEliminarMunicipio)}}>Eliminar</Button>
-            <Button variant="text" color="inherit">Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarMunicipio}>Cerrar</Button>
             </>
         }
         />

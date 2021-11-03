@@ -136,7 +136,7 @@ const ListaModelosOnus = ({location}) => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarModeloONU(ModeloOnuInfo, handleChangeModalEliminarModeloOnu)}}>Eliminar</Button>
-            <Button variant="text" color="inherit">Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarModeloOnu}>Cerrar</Button>
             </>
         }
         />

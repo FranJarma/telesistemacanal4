@@ -190,7 +190,6 @@ const ListaAbonadosInscriptos = () => {
         style={{textDecoration: 'none', color: "teal"}}>
         <Tooltip title="Cambio de Titularidad"><i className="bx bxs-notepad bx-xs"></i></Tooltip>
         </Link>
-        <Typography onClick={()=>handleChangeModalConfirmarInstalacion(data)} style={{textDecoration: 'none', color: "orange", cursor: "pointer"}}><Tooltip title="Confirmar Instalación"><i className='bx bxs-wrench bx-xs'></i></Tooltip></Typography>
         <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Typography>
         </>,
     }

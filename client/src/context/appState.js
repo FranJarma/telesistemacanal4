@@ -195,7 +195,7 @@ const AppState = props => {
             const resultado = await clienteAxios.get('/api/pagos',{
                 params: {
                     UserId,
-                    PagoPeriodo
+                    PagoPeriodo,
                 }
             });
             dispatch({
@@ -217,8 +217,32 @@ const AppState = props => {
             console.log(error);
         }
     }
+    const eliminarDetallePago = async(detallePago, cerrarModal) => {
+        clienteAxios.put('/api/detallesPago/delete', detallePago)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_DETALLE_PAGO,
+                    payload: detallePago
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     //PAGOS
     const crearPago = async(pago) => {
+        console.log(pago);
         clienteAxios.post('/api/pagos/create', pago)
         .then(resOk => {
             if (resOk.data)
@@ -231,6 +255,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
+                console.log(err);
                 Toast('Error de conexión', 'error');
             }
             else if(err.response.data.msg){
@@ -740,7 +765,7 @@ const AppState = props => {
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago,
             traerPagosPorAbonado, traerPago, crearPago,
-            traerDetallesPago
+            traerDetallesPago, eliminarDetallePago
         }}>{props.children}
         </AppContext.Provider>
     )

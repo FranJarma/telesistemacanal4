@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pago, pagos, detallesPago, mediosPago, crearPago, traerPagosPorAbonado, traerPago, traerDetallesPago, traerMediosPago } = appContext;
+    const { pago, pagos, detallesPago, mediosPago, crearPago, eliminarDetallePago, traerPagosPorAbonado, traerPago, traerDetallesPago, traerMediosPago } = appContext;
 
     const location = useLocation();
 
@@ -24,12 +24,16 @@ const ListaPagos = () => {
     const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
     const [PagoInfo, setPagoInfo] = useState({
         UserId: location.state.UserId,
+        DetallePagoId: '',
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         DetallePagoObservaciones: '',
         MedioPagoId: 1,
         /*Sólo se cobrara recargo si el abonado paga después del 21 del mismo mes O si paga despues del mes seleccionado.
         POR EJ: hoy 3 de Noviembre, si quiero pagar OCTUBRE, me recargan¨*/
+        PagoRecargo: (FechaActual.diaActual >= 21 && FechaActual.mesActual === PagoPeriodo.getMonth()+1)
+        || (FechaActual.mesActual > PagoPeriodo.getMonth()+1)
+        ? location.state.ServicioRecargo : 0,
         PagoTotal: (FechaActual.diaActual >= 21 && FechaActual.mesActual === PagoPeriodo.getMonth()+1)
         || (FechaActual.mesActual > PagoPeriodo.getMonth()+1)
         ? location.state.ServicioPrecioUnitario + location.state.ServicioRecargo : location.state.ServicioPrecioUnitario
@@ -37,9 +41,10 @@ const ListaPagos = () => {
 
     const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
-    const [modalNuevoPago, setModalNuevoPago] = useState(false);
-    const [modalDetallesPago, setModalDetallesPago] = useState(false);
-    
+    const [ModalNuevoPago, setModalNuevoPago] = useState(false);
+    const [ModalDetallesPago, setModalDetallesPago] = useState(false);
+    const [ModalEliminarDetallePago, setModalEliminarDetallePago] = useState(false);
+
     useEffect(()=>{
         traerPago(location.state.UserId, PagoPeriodo.toJSON().split('T')[0].split('-')[1] + '-' +PagoPeriodo.toJSON().split('T')[0].split('-')[0]);
         traerMediosPago();
@@ -57,25 +62,16 @@ const ListaPagos = () => {
             ...PagoInfo,
             MedioPagoId: e.target.value});
     }
-    const handleChangeNuevoPago = () => {
-        setModalNuevoPago(!modalNuevoPago);
-        if(!modalNuevoPago){
-            setPagoInfo({
-                ...PagoInfo,
-                UserId: location.state.UserId,
-            })
-        }
-        else {
-            setPagoInfo({
-                ...PagoInfo,
-                DetallePagoMonto: '',
-                DetallePagoObservaciones: ''
-            })
-        }
+    const handleChangeNuevoPago = (data) => {
+        setModalNuevoPago(!ModalNuevoPago);
     }
     const handleChangeModalDetallesPago = (data) => {
         traerDetallesPago(data.PagoId);
-        setModalDetallesPago(!modalDetallesPago);
+        setModalDetallesPago(!ModalDetallesPago);
+    }
+    const handleChangeModalEliminarDetallePago = (data) => {
+        setPagoInfo(data);
+        setModalEliminarDetallePago(!ModalEliminarDetallePago);
     }
     
     const columnasPagos = [
@@ -142,8 +138,8 @@ const ListaPagos = () => {
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeNuevoPago(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
             <Typography style={{color: "slategrey", cursor: 'pointer'}}><Tooltip title="Generar recibo"><i className="bx bxs-receipt bx-xs"></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalEliminarDetallePago(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
             </>,
         }
     ]
@@ -166,7 +162,7 @@ const ListaPagos = () => {
                     buscar={true}
                 />
                 <Modal
-                abrirModal={modalNuevoPago}
+                abrirModal={ModalNuevoPago}
                 funcionCerrar={handleChangeNuevoPago}
                 botones={
                 <>
@@ -258,7 +254,7 @@ const ListaPagos = () => {
                 >
                 </Modal>
                 <Modal
-                abrirModal={modalDetallesPago}
+                abrirModal={ModalDetallesPago}
                 funcionCerrar={handleChangeModalDetallesPago}
                 botones={
                 <>
@@ -278,6 +274,17 @@ const ListaPagos = () => {
                 </>}
                 >
                 </Modal>
+                <Modal
+                abrirModal={ModalEliminarDetallePago}
+                funcionCerrar={handleChangeModalEliminarDetallePago}
+                titulo={<Alert severity="error">¿Está seguro que quiere eliminar el pago realizado?</Alert>}
+                botones={
+                    <>
+                    <Button variant="contained" color="secondary" onClick={()=>{eliminarDetallePago(PagoInfo, handleChangeModalEliminarDetallePago)}}>Eliminar</Button>
+                    <Button variant="text" color="inherit" onClick={handleChangeModalEliminarDetallePago}>Cerrar</Button>
+                    </>
+                }
+                />
             </CardContent>
         </Card>
         </main>

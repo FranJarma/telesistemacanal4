@@ -173,6 +173,15 @@ export default (state, action) => {
                 ...state,
                 detallesPago: action.payload
         }
+        case TYPES.ELIMINAR_DETALLE_PAGO:
+            const pago = state.pagos.find(pago => pago.PagoId === action.payload.PagoId);
+            pago.PagoSaldo = pago.PagoSaldo + action.payload.DetallePagoMonto;
+            return {
+                ...state,
+                detallesPago: state.detallesPago.filter(detallePago => detallePago.DetallePagoId !== action.payload.DetallePagoId),
+                pagos: [...state.pagos]
+
+        } 
         default:
             return state;
     }

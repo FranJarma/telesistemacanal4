@@ -4,7 +4,7 @@ const PagoController = require('../controllers/PagoController');
 const { check } = require('express-validator');
 
 router.get('/:UserId', PagoController.PagosListarPorUsuario);
-router.get('/', PagoController.GetPago);
+router.get('/', PagoController.PagoGet);
 
 router.post('/create',
 [

@@ -18,6 +18,10 @@ const DetallePago = db.define('detallepago', {
         type: STRING,
         allowNull: true
     },
+    DetallePagoEliminado: {
+        type: INTEGER,
+        defaultValue: 0
+    },
     //fk
     PagoId: {
         type: INTEGER,

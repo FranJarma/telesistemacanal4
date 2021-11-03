@@ -129,7 +129,7 @@ const ListaServicios = () => {
                     color="primary"
                     type="number"
                     variant="outlined"
-                    label="Precio Unitario del Servicio"
+                    label="Precio Unitario"
                     fullWidth
                     onChange={onInputChange}
                     value={ServicioPrecioUnitario}
@@ -141,7 +141,7 @@ const ListaServicios = () => {
                     color="primary"
                     type="number"
                     variant="outlined"
-                    label="Recargo por pago fuera de término"
+                    label="Recargo"
                     fullWidth
                     onChange={onInputChange}
                     value={ServicioRecargo}
@@ -181,7 +181,7 @@ const ListaServicios = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarServicio(ServicioInfo, handleChangeModalEliminarServicio)}}>Eliminar</Button>
-            <Button variant="text" color="inherit">Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarServicio}>Cerrar</Button>
             </>
         }
         />

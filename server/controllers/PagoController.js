@@ -18,7 +18,7 @@ exports.PagosListarPorUsuario = async(req,res) => {
         res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
     }
 }
-exports.GetPago = async(req,res) => {
+exports.PagoGet = async(req,res) => {
     try {
         const pago = await knex.select('*').from('pago as p')
         .where({
@@ -42,6 +42,11 @@ exports.PagoCreate = async(req,res) => {
     try {
         await db.transaction(async(t)=>{
             let ultimoDetallePagoId = 0;
+            //Buscamos el último DetallePago
+            const ultimoDetallePago = await DetallePago.findOne({
+                order: [['DetallePagoId', 'DESC']]
+            });
+            if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
             //buscamos si hay un pago registrado con ese UserId y esa fecha
             const pagoBuscar = await Pago.findOne({
                 where: {
@@ -51,14 +56,6 @@ exports.PagoCreate = async(req,res) => {
             })
             //si encuentra el pago, NO se lo registra de nuevo, sino que solo se registra un nuevo detalle de pago y se actualiza el saldo
             if(pagoBuscar) {
-                //Buscamos el último DetallePago del Pago encontrado y asignamos el ID
-                const ultimoDetallePago = await DetallePago.findOne({
-                    where: {
-                        PagoId: pagoBuscar.PagoId
-                    },
-                    order: [['DetallePagoId', 'DESC']]
-                });
-                if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
                 //verificamos que el monto ingresado no supere el saldo restante
                 if(req.body.DetallePagoMonto > pagoBuscar.PagoSaldo) return res.status(400).json({msg: `El monto no puede ser mayor al saldo restante de: $ ${pagoBuscar.PagoSaldo}`})
                 pagoBuscar.PagoSaldo = pagoBuscar.PagoSaldo - req.body.DetallePagoMonto;
@@ -80,7 +77,7 @@ exports.PagoCreate = async(req,res) => {
                 pago.PagoSaldo = req.body.PagoTotal - req.body.DetallePagoMonto;
                 pago.PagoPeriodo = periodo;
                 const detallePago = new DetallePago(req.body, {transaction: t});
-                detallePago.DetallePagoId = 1;
+                detallePago.DetallePagoId = ultimoDetallePagoId + 1;
                 detallePago.PagoId = ultimoPagoId + 1;
                 await pago.save({transaction: t});
                 await detallePago.save({transaction: t});
