@@ -16,20 +16,26 @@ const ListaPagos = () => {
 
     const location = useLocation();
 
-    const [DiaActual, setDiaActual] = useState(new Date().getDate());
+    const [FechaActual, setFechaActual] = useState({
+        diaActual: new Date().getDay(),
+        mesActual: new Date().getMonth() + 1 //+1 debido que getMonth comienza en 0
+    })
 
+    const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
     const [PagoInfo, setPagoInfo] = useState({
         UserId: location.state.UserId,
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         DetallePagoObservaciones: '',
         MedioPagoId: 1,
-        PagoRecargo: DiaActual >=21 ? 50 : 0,
-        PagoTotal: DiaActual >= 21 ? location.state.ServicioPrecioUnitario + 50 : location.state.ServicioPrecioUnitario
+        /*Sólo se cobrara recargo si el abonado paga después del 21 del mismo mes O si paga despues del mes seleccionado.
+        POR EJ: hoy 3 de Noviembre, si quiero pagar OCTUBRE, me recargan¨*/
+        PagoTotal: (FechaActual.diaActual >= 21 && FechaActual.mesActual === PagoPeriodo.getMonth()+1)
+        || (FechaActual.mesActual > PagoPeriodo.getMonth()+1)
+        ? location.state.ServicioPrecioUnitario + location.state.ServicioRecargo : location.state.ServicioPrecioUnitario
     });
 
-    const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
-    const { PagoRecargo, DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
+    const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
     const [modalNuevoPago, setModalNuevoPago] = useState(false);
     const [modalDetallesPago, setModalDetallesPago] = useState(false);
@@ -178,8 +184,9 @@ const ListaPagos = () => {
                 <>
                 <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>
                 <Alert severity="info">
-                    {DiaActual >= 21 ? 
-                    <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario} + <b>Recargo: </b> $ {PagoRecargo} = ${location.state.ServicioPrecioUnitario + PagoRecargo}</Typography>
+                    {(FechaActual.diaActual >= 21 && FechaActual.mesActual === PagoPeriodo.getMonth()+1)
+                    || (FechaActual.mesActual > PagoPeriodo.getMonth()+1) ? 
+                    <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario} + <b>Recargo: </b> $ {location.state.ServicioRecargo} = ${location.state.ServicioPrecioUnitario + location.state.ServicioRecargo}</Typography>
                     : <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario}</Typography>
                 }
                 </Alert>

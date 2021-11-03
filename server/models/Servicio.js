@@ -1,9 +1,9 @@
-const { UUIDV4, STRING, INTEGER } = require('sequelize');
+const { STRING, INTEGER, FLOAT } = require('sequelize');
 const db = require('../config/connection');
 
 const Servicio = db.define('servicio', {
     ServicioId: {
-        type: UUIDV4,
+        type: INTEGER,
         primaryKey: true
     },
     ServicioNombre: {
@@ -12,7 +12,11 @@ const Servicio = db.define('servicio', {
         allowNull: true,
     },
     ServicioPrecioUnitario: {
-        type: INTEGER,
+        type: FLOAT,
+        allowNull: false
+    },
+    ServicioRecargo: {
+        type: FLOAT,
         allowNull: false
     },
     ServicioDescripcion: {

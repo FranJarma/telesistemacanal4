@@ -19,9 +19,10 @@ const ListaServicios = () => {
     const [ServicioInfo, setServicioInfo] = useState({
         ServicioNombre: '',
         ServicioPrecioUnitario: '',
+        ServicioRecargo: '',
         ServicioDescripcion: ''
     })
-    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion } = ServicioInfo;
+    const { ServicioNombre, ServicioPrecioUnitario, ServicioRecargo, ServicioDescripcion } = ServicioInfo;
 
     const onInputChange= (e) =>{
         setServicioInfo({
@@ -63,6 +64,12 @@ const ListaServicios = () => {
         {
             "name": "Precio",
             "selector": row => "$ " + row["ServicioPrecioUnitario"],
+            "wrap": true,
+            "sortable": true
+        },
+        {
+            "name": "Recargo",
+            "selector": row => "$ " + row["ServicioRecargo"],
             "wrap": true,
             "sortable": true
         },
@@ -117,7 +124,7 @@ const ListaServicios = () => {
                     name="ServicioNombre"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={12} sm={12} xl={12}>
+                <Grid item xs={6} md={6} sm={6} xl={6}>
                     <TextField
                     color="primary"
                     type="number"
@@ -127,6 +134,18 @@ const ListaServicios = () => {
                     onChange={onInputChange}
                     value={ServicioPrecioUnitario}
                     name="ServicioPrecioUnitario"
+                    ></TextField>
+                </Grid>
+                <Grid item xs={6} md={6} sm={6} xl={6}>
+                    <TextField
+                    color="primary"
+                    type="number"
+                    variant="outlined"
+                    label="Recargo por pago fuera de término"
+                    fullWidth
+                    onChange={onInputChange}
+                    value={ServicioRecargo}
+                    name="ServicioRecargo"
                     ></TextField>
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>

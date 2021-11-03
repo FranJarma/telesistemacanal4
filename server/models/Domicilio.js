@@ -1,4 +1,4 @@
-const { STRING, INTEGER, CHAR } = require('sequelize');
+const { STRING, INTEGER } = require('sequelize');
 const db = require('../config/connection');
 
 const Domicilio = db.define('domicilio', {

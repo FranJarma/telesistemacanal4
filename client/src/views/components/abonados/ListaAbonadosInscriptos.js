@@ -77,7 +77,7 @@ const ListaAbonadosInscriptos = () => {
     }
 
     const styles = useStyles();
-    const columnasAbonadosActivos = [
+    const columnasAbonadosInscriptos = [
     {
         "name": "id",
         "selector": row =>row["UserId"],
@@ -289,7 +289,7 @@ const ListaAbonadosInscriptos = () => {
                 >
                 </Modal>
                 <Datatable
-                    columnas={columnasAbonadosActivos}
+                    columnas={columnasAbonadosInscriptos}
                     datos={abonados}
                     expandedComponent={ExpandedComponent}
                     paginacion={true}

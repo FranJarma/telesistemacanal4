@@ -79,9 +79,7 @@ const Aside = () => {
           <MenuItem icon={<i className='bx bx-user-x' ></i>}>Inactivos<Link to="/abonados-inactivos"></Link></MenuItem>
         </SubMenu>
         <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Técnicos y Cobradores" icon={<i className="bx bx-wrench"></i>}>
-          <MenuItem icon={<i className='bx bx-wifi-off'></i>}>Cortes a realizar<Link to="/cortes"></Link></MenuItem>
-          <MenuItem icon={<i className='bx bxs-plug'></i>}>Bajadas a realizar<Link to="/bajadas"></Link></MenuItem>
-          <MenuItem icon={<i className='bx bx-dollar' ></i>}>Cobros en domiclio<Link to="/cobros"></Link></MenuItem>
+          <MenuItem icon={<i className='bx bx-task'></i>}>Mis tareas a realizar<Link to="/tareas"></Link></MenuItem>
         </SubMenu>
         <SubMenu onClick={onClickMenuUsuarios} open={SubMenuUsuarios} title="Usuarios" icon={<i className="bx bx-group"></i>}>
           <MenuItem icon={<i className='bx bxs-user'></i>}>Usuarios<Link to="/usuarios"></Link></MenuItem>
@@ -91,7 +89,7 @@ const Aside = () => {
         <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
         <MenuItem icon={<i className="bx bx-map"></i>}>Barrios y Municipios<Link to="/barrios-municipios"></Link></MenuItem>
         <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus y Modelos ONUS<Link to="/onus-modelosOnus"></Link></MenuItem>
-        <MenuItem icon={<i className="bx bx-wallet"></i>}>Medios de Pago<Link to="/medios-de-pago"></Link></MenuItem>
+        <MenuItem icon={<i className='bx bx-clipboard'></i>}>Tipos de tareas<Link to="/tipos-de-tareas"></Link></MenuItem>
         </SubMenu>
         <SidebarFooter>
         <MenuItem icon={<i className='bx bx-log-out-circle'></i>}>Salir<Link to="/"></Link></MenuItem>
