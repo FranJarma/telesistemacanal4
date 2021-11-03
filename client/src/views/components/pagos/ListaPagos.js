@@ -62,7 +62,7 @@ const ListaPagos = () => {
             ...PagoInfo,
             MedioPagoId: e.target.value});
     }
-    const handleChangeNuevoPago = (data) => {
+    const handleChangeModalNuevoPago = (data) => {
         setModalNuevoPago(!ModalNuevoPago);
     }
     const handleChangeModalDetallesPago = (data) => {
@@ -152,7 +152,7 @@ const ListaPagos = () => {
         <Card>
             <CardContent>
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={handleChangeNuevoPago}>+ Asentar pago</Button>}>
+                    action={<Button variant="contained" color="primary" onClick={handleChangeModalNuevoPago}>+ Asentar pago</Button>}>
                 </CardHeader>
                 <Typography variant="h1">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
                 <Datatable
@@ -163,7 +163,7 @@ const ListaPagos = () => {
                 />
                 <Modal
                 abrirModal={ModalNuevoPago}
-                funcionCerrar={handleChangeNuevoPago}
+                funcionCerrar={handleChangeModalNuevoPago}
                 botones={
                 <>
                 <Button onClick={()=>
@@ -171,11 +171,11 @@ const ListaPagos = () => {
                     crearPago(
                         {...PagoInfo,
                         PagoPeriodo
-                    })}}
+                    }, handleChangeModalNuevoPago)}}
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
-                <Button onClick={handleChangeNuevoPago}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalNuevoPago}>Cerrar</Button></>}
                 formulario={
                 <>
                 <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>

@@ -241,8 +241,7 @@ const AppState = props => {
         })
     }
     //PAGOS
-    const crearPago = async(pago) => {
-        console.log(pago);
+    const crearPago = async(pago, modalPago) => {
         clienteAxios.post('/api/pagos/create', pago)
         .then(resOk => {
             if (resOk.data)
