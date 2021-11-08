@@ -1,4 +1,4 @@
-const { Sequelize, UUIDV4, STRING } = require('sequelize');
+const { UUIDV4, STRING } = require('sequelize');
 const db = require('../config/connection');
 
 const Role = db.define('_role', {

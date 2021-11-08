@@ -2,11 +2,29 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('./../controllers/UserController');
 const { check } = require('express-validator');
-const { esDNIValido, esCUITValido } =  require('./../helpers/db-validaciones');
+const { esDNIValido, esCUITValido, esUserValido } =  require('./../helpers/db-validaciones');
 
+router.get('/estado=:estadoId', UserController.UsersGet);
 router.get('/abonados/municipio=:municipioId&estado=:estadoId', UserController.AbonadosGet);
 router.get('/abonados/domicilios/:id', UserController.AbonadoListarDomicilios);
 router.get('/abonados/servicios/:id', UserController.AbonadoListarServicios);
+
+router.post('/create',
+[
+    check('Nombre', 'El nombre es obligatorio').notEmpty(),
+    check('Apellido', 'El apellido es obligatorio').notEmpty(),
+    check('Documento', 'El DNI es obligatorio').notEmpty(),
+    check('Documento', 'El DNI no tiene el formato correcto, debe tener solo números').isNumeric(),
+    check('Documento', 'El DNI debe tener 7 dígitos como mínimo').isLength({min: 7}),
+    check('Email', 'El correo es obligatorio').notEmpty(),
+    check('Email', 'El correo no tiene el formato correcto').isEmail(),
+    check('NombreUsuario', 'El nombre de usuario es obligatorio').notEmpty(),
+    check('NombreUsuario').custom(esUserValido),
+    check('Contraseña', 'La contraseña es obligatoria').notEmpty(),
+    check('RContraseña', 'Ingrese de nuevo la contraseña').notEmpty(),
+    check('RolesSeleccionados', 'Seleccione rol').notEmpty(),
+    
+], UserController.UserCreate);
 
 router.post('/abonados/create',
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),

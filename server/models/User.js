@@ -57,8 +57,7 @@ const User = db.define('_user', {
         defaultValue: 0
     },
     EsUsuarioDePrueba: {
-        type: INTEGER,
-        defaultValue: 1
+        type: INTEGER
     },
     UltimoInicioDeSesion: {
         type: DATE,

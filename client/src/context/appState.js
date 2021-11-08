@@ -9,6 +9,8 @@ import * as TYPES from '../types';
 
 const AppState = props => {
     const initialState = {
+        usuarios: [],
+        roles: [],
         abonados: [],
         domicilios: [],
         barrios: [],
@@ -28,7 +30,53 @@ const AppState = props => {
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
-    //TODO: AUTH
+    //AUTH
+    const crearUsuario = async (usuario) => {
+        clienteAxios.post('/api/usuarios/create', usuario)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_USUARIO,
+                    payload: usuario
+                });
+                Swal('Operación completa', resOk.data.msg);
+                //history.push('/users');
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const traerUsuarios = async (estadoId = 0) => {
+        try {
+            const resultado =  await clienteAxios.get(`/api/usuarios/estado=${estadoId}`);
+            dispatch({
+                type: TYPES.LISTA_USUARIOS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerRoles = async (estadoId = 0) => {
+        try {
+            const resultado =  await clienteAxios.get(`/api/roles`);
+            dispatch({
+                type: TYPES.LISTA_ROLES,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     //ABONADOS
     const crearAbonado = async (abonado) => {
         clienteAxios.post('/api/usuarios/abonados/create', abonado)
@@ -737,6 +785,8 @@ const AppState = props => {
     return(
         <AppContext.Provider
         value={{
+            usuarios: state.usuarios,
+            roles: state.roles,
             abonados: state.abonados,
             domicilios: state.domicilios,
             barrios: state.barrios,
@@ -751,8 +801,10 @@ const AppState = props => {
             historialServicios: state.historialServicios,
             mediosPago: state.mediosPago,
             pagos: state.pagos,
-            pago: state.pago, 
+            pago: state.pago,
             detallesPago: state.detallesPago,
+            traerUsuarios, crearUsuario,
+            traerRoles,
             traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,
             cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
             traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 

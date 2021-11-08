@@ -2,6 +2,23 @@ import * as TYPES from '../types';
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
     switch (action.type) {
+        case TYPES.CREAR_USUARIO:
+            return {
+                ...state,
+                usuarios: [action.payload, ...state.usuarios],
+        }
+        case TYPES.LISTA_USUARIOS: {
+            return {
+                ...state,
+                usuarios: action.payload
+            }
+        }
+        case TYPES.LISTA_ROLES: {
+            return {
+                ...state,
+                roles: action.payload
+            }
+        }
         case TYPES.CAMBIO_DOMICILIO_ABONADO: {
             return {
                 ...state,

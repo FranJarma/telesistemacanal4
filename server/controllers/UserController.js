@@ -17,6 +17,58 @@ const Onu = require('../models/Onu');
 
 require('dotenv').config({path: 'variables.env'});
 
+//AUTH Y USERS
+exports.UserCreate = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        await db.transaction(async(t)=>{
+            console.log(req.body);
+            let userRoles = [];
+            // creamos un nuevo usuario pasandole lo que traemos de la vista
+            // const user = new User(req.body);
+            // abonado.UserId = uuidv4().toUpperCase();
+            // abonado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            // const userRole = new UserRole();
+            // userRole.UserId = user.UserId;
+            // userRole.RoleId = process.env.ID_ROL_ABONADO;
+            // const UserEstado = new UserEstado();
+            // UserEstado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            // UserEstado.UserId = user.UserId;
+            // UserEstado.CambioEstadoFecha = new Date().toString();
+            // UserEstado.CambioEstadoObservaciones = 'Primer Inscripción';
+            // await user.save({transaction: t});
+            // await userRole.save({transaction: t});
+            // await userEstado.save({transaction: t});
+            return res.status(200).json({msg: 'El Usuario ha sido registrado correctamente'})
+        })
+        }   
+    catch (error) {
+        console.log(error)
+        res.status(400).json({msg: 'Hubo un error al registrar el usuario'});
+    }
+}
+exports.UsersGet = async(req, res) => {
+    let users = '';
+    try {
+        req.params.EstadoId == 0 ? 
+        users = await knex.select('*').from('_user as u')
+        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
+        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+        .where('r.RoleId', '!=', process.env.ID_ROL_ABONADO)
+        : users = await knex.select('*').from('_user as u')
+        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
+        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+        .where('u.EstadoId', '!=', 0)
+        .where('r.RoleId', '!=', process.env.ID_ROL_ABONADO);
+        res.json(users);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al encontrar los usuarios'});
+    }
+}
 //FUNCIONES PARA ABONADOS
 exports.AbonadosGet = async(req, res) => {
     let abonados = '';

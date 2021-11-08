@@ -18,6 +18,7 @@ import Cargando from './views/components/design/components/Cargando';
 import ListaAbonadosInscriptos from './views/components/abonados/ListaAbonadosInscriptos';
 import BarriosMunicipios from './views/components/barrios-municipios/BarriosMunicipios';
 import OnusModelosOnus from './views/components/onus/OnusModelosOnus';
+import ListaUsers from './views/components/users/ListaUsers';
 
 const Home = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
@@ -27,6 +28,11 @@ const Home = lazy(() => {
 const CaratulaAbonado = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
     () => import('./views/components/abonados/CaratulaAbonado')
+  );
+});
+const CaratulaUser = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+    () => import('./views/components/users/CaratulaUser')
   );
 });
 
@@ -95,6 +101,9 @@ function App() {
                   <Home/>
                 </Suspense>
               </Route>
+              <Route exact path="/users">
+                  <ListaUsers/>
+              </Route>
               <Route exact path="/abonados-inscriptos">
                   <ListaAbonadosInscriptos/>
               </Route>
@@ -107,6 +116,11 @@ function App() {
               <Route path="/caratula-abonado">
                 <Suspense fallback={<Cargando/>}>
                   <CaratulaAbonado/>
+                </Suspense>
+              </Route>
+              <Route path="/caratula-user">
+                <Suspense fallback={<Cargando/>}>
+                  <CaratulaUser/>
                 </Suspense>
               </Route>
               <Route path="/cambio-domicilio">

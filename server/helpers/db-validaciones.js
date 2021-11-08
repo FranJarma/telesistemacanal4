@@ -16,8 +16,13 @@ const esOnuValida = async (mac)=>{
     if (existeOnu) throw new Error('La MAC de la Onu ya se encuentra registrada');
 }
 
+const esUserValido = async (nombreUsuario)=>{
+    const existeUser = await User.findOne({where: {NombreUsuario: nombreUsuario}});
+    if (existeUser) throw new Error('El nombre de usuario ya se encuentra registrado');
+}
+
 module.exports = {
     esDNIValido,
     esCUITValido,
-    esOnuValida
+    esUserValido
 }
