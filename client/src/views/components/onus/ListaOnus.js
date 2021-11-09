@@ -40,7 +40,6 @@ const ListaOnus = ({location}) => {
         setServicioId(e.target.value);
     }
     const handleChangeModalOnu = (data = '') => {
-        console.log(data);
         setModalOnu(!ModalOnu);
         setModalEliminarOnu(false);
         if(data !== '') {

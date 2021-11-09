@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('./../controllers/UserController');
 const { check } = require('express-validator');
-const { esDNIValido, esCUITValido, esUserValido } =  require('./../helpers/db-validaciones');
+const { esDNIValido, esCUITValido, esUserValido, esEmailValido } =  require('./../helpers/db-validaciones');
 
 router.get('/estado=:estadoId', UserController.UsersGet);
 router.get('/abonados/municipio=:municipioId&estado=:estadoId', UserController.AbonadosGet);
@@ -18,6 +18,7 @@ router.post('/create',
     check('Documento', 'El DNI debe tener 7 dígitos como mínimo').isLength({min: 7}),
     check('Email', 'El correo es obligatorio').notEmpty(),
     check('Email', 'El correo no tiene el formato correcto').isEmail(),
+    check('Email').custom(esEmailValido),
     check('NombreUsuario', 'El nombre de usuario es obligatorio').notEmpty(),
     check('NombreUsuario').custom(esUserValido),
     check('Contraseña', 'La contraseña es obligatoria').notEmpty(),

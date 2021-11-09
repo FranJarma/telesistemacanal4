@@ -2,6 +2,7 @@
 export const CREAR_USUARIO = 'CREAR_USUARIO';
 export const LISTA_USUARIOS = 'LISTA_USUARIOS';
 export const LISTA_ROLES = 'LISTA_ROLES';
+export const LISTA_ROLES_USER = 'LISTA_ROLES_USER';
 
 //ABONADOS
 export const CREAR_ABONADO = 'CREAR_ABONADO';

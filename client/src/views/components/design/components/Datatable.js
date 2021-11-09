@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Spinner from './Spinner';
 import Buscador from './Buscador';
 
-const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar}) => {
+const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar, selectableRows, handleChangeSelectedRows}) => {
     //state y effect para spinner
     const [cargando, setCargando] = useState(true);
     useEffect(()=>{
@@ -17,6 +17,8 @@ const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar}) => 
     const itemsFiltrados = datos.filter(item =>
     (item.Nombre && item.Nombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.Apellido && item.Apellido.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.NombreUsuario && item.NombreUsuario.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.Email && item.Email.toString().includes(textoFiltrado.toLowerCase()))
     || (item.Documento && item.Documento.toString().includes(textoFiltrado.toLowerCase()))
     || (item.BarrioNombre && item.BarrioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.MunicipioNombre && item.MunicipioNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
@@ -32,6 +34,8 @@ const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar}) => 
     || (item.PagoTotal && item.PagoTotal.toString().includes(textoFiltrado.toLowerCase()))
     || (item.DetallePagoMonto && item.DetallePagoMonto.toString().includes(textoFiltrado.toLowerCase()))
     || (item.DetallePagoFecha && item.DetallePagoFecha.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.RoleName && item.RoleName.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.RoleDescription && item.RoleDescription.toString().includes(textoFiltrado.toLowerCase()))
     );
     const paginacionOpciones = {
         rowsPerPageText: 'Registros por página',
@@ -53,6 +57,8 @@ const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar}) => 
             progressPending={cargando}
             responsive
             subHeader = {buscar ? true : false}
+            onSelectedRowsChange={handleChangeSelectedRows}
+            selectableRows = {selectableRows ? true : false}
             subHeaderComponent={
                 buscar ? 
                 <Buscador onFiltrar={e => setTextoFiltrado(e.target.value)} textoFiltrado={textoFiltrado}/>

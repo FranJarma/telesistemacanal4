@@ -19,6 +19,12 @@ export default (state, action) => {
                 roles: action.payload
             }
         }
+        case TYPES.LISTA_ROLES_USER: {
+            return {
+                ...state,
+                rolesUser: action.payload
+            }
+        }
         case TYPES.CAMBIO_DOMICILIO_ABONADO: {
             return {
                 ...state,

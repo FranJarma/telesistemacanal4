@@ -72,9 +72,8 @@ exports.OnuUpdate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            console.log(req.body);
             const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
-            //await onu.update(req.body, {transaction: t});
+            await onu.update(req.body, {transaction: t});
             return res.status(200).json({msg: 'La ONU ha sido modificada correctamente'})
         })
     } catch (error) {

@@ -183,10 +183,10 @@ const CaratulaAbonado = () => {
                     variant="outlined"
                     value={Documento}
                     name="Documento"
-                    inputProps={{ maxLength: 8 }}
                     onChange={onInputChange}
                     fullWidth
-                    label="DNI">
+                    label="DNI"
+                    type="number">
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
@@ -194,10 +194,10 @@ const CaratulaAbonado = () => {
                     variant="outlined"
                     value={Cuit}
                     name="Cuit"
-                    inputProps={{ maxLength: 11 }}
                     onChange={onInputChange}
                     fullWidth
                     label="CUIT"
+                    type="number"
                     >
                     </TextField>
                 </Grid>

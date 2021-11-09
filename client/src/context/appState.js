@@ -11,6 +11,7 @@ const AppState = props => {
     const initialState = {
         usuarios: [],
         roles: [],
+        rolesUser: [],
         abonados: [],
         domicilios: [],
         barrios: [],
@@ -70,6 +71,17 @@ const AppState = props => {
             const resultado =  await clienteAxios.get(`/api/roles`);
             dispatch({
                 type: TYPES.LISTA_ROLES,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerRolesPorUsuario = async (UserId) => {
+        try {
+            const resultado =  await clienteAxios.get(`/api/roles/${UserId}`);
+            dispatch({
+                type: TYPES.LISTA_ROLES_USER,
                 payload: resultado.data
             })
         } catch (error) {
@@ -410,7 +422,6 @@ const AppState = props => {
     };
     //MUNICIPIOS
     const crearMunicipio = async(municipio, cerrarModal) => {
-        console.log(municipio);
         clienteAxios.post('/api/municipios/create', municipio)
         .then(resOk => {
             if (resOk.data)
@@ -787,6 +798,7 @@ const AppState = props => {
         value={{
             usuarios: state.usuarios,
             roles: state.roles,
+            rolesUser: state.rolesUser,
             abonados: state.abonados,
             domicilios: state.domicilios,
             barrios: state.barrios,
@@ -804,7 +816,7 @@ const AppState = props => {
             pago: state.pago,
             detallesPago: state.detallesPago,
             traerUsuarios, crearUsuario,
-            traerRoles,
+            traerRoles, traerRolesPorUsuario,
             traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,
             cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
             traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 

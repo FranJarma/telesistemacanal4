@@ -25,23 +25,32 @@ exports.UserCreate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            console.log(req.body);
-            let userRoles = [];
+            let userRoleVec = [];
+            //hash de pw
             // creamos un nuevo usuario pasandole lo que traemos de la vista
-            // const user = new User(req.body);
-            // abonado.UserId = uuidv4().toUpperCase();
-            // abonado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
-            // const userRole = new UserRole();
-            // userRole.UserId = user.UserId;
-            // userRole.RoleId = process.env.ID_ROL_ABONADO;
-            // const UserEstado = new UserEstado();
-            // UserEstado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
-            // UserEstado.UserId = user.UserId;
-            // UserEstado.CambioEstadoFecha = new Date().toString();
-            // UserEstado.CambioEstadoObservaciones = 'Primer Inscripción';
-            // await user.save({transaction: t});
-            // await userRole.save({transaction: t});
-            // await userEstado.save({transaction: t});
+            const user = new User(req.body);
+            const salt = bcrypt.genSaltSync();
+            user.Contraseña = bcrypt.hashSync(req.body.Contraseña, salt);
+            user.UserId = uuidv4().toUpperCase();
+            user.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            user.EsUsuarioDeSistema = 1; // es el mismo estado
+            //hay que armar un array con todos los objetos a crear
+            const userEstado = new UserEstado();
+            userEstado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            userEstado.UserId = user.UserId;
+            userEstado.CambioEstadoFecha = new Date().toString();
+            userEstado.CambioEstadoObservaciones = 'Primer Inscripción';
+            await user.save({transaction: t});
+            await userEstado.save({transaction: t});
+            for (let i=0; i<= req.body.RolesSeleccionados.length-1; i++){
+                let obj = {
+                    UserId: user.UserId,
+                    RoleId: req.body.RolesSeleccionados[i]
+                }
+                userRoleVec.push(obj);
+                const userRole = new UserRole(obj);
+                await userRole.save({transaction: t});
+            }
             return res.status(200).json({msg: 'El Usuario ha sido registrado correctamente'})
         })
         }   
@@ -55,18 +64,24 @@ exports.UsersGet = async(req, res) => {
     try {
         req.params.EstadoId == 0 ? 
         users = await knex.select('*').from('_user as u')
-        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
-        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
-        .where('r.RoleId', '!=', process.env.ID_ROL_ABONADO)
         : users = await knex.select('*').from('_user as u')
-        .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
-        .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
-        .where('u.EstadoId', '!=', 0)
-        .where('r.RoleId', '!=', process.env.ID_ROL_ABONADO);
+        .whereNot({'u.EstadoId': 0})
+        .where({'u.EsUsuarioDeSistema': 1});
         res.json(users);
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los usuarios'});
+    }
+}
+exports.UserGetRoles = async(req, res) => {
+    try {
+        const roles = await knex.select('*').from('_role as r')
+        .innerJoin('_userrole as ur','r.RoleId','=', 'ur.RoleId')
+        .where('ur.UserId','=',req.body.UserId);
+        res.json(roles);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al encontrar los roles del usuario'});
     }
 }
 //FUNCIONES PARA ABONADOS
@@ -189,6 +204,7 @@ exports.AbonadoCreate = async(req, res) => {
             abonado.UserId = uuidv4().toUpperCase();
             abonado.DomicilioId = ultimoDomicilioId + 1;
             abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
+            abonado.EsUsuarioDeSistema = 0;
             const domicilio = new Domicilio(req.body);
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             const abonadoRole = new UserRole();

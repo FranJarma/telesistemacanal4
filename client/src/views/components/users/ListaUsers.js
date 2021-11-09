@@ -20,40 +20,39 @@ const Users = () => {
 
     const [modalDarDeBaja, setModalDarDeBaja] = useState(false);
 
-    const [AbonadoInfo, setAbonadoInfo] = useState({
+    const [UserInfo, setUserInfo] = useState({
         UserId: null,
         EstadoId: null,
         CambioEstadoFecha: null,
         CambioEstadoObservaciones: null
     });
 
-    const { CambioEstadoObservaciones } = AbonadoInfo;
+    const { CambioEstadoObservaciones } = UserInfo;
 
     const handleChangeModalDarDeBaja = (data) => {
         setModalDarDeBaja(!modalDarDeBaja)
         if(!modalDarDeBaja){
-            setAbonadoInfo({
+            setUserInfo({
                 EstadoId: 3,
                 CambioEstadoFecha: new Date().toJSON(),
                 UserId: data.UserId
             })
         }
         else {
-            setAbonadoInfo({
+            setUserInfo({
                 UserId: null
             })
         }
     }
 
     const onChangeInputEstadoObservaciones = (e) => {
-        setAbonadoInfo({
-            ...AbonadoInfo,
+        setUserInfo({
+            ...UserInfo,
             [e.target.name] : e.target.value
         });
     }
 
-    const styles = useStyles();
-    const columnasAbonadosActivos = [
+    const columnasUsers = [
     {
         "name": "id",
         "selector": row =>row["UserId"],
@@ -102,12 +101,6 @@ const Users = () => {
         </>,
     }
 ]
-    const ExpandedComponent = ({ data }) =>
-    <>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Domicilio: {data.DomicilioCalle} {data.DomicilioNumero} | Barrio {data.BarrioNombre} | {data.MunicipioNombre}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-plug"></i> Servicio: {data.ServicioNombre}</Typography>
-    </>;
     return (
         <>
         <div className="container">
@@ -123,36 +116,21 @@ const Users = () => {
                 <Modal
                 abrirModal={modalDarDeBaja}
                 funcionCerrar={handleChangeModalDarDeBaja}
-                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
+                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>¿Está seguro que quiere dar de baja al usuario?</Alert>}
                 botones={
                 <>
                 <Button onClick={()=>
-                    {cambiarEstadoAbonado(AbonadoInfo)
+                    {cambiarEstadoAbonado(UserInfo)
                     setModalDarDeBaja(false)}}
                     variant="contained"
                     color="secondary">
                     Aceptar</Button>
                 <Button onClick={handleChangeModalDarDeBaja}>Cerrar</Button></>}
-                formulario={
-                <>
-                <TextField
-                className={styles.inputModal}
-                autoFocus
-                variant="outlined"
-                name="CambioEstadoObservaciones"
-                value={CambioEstadoObservaciones}
-                fullWidth
-                onChange={onChangeInputEstadoObservaciones}
-                >
-                </TextField>
-                <FormHelperText>Ingrese motivo de baja</FormHelperText>
-                </>}
                 >
                 </Modal>
                 <Datatable
-                    columnas={columnasAbonadosActivos}
+                    columnas={columnasUsers}
                     datos={usuarios}
-                    expandedComponent={ExpandedComponent}
                     paginacion={true}
                     buscar={true}/>
             </CardContent>

@@ -2,15 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, FormControlLabel, Grid, FormGroup, FormHelperText, MenuItem, Select, Switch, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, FormControlLabel, Grid, FormGroup, FormHelperText, MenuItem, Select, Switch, TextField, Typography, FormControl, Badge, Chip } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
+import Datatable from '../design/components/Datatable';
 
 const CaratulaUser = () => {
     const appContext = useContext(AppContext);
-    const { roles, traerRoles, crearUsuario, modificarUsuario } = appContext;
-    
+    const { roles, rolesUser, traerRoles, traerRolesPorUsuario, crearUsuario, modificarUsuario } = appContext;
     const location = useLocation();
-
     const [UserInfo, setUserInfo] = useState({
         UserId: null,
         Nombre: null,
@@ -22,9 +21,14 @@ const CaratulaUser = () => {
         Contraseña: null,
         RContraseña: null
     })
+    const [selectedRows, setSelectedRows] = React.useState(false);
+    const handleChangeSelectedRows = ({ selectedRows }) => {
+        setSelectedRows(selectedRows);
+    };
+
     const [EsUsuarioDePrueba, setEsUsuarioDePrueba] = useState(0);
     const handleChangeCheckUsuarioDePrueba = (e) => {
-        setEsUsuarioDePrueba(e.target.checked);
+        e.target.checked ? setEsUsuarioDePrueba(1) : setEsUsuarioDePrueba(0);
     }
     const onInputChange = (e) => {
         setUserInfo({
@@ -32,21 +36,17 @@ const CaratulaUser = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, NombreUsuario, Contraseña, RContraseña} = UserInfo;
+    const { UserId, Nombre, Apellido, Documento, Email, Telefono, NombreUsuario, Contraseña, RContraseña} = UserInfo;
 
     const [RolesSeleccionados, setRolesSeleccionados] = useState([]);
 
     const handleChangeRolesSeleccionados = (e) => {
-        const {
-          target: { value },
-        } = e;
-        setRolesSeleccionados(
-          typeof value === 'string' ? value.split(',') : value,
-        );
+        setRolesSeleccionados(e.target.value);
     };
 
     useEffect(()=> {
         traerRoles();
+        if (location.state) traerRolesPorUsuario(location.state.UserId);
     }, [])
 
     useEffect(() => {
@@ -57,11 +57,12 @@ const CaratulaUser = () => {
                 Nombre: location.state.Nombre,
                 Apellido: location.state.Apellido,
                 Documento: location.state.Documento,
-                Cuit: location.state.Cuit,
                 Email: location.state.Email,
                 Telefono: location.state.Telefono,
-                EsUsuarioDePrueba: location.state.EsUsuarioDePrueba
+                NombreUsuario: location.state.NombreUsuario,
             });
+            setRolesSeleccionados(rolesUser);
+            setEsUsuarioDePrueba(location.state.EsUsuarioDePrueba);
         }
     }, [location.state])
 
@@ -72,7 +73,6 @@ const CaratulaUser = () => {
                 Nombre,
                 Apellido,
                 Documento,
-                Cuit,
                 Email,
                 Telefono,
                 NombreUsuario,
@@ -88,7 +88,6 @@ const CaratulaUser = () => {
                 Nombre,
                 Apellido,
                 Documento,
-                Cuit,
                 Email,
                 Telefono,
                 NombreUsuario,
@@ -99,6 +98,22 @@ const CaratulaUser = () => {
             });
         }
     }
+    const columnasRoles= [
+        {
+        "name": "RoleId",
+        "selector": row => row["RoleId"],
+        "omit": true
+        },
+        {
+        "name": "Rol",
+        "selector": row => row["RoleName"],
+        },
+        {
+        "name": "Descripcion",
+        "selector": row => row["RoleDescription"],
+        },
+
+]
     return ( 
     <>
     <div className="container">
@@ -136,10 +151,10 @@ const CaratulaUser = () => {
                     variant="outlined"
                     value={Documento}
                     name="Documento"
-                    inputProps={{ maxLength: 8 }}
                     onChange={onInputChange}
                     fullWidth
-                    label="DNI">
+                    label="DNI"
+                    type="number">
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
@@ -196,32 +211,49 @@ const CaratulaUser = () => {
                     label="Repita contraseña">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <FormHelperText>Seleccione roles del usuario</FormHelperText>
-                    <Select 
-                    variant="outlined"
-                    fullWidth
-                    value={RolesSeleccionados}
-                    onChange={handleChangeRolesSeleccionados}
-                    multiple
-                    >
-                        {roles.map((rol)=>(
-                            <MenuItem key={rol.RoleId} value={rol.RoleId}>{rol.RoleName}</MenuItem>
-                        ))}
-                    </Select>
                 </Grid>
+                <Typography variant="h2"><i className="bx bxs-user"></i> Roles</Typography>
+                <Grid item xs={12} md={12} lg={12} xl={12}>
+                    <Card>
+                        <Datatable
+                        datos={roles}
+                        columnas={columnasRoles}
+                        selectableRows={true}
+                        handleChangeSelectedRows={handleChangeSelectedRows}></Datatable>
+                    </Card>
+                    {/* <FormControl fullWidth>
+                        <FormHelperText id="select-roles-label">Seleccione roles</FormHelperText>
+                        multiple
+                        value={RolesSeleccionados}
+                        onChange={handleChangeRolesSeleccionados}
+                        variant="outlined"
+                        >
+                            {roles.map((rol=>(
+                                <MenuItem key={rol.RoleId} value={rol.RoleId}>{rol.RoleName}</MenuItem>
+                            )))}
+                        </Select>
+                    </FormControl> */}
+                </Grid>
+                {/* {location.state ? 
+                <>
+                <br/>
+                <Typography variant="h6">Roles actuales: {rolesUser.map((rol)=>(
+                    <Chip style={{marginLeft: '1rem'}} color="secondary" label={rol.RoleName}></Chip> 
+                ))}
+                </Typography>
+                <br/>
+                </>
+                : ""} */}
                 <Grid item xs={12} md={6} lg={6} xl={6}>
-                <FormGroup style={{marginTop: '2rem'}}>
+                <FormGroup style={{marginTop: '1rem'}}>
                     { location.state ?
                     <>
-                    <FormControlLabel control={<Switch />} label="Dado de baja" />
-                    <FormControlLabel control={<Switch />} label="Bloqueado" />
+                    <FormControlLabel control={<Switch color="primary" />} label="Bloqueado" />
                     </>
                     : ""}
-                    <FormControlLabel control={<Switch onChange={handleChangeCheckUsuarioDePrueba} value={EsUsuarioDePrueba}/>} label="Es usuario de prueba" />   
+                    <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckUsuarioDePrueba} checked={EsUsuarioDePrueba}/>} label="Es usuario de prueba" />   
                 </FormGroup>
                 </Grid>
-            </Grid>
         </CardContent>
         <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
             <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
@@ -232,6 +264,7 @@ const CaratulaUser = () => {
     </Card>
     </form>
     </main>
+    <br/>
     <Footer/>
     </div>
     </>
