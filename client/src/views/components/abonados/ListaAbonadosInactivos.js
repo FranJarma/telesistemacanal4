@@ -175,6 +175,7 @@ const ExpandedComponent = ({ data }) =>
                 >
                 </Modal>
                 <Datatable
+                    loader={true}
                     columnas={columnaAbonadosInactivos}
                     datos={abonados}
                     expandedComponent={ExpandedComponent}

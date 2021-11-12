@@ -115,6 +115,7 @@ const ListaBarrios = () => {
                     </TextField>
                 </Grid>
                 <Datatable
+                    loader={true}
                     datos={barrios}
                     columnas={columnasBarrios}
                     paginacion={true}

@@ -132,6 +132,7 @@ const ListaMunicipios = () => {
                     </TextField>
                 </Grid>
                 <Datatable
+                    loader={true}
                     datos={municipios}
                     columnas={columnasMunicipios}
                     paginacion={true}

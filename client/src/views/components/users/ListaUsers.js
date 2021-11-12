@@ -3,12 +3,11 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import './../design/layout/styles/styles.css';
-import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import { Link } from 'react-router-dom';
-import useStyles from '../Styles';
 
 const Users = () => {
     const appContext = useContext(AppContext);
@@ -86,6 +85,7 @@ const Users = () => {
     {
         "name": "Email",
         "selector": row =>row["Email"],
+        "wrap": true
     },
     {
         cell: (data) =>
@@ -129,10 +129,12 @@ const Users = () => {
                 >
                 </Modal>
                 <Datatable
+                    loader={true}
                     columnas={columnasUsers}
                     datos={usuarios}
                     paginacion={true}
-                    buscar={true}/>
+                    buscar={true}>
+                </Datatable>
             </CardContent>
         </Card>
         </main>

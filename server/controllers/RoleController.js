@@ -16,7 +16,6 @@ exports.RolesGetByUser = async(req, res) => {
         const roles = await knex.select('*').from('_role as r')
         .innerJoin('_userrole as ur', 'ur.RoleId', '=', 'r.RoleId')
         .where('ur.UserId','=',req.params.UserId);
-        console.log(roles);
         res.json(roles);
     } catch (error) {
         console.log(error);

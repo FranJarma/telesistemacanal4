@@ -119,6 +119,7 @@ const CambioServicio = () => {
             <Typography variant="h1">Historial de cambios de servicio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
             <br/>
             <Datatable
+            loader={true}
             expandedComponent={ExpandedComponent}
             datos={historialServicios}
             columnas={columnasServicios}

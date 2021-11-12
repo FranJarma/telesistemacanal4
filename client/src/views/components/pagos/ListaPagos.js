@@ -156,6 +156,7 @@ const ListaPagos = () => {
                 </CardHeader>
                 <Typography variant="h1">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
                 <Datatable
+                    loader={true}
                     columnas={columnasPagos}
                     datos={pagos}
                     paginacion={true}

@@ -83,6 +83,7 @@ const ListaModelosOnus = ({location}) => {
                 </CardHeader>
                 <Typography variant="h1">Listado de Modelos de ONUS</Typography>
                 <Datatable
+                    loader={true}
                     datos={modelosONU}
                     columnas={columnasModelosONUS}
                     paginacion={true}

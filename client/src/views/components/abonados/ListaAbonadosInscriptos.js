@@ -288,6 +288,7 @@ const ListaAbonadosInscriptos = () => {
                 >
                 </Modal>
                 <Datatable
+                    loader={true}
                     columnas={columnasAbonadosInscriptos}
                     datos={abonados}
                     expandedComponent={ExpandedComponent}

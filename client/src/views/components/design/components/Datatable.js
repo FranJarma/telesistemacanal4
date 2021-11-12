@@ -3,15 +3,17 @@ import React, { useState, useEffect } from 'react';
 import Spinner from './Spinner';
 import Buscador from './Buscador';
 
-const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar, selectableRows, handleChangeSelectedRows}) => {
+const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, buscar}) => {
     //state y effect para spinner
     const [cargando, setCargando] = useState(true);
+
     useEffect(()=>{
         const timeout = setTimeout(()=>{
             setCargando(false);
         }, 2500);
         return () => clearTimeout(timeout);
     },[])
+
     //state para buscador
     const [textoFiltrado, setTextoFiltrado] = useState('');
     const itemsFiltrados = datos.filter(item =>
@@ -43,6 +45,7 @@ const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar, sele
         selectAllRowsItem: true,
         selectAllRowsItemText: 'Mostrar todos'
     }
+
     return (
         <DataTable
             columns={columnas}
@@ -54,11 +57,9 @@ const Datatable = ({columnas, datos, expandedComponent, paginacion, buscar, sele
             pagination = {paginacion ? true : false}
             paginationComponentOptions={paginacion ? paginacionOpciones : ""}
             progressComponent={<Spinner/>}
-            progressPending={cargando}
+            progressPending={loader ? cargando : false}
             responsive
             subHeader = {buscar ? true : false}
-            onSelectedRowsChange={handleChangeSelectedRows}
-            selectableRows = {selectableRows ? true : false}
             subHeaderComponent={
                 buscar ? 
                 <Buscador onFiltrar={e => setTextoFiltrado(e.target.value)} textoFiltrado={textoFiltrado}/>

@@ -99,6 +99,7 @@ const ListaServicios = () => {
                 </CardHeader>
                 <Typography variant="h1">Listado de Servicios</Typography>
                 <Datatable
+                    loader={true}
                     datos={servicios}
                     columnas={columnasServicios}
                     paginacion={true}

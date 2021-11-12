@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, FormControlLabel, Grid, FormGroup, FormHelperText, MenuItem, Select, Switch, TextField, Typography, FormControl, Badge, Chip } from '@material-ui/core'; 
+import { Button, Card, CardContent, FormControlLabel, Grid, FormGroup, Switch, TextField, Typography} from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
-import Datatable from '../design/components/Datatable';
+import { DataGrid } from '@mui/x-data-grid';
 
 const CaratulaUser = () => {
     const appContext = useContext(AppContext);
@@ -21,15 +21,19 @@ const CaratulaUser = () => {
         Contraseña: null,
         RContraseña: null
     })
-    const [selectedRows, setSelectedRows] = React.useState(false);
-    const handleChangeSelectedRows = ({ selectedRows }) => {
-        setSelectedRows(selectedRows);
-    };
 
     const [EsUsuarioDePrueba, setEsUsuarioDePrueba] = useState(0);
+    const [RolesSeleccionados, setRolesSeleccionados] = useState([]);
+    const [FilasSeleccionadas, setFilasSeleccionadas] = useState([]);
+
+    const onChangeRolesSeleccionados = (state) => {
+        setRolesSeleccionados(state.selectedRows);
+    }
+    
     const handleChangeCheckUsuarioDePrueba = (e) => {
         e.target.checked ? setEsUsuarioDePrueba(1) : setEsUsuarioDePrueba(0);
-    }
+    };
+
     const onInputChange = (e) => {
         setUserInfo({
             ...UserInfo,
@@ -37,21 +41,11 @@ const CaratulaUser = () => {
         });
     }
     const { UserId, Nombre, Apellido, Documento, Email, Telefono, NombreUsuario, Contraseña, RContraseña} = UserInfo;
-
-    const [RolesSeleccionados, setRolesSeleccionados] = useState([]);
-
-    const handleChangeRolesSeleccionados = (e) => {
-        setRolesSeleccionados(e.target.value);
-    };
-
+    
     useEffect(()=> {
         traerRoles();
-        if (location.state) traerRolesPorUsuario(location.state.UserId);
-    }, [])
-
-    useEffect(() => {
-        if(location.state)
-        {
+        if(location.state){
+            traerRolesPorUsuario(location.state.UserId);
             setUserInfo({
                 UserId: location.state.UserId,
                 Nombre: location.state.Nombre,
@@ -61,10 +55,20 @@ const CaratulaUser = () => {
                 Telefono: location.state.Telefono,
                 NombreUsuario: location.state.NombreUsuario,
             });
-            setRolesSeleccionados(rolesUser);
             setEsUsuarioDePrueba(location.state.EsUsuarioDePrueba);
         }
-    }, [location.state])
+    },[]);
+
+    useEffect(()=> {
+        if(location.state) {
+            setRolesSeleccionados(rolesUser)
+        };
+    },[]);
+    
+    const filtrarFilas = row => {
+        setFilasSeleccionadas(rolesUser.find(rol => rol.RoleId === row.RoleId));
+        return FilasSeleccionadas;
+    };
 
     const onSubmitUsuario = (e) => {
         e.preventDefault();
@@ -100,17 +104,22 @@ const CaratulaUser = () => {
     }
     const columnasRoles= [
         {
-        "name": "RoleId",
-        "selector": row => row["RoleId"],
-        "omit": true
+            field: 'RoleId',
+            headerName: 'ID',
+            editable: true,
+            hide: true
         },
         {
-        "name": "Rol",
-        "selector": row => row["RoleName"],
+            field: 'RoleName',
+            headerName: 'Nombre',
+            editable: true,
+            width: 160,
         },
         {
-        "name": "Descripcion",
-        "selector": row => row["RoleDescription"],
+            field: 'RoleDescription',
+            headerName: 'Descripcion',
+            editable: true,
+            width: 250,
         },
 
 ]
@@ -215,35 +224,19 @@ const CaratulaUser = () => {
                 <Typography variant="h2"><i className="bx bxs-user"></i> Roles</Typography>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
                     <Card>
-                        <Datatable
-                        datos={roles}
-                        columnas={columnasRoles}
-                        selectableRows={true}
-                        handleChangeSelectedRows={handleChangeSelectedRows}></Datatable>
+                        <div style={{ height: 320, width: '100%' }}>
+                        <DataGrid
+                        getRowId={row => row.RoleId}
+                        rows={roles}
+                        checkboxSelection
+                        selectionModel={rolesUser}
+                        columns={columnasRoles}
+                        hideFooterPagination
+                        disableColumnMenu>
+                        </DataGrid>
+                        </div>
                     </Card>
-                    {/* <FormControl fullWidth>
-                        <FormHelperText id="select-roles-label">Seleccione roles</FormHelperText>
-                        multiple
-                        value={RolesSeleccionados}
-                        onChange={handleChangeRolesSeleccionados}
-                        variant="outlined"
-                        >
-                            {roles.map((rol=>(
-                                <MenuItem key={rol.RoleId} value={rol.RoleId}>{rol.RoleName}</MenuItem>
-                            )))}
-                        </Select>
-                    </FormControl> */}
                 </Grid>
-                {/* {location.state ? 
-                <>
-                <br/>
-                <Typography variant="h6">Roles actuales: {rolesUser.map((rol)=>(
-                    <Chip style={{marginLeft: '1rem'}} color="secondary" label={rol.RoleName}></Chip> 
-                ))}
-                </Typography>
-                <br/>
-                </>
-                : ""} */}
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                 <FormGroup style={{marginTop: '1rem'}}>
                     { location.state ?

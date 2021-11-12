@@ -11,8 +11,6 @@ import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActiv
 import CambioDomicilio from './views/components/abonados/CambioDomicilio';
 import CambioServicio from './views/components/abonados/CambioServicio';
 import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosInactivos';
-import ListaDetallesPagos from './views/components/detallesPagos/ListaDetallesPagos';
-import CaratulaDetallePago from './views/components/detallesPagos/CaratulaDetallePago';
 import Login from './views/components/auth/Login';
 import Cargando from './views/components/design/components/Cargando';
 import ListaAbonadosInscriptos from './views/components/abonados/ListaAbonadosInscriptos';
@@ -136,12 +134,6 @@ function App() {
               </Route>
               <Route path="/historial-de-pagos">
                 <ListaPagos/>
-              </Route>
-              <Route path="/detalles-pago">
-                <ListaDetallesPagos/>
-              </Route>
-              <Route path="/caratula-detalle-pago">
-                <CaratulaDetallePago/>
               </Route>
               <Route path="/servicios">
                 <ListaServicios/>

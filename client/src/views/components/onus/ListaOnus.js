@@ -105,6 +105,7 @@ const ListaOnus = ({location}) => {
                 </CardHeader>
                 <Typography variant="h1">Listado de ONUS</Typography>
                 <Datatable
+                    loader={true}
                     datos={onus}
                     columnas={columnasONUS}
                     paginacion={true}

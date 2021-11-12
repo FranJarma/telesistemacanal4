@@ -146,6 +146,7 @@ const CambioDomicilio = () => {
             <Typography variant="h1">Historial de cambios de domicilio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
             <br/>
             <Datatable
+            loader={true}
             expandedComponent={ExpandedComponent}
             datos={historialDomicilios}
             columnas={columnasDomicilios}
