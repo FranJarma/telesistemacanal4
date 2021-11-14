@@ -7,6 +7,12 @@ export default (state, action) => {
                 ...state,
                 usuarios: [action.payload, ...state.usuarios],
         }
+        case TYPES.ELIMINAR_USUARIO: {
+            return {
+                ...state,
+                usuarios: state.usuarios.map(usuario => usuario.UserId === action.payload.UserId ? action.payload : usuario)
+            };
+        }
         case TYPES.LISTA_USUARIOS: {
             return {
                 ...state,

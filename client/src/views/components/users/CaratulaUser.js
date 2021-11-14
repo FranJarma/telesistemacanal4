@@ -22,8 +22,9 @@ const CaratulaUser = () => {
         NombreUsuario: null,
         Contraseña: null,
         RContraseña: null
-    })
-
+    });
+    const [PrimerRender, setPrimerRender] = useState(true);
+    const [EstaBloqueado, setEstaBloqueado] = useState(0);
     const [EsUsuarioDePrueba, setEsUsuarioDePrueba] = useState(0);
     const [ModalAsignarRoles, setModalAsignarRoles] = useState(false);
     const [RolesSeleccionados, setRolesSeleccionados] = useState([]);
@@ -31,14 +32,16 @@ const CaratulaUser = () => {
     const handleChangeCheckUsuarioDePrueba = (e) => {
         e.target.checked ? setEsUsuarioDePrueba(1) : setEsUsuarioDePrueba(0);
     };
+    
+    const handleChangeCheckEstaBloqueado = (e) => {
+        e.target.checked ? setEstaBloqueado(1) : setEstaBloqueado(0);
+    }
 
     const handleChangeModalAsignarRoles = (e) => {
-        if(!ModalAsignarRoles) {
-            setRolesSeleccionados(rolesUser)
+        if(!ModalAsignarRoles && location.state && PrimerRender) {
+            setRolesSeleccionados(rolesUser);
+            setPrimerRender(false);
         }
-        else {
-            setRolesSeleccionados([])
-        };
         setModalAsignarRoles(!ModalAsignarRoles);
     }
     const onInputChange = (e) => {
@@ -62,6 +65,7 @@ const CaratulaUser = () => {
                 Telefono: location.state.Telefono,
                 NombreUsuario: location.state.NombreUsuario,
             });
+            if(location.state.IntentosFallidos === 5) setEstaBloqueado(true);
             setEsUsuarioDePrueba(location.state.EsUsuarioDePrueba);
         }
     },[]);
@@ -79,7 +83,7 @@ const CaratulaUser = () => {
                 Contraseña,
                 RContraseña,
                 EsUsuarioDePrueba,
-                //RolesSeleccionados
+                RolesSeleccionados
             });
         }
         else {
@@ -94,7 +98,7 @@ const CaratulaUser = () => {
                 Contraseña,
                 RContraseña,
                 EsUsuarioDePrueba,
-                //RolesSeleccionados
+                RolesSeleccionados
             });
         }
     }
@@ -107,10 +111,12 @@ const CaratulaUser = () => {
         {
             selector: 'RoleName',
             name: 'Nombre',
+            wrap: true
         },
         {
             selector: 'RoleDescription',
-            name: 'Descripcion'
+            name: 'Descripcion',
+            wrap: true
         },
 ]
 
@@ -181,7 +187,8 @@ const CaratulaUser = () => {
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
-                    variant="outlined"
+                    disabled= {location.state ? true : false}
+                    variant={location.state ? "filled": "outlined"}
                     value={NombreUsuario}
                     name="NombreUsuario"
                     onChange={onInputChange}
@@ -217,7 +224,7 @@ const CaratulaUser = () => {
                 <Modal
                 abrirModal={ModalAsignarRoles}
                 funcionCerrar={handleChangeModalAsignarRoles}
-                titulo={<Alert severity="success" icon={<i className="bx bxs-user bx-sm"></i>}>Roles del usuario: {location.state.Nombre} {location.state.Apellido}</Alert>}
+                titulo={<Alert severity="success" icon={<i className="bx bxs-user bx-sm"></i>}>Roles del usuario</Alert>}
                 formulario={
                 <DataTable
                 columns={columnasRoles}
@@ -225,13 +232,14 @@ const CaratulaUser = () => {
                 onSelectedRowsChange={row => setRolesSeleccionados(row.selectedRows)}
                 selectableRows
                 selectableRowSelected={row => RolesSeleccionados.find((rol) => rol.RoleId === row.RoleId)}>
-                </DataTable>}
+                </DataTable>
+                }
                 ></Modal>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                 <FormGroup style={{marginTop: '1rem'}}>
                     { location.state ?
                     <>
-                    <FormControlLabel control={<Switch color="primary" />} label="Bloqueado" />
+                    <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckEstaBloqueado} checked={EstaBloqueado} />} label="Bloqueado" />
                     </>
                     : ""}
                     <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckUsuarioDePrueba} checked={EsUsuarioDePrueba}/>} label="Es usuario de prueba" />   

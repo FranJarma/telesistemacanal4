@@ -23,9 +23,22 @@ router.post('/create',
     check('NombreUsuario').custom(esUserValido),
     check('Contraseña', 'La contraseña es obligatoria').notEmpty(),
     check('RContraseña', 'Ingrese de nuevo la contraseña').notEmpty(),
-    check('RolesSeleccionados', 'Seleccione rol').notEmpty(),
+    check('RolesSeleccionados', 'Seleccione roles desde el botón Asignar Roles').notEmpty(),
     
 ], UserController.UserCreate);
+
+router.put('/update/:id',
+[   check('Nombre', 'El nombre es obligatorio').notEmpty(),
+    check('Apellido', 'El apellido es obligatorio').notEmpty(),
+    check('Documento', 'El DNI es obligatorio').notEmpty(),
+    check('Documento', 'El DNI no tiene el formato correcto, debe tener solo números').isNumeric(),
+    check('Documento', 'El DNI debe tener 7 dígitos como mínimo').isLength({min: 7}),
+    check('Email', 'El correo es obligatorio').notEmpty(),
+    check('Email', 'El correo no tiene el formato correcto').isEmail(),
+    check('NombreUsuario', 'El nombre de usuario es obligatorio').notEmpty()
+],UserController.UserUpdate);
+
+router.put('/delete/:id', UserController.UserDelete);
 
 router.post('/abonados/create',
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),

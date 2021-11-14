@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 const Users = () => {
     const appContext = useContext(AppContext);
-    const { usuarios, traerUsuarios, cambiarEstadoAbonado } = appContext;
+    const { usuarios, traerUsuarios, eliminarUsuario } = appContext;
 
     useEffect(() => {
         traerUsuarios(2);
@@ -120,7 +120,7 @@ const Users = () => {
                 botones={
                 <>
                 <Button onClick={()=>
-                    {cambiarEstadoAbonado(UserInfo)
+                    {eliminarUsuario(UserInfo)
                     setModalDarDeBaja(false)}}
                     variant="contained"
                     color="secondary">

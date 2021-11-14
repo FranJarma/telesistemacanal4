@@ -55,6 +55,51 @@ const AppState = props => {
             }
         })
     }
+    const modificarUsuario = async (usuario) => {
+        clienteAxios.put(`/api/usuarios/update/${usuario.UserId}`, usuario)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.MODIFICAR_USUARIO,
+                    payload: usuario
+                })
+                Swal('Operación completa', resOk.data.msg);
+                history.push('/users');
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarUsuario = async (usuario) => {
+        clienteAxios.put(`/api/usuarios/delete/${usuario.UserId}`, usuario)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_USUARIO,
+                    payload: usuario
+                })
+                Swal('Operación completa', resOk.data.msg);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     const traerUsuarios = async (estadoId = 0) => {
         try {
             const resultado =  await clienteAxios.get(`/api/usuarios/estado=${estadoId}`);
@@ -815,7 +860,7 @@ const AppState = props => {
             pagos: state.pagos,
             pago: state.pago,
             detallesPago: state.detallesPago,
-            traerUsuarios, crearUsuario,
+            traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario,
             traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,
             cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,

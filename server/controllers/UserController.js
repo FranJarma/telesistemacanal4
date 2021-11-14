@@ -25,8 +25,8 @@ exports.UserCreate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
+            if(req.body.Contraseña !== req.body.RContraseña) return res.status(400).json({msg: 'Las contraseñas no coinciden'});
             let userRoleVec = [];
-            //hash de pw
             // creamos un nuevo usuario pasandole lo que traemos de la vista
             const user = new User(req.body);
             const salt = bcrypt.genSaltSync();
@@ -59,13 +59,64 @@ exports.UserCreate = async(req, res) => {
         res.status(400).json({msg: 'Hubo un error al registrar el usuario'});
     }
 }
+exports.UserUpdate = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        await db.transaction(async(t)=>{
+            if(req.body.Contraseña !== req.body.RContraseña) return res.status(400).json({msg: 'Las contraseñas no coinciden'});
+            let userRoleVec = [];
+            //buscamos el usuario por su Id
+            const usuario = await User.findByPk( req.body.UserId, {transaction: t} );
+            if(req.body.RolesSeleccionados.length !== 0){
+                //eliminamos los roles que tiene actualmente el usuario
+                await UserRole.destroy({where: {
+                    UserId: req.body.UserId
+                }}, {transaction: t});
+                //creamos los nuevos roles
+                for (let i=0; i<= req.body.RolesSeleccionados.length-1; i++){
+                    let obj = {
+                        UserId: req.body.UserId,
+                        RoleId: req.body.RolesSeleccionados[i].RoleId
+                    }
+                    userRoleVec.push(obj);
+                    const nuevoUserRole = new UserRole(obj);
+                    nuevoUserRole.save({transaction: t});
+                }
+
+            }
+            await usuario.update(req.body, {transaction: t});
+            return res.status(200).json({msg: 'El Usuario ha sido modificado correctamente'})
+        })
+        }   
+    catch (error) {
+        console.log(error);
+        res.status(400).json({msg: 'Hubo un error al modificar el usuario'});
+    }
+}
+exports.UserDelete = async(req, res) => {
+    try {
+        await db.transaction(async(t)=>{
+            //buscamos el usuario por su Id
+            const usuario = await User.findByPk( req.body.UserId, {transaction: t} );
+            usuario.EstadoId = 3;
+            await usuario.save({transaction: t});
+            return res.status(200).json({msg: 'El Usuario ha sido eliminado correctamente'})
+        })
+    }   
+    catch (error) {
+        res.status(400).json({msg: 'Hubo un error al eliminar el usuario'});
+    }
+}
 exports.UsersGet = async(req, res) => {
     let users = '';
     try {
         req.params.EstadoId == 0 ? 
         users = await knex.select('*').from('_user as u')
         : users = await knex.select('*').from('_user as u')
-        .whereNot({'u.EstadoId': 0})
+        .whereNot({'u.EstadoId': 3}) // Estado 3 es INACTIVOS
         .where({'u.EsUsuarioDeSistema': 1});
         res.json(users);
     } catch (error) {
@@ -260,7 +311,7 @@ exports.AbonadoUpdate = async(req, res) => {
         })
         }   
     catch (error) {
-        res.status(400).json({msg: 'Hubo un error al registrar el abonado'});
+        res.status(400).json({msg: 'Hubo un error al modificar el abonado'});
     }
 }
 
