@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, FormControlLabel, FormGroup, Grid, MenuItem, Switch, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
 import useStyles from '../Styles';
 import { useLocation } from 'react-router-dom';
@@ -18,7 +18,7 @@ const CambioTitularidad = () => {
     useEffect(() => {
         traerProvincias();
         traerMunicipiosPorProvincia(provinciaSeleccionadaId);
-        traerUltimoDomicilioAbonado(location.state.UserId);
+        //traerUltimoDomicilioAbonado(location.state.UserId);
     }, [])
 
     const [abonadoInfo, setAbonadoInfo] = useState({
@@ -47,6 +47,10 @@ const CambioTitularidad = () => {
     }*/
     const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
     const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(0);
+    const [MismoDomicilio, setMismoDomicilio] = useState(false);
+    const handleChangeCheckMismoDomicilio = e => {
+        setMismoDomicilio(!MismoDomicilio);
+    }
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioSeleccionadoId(e.target.value);
         setBarrioSeleccionadoId(0);
@@ -79,7 +83,7 @@ const CambioTitularidad = () => {
     <form onSubmit={onSubmitAbonado}>
     <Card>
         <CardContent>
-            <Typography variant="h1">Cambio titularidad: {location.state.FullName}</Typography>
+            <Typography variant="h1">Cambio titularidad: {location.state.Nombre} {location.state.Apellido}</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} lg={3}>
                 <Typography variant="h2"><i className="bx bx-user"></i> Datos del abonado original</Typography>
@@ -107,9 +111,9 @@ const CambioTitularidad = () => {
                 <Typography variant="h2"><i className="bx bx-home"></i> Datos del domicilio</Typography>
                     <Card style={{paddingBottom: 'auto'}} className={styles.cartaSecundaria}>
                         <CardContent>
-                            <Typography variant="h6"> <b> Provincia: </b> {domicilio.ProvinciaNombre}</Typography>
+                            {/* <Typography variant="h6"> <b> Provincia: </b> {domicilio.ProvinciaNombre}</Typography>
                             <Typography variant="h6"> <b> Municipio: </b> {domicilio.MunicipioNombre}</Typography>
-                            <Typography variant="h6"> <b> Dirección: </b> {domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography>
+                            <Typography variant="h6"> <b> Dirección: </b> {domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography> */}
                             <Typography style={{visibility: 'hidden'}} variant="h6">-</Typography>
                         </CardContent>
                     </Card>
@@ -223,6 +227,11 @@ const CambioTitularidad = () => {
                 </Grid>
             </Grid>
             <Typography variant="h2"><i className="bx bxs-home"></i> Datos del domicilio de instalación</Typography>
+            <FormGroup>
+                <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckMismoDomicilio} checked={MismoDomicilio}></Switch>} label="Mismo domicilio que el titular"></FormControlLabel>
+            </FormGroup>
+            {!MismoDomicilio ?
+            <>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
@@ -300,6 +309,8 @@ const CambioTitularidad = () => {
                     </TextField>
                 </Grid>
             </Grid>
+            </>
+            : ""}
             <br/>
         <Alert severity="info">Una vez que se realice el cambio de la titularidad, el abonado original será <b>dado de baja</b> y toda la información de pagos será <b>transferida</b> al nuevo titular.</Alert>
         </CardContent>
