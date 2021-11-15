@@ -80,6 +80,11 @@ const Users = () => {
         "wrap": true
     },
     {
+        "name": "Estado",
+        "selector": row =>row["EstadoNombre"],
+        "wrap": true
+    },
+    {
         cell: (data) =>
         <>
         <Link to={{

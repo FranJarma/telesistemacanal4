@@ -109,12 +109,9 @@ exports.UserDelete = async(req, res) => {
     }
 }
 exports.UsersGet = async(req, res) => {
-    let users = '';
     try {
-        req.params.EstadoId == 0 ? 
-        users = await knex.select('*').from('_user as u')
-        : users = await knex.select('*').from('_user as u')
-        .whereNot({'u.EstadoId': 3}) // Estado 3 es INACTIVOS
+        const users = await knex.select('*').from('_user as u')
+        .innerJoin('estado as e', 'u.EstadoId', '=','e.EstadoId')
         .where({'u.EsUsuarioDeSistema': 1});
         res.json(users);
     } catch (error) {
@@ -124,7 +121,7 @@ exports.UsersGet = async(req, res) => {
 }
 exports.UserGetRoles = async(req, res) => {
     try {
-        const roles = await knex.select('*').from('_role as r')
+        const roles = await knex.select('*').select('e.EstadoNombre').from('_role as r')
         .innerJoin('_userrole as ur','r.RoleId','=', 'ur.RoleId')
         .where('ur.UserId','=',req.body.UserId);
         res.json(roles);

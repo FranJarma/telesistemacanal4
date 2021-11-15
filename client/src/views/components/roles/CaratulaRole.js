@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import Modal from '../design/components/Modal';
 import { Alert } from '@material-ui/lab';
 import DataTable from 'react-data-table-component';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const CaratulaRole = () => {
     const appContext = useContext(AppContext);
@@ -21,7 +22,7 @@ const CaratulaRole = () => {
     const [ModalAsignarPermisos, setModalAsignarPermisos] = useState(false);
     const [PermisosSeleccionados, setPermisosSeleccionados] = useState([]);
 
-    const handleChangeModalAsignarPermisos = (e) => {
+    const handleChangeTabsPermisos = (e) => {
         if(!ModalAsignarPermisos && location.state && PrimerRender) {
             setPermisosSeleccionados(permisosRol);
             setPrimerRender(false);
@@ -96,6 +97,12 @@ const paginacionOpciones = {
     <Aside/>
     <main>
     <form onSubmit={onSubmitUsuario}>
+    <Tabs>
+    <TabList>
+            <Tab><i style={{color: 'teal'}} className="bx bxs-user"></i> Roles</Tab>
+            <Tab onClick={handleChangeTabsPermisos}><i style={{color: 'teal'}} className='bx bxs-lock'></i> Permisos</Tab>
+    </TabList>
+    <TabPanel>
     <Card>
         <CardContent>
             <Typography variant="h1">{location.state ? `Editar rol: ${location.state.RoleName}` : "Agregar rol"}</Typography>
@@ -124,23 +131,6 @@ const paginacionOpciones = {
                 </Grid>
                 </Grid>
                 <br/>
-                <Button onClick={handleChangeModalAsignarPermisos} variant="outlined" startIcon={<i className="bx bxs-user"></i>} color="primary">{location.state ? "Ver Permisos" : "Asignar Permisos"}</Button>
-                <Modal
-                abrirModal={ModalAsignarPermisos}
-                funcionCerrar={handleChangeModalAsignarPermisos}
-                titulo={<Alert severity="success" icon={<i className="bx bxs-user bx-sm"></i>}>Permisos del rol</Alert>}
-                formulario={
-                <DataTable
-                columns={columnasPermisos}
-                data={permisos}
-                onSelectedRowsChange={row => setPermisosSeleccionados(row.selectedRows)}
-                paginationComponentOptions={paginacionOpciones}
-                pagination={true}
-                selectableRows
-                selectableRowSelected={row => PermisosSeleccionados.find((permiso) => row.PermissionId === permiso.PermissionId)}>
-                </DataTable>
-                }
-                ></Modal>
         </CardContent>
         <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
             <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
@@ -149,6 +139,21 @@ const paginacionOpciones = {
         </Button>
         </div>
     </Card>
+    </TabPanel>
+    <TabPanel>
+        <Card>
+        <DataTable
+                columns={columnasPermisos}
+                data={permisos}
+                onSelectedRowsChange={row => setPermisosSeleccionados(row.selectedRows)}
+                paginationComponentOptions={paginacionOpciones}
+                pagination={true}
+                selectableRows
+                selectableRowSelected={row => PermisosSeleccionados.find((permiso) => row.PermissionId === permiso.PermissionId)}>
+        </DataTable>
+        </Card>
+    </TabPanel>
+    </Tabs>
     </form>
     </main>
     <br/>

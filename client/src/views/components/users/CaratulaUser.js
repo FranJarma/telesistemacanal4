@@ -4,9 +4,8 @@ import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import { Button, Card, CardContent, FormControlLabel, Grid, FormGroup, Switch, TextField, Typography} from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
-import Modal from '../design/components/Modal';
-import { Alert } from '@material-ui/lab';
 import DataTable from 'react-data-table-component';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const CaratulaUser = () => {
     const appContext = useContext(AppContext);
@@ -37,7 +36,7 @@ const CaratulaUser = () => {
         e.target.checked ? setEstaBloqueado(1) : setEstaBloqueado(0);
     }
 
-    const handleChangeModalAsignarRoles = (e) => {
+    const handleChangeTabRoles = (e) => {
         if(!ModalAsignarRoles && location.state && PrimerRender) {
             setRolesSeleccionados(rolesUser);
             setPrimerRender(false);
@@ -126,7 +125,13 @@ const CaratulaUser = () => {
     <Aside/>
     <main>
     <form onSubmit={onSubmitUsuario}>
-    <Card>
+    <Tabs>
+        <TabList>
+            <Tab><i style={{color: 'teal'}} className="bx bx-user"></i> Usuario</Tab>
+            <Tab onClick={handleChangeTabRoles}><i style={{color: 'teal'}} className='bx bxs-user'></i> Roles</Tab>
+        </TabList>
+        <TabPanel>
+        <Card>
         <CardContent>
             <Typography variant="h1">{location.state ? `Editar usuario: ${location.state.Apellido},  ${location.state.Nombre}` : "Agregar usuario"}</Typography>
             <Typography variant="h2"><i className="bx bx-user"></i> Datos del usuario</Typography>
@@ -220,23 +225,6 @@ const CaratulaUser = () => {
                 </Grid>
                 </Grid>
                 <br/>
-                <Button onClick={handleChangeModalAsignarRoles} variant="outlined" startIcon={<i className="bx bxs-user"></i>} color="primary">{location.state ? "Ver Roles" : "Asignar Roles"}</Button>
-                <Modal
-                abrirModal={ModalAsignarRoles}
-                funcionCerrar={handleChangeModalAsignarRoles}
-                titulo={<Alert severity="success" icon={<i className="bx bxs-user bx-sm"></i>}>Roles del usuario</Alert>}
-                formulario={
-                <>
-                <DataTable
-                columns={columnasRoles}
-                data={roles}
-                onSelectedRowsChange={row => setRolesSeleccionados(row.selectedRows)}
-                selectableRows
-                selectableRowSelected={row => RolesSeleccionados.find((rol) => rol.RoleId === row.RoleId)}>
-                </DataTable>
-                </>
-                }
-                ></Modal>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                 <FormGroup style={{marginTop: '1rem'}}>
                     { location.state ?
@@ -255,6 +243,20 @@ const CaratulaUser = () => {
         </Button>
         </div>
     </Card>
+        </TabPanel>
+        <TabPanel>
+            <Card>
+            <DataTable
+                columns={columnasRoles}
+                data={roles}
+                onSelectedRowsChange={row => setRolesSeleccionados(row.selectedRows)}
+                selectableRows
+                selectableRowSelected={row => RolesSeleccionados.find((rol) => rol.RoleId === row.RoleId)}>
+                </DataTable>
+            </Card>
+        </TabPanel>
+    </Tabs> 
+    
     </form>
     </main>
     <br/>
