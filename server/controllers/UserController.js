@@ -85,7 +85,6 @@ exports.UserUpdate = async(req, res) => {
                     const nuevoUserRole = new UserRole(obj);
                     nuevoUserRole.save({transaction: t});
                 }
-
             }
             await usuario.update(req.body, {transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido modificado correctamente'})
@@ -101,7 +100,6 @@ exports.UserDelete = async(req, res) => {
         await db.transaction(async(t)=>{
             //buscamos el usuario por su Id
             const usuario = await User.findByPk( req.body.UserId, {transaction: t} );
-            usuario.EstadoId = 3;
             await usuario.save({transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido eliminado correctamente'})
         })

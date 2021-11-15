@@ -1,8 +1,8 @@
 const { UUIDV4 } = require('sequelize');
 const db = require('../config/connection');
 
-const UserRole = db.define('_userrole', {
-    UserId: {
+const RolePermission = db.define('_rolepermission', {
+    PermissionId: {
         type: UUIDV4,
         primaryKey: true
     },
@@ -12,4 +12,4 @@ const UserRole = db.define('_userrole', {
     }
 });
 
-module.exports = db.model('_userrole', UserRole);
+module.exports = db.model('_rolepermission', RolePermission);

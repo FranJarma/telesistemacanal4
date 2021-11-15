@@ -1,17 +1,19 @@
-const { Sequelize, Datatypes } = require('sequelize');
+const { UUIDV4, STRING } = require('sequelize');
 const db = require('../config/connection');
 
-const Permission = db.define('Permission', {
+const Permission = db.define('_permission', {
     PermissionId: {
-        type: Datatypes.UUID,
-        defaultValue: Sequelize.UUIDV1
+        type: UUIDV4,
+        primaryKey: true
     },
     PermissionName: {
-        type: Datatypes.STRING(256),
+        type: STRING(256),
         allowNull: false
     },
     Description: {
-        type: Datatypes.STRING(256),
+        type: STRING(256),
         allowNull: true
     }
 });
+
+module.exports = db.model('_permission', Permission);

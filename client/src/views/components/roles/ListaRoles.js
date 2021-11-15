@@ -9,81 +9,59 @@ import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import { Link } from 'react-router-dom';
 
-const Users = () => {
+const Roles = () => {
     const appContext = useContext(AppContext);
-    const { usuarios, traerUsuarios, eliminarUsuario } = appContext;
+    const { roles, traerRoles, eliminarRol } = appContext;
 
     useEffect(() => {
-        traerUsuarios(2);
+        traerRoles(2);
     },[]);
 
     const [modalDarDeBaja, setModalDarDeBaja] = useState(false);
 
-    const [UserInfo, setUserInfo] = useState({
-        UserId: null,
-        EstadoId: null,
-        CambioEstadoFecha: null,
-        CambioEstadoObservaciones: null
+    const [RoleInfo, setRoleInfo] = useState({
+        RoleId: null,
+        RoleName: null,
+        RoleDescription: null
     });
 
     const handleChangeModalDarDeBaja = (data) => {
         setModalDarDeBaja(!modalDarDeBaja)
         if(!modalDarDeBaja){
-            setUserInfo({
+            setRoleInfo({
                 EstadoId: 3,
                 CambioEstadoFecha: new Date().toJSON(),
-                CambioEstadoObservaciones: 'Usuario dado de baja',
-                UserId: data.UserId
+                RoleId: data.RoleId
             })
         }
         else {
-            setUserInfo({
-                UserId: null
+            setRoleInfo({
+                RoleId: null
             })
         }
     }
 
-    const columnasUsers = [
+    const columnasRoles = [
     {
         "name": "id",
-        "selector": row =>row["UserId"],
+        "selector": row =>row["RoleId"],
         "omit": true,
     },
     {
         "name": "Nombre",
-        "selector": row =>row["Nombre"],
-        "omit": true
+        "selector": row =>row["RoleName"],
+        "wrap": true
     },
     {
-        "name": "Apellido",
-        "selector": row =>row["Apellido"],
-        "omit": true
-    },
-    {
-        "name": "Nombre Completo",
-        "selector": row => row["Apellido"] + ', ' + row["Nombre"],
-        "wrap": true,
-    },
-    {
-        "name": "DNI",
-        "selector": row => row["Documento"],
-        "wrap": true,
-    },
-    {
-        "name": "Nombre de Usuario",
-        "selector": row => row["NombreUsuario"],
-        "wrap": true,
-    },
-    {
-        "name": "Email",
-        "selector": row =>row["Email"],
+        "name": "Descripción",
+        "selector": row =>row["RoleDescription"],
         "wrap": true
     },
     {
         cell: (data) =>
         <>
         <Link to={{
-            pathname: `/caratula-user/edit/UserId=${data.UserId}`,
+            pathname: `/caratula-role/edit/RoleId=${data.RoleId}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "teal"}}>
@@ -100,19 +78,19 @@ const Users = () => {
         <main>
         <Card>
             <CardHeader
-            action={<Link style={{textDecoration: 'none'}} to="/caratula-user"><Button variant="contained" color="primary">+ Nuevo usuario</Button></Link>}>
+            action={<Link style={{textDecoration: 'none'}} to="/caratula-role"><Button variant="contained" color="primary">+ Nuevo rol</Button></Link>}>
             </CardHeader>
             <CardContent>
-                <Typography variant="h1">Listado de usuarios del sistema</Typography>
+                <Typography variant="h1">Listado de roles del sistema</Typography>
                 <br/>
                 <Modal
                 abrirModal={modalDarDeBaja}
                 funcionCerrar={handleChangeModalDarDeBaja}
-                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>¿Está seguro que quiere dar de baja al usuario?</Alert>}
+                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>¿Está seguro que quiere dar de baja el rol?</Alert>}
                 botones={
                 <>
                 <Button onClick={()=>
-                    {eliminarUsuario(UserInfo)
+                    {eliminarRol(RoleInfo)
                     setModalDarDeBaja(false)}}
                     variant="contained"
                     color="secondary">
@@ -122,8 +100,8 @@ const Users = () => {
                 </Modal>
                 <Datatable
                     loader={true}
-                    columnas={columnasUsers}
-                    datos={usuarios}
+                    columnas={columnasRoles}
+                    datos={roles}
                     paginacion={true}
                     buscar={true}>
                 </Datatable>
@@ -136,4 +114,4 @@ const Users = () => {
     );
 }
  
-export default Users;
+export default Roles;

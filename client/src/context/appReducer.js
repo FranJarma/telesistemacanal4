@@ -31,6 +31,18 @@ export default (state, action) => {
                 rolesUser: action.payload
             }
         }
+        case TYPES.LISTA_PERMISOS: {
+            return {
+                ...state,
+                permisos: action.payload
+            }
+        }
+        case TYPES.LISTA_PERMISOS_ROL: {
+            return {
+                ...state,
+                permisosRol: action.payload
+            }
+        }
         case TYPES.CAMBIO_DOMICILIO_ABONADO: {
             return {
                 ...state,

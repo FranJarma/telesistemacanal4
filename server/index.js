@@ -19,6 +19,8 @@ app.use((req, res, next) => {
 app.use('/api/usuarios', require('./routes/User.js'));
 //ROLES
 app.use('/api/roles', require('./routes/Role.js'));
+//PERMISOS
+app.use('/api/permisos', require('./routes/Permission.js'));
 //PROVINCIAS
 app.use('/api/provincias', require('./routes/Provincia.js'));
 //MUNICIPIOS

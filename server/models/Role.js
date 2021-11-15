@@ -10,7 +10,7 @@ const Role = db.define('_role', {
         type: STRING(256),
         allowNull: false
     },
-    Description: {
+    RoleDescription: {
         type: STRING(256),
         allowNull: true
     }

@@ -12,6 +12,8 @@ const AppState = props => {
         usuarios: [],
         roles: [],
         rolesUser: [],
+        permisos: [],
+        permisosRol: [],
         abonados: [],
         domicilios: [],
         barrios: [],
@@ -41,7 +43,7 @@ const AppState = props => {
                     payload: usuario
                 });
                 Swal('Operación completa', resOk.data.msg);
-                //history.push('/users');
+                history.push('/users');
         })
         .catch(err => {
             if(!err.response){
@@ -100,6 +102,74 @@ const AppState = props => {
             }
         })
     }
+    const crearRol = async (rol) => {
+        clienteAxios.post('/api/roles/create', rol)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_ROL,
+                    payload: rol
+                });
+                Swal('Operación completa', resOk.data.msg);
+                history.push('/users');
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const modificarRol = async (rol) => {
+        clienteAxios.put(`/api/roles/update/${rol.RoleId}`, rol)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.MODIFICAR_ROL,
+                    payload: rol
+                })
+                Swal('Operación completa', resOk.data.msg);
+                history.push('/roles');
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarRol = async (rol) => {
+        clienteAxios.put(`/api/roles/delete/${rol.RoleId}`, rol)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_USUARIO,
+                    payload: rol
+                })
+                Swal('Operación completa', resOk.data.msg);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     const traerUsuarios = async (estadoId = 0) => {
         try {
             const resultado =  await clienteAxios.get(`/api/usuarios/estado=${estadoId}`);
@@ -127,6 +197,28 @@ const AppState = props => {
             const resultado =  await clienteAxios.get(`/api/roles/${UserId}`);
             dispatch({
                 type: TYPES.LISTA_ROLES_USER,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerPermisos = async (estadoId = 0) => {
+        try {
+            const resultado =  await clienteAxios.get(`/api/permisos`);
+            dispatch({
+                type: TYPES.LISTA_PERMISOS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerPermisosPorRol = async (RoleId) => {
+        try {
+            const resultado =  await clienteAxios.get(`/api/permisos/${RoleId}`);
+            dispatch({
+                type: TYPES.LISTA_PERMISOS_ROL,
                 payload: resultado.data
             })
         } catch (error) {
@@ -844,6 +936,8 @@ const AppState = props => {
             usuarios: state.usuarios,
             roles: state.roles,
             rolesUser: state.rolesUser,
+            permisos: state.permisos,
+            permisosRol: state.permisosRol,
             abonados: state.abonados,
             domicilios: state.domicilios,
             barrios: state.barrios,
@@ -861,7 +955,8 @@ const AppState = props => {
             pago: state.pago,
             detallesPago: state.detallesPago,
             traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
-            traerRoles, traerRolesPorUsuario,
+            traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
+            traerPermisos, traerPermisosPorRol,
             traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,
             cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
             traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 

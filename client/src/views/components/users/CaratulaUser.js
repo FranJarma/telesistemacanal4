@@ -104,17 +104,17 @@ const CaratulaUser = () => {
     }
     const columnasRoles= [
         {
-            selector: 'RoleId',
+            selector: row => row['RoleId'],
             name: 'ID',
             omit: true
         },
         {
-            selector: 'RoleName',
+            selector: row => row['RoleName'],
             name: 'Nombre',
             wrap: true
         },
         {
-            selector: 'RoleDescription',
+            selector: row => row['RoleDescription'],
             name: 'Descripcion',
             wrap: true
         },
@@ -220,12 +220,13 @@ const CaratulaUser = () => {
                 </Grid>
                 </Grid>
                 <br/>
-                <Button onClick={handleChangeModalAsignarRoles} variant="text" startIcon={<i className="bx bxs-user"></i>} color="primary">{location.state ? "Ver Roles" : "Asignar Roles"}</Button>
+                <Button onClick={handleChangeModalAsignarRoles} variant="outlined" startIcon={<i className="bx bxs-user"></i>} color="primary">{location.state ? "Ver Roles" : "Asignar Roles"}</Button>
                 <Modal
                 abrirModal={ModalAsignarRoles}
                 funcionCerrar={handleChangeModalAsignarRoles}
                 titulo={<Alert severity="success" icon={<i className="bx bxs-user bx-sm"></i>}>Roles del usuario</Alert>}
                 formulario={
+                <>
                 <DataTable
                 columns={columnasRoles}
                 data={roles}
@@ -233,6 +234,7 @@ const CaratulaUser = () => {
                 selectableRows
                 selectableRowSelected={row => RolesSeleccionados.find((rol) => rol.RoleId === row.RoleId)}>
                 </DataTable>
+                </>
                 }
                 ></Modal>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
