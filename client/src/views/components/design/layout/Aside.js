@@ -82,6 +82,7 @@ const Aside = () => {
           <MenuItem icon={<i className='bx bx-task'></i>}>Mis tareas a realizar<Link to="/tareas"></Link></MenuItem>
           <MenuItem icon={<i className='bx bx-list-ol'></i>}>Listado de tareas<Link to="/tareas"></Link></MenuItem>
         </SubMenu>
+        <MenuItem icon={<i className="bx bx-calculator"></i>}>Cierre de caja<Link to="/cierre-de-caja"></Link></MenuItem>
         <SubMenu onClick={onClickMenuUsuarios} open={SubMenuUsuarios} title="Usuarios" icon={<i className="bx bx-group"></i>}>
           <MenuItem icon={<i className='bx bxs-user'></i>}>Usuarios<Link to="/users"></Link></MenuItem>
           <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>

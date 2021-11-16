@@ -11,7 +11,6 @@ import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActiv
 import CambioDomicilio from './views/components/abonados/CambioDomicilio';
 import CambioServicio from './views/components/abonados/CambioServicio';
 import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosInactivos';
-import Login from './views/components/auth/Login';
 import Cargando from './views/components/design/components/Cargando';
 import ListaAbonadosInscriptos from './views/components/abonados/ListaAbonadosInscriptos';
 import BarriosMunicipios from './views/components/barrios-municipios/BarriosMunicipios';
@@ -19,10 +18,16 @@ import OnusModelosOnus from './views/components/onus/OnusModelosOnus';
 import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
 
+const Login = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+    () => import('./views/components/auth/Login')
+  );
+});
+
 const Home = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
     () => import('./views/components/Home')
-  );
+  );  
 });
 
 const CaratulaAbonado = lazy(() => {
@@ -101,7 +106,9 @@ function App() {
           <AppState>
             <Switch>
               <Route exact path="/">
-                <Login/>
+                <Suspense fallback={<Cargando/>}>
+                  <Login/>
+                </Suspense>
               </Route>
               <Route exact path="/home">
                 <Suspense fallback={<Cargando/>}>

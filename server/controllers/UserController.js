@@ -1,17 +1,14 @@
 const db = require('./../config/connection');
 const options =require('./../config/knex');
 const knex = require('knex')(options);
-const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcrypt');
 const User = require('./../models/User');
 const Domicilio = require('./../models/Domicilio');
-const Servicio = require('./../models/Servicio');
 const UserDomicilio = require('./../models/UserDomicilio');
 const UserEstado = require('./../models/UserEstado');
 const UserServicio = require('./../models/UserServicio');
-const ModeloOnu = require('./../models/ModeloOnu');
 const UserRole = require('./../models/UserRole');
 const Onu = require('../models/Onu');
 
@@ -27,7 +24,7 @@ exports.UserCreate = async(req, res) => {
         await db.transaction(async(t)=>{
             if(req.body.Contraseña !== req.body.RContraseña) return res.status(400).json({msg: 'Las contraseñas no coinciden'});
             let userRoleVec = [];
-            // creamos un nuevo usuario pasandole lo que traemos de la vista
+            // creamos un nuevo user pasandole lo que traemos de la vista
             const user = new User(req.body);
             const salt = bcrypt.genSaltSync();
             user.Contraseña = bcrypt.hashSync(req.body.Contraseña, salt);
@@ -56,7 +53,7 @@ exports.UserCreate = async(req, res) => {
         }   
     catch (error) {
         console.log(error)
-        res.status(400).json({msg: 'Hubo un error al registrar el usuario'});
+        res.status(400).json({msg: 'Hubo un error al registrar el user'});
     }
 }
 exports.UserUpdate = async(req, res) => {
@@ -68,10 +65,12 @@ exports.UserUpdate = async(req, res) => {
         await db.transaction(async(t)=>{
             if(req.body.Contraseña !== req.body.RContraseña) return res.status(400).json({msg: 'Las contraseñas no coinciden'});
             let userRoleVec = [];
-            //buscamos el usuario por su Id
-            const usuario = await User.findByPk( req.body.UserId, {transaction: t} );
+            //buscamos el user por su Id
+            const user = await User.findByPk( req.body.UserId, {transaction: t} );
+            const salt = bcrypt.genSaltSync();
+            user.Contraseña = bcrypt.hashSync(req.body.Contraseña, salt);
             if(req.body.RolesSeleccionados.length !== 0){
-                //eliminamos los roles que tiene actualmente el usuario
+                //eliminamos los roles que tiene actualmente el user
                 await UserRole.destroy({where: {
                     UserId: req.body.UserId
                 }}, {transaction: t});
@@ -86,7 +85,7 @@ exports.UserUpdate = async(req, res) => {
                     nuevoUserRole.save({transaction: t});
                 }
             }
-            await usuario.update(req.body, {transaction: t});
+            await user.save({transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido modificado correctamente'})
         })
         }   
@@ -98,9 +97,9 @@ exports.UserUpdate = async(req, res) => {
 exports.UserDelete = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
-            //buscamos el usuario por su Id
-            const usuario = await User.findByPk( req.body.UserId, {transaction: t} );
-            await usuario.save({transaction: t});
+            //buscamos el user por su Id
+            const user = await User.findByPk( req.body.UserId, {transaction: t} );
+            await user.save({transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido eliminado correctamente'})
         })
     }   
@@ -127,7 +126,7 @@ exports.UserGetRoles = async(req, res) => {
         res.json(roles);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ msg: 'Hubo un error al encontrar los roles del usuario'});
+        res.status(500).json({ msg: 'Hubo un error al encontrar los roles del user'});
     }
 }
 //FUNCIONES PARA ABONADOS
@@ -353,7 +352,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
             const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
-            //buscamos el usuario para actualizarle el domicilio y el estado
+            //buscamos el user para actualizarle el domicilio y el estado
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
             abonado.DomicilioId = ultimoDomicilioId + 1;
             abonado.EstadoId = 1;
@@ -385,7 +384,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            //buscamos el usuario para actualizarle el domicilio
+            //buscamos el user para actualizarle el domicilio
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
             if (abonado.ServicioId === req.body.ServicioId)
             return res.status(400).json({msg: 'Seleccione un servicio diferente al que ya tiene el abonado actualmente'});

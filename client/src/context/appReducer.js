@@ -2,6 +2,18 @@ import * as TYPES from '../types';
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
     switch (action.type) {
+        case TYPES.LOGIN_EXITOSO:
+            localStorage.setItem('token',action.payload.token);
+            return {
+                ...state,
+                token: localStorage.getItem('token'),
+        }
+        case TYPES.OBTENER_INFO_USUARIO: 
+            return {
+                ...state,
+                usuarioLogueado: action.payload,
+                usuarioAutenticado: true
+        }
         case TYPES.CREAR_USUARIO:
             return {
                 ...state,

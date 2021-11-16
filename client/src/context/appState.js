@@ -6,9 +6,13 @@ import clienteAxios from '../config/axios';
 import Toast from './../views/components/design/components/Toast';
 import Swal from './../views/components/design/components/Swal';
 import * as TYPES from '../types';
+import tokenAuth from '../config/token';
 
 const AppState = props => {
     const initialState = {
+        token: localStorage.getItem('token'),
+        usuarioLogueado: {},
+        usuarioAutenticado: false,
         usuarios: [],
         roles: [],
         rolesUser: [],
@@ -34,6 +38,49 @@ const AppState = props => {
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
     //AUTH
+    //retorna el usuario autenticado, nos servirá tanto al momento del registro como del logueo
+    const usuarioAutenticado = async (usuario)=>{
+        //leemos en el local storage si hay un token
+        const token = localStorage.getItem('token');
+        if (token) {
+            // funcion para enviar el token por headers
+            tokenAuth(token);
+        }
+        try {
+            //obtenemos la respuesta de la peticion a la base de datos, para obtener info del usuario
+            const respuesta = await clienteAxios.get(`/api/auth/login/${usuario.NombreUsuario}`);
+            dispatch({
+                type: TYPES.OBTENER_INFO_USUARIO,
+                payload: respuesta.data
+            });
+        } catch (error) {
+            console.log(error.response);
+            dispatch({
+                type: TYPES.LOGIN_ERRONEO
+            });
+        }
+    };
+    const iniciarSesion = async(usuario) => {
+        try {
+            const respuesta = await clienteAxios.post('/api/auth/login', usuario);
+            console.log(respuesta.data);
+            dispatch({
+                type: TYPES.LOGIN_EXITOSO,
+                payload: respuesta.data
+            })
+            usuarioAutenticado(usuario);
+        } catch (error) {
+            if(!error.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(error.response.data.msg){
+                Toast(error.response.data.msg, 'warning');
+            }
+            else if(error.response.data.errors){
+                Toast(error.response.data.errors[0].msg, 'warning');
+            }
+        }
+    }
     const crearUsuario = async (usuario) => {
         clienteAxios.post('/api/usuarios/create', usuario)
         .then(resOk => {
@@ -933,6 +980,9 @@ const AppState = props => {
     return(
         <AppContext.Provider
         value={{
+            usuario: state.usuario,
+            usuarioLogueado: state.usuarioLogueado,
+            usuarioAutenticado: state.usuarioAutenticado,
             usuarios: state.usuarios,
             roles: state.roles,
             rolesUser: state.rolesUser,
@@ -954,7 +1004,7 @@ const AppState = props => {
             pagos: state.pagos,
             pago: state.pago,
             detallesPago: state.detallesPago,
-            traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
+            iniciarSesion, traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
             traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,

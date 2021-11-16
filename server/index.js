@@ -15,6 +15,8 @@ app.use((req, res, next) => {
     next();
 });
 
+//AUTH
+app.use('/api/auth', require('./routes/Auth.js'));
 //USUARIOS
 app.use('/api/usuarios', require('./routes/User.js'));
 //ROLES
