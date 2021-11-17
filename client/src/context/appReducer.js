@@ -7,12 +7,21 @@ export default (state, action) => {
             return {
                 ...state,
                 token: localStorage.getItem('token'),
+                usuarioAutenticado: true
         }
         case TYPES.OBTENER_INFO_USUARIO: 
             return {
                 ...state,
                 usuarioLogueado: action.payload,
                 usuarioAutenticado: true
+        }
+        case TYPES.CERRAR_SESION:
+            localStorage.removeItem('token');
+            return {
+                ...state,
+                usuarioAutenticado: false,
+                usuarioLogueado: {},
+                token: null
         }
         case TYPES.CREAR_USUARIO:
             return {

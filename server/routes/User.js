@@ -23,7 +23,7 @@ router.post('/create',
     check('NombreUsuario').custom(esUserValido),
     check('Contraseña', 'La contraseña es obligatoria').notEmpty(),
     check('RContraseña', 'Ingrese de nuevo la contraseña').notEmpty(),
-    check('RolesSeleccionados', 'Seleccione roles desde el botón Asignar Roles').notEmpty(),
+    check('RolesSeleccionados', 'Seleccione roles desde el menú Roles').notEmpty(),
     
 ], UserController.UserCreate);
 

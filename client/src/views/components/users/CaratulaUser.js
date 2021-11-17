@@ -63,6 +63,8 @@ const CaratulaUser = () => {
                 Email: location.state.Email,
                 Telefono: location.state.Telefono,
                 NombreUsuario: location.state.NombreUsuario,
+                Contraseña: "",
+                RContraseña: ""
             });
             if(location.state.IntentosFallidos === 5) setEstaBloqueado(true);
             setEsUsuarioDePrueba(location.state.EsUsuarioDePrueba);
@@ -209,7 +211,8 @@ const CaratulaUser = () => {
                     onChange={onInputChange}
                     type="password"
                     fullWidth
-                    label="Contraseña">
+                    label="Contraseña"
+                    >
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>

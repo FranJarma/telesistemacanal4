@@ -2,6 +2,8 @@ const { validationResult } = require('express-validator');
 const User = require('./../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const options =require('./../config/knex');
+const knex = require('knex')(options);
 
 exports.UserGet = async (req, res) => {
     const errors = validationResult(req);
@@ -14,12 +16,13 @@ exports.UserGet = async (req, res) => {
             where: {
                 NombreUsuario: NombreUsuario
         }});
+        if(!usuario || usuario.EstadoId !== 2) return res.status(400).json({msg: 'Nombre de usuario o contraseña incorrectos'});
         const contraseñaValida = bcrypt.compareSync(Contraseña, usuario.Contraseña);
-        if(!usuario || usuario.EstadoId !== 2 || !contraseñaValida) return res.status(400).json({msg: 'Nombre de usuario o contraseña incorrectos'});
+        if(!contraseñaValida) return res.status(400).json({msg: 'Nombre de usuario o contraseña incorrectos'});
         //aumentar contador de inicio de sesión fallidos
         const payload = {
-            Usuario: {
-                Id: usuario.UserId
+            user: {
+                UserId: usuario.UserId
             }
         };
         jwt.sign(payload, process.env.SECRET_KEY,{
@@ -29,7 +32,7 @@ exports.UserGet = async (req, res) => {
                 throw(error);
             }
             else{
-                res.json({token});
+                res.json({token, usuario});
             }
         });
     } catch (error) {
@@ -44,12 +47,22 @@ exports.UserAutenticate = async (req, res) => {
         no vamos a traer la contraseña del usuario para garantizar seguridad */
         const user = await User.findOne({
             attributes: {
-                exclude: ['Contraseña', 'UserId']
+                exclude: ['Contraseña']
             },
             where: {
-                NombreUsuario: req.params.NombreUsuario
-            }});
-        res.json(user);
+                UserId: req.UserId
+        }});
+        let roles = "";
+        //si encuentra usuario, traemos los roles
+        if (user) {
+            roles = await knex.select('*').from('_role as r')
+            .innerJoin('_userrole as ur', 'ur.RoleId', '=', 'r.RoleId')
+            .where('ur.UserId','=', user.UserId);
+        }
+        res.json({
+            User: user,
+            Roles: roles
+        });
     } catch (error) {
         console.log(error);
     }

@@ -11,8 +11,8 @@ router.post('/login', [
 ], AuthController.UserGet);
 
 //obtener un usuario autenticado al intentar loguear
-router.get('/login/:NombreUsuario',
-    //validarJWT,
+router.get('/login',
+    validarJWT,
     AuthController.UserAutenticate
 );
 module.exports = router;

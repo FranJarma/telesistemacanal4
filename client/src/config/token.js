@@ -1,13 +1,13 @@
 import clienteAxios from './axios';
 
-const tokenAuth = token => {
+const tokenAuthHeaders = token => {
     if (token){
         //en caso de que haya un token, lo vamos a pasar por el header
         clienteAxios.defaults.headers.common['x-auth-token'] = token;
     }
     else{
         //en caso de que no, lo eliminamos
-        delete clienteAxios.defaults.headers.common['x-auth-token'];
+        clienteAxios.defaults.headers.common['x-auth-token'] = "";
     }
 };
-export default tokenAuth;
+export default tokenAuthHeaders;

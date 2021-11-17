@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { ProSidebar, Menu, MenuItem, SubMenu, SidebarHeader, SidebarFooter } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Link } from 'react-router-dom';
 import logo2 from './../../../images/logo2.png';
-
+import AppContext from '../../../../context/appContext';
+import { Typography } from '@material-ui/core';
 const Aside = () => {
+    const appContext = useContext(AppContext);
+    const { usuarioLogueado, cerrarSesion } = appContext;
+    
     const [Collapsed, setCollapsed] = useState(false);
     const [SubMenuAbonados, setSubMenuAbonados] = useState(false);
     const [SubMenuTecnicos, setSubMenuTecnicos] = useState(false);
@@ -43,34 +47,8 @@ const Aside = () => {
     <ProSidebar collapsed={Collapsed} breakPoint="md">
     <img alt="" src={logo2}/>
       <Menu iconShape="square">
-        <SidebarHeader>
-        <div
-          style={{
-            paddingLeft: '24px',
-            textTransform: 'uppercase',
-            fontWeight: 'bold',
-            fontSize: 14,
-            letterSpacing: '1px',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-        Francisco Jarma
-        </div>
-        <div
-          style={{
-            paddingLeft: '24px',
-            paddingBottom: '10px',
-            fontSize: 11,
-            letterSpacing: '1px',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-        Mesa de entrada
-        </div>
+        <SidebarHeader style={{marginLeft: '1rem'}}>
+        <Typography variant="h6"></Typography>
         </SidebarHeader>
         <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
         <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
@@ -94,7 +72,7 @@ const Aside = () => {
         <MenuItem icon={<i className='bx bx-clipboard'></i>}>Tipos de tareas<Link to="/tipos-de-tareas"></Link></MenuItem>
         </SubMenu>
         <SidebarFooter>
-        <MenuItem icon={<i className='bx bx-log-out-circle'></i>}>Salir<Link to="/"></Link></MenuItem>
+        <MenuItem onClick={() => cerrarSesion()} icon={<i className='bx bx-log-out-circle'></i>}>Salir</MenuItem>
       </SidebarFooter>
       </Menu>
     </ProSidebar>

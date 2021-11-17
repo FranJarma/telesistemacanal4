@@ -63,12 +63,9 @@ exports.UserUpdate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            if(req.body.Contraseña !== req.body.RContraseña) return res.status(400).json({msg: 'Las contraseñas no coinciden'});
             let userRoleVec = [];
             //buscamos el user por su Id
             const user = await User.findByPk( req.body.UserId, {transaction: t} );
-            const salt = bcrypt.genSaltSync();
-            user.Contraseña = bcrypt.hashSync(req.body.Contraseña, salt);
             if(req.body.RolesSeleccionados.length !== 0){
                 //eliminamos los roles que tiene actualmente el user
                 await UserRole.destroy({where: {
@@ -85,9 +82,25 @@ exports.UserUpdate = async(req, res) => {
                     nuevoUserRole.save({transaction: t});
                 }
             }
-            await user.save({transaction: t});
+            const salt = bcrypt.genSaltSync();
+            req.body.Contraseña ?
+            await user.update({
+                'Nombre': req.body.Nombre,
+                'Apellido': req.body.Apellido,
+                'Documento': req.body.Documento,
+                'Email': req.body.Email,
+                'Telefono': req.body.Telefono,
+                'Contraseña': bcrypt.hashSync(req.body.Contraseña, salt),
+            },{transaction: t})
+            : await user.update({
+                'Nombre': req.body.Nombre,
+                'Apellido': req.body.Apellido,
+                'Documento': req.body.Documento,
+                'Email': req.body.Email,
+                'Telefono': req.body.Telefono
+            },{transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido modificado correctamente'})
-        })
+        }) 
         }   
     catch (error) {
         console.log(error);

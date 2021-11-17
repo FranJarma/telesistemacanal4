@@ -6,7 +6,7 @@ import clienteAxios from '../config/axios';
 import Toast from './../views/components/design/components/Toast';
 import Swal from './../views/components/design/components/Swal';
 import * as TYPES from '../types';
-import tokenAuth from '../config/token';
+import tokenAuthHeaders from '../config/token';
 
 const AppState = props => {
     const initialState = {
@@ -39,36 +39,32 @@ const AppState = props => {
     const [state, dispatch] = useReducer(AppReducer, initialState);
     //AUTH
     //retorna el usuario autenticado, nos servirá tanto al momento del registro como del logueo
-    const usuarioAutenticado = async (usuario)=>{
+    const usuarioAutenticado = async (UserId)=>{
         //leemos en el local storage si hay un token
         const token = localStorage.getItem('token');
         if (token) {
             // funcion para enviar el token por headers
-            tokenAuth(token);
+            tokenAuthHeaders(token);
         }
         try {
             //obtenemos la respuesta de la peticion a la base de datos, para obtener info del usuario
-            const respuesta = await clienteAxios.get(`/api/auth/login/${usuario.NombreUsuario}`);
+            const respuesta = await clienteAxios.get('/api/auth/login');
             dispatch({
                 type: TYPES.OBTENER_INFO_USUARIO,
                 payload: respuesta.data
             });
         } catch (error) {
-            console.log(error.response);
-            dispatch({
-                type: TYPES.LOGIN_ERRONEO
-            });
+            console.log(error);
         }
     };
     const iniciarSesion = async(usuario) => {
         try {
             const respuesta = await clienteAxios.post('/api/auth/login', usuario);
-            console.log(respuesta.data);
             dispatch({
                 type: TYPES.LOGIN_EXITOSO,
                 payload: respuesta.data
             })
-            usuarioAutenticado(usuario);
+            usuarioAutenticado(respuesta.data.usuario.UserId);
         } catch (error) {
             if(!error.response){
                 Toast('Error de conexión', 'error');
@@ -79,6 +75,16 @@ const AppState = props => {
             else if(error.response.data.errors){
                 Toast(error.response.data.errors[0].msg, 'warning');
             }
+        }
+    }
+    const cerrarSesion = () => {
+        try {
+            dispatch({
+                type: TYPES.CERRAR_SESION
+            })
+            history.push('/');
+        } catch (error) {
+            console.log(error);
         }
     }
     const crearUsuario = async (usuario) => {
@@ -980,6 +986,7 @@ const AppState = props => {
     return(
         <AppContext.Provider
         value={{
+            token: state.token,
             usuario: state.usuario,
             usuarioLogueado: state.usuarioLogueado,
             usuarioAutenticado: state.usuarioAutenticado,
@@ -1004,7 +1011,7 @@ const AppState = props => {
             pagos: state.pagos,
             pago: state.pago,
             detallesPago: state.detallesPago,
-            iniciarSesion, traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
+            iniciarSesion, cerrarSesion, traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
             traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,

@@ -11,5 +11,4 @@ const UserRole = db.define('_userrole', {
         primaryKey: true
     }
 });
-
 module.exports = db.model('_userrole', UserRole);
