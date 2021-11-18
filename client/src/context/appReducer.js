@@ -9,7 +9,7 @@ export default (state, action) => {
                 token: localStorage.getItem('token'),
                 usuarioAutenticado: true
         }
-        case TYPES.OBTENER_INFO_USUARIO: 
+        case TYPES.OBTENER_INFO_USUARIO:
             return {
                 ...state,
                 usuarioLogueado: action.payload,

@@ -17,12 +17,23 @@ import BarriosMunicipios from './views/components/barrios-municipios/BarriosMuni
 import OnusModelosOnus from './views/components/onus/OnusModelosOnus';
 import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
+import tokenAuthHeaders from './config/token';
+import PrivateRoute from './routes/PrivateRoute';
+import Login from './views/components/auth/Login';
+import {ErrorBoundary} from 'react-error-boundary'
+import ErrorFallback from './views/components/errorBoundary/ErrorBoundary';
 
-const Login = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(
-    () => import('./views/components/auth/Login')
-  );
-});
+//revisamos si tenemos un token
+const token = localStorage.getItem('token');
+if (token) {
+  tokenAuthHeaders(token);
+}
+
+// const Login = lazy(() => {
+//   return new Promise(resolve => setTimeout(resolve, 3000)).then(
+//     () => import('./views/components/auth/Login')
+//   );
+// });
 
 const Home = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
@@ -105,69 +116,47 @@ function App() {
         <Router>
           <AppState>
             <Switch>
-              <Route exact path="/">
                 <Suspense fallback={<Cargando/>}>
-                  <Login/>
+                  <Route exact path="/">
+                    <Login/>
+                  </Route>
+                  <ErrorBoundary
+                      FallbackComponent={ErrorFallback}
+                  >
+                  <PrivateRoute exact path="/home" component={Home}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/users" component={ListaUsers}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/roles" component={ListaRoles}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/abonados-inscriptos" component={ListaAbonadosInscriptos}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/abonados-activos" component={ListaAbonadosActivos}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/abonados-inactivos" component={ListaAbonadosInactivos}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/caratula-abonado" component={CaratulaAbonado}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/caratula-user" component={CaratulaUser}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/caratula-role" component={CaratulaRole}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/cambio-domicilio" component={CambioDomicilio}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/cambio-servicio" component={CambioServicio}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/cambio-titularidad" component={CambioTitularidad}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/historial-de-pagos" component={ListaPagos}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/servicios" component={ListaServicios}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/barrios-municipios" component={BarriosMunicipios}>
+                  </PrivateRoute>
+                  <PrivateRoute path="/onus-modelosOnus" component={OnusModelosOnus}>
+                  </PrivateRoute>
+                  </ErrorBoundary>
                 </Suspense>
-              </Route>
-              <Route exact path="/home">
-                <Suspense fallback={<Cargando/>}>
-                  <Home/>
-                </Suspense>
-              </Route>
-              <Route exact path="/users">
-                  <ListaUsers/>
-              </Route>
-              <Route exact path="/roles">
-                  <ListaRoles/>
-              </Route>
-              <Route exact path="/abonados-inscriptos">
-                  <ListaAbonadosInscriptos/>
-              </Route>
-              <Route exact path="/abonados-activos">
-                  <ListaAbonadosActivos/>
-              </Route>
-              <Route exact path="/abonados-inactivos">
-                <ListaAbonadosInactivos/>
-              </Route>
-              <Route path="/caratula-abonado">
-                <Suspense fallback={<Cargando/>}>
-                  <CaratulaAbonado/>
-                </Suspense>
-              </Route>
-              <Route path="/caratula-user">
-                <Suspense fallback={<Cargando/>}>
-                  <CaratulaUser/>
-                </Suspense>
-              </Route>
-              <Route path="/caratula-role">
-                <Suspense fallback={<Cargando/>}>
-                  <CaratulaRole/>
-                </Suspense>
-              </Route>
-              <Route path="/cambio-domicilio">
-                  <CambioDomicilio/>
-              </Route>
-              <Route path="/cambio-servicio">
-                  <CambioServicio/>
-              </Route>
-              <Route path="/cambio-titularidad">
-                <Suspense fallback={<Cargando/>}>
-                  <CambioTitularidad/>
-                </Suspense>
-              </Route>
-              <Route path="/historial-de-pagos">
-                <ListaPagos/>
-              </Route>
-              <Route path="/servicios">
-                <ListaServicios/>
-              </Route>
-              <Route path="/barrios-municipios">
-                <BarriosMunicipios/>
-              </Route>
-              <Route path="/onus-modelosOnus">
-                <OnusModelosOnus/>
-              </Route>
             </Switch>
           </AppState>
         </Router>

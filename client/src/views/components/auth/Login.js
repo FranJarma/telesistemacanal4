@@ -24,11 +24,11 @@ const Login = () => {
       e.preventDefault();
       iniciarSesion(AuthInfo);
     };
-    // useEffect(()=>{
-    //   if(usuarioAutenticado){
-    //     history.push('/home');
-    //   }
-    // },[usuarioAutenticado, history]);
+    useEffect(()=>{
+      if(usuarioAutenticado){
+        history.push('/home');
+      }
+    },[usuarioAutenticado, history]);
     return (
     <>
     <form onSubmit={onSubmit}>

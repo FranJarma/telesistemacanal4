@@ -26,7 +26,7 @@ exports.UserGet = async (req, res) => {
             }
         };
         jwt.sign(payload, process.env.SECRET_KEY,{
-            expiresIn: 1800
+            expiresIn: '15m' //expira en 15 minutos
         },(error, token) =>{
             if (error) {
                 throw(error);
@@ -53,6 +53,7 @@ exports.UserAutenticate = async (req, res) => {
                 UserId: req.UserId
         }});
         let roles = "";
+        let permisos = "";
         //si encuentra usuario, traemos los roles
         if (user) {
             roles = await knex.select('*').from('_role as r')

@@ -7,7 +7,7 @@ const tokenAuthHeaders = token => {
     }
     else{
         //en caso de que no, lo eliminamos
-        clienteAxios.defaults.headers.common['x-auth-token'] = "";
+        delete clienteAxios.defaults.headers.common['x-auth-token'];
     }
 };
 export default tokenAuthHeaders;

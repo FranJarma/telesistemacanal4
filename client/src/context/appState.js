@@ -39,7 +39,7 @@ const AppState = props => {
     const [state, dispatch] = useReducer(AppReducer, initialState);
     //AUTH
     //retorna el usuario autenticado, nos servirá tanto al momento del registro como del logueo
-    const usuarioAutenticado = async (UserId)=>{
+    const obtenerUsuarioAutenticado = async ()=>{
         //leemos en el local storage si hay un token
         const token = localStorage.getItem('token');
         if (token) {
@@ -55,6 +55,10 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            dispatch({
+                type: TYPES.CERRAR_SESION
+            })
+            Toast(error.response.data.msg, 'warning');
         }
     };
     const iniciarSesion = async(usuario) => {
@@ -64,7 +68,7 @@ const AppState = props => {
                 type: TYPES.LOGIN_EXITOSO,
                 payload: respuesta.data
             })
-            usuarioAutenticado(respuesta.data.usuario.UserId);
+            obtenerUsuarioAutenticado();
         } catch (error) {
             if(!error.response){
                 Toast('Error de conexión', 'error');
@@ -1011,7 +1015,7 @@ const AppState = props => {
             pagos: state.pagos,
             pago: state.pago,
             detallesPago: state.detallesPago,
-            iniciarSesion, cerrarSesion, traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
+            iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
             traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,

@@ -3,13 +3,14 @@ const router = express.Router();
 const UserController = require('./../controllers/UserController');
 const { check } = require('express-validator');
 const { esDNIValido, esCUITValido, esUserValido, esEmailValido } =  require('./../helpers/db-validaciones');
+const ValidarJWT = require('../middlewares/ValidarJWT');
 
-router.get('/estado=:estadoId', UserController.UsersGet);
-router.get('/abonados/municipio=:municipioId&estado=:estadoId', UserController.AbonadosGet);
-router.get('/abonados/domicilios/:id', UserController.AbonadoListarDomicilios);
-router.get('/abonados/servicios/:id', UserController.AbonadoListarServicios);
+router.get('/estado=:estadoId', ValidarJWT, UserController.UsersGet);
+router.get('/abonados/municipio=:municipioId&estado=:estadoId', ValidarJWT, UserController.AbonadosGet);
+router.get('/abonados/domicilios/:id', ValidarJWT, UserController.AbonadoListarDomicilios);
+router.get('/abonados/servicios/:id', ValidarJWT, UserController.AbonadoListarServicios);
 
-router.post('/create',
+router.post('/create', ValidarJWT,
 [
     check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
@@ -27,7 +28,7 @@ router.post('/create',
     
 ], UserController.UserCreate);
 
-router.put('/update/:id',
+router.put('/update/:id', ValidarJWT,
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
     check('Documento', 'El DNI es obligatorio').notEmpty(),
@@ -40,7 +41,7 @@ router.put('/update/:id',
 
 router.put('/delete/:id', UserController.UserDelete);
 
-router.post('/abonados/create',
+router.post('/abonados/create', ValidarJWT,
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
     check('Documento', 'El DNI es obligatorio').notEmpty(),
@@ -59,7 +60,7 @@ router.post('/abonados/create',
     check('ServicioId', 'El tipo de servicio es obligatorio').notEmpty(),
 ], UserController.AbonadoCreate);
 
-router.put('/abonados/update/:id',
+router.put('/abonados/update/:id', ValidarJWT,
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
     check('Documento', 'El DNI es obligatorio').notEmpty(),
@@ -71,9 +72,9 @@ router.put('/abonados/update/:id',
     check('CondicionIVAId', 'La condición IVA es obligatoria').not().contains(0),
 ],UserController.AbonadoUpdate);
 
-router.put('/abonados/cambiar-estado/:id', UserController.AbonadoCambiarEstado);
+router.put('/abonados/cambiar-estado/:id', ValidarJWT, UserController.AbonadoCambiarEstado);
 
-router.put('/abonados/cambio-domicilio/:id',
+router.put('/abonados/cambio-domicilio/:id', ValidarJWT,
 [
     check('MunicipioId', 'El municipio es obligatorio').not().contains(0),
     check('BarrioId', 'El barrio es obligatorio').not().contains(0),
@@ -82,7 +83,7 @@ router.put('/abonados/cambio-domicilio/:id',
     check('CambioServicioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
 ],UserController.AbonadoCambioDomicilio);
 
-router.put('/abonados/cambio-servicio/:id',
+router.put('/abonados/cambio-servicio/:id', ValidarJWT,
 [
     check('ServicioId', 'El servicio es obligatorio').not().contains(0),
     check('CambioDomicilioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()

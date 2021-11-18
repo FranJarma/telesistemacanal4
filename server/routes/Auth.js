@@ -1,6 +1,6 @@
 const express = require('express');
 const { check } = require('express-validator');
-const validarJWT = require('../middlewares/ValidarJWT');
+const ValidarJWT = require('../middlewares/ValidarJWT');
 const router = express.Router();
 const AuthController = require('./../controllers/AuthController');
 
@@ -12,7 +12,7 @@ router.post('/login', [
 
 //obtener un usuario autenticado al intentar loguear
 router.get('/login',
-    validarJWT,
+    ValidarJWT,
     AuthController.UserAutenticate
 );
 module.exports = router;

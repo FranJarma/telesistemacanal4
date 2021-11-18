@@ -35,16 +35,20 @@ exports.RoleCreate = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             let rolePermissionVec = [];
+            const ultimoRoleId = await Role.findOne({
+                order: [["RoleId", "DESC"]]
+            });
             const rol = new Role(req.body);
+            rol.RoleId = ultimoRoleId.RoleId + 1;
             await rol.save({transaction: t});
             for (let i=0; i<= req.body.PermisosSeleccionados.length-1; i++){
                 let obj = {
-                    RoleId: user.RoleId,
-                    PermissionId: req.body.PermisosSeleccionados[i]
+                    RoleId: req.body.RoleId,
+                    PermissionId: req.body.PermisosSeleccionados[i].PermissionId
                 }
                 rolePermissionVec.push(obj);
                 const rolePermission = new RolePermission(obj);
-                await rolePermission.save({transaction: t});
+               // await rolePermission.save({transaction: t});
             }
             return res.status(200).json({msg: 'El Rol ha sido registrado correctamente'})
         })

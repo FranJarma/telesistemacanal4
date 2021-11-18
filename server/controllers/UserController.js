@@ -42,7 +42,7 @@ exports.UserCreate = async(req, res) => {
             for (let i=0; i<= req.body.RolesSeleccionados.length-1; i++){
                 let obj = {
                     UserId: user.UserId,
-                    RoleId: req.body.RolesSeleccionados[i]
+                    RoleId: req.body.RolesSeleccionados[i].RoleId
                 }
                 userRoleVec.push(obj);
                 const userRole = new UserRole(obj);
@@ -139,7 +139,7 @@ exports.UserGetRoles = async(req, res) => {
         res.json(roles);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ msg: 'Hubo un error al encontrar los roles del user'});
+        res.status(500).json({ msg: 'Hubo un error al encontrar los roles del usuario'});
     }
 }
 //FUNCIONES PARA ABONADOS

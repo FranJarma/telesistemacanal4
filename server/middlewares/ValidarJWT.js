@@ -1,20 +1,18 @@
 const jwt = require('jsonwebtoken');
 
-//el JWT se manda por HEADERS
-const validarJWT = (req, res, next) => {
-
+module.exports = function(req, res, next){
+    //leemos el token del header
     const token = req.header('x-auth-token');
-    if(!token) return res.status(401).json({msg: 'Error de autenticación'});
+    //revisamos si no hay token
+    if(!token){
+        return res.status(401).json({msg:'Inicie sesión antes de continuar'});
+    }
+    //validamos el token
     try {
-        const { user } = jwt.verify(token, process.env.SECRET_KEY);
-        req.UserId = user.UserId;
+        const cifrado = jwt.verify(token, process.env.SECRET_KEY);
+        req.UserId = cifrado.user.UserId;
         next();
     } catch (error) {
-        console.log(error);
-        res.status(401).json({msg: 'Error de autenticación'});
+        res.status(401).json({msg:'Su sesión ya ha expirado, por favor, inicie sesión otra vez'});
     }
-    next();
-
 }
-
-module.exports = validarJWT;
