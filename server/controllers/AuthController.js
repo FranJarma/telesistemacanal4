@@ -26,7 +26,7 @@ exports.UserGet = async (req, res) => {
             }
         };
         jwt.sign(payload, process.env.SECRET_KEY,{
-            expiresIn: '15m' //expira en 15 minutos
+            expiresIn: '2h' //expira en 15 minutos
         },(error, token) =>{
             if (error) {
                 throw(error);

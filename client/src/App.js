@@ -20,8 +20,7 @@ import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
 import PrivateRoute from './routes/PrivateRoute';
 import Login from './views/components/auth/Login';
-import {ErrorBoundary} from 'react-error-boundary'
-import ErrorFallback from './views/components/errorBoundary/ErrorBoundary';
+
 
 //revisamos si tenemos un token
 const token = localStorage.getItem('token');
@@ -36,7 +35,7 @@ if (token) {
 // });
 
 const Home = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+  return new Promise(resolve => setTimeout(resolve, 4000)).then(
     () => import('./views/components/Home')
   );  
 });
@@ -116,13 +115,10 @@ function App() {
         <Router>
           <AppState>
             <Switch>
+                <Route exact path="/">
+                  <Login/>
+                </Route>
                 <Suspense fallback={<Cargando/>}>
-                  <Route exact path="/">
-                    <Login/>
-                  </Route>
-                  <ErrorBoundary
-                      FallbackComponent={ErrorFallback}
-                  >
                   <PrivateRoute exact path="/home" component={Home}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/users" component={ListaUsers}>
@@ -139,7 +135,7 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute path="/caratula-user" component={CaratulaUser}>
                   </PrivateRoute>
-                  <PrivateRoute path="/caratula-role" component={CaratulaRole}>
+                  <PrivateRoute exact path="/caratula-role" component={CaratulaRole}>
                   </PrivateRoute>
                   <PrivateRoute path="/cambio-domicilio" component={CambioDomicilio}>
                   </PrivateRoute>
@@ -149,13 +145,12 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute path="/historial-de-pagos" component={ListaPagos}>
                   </PrivateRoute>
-                  <PrivateRoute path="/servicios" component={ListaServicios}>
+                  <PrivateRoute exact path="/servicios" component={ListaServicios}>
                   </PrivateRoute>
-                  <PrivateRoute path="/barrios-municipios" component={BarriosMunicipios}>
+                  <PrivateRoute exact path="/barrios-municipios" component={BarriosMunicipios}>
                   </PrivateRoute>
-                  <PrivateRoute path="/onus-modelosOnus" component={OnusModelosOnus}>
+                  <PrivateRoute exact path="/onus-modelosOnus" component={OnusModelosOnus}>
                   </PrivateRoute>
-                  </ErrorBoundary>
                 </Suspense>
             </Switch>
           </AppState>

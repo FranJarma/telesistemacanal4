@@ -10,33 +10,35 @@ import { Alert } from '@material-ui/lab';
 
 const CambioTitularidad = () => {
     const appContext = useContext(AppContext);
-    const {barrios, municipios, provincias, domicilio, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, traerProvincias, traerUltimoDomicilioAbonado } = appContext;
+    const {barrios, condicionesIva, municipios, provincias, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, traerProvincias, traerCondicionesIva, cambioTitularidadAbonado } = appContext;
     
     const location = useLocation();
     const styles = useStyles();
 
-    useEffect(() => {
-        traerProvincias();
-        traerMunicipiosPorProvincia(provinciaSeleccionadaId);
-        //traerUltimoDomicilioAbonado(location.state.UserId);
-    }, [])
-
     const [abonadoInfo, setAbonadoInfo] = useState({
-        id: location.state.UserId,
-        domicilioCalle: null,
-        domicilioNumero: null,
-        domicilioPiso: null,
-        observacionesCambio: null
-    })
+        UserIdViejo: location.state.UserId,
+        Nombre: null,
+        Apellido: null,
+        Documento: null,
+        Cuit: null,
+        Email: null,
+        Telefono: null,
+        DomicilioCalle: null,
+        DomicilioNumero: null,
+        DomicilioPiso: null,
+        OnuId: location.state.OnuId ? location.state.OnuId : null,
+        ServicioId: location.state.ServicioId
+    });
+
     const onInputChange = (e) => {
         setAbonadoInfo({
             ...abonadoInfo,
             [e.target.name] : e.target.value
         });
     }
-    const { id, domicilioCalle, domicilioNumero, domicilioPiso, observacionesCambio} = abonadoInfo;
+    const { UserIdViejo, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, OnuId, ServicioId} = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
-    const [provinciaSeleccionadaId, setProvinciaSeleccionadaId] = useState(10);
+    const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
     /*
     const handleChangeProvinciaSeleccionada = (e) => {
@@ -45,42 +47,92 @@ const CambioTitularidad = () => {
         setBarrioSeleccionadoId(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [municipioSeleccionadoId, setMunicipioSeleccionadoId] = useState(0);
-    const [barrioSeleccionadoId, setBarrioSeleccionadoId] = useState(0);
+    const [MunicipioId, setMunicipioId] = useState(0);
+    const [BarrioId, setBarrioId] = useState(0);
+    const [CondicionIvaId, setCondicionIvaId] = useState(0);
+    const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
+    const [FechaContrato, setFechaContrato] = useState(new Date());
+    const [FechaBajada, setFechaBajada] = useState(new Date());
+    const [DomicilioId, setDomicilioId] = useState(0);
+
     const [MismoDomicilio, setMismoDomicilio] = useState(false);
     const handleChangeCheckMismoDomicilio = e => {
         setMismoDomicilio(!MismoDomicilio);
+        if(!MismoDomicilio){
+            setProvinciaId(location.state.ProvinciaId);
+            setMunicipioId(location.state.MunicipioId);
+            setBarrioId(location.state.BarrioId);
+            setAbonadoInfo({
+                ...abonadoInfo,
+                DomicilioCalle: location.state.DomicilioCalle,
+                DomicilioNumero: location.state.DomicilioNumero,
+                DomicilioPiso: location.state.DomicilioPiso
+            });
+            setDomicilioId(0);
+        }
+        else {
+            setMunicipioId(0);
+            setBarrioId(0);
+            setAbonadoInfo({
+                ...abonadoInfo,
+                DomicilioCalle: null,
+                DomicilioNumero: null,
+                DomicilioPiso: null
+            });
+            setDomicilioId(location.state.DomicilioId);
+        }
     }
     const handleChangeMunicipioSeleccionado = (e) => {
-        setMunicipioSeleccionadoId(e.target.value);
-        setBarrioSeleccionadoId(0);
+        setMunicipioId(e.target.value);
+        setBarrioId(0);
         traerBarriosPorMunicipio(e.target.value);
     }
     const handleChangeBarrioSeleccionado = (e) => {
-        setBarrioSeleccionadoId(e.target.value);
+        setBarrioId(e.target.value);
+    }
+    const handleChangeCondicionIVASeleccionado = (e) => {
+        setCondicionIvaId(e.target.value);
     }
 
-    const onSubmitAbonado = (e) => {
+    
+    useEffect(() => {
+        traerProvincias();
+        traerMunicipiosPorProvincia(ProvinciaId);
+        traerBarriosPorMunicipio(MunicipioId);
+        traerCondicionesIva();
+    }, [])
+
+    const onSubmitCambioTitularidad = (e) => {
         e.preventDefault();
-    //     if(location.state) {
-    //         cambioDomicilioAbonado({
-    //             id,
-    //             provinciaSeleccionadaId
-    //             municipioSeleccionadoId,
-    //             barrioSeleccionadoId,
-    //             domicilioCalle,
-    //             domicilioNumero,
-    //             domicilioPiso,
-    //             observacionesCambio
-    //         })
-    // }
+            cambioTitularidadAbonado({
+                UserIdViejo, //es el ID del abonado viejo, el resto de los datos son del nuevo
+                Nombre,
+                Apellido,
+                Documento,
+                Cuit,
+                Email,
+                Telefono,
+                DomicilioCalle,
+                DomicilioNumero,
+                DomicilioPiso,
+                FechaNacimiento,
+                FechaContrato,
+                FechaBajada,
+                CondicionIvaId,
+                ProvinciaId,
+                MunicipioId,
+                BarrioId,
+                DomicilioId,
+                OnuId,
+                ServicioId
+            });
 }
     return ( 
     <>
     <div className="container">
     <Aside/>
     <main>
-    <form onSubmit={onSubmitAbonado}>
+    <form onSubmit={onSubmitCambioTitularidad}>
     <Card>
         <CardContent>
             <Typography variant="h1">Cambio titularidad: {location.state.Nombre} {location.state.Apellido}</Typography>
@@ -89,21 +141,17 @@ const CambioTitularidad = () => {
                 <Typography variant="h2"><i className="bx bx-user"></i> Datos del abonado original</Typography>
                     <Card className={styles.cartaSecundaria}>
                         <CardContent>
-                            <Typography variant="h6"> <b> Nombre completo: </b> {location.state.FullName}</Typography>
+                            <Typography variant="h6"> <b> Nombre completo: </b> {location.state.Nombre} {location.state.Apellido}</Typography>
                             <Typography variant="h6"> <b> DNI: </b> {location.state.Documento}</Typography>
-                            <Typography variant="h6"> <b> CUIT: </b> {location.state.Cuit}</Typography>
-                            <Typography variant="h6"> <b> Condición IVA: </b> {location.state.CondicionIVADescripcion}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid item xs={12} lg={3}>
                 <Typography variant="h2"><i className="bx bx-plug"></i> Datos del servicio contratado</Typography>
-                    <Card style={{paddingBottom: 'auto'}} className={styles.cartaSecundaria}>
+                    <Card className={styles.cartaSecundaria}>
                         <CardContent>
                             <Typography variant="h6"> <b> Tipo de servicio contratado: </b> {location.state.ServicioNombre}</Typography>
                             <Typography variant="h6"> <b> Fecha de Contrato: </b> {location.state.FechaContrato.split('T')[0]}</Typography>
-                            <Typography style={{visibility: 'hidden'}} variant="h6">-</Typography>
-                            <Typography style={{visibility: 'hidden'}} variant="h6">-</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -111,21 +159,22 @@ const CambioTitularidad = () => {
                 <Typography variant="h2"><i className="bx bx-home"></i> Datos del domicilio</Typography>
                     <Card style={{paddingBottom: 'auto'}} className={styles.cartaSecundaria}>
                         <CardContent>
-                            {/* <Typography variant="h6"> <b> Provincia: </b> {domicilio.ProvinciaNombre}</Typography>
-                            <Typography variant="h6"> <b> Municipio: </b> {domicilio.MunicipioNombre}</Typography>
-                            <Typography variant="h6"> <b> Dirección: </b> {domicilio.DomicilioCalle} {domicilio.DomicilioNumero}</Typography> */}
-                            <Typography style={{visibility: 'hidden'}} variant="h6">-</Typography>
+                            <Typography variant="h6"> <b> Dirección: </b> {location.state.DomicilioCalle} {location.state.DomicilioNumero}</Typography>
+                            <Typography variant="h6"> <b> Barrio: </b> {location.state.BarrioNombre}, {location.state.MunicipioNombre} {location.state.ProvinciaNombre}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={6} lg={3}>
+                <Grid item xs={12} lg={3}>
                 <Typography variant="h2"><i className="bx bx-broadcast"></i> Datos de ONU</Typography>
                     <Card className={styles.cartaSecundaria}>
                         <CardContent>
-                            <Typography variant="h6"> <b> Tipo de ONU: </b> </Typography>
-                            <Typography variant="h6"> <b> MAC: </b> </Typography>
-                            <Typography variant="h6"> <b> N° Serie: </b></Typography>
-                            <Typography variant="h6"> <b> Modelo: </b></Typography>
+                            {location.state.OnuMac ? 
+                            <>
+                            <Typography variant="h6"> <b> MAC: </b> {location.state.OnuMac} </Typography>
+                            <Typography variant="h6"> <b> N° Serie: </b>{location.state.OnuSerie}</Typography>
+                            <Typography variant="h6"> <b> Modelo:</b> {location.state.ModeloOnuNombre}</Typography>
+                            </>
+                            : <Typography variant="h6">Sin ONU</Typography>}
                         </CardContent>
                     </Card>
                 </Grid>
@@ -136,8 +185,8 @@ const CambioTitularidad = () => {
                     <TextField
                     autoFocus
                     variant="outlined"
-                    //value={nombre}
-                    name="nombre"
+                    value={Nombre}
+                    name="Nombre"
                     onChange={onInputChange}
                     fullWidth
                     label="Nombre">
@@ -146,8 +195,8 @@ const CambioTitularidad = () => {
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant="outlined"
-                    //value={apellido}
-                    name="apellido"
+                    value={Apellido}
+                    name="Apellido"
                     onChange={onInputChange}
                     fullWidth
                     label="Apellido">
@@ -156,8 +205,8 @@ const CambioTitularidad = () => {
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
                     variant="outlined"
-                    //value={dni}
-                    name="dni"
+                    value={Documento}
+                    name="Documento"
                     inputProps={{ maxLength: 8 }}
                     onChange={onInputChange}
                     fullWidth
@@ -167,8 +216,8 @@ const CambioTitularidad = () => {
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
                     variant="outlined"
-                    //value={cuit}
-                    name="cuit"
+                    value={Cuit}
+                    name="Cuit"
                     inputProps={{ maxLength: 11 }}
                     onChange={onInputChange}
                     fullWidth
@@ -179,22 +228,22 @@ const CambioTitularidad = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     variant="outlined"
-                    //value={condicionIVASeleccionadoId}
-                    //onChange={handleChangeCondicionIVASeleccionado}
+                    value={CondicionIvaId}
+                    onChange={handleChangeCondicionIVASeleccionado}
                     fullWidth
                     select
                     label="Condición IVA"
                     >
-                    {/* {condicionesIVA.map((condicionIVA)=>(
-                        <MenuItem key={condicionIVA.CondicionIVAId} value={condicionIVA.CondicionIVAId}>{condicionIVA.CondicionIVADescripcion}</MenuItem>
-                    ))} */}
+                    {condicionesIva.map((condicionIVA)=>(
+                        <MenuItem key={condicionIVA.CondicionIvaId} value={condicionIVA.CondicionIvaId}>{condicionIVA.CondicionIvaNombre}</MenuItem>
+                    ))}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     variant="outlined"
-                    //value={email}
-                    name="email"
+                    value={Email}
+                    name="Email"
                     onChange={onInputChange}
                     fullWidth
                     label="Email"
@@ -204,8 +253,8 @@ const CambioTitularidad = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <DatePicker 
                     inputVariant="outlined"
-                    //value={fechaNacimiento}
-                    //onChange={(fecha)=>setFechaNacimiento(fecha)}
+                    value={FechaNacimiento}
+                    onChange={(fecha)=>setFechaNacimiento(fecha)}
                     disableFuture
                     format="dd/MM/yyyy"
                     fullWidth
@@ -217,8 +266,8 @@ const CambioTitularidad = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     variant="outlined"
-                    //value={telefono}
-                    name="telefono"
+                    value={Telefono}
+                    name="Telefono"
                     onChange={onInputChange}
                     type="number"
                     fullWidth
@@ -230,15 +279,13 @@ const CambioTitularidad = () => {
             <FormGroup>
                 <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckMismoDomicilio} checked={MismoDomicilio}></Switch>} label="Mismo domicilio que el titular"></FormControlLabel>
             </FormGroup>
-            {!MismoDomicilio ?
-            <>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant="filled"
                     disabled
                     //onChange={handleChangeProvinciaSeleccionada}
-                    value={provinciaSeleccionadaId}
+                    value={ProvinciaId}
                     label="Provincia"
                     fullWidth
                     select
@@ -250,9 +297,10 @@ const CambioTitularidad = () => {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
-                    variant = "outlined"
+                    variant = {!MismoDomicilio ? "outlined" : "filled"}
+                    disabled ={!MismoDomicilio ? false : true}
                     onChange={handleChangeMunicipioSeleccionado}
-                    value={municipioSeleccionadoId}
+                    value={MunicipioId}
                     label="Municipio"
                     fullWidth
                     select
@@ -264,9 +312,10 @@ const CambioTitularidad = () => {
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                 <TextField
-                    variant = "outlined"
+                    variant = {!MismoDomicilio ? "outlined" : "filled"}
+                    disabled ={!MismoDomicilio ? false : true}
                     onChange={handleChangeBarrioSeleccionado}
-                    value={barrioSeleccionadoId}
+                    value={BarrioId}
                     label="Barrio"
                     fullWidth
                     select
@@ -278,9 +327,10 @@ const CambioTitularidad = () => {
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
-                    variant = "outlined"
-                    value={domicilioCalle}
-                    name="domicilioCalle"
+                    variant = {!MismoDomicilio ? "outlined" : "filled"}
+                    disabled ={!MismoDomicilio ? false : true}
+                    value={DomicilioCalle}
+                    name="DomicilioCalle"
                     onChange={onInputChange}
                     fullWidth
                     label="Calle">
@@ -288,9 +338,10 @@ const CambioTitularidad = () => {
                 </Grid>
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
-                    variant = "outlined"
-                    value={domicilioNumero}
-                    name="domicilioNumero"
+                    variant = {!MismoDomicilio ? "outlined" : "filled"}
+                    disabled ={!MismoDomicilio ? false : true}
+                    value={DomicilioNumero}
+                    name="DomicilioNumero"
                     onChange={onInputChange}
                     type="number"
                     fullWidth
@@ -299,9 +350,10 @@ const CambioTitularidad = () => {
                 </Grid>
                 <Grid item xs={12} md={2} lg={2}>
                     <TextField
-                    variant = "outlined"
-                    value={domicilioPiso}
-                    name="domicilioPiso"
+                    variant = {!MismoDomicilio ? "outlined" : "filled"}
+                    disabled ={!MismoDomicilio ? false : true}
+                    value={DomicilioPiso}
+                    name="DomicilioPiso"
                     onChange={onInputChange}
                     type="number"
                     fullWidth
@@ -309,8 +361,31 @@ const CambioTitularidad = () => {
                     </TextField>
                 </Grid>
             </Grid>
-            </>
-            : ""}
+            <Typography  variant="h2"><i className="bx bx-calendar"></i> Fechas de contrato y de bajada</Typography>
+            <Grid container spacing={3}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
+                    <DatePicker 
+                    inputVariant="outlined"
+                    value={FechaContrato}
+                    onChange={(fecha)=>setFechaContrato(fecha)}
+                    format="dd/MM/yyyy"
+                    fullWidth
+                    label="Fecha de Contrato"
+                    >
+                    </DatePicker >
+                </Grid>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
+                    <DatePicker 
+                    inputVariant="outlined"
+                    value={FechaBajada}
+                    onChange={(fecha)=>setFechaBajada(fecha)}
+                    format="dd/MM/yyyy"
+                    fullWidth
+                    label="Fecha de Bajada"
+                    >
+                    </DatePicker >
+                </Grid>
+            </Grid>
             <br/>
         <Alert severity="info">Una vez que se realice el cambio de la titularidad, el abonado original será <b>dado de baja</b> y toda la información de pagos será <b>transferida</b> al nuevo titular.</Alert>
         </CardContent>

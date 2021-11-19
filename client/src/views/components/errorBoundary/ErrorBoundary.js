@@ -4,7 +4,7 @@ function ErrorFallback({error, resetErrorBoundary}) {
     <div role="alert">
       <p>Algo salió mal:</p>
       <pre>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Intente de nuevo</button>
+      <button onClick={resetErrorBoundary}>Recargue la página</button>
     </div>
   )
 }

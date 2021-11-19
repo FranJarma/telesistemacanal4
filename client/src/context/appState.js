@@ -11,8 +11,9 @@ import tokenAuthHeaders from '../config/token';
 const AppState = props => {
     const initialState = {
         token: localStorage.getItem('token'),
-        usuarioLogueado: {},
+        usuarioLogueado: null,
         usuarioAutenticado: false,
+        push: false,
         usuarios: [],
         roles: [],
         rolesUser: [],
@@ -387,6 +388,29 @@ const AppState = props => {
                 })
                 Swal('Operación completa', resOk.data.msg);
                 setModalNuevoServicio(false);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const cambioTitularidadAbonado = async(abonado) => {
+        clienteAxios.put(`/api/usuarios/abonados/cambio-titularidad/${abonado.UserIdViejo}`, abonado)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CAMBIO_TITULARIDAD_ABONADO,
+                    payload: abonado
+                })
+                Swal('Operación completa', resOk.data.msg);
+                history.push('/abonados-activos');
         })
         .catch(err => {
             if(!err.response){
@@ -994,6 +1018,7 @@ const AppState = props => {
             usuario: state.usuario,
             usuarioLogueado: state.usuarioLogueado,
             usuarioAutenticado: state.usuarioAutenticado,
+            push: state.push,
             usuarios: state.usuarios,
             roles: state.roles,
             rolesUser: state.rolesUser,
@@ -1018,7 +1043,7 @@ const AppState = props => {
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
-            traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado,
+            traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado, cambioTitularidadAbonado,
             cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
             traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 
             traerCondicionesIva,

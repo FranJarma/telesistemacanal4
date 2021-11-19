@@ -13,7 +13,8 @@ export default (state, action) => {
             return {
                 ...state,
                 usuarioLogueado: action.payload,
-                usuarioAutenticado: true
+                usuarioAutenticado: true,
+                push: true
         }
         case TYPES.CERRAR_SESION:
             localStorage.removeItem('token');
@@ -21,7 +22,8 @@ export default (state, action) => {
                 ...state,
                 usuarioAutenticado: false,
                 usuarioLogueado: {},
-                token: null
+                token: null,
+                push: false
         }
         case TYPES.CREAR_USUARIO:
             return {

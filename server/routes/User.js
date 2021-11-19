@@ -55,7 +55,7 @@ router.post('/abonados/create', ValidarJWT,
     check('CondicionIVAId', 'La condición IVA es obligatoria').not().contains(0),
     check('MunicipioId', 'El municipio es obligatorio').not().contains(0),
     check('BarrioId', 'El barrio es obligatorio').not().contains(0),
-    check('DomicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
+    check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
     check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
     check('ServicioId', 'El tipo de servicio es obligatorio').notEmpty(),
 ], UserController.AbonadoCreate);
@@ -78,15 +78,34 @@ router.put('/abonados/cambio-domicilio/:id', ValidarJWT,
 [
     check('MunicipioId', 'El municipio es obligatorio').not().contains(0),
     check('BarrioId', 'El barrio es obligatorio').not().contains(0),
-    check('DomicilioCalle', 'El nombre de domicilio es obligatorio').notEmpty(),
+    check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
     check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
-    check('CambioServicioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
+    check('CambioDomicilioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
 ],UserController.AbonadoCambioDomicilio);
 
 router.put('/abonados/cambio-servicio/:id', ValidarJWT,
 [
     check('ServicioId', 'El servicio es obligatorio').not().contains(0),
-    check('CambioDomicilioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
+    check('CambioServicioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
 ],UserController.AbonadoCambioServicio);
+
+router.put('/abonados/cambio-titularidad/:id', ValidarJWT,
+[
+    check('Nombre', 'El nombre es obligatorio').notEmpty(),
+    check('Apellido', 'El apellido es obligatorio').notEmpty(),
+    check('Documento', 'El DNI es obligatorio').notEmpty(),
+    check('Documento', 'El DNI no tiene el formato correcto, debe tener solo números').isNumeric(),
+    check('Documento', 'El DNI debe tener 7 dígitos como mínimo').isLength({min: 7}),
+    check('Documento').custom(esDNIValido),
+    check('Cuit', 'El CUIT es obligatorio').notEmpty(),
+    check('Cuit', 'El CUIT no tiene el formato correcto, debe tener solo números').isNumeric(),
+    check('Cuit', 'El CUIT debe tener 10 dígitos como mínimo').isLength({min: 10}),
+    check('Cuit').custom(esCUITValido),
+    check('CondicionIVAId', 'La condición IVA es obligatoria').not().contains(0),
+    check('MunicipioId', 'El municipio es obligatorio').not().contains(0),
+    check('BarrioId', 'El barrio es obligatorio').not().contains(0),
+    check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
+    check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
+],UserController.AbonadoCambioTitularidad);
 
 module.exports = router;

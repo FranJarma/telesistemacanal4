@@ -3,7 +3,8 @@ import { Button, Card, CardContent, Grid, InputAdornment, TextField, Typography 
 import logo from './../../images/logo.png';
 import useStyles from './../Styles';
 import AppContext from '../../../context/appContext';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
+
 const Login = () => {
     const styles = useStyles();
     const history = useHistory();

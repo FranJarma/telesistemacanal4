@@ -8,7 +8,7 @@ import { Typography } from '@material-ui/core';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
-    const { obtenerUsuarioAutenticado, usuarioLogueado, cerrarSesion } = appContext;
+    const { obtenerUsuarioAutenticado, usuarioLogueado, push, cerrarSesion } = appContext;
     
     const [Collapsed, setCollapsed] = useState(false);
     const [SubMenuAbonados, setSubMenuAbonados] = useState(false);
@@ -45,9 +45,9 @@ const Aside = () => {
     }
     useEffect(()=> {
       obtenerUsuarioAutenticado();
-    },[])
+    },[]);
     return (   
-    (usuarioLogueado ?
+    (push ?
     <>
     <ProSidebar collapsed={Collapsed} breakPoint="md">
     <img alt="" src={logo2}/>
