@@ -79,14 +79,12 @@ router.put('/abonados/cambio-domicilio/:id', ValidarJWT,
     check('MunicipioId', 'El municipio es obligatorio').not().contains(0),
     check('BarrioId', 'El barrio es obligatorio').not().contains(0),
     check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
-    check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
-    check('CambioDomicilioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
+    check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty()
 ],UserController.AbonadoCambioDomicilio);
 
 router.put('/abonados/cambio-servicio/:id', ValidarJWT,
 [
-    check('ServicioId', 'El servicio es obligatorio').not().contains(0),
-    check('CambioServicioObservaciones', 'Es conveniente no dejar el campo observaciones vacío, para que el técnico responsable sepa las tareas a realizar').notEmpty()
+    check('ServicioId', 'El servicio es obligatorio').not().contains(0)
 ],UserController.AbonadoCambioServicio);
 
 router.put('/abonados/cambio-titularidad/:id', ValidarJWT,

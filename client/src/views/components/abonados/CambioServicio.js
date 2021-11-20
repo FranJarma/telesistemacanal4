@@ -157,7 +157,7 @@ const CambioServicio = () => {
                         <CardContent>
                             <Typography variant="h6"><b>Servicio actual: </b> {location.state.ServicioNombre}</Typography>
                             <Typography variant="h6"><b>Fecha de contrato: </b> {location.state.FechaContrato.split('T')[0].split('-').reverse().join('/')}</Typography>
-                            {location.state.OnuMac !== '' ? <Typography variant="h6"><b>MAC ONU: </b> {location.state.OnuMac}</Typography> : ""}
+                            {location.state.OnuMac ? <Typography variant="h6"><b>MAC ONU: </b> {location.state.OnuMac}</Typography> : ""}
                         </CardContent>
                     </Card>
                 </Grid>
@@ -249,7 +249,6 @@ const CambioServicio = () => {
                     label="Observaciones">
                     </TextField>
                     <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
-                {location.state.EstadoId !== 1 ? <Alert severity="warning">Al cambiar el servicio, el abonado pasará al listado de <b>Abonados Inscriptos</b>, ya que se tiene que realizar el corte correspondiente.</Alert> : "" }
                 </Grid>
             </Grid>
             </>

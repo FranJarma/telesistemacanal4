@@ -104,28 +104,28 @@ const CambioTitularidad = () => {
 
     const onSubmitCambioTitularidad = (e) => {
         e.preventDefault();
-            cambioTitularidadAbonado({
-                UserIdViejo, //es el ID del abonado viejo, el resto de los datos son del nuevo
-                Nombre,
-                Apellido,
-                Documento,
-                Cuit,
-                Email,
-                Telefono,
-                DomicilioCalle,
-                DomicilioNumero,
-                DomicilioPiso,
-                FechaNacimiento,
-                FechaContrato,
-                FechaBajada,
-                CondicionIvaId,
-                ProvinciaId,
-                MunicipioId,
-                BarrioId,
-                DomicilioId,
-                OnuId,
-                ServicioId
-            });
+        cambioTitularidadAbonado({
+            UserIdViejo, //es el ID del abonado viejo, el resto de los datos son del nuevo
+            Nombre,
+            Apellido,
+            Documento,
+            Cuit,
+            Email,
+            Telefono,
+            DomicilioCalle,
+            DomicilioNumero,
+            DomicilioPiso,
+            FechaNacimiento,
+            FechaContrato,
+            FechaBajada,
+            CondicionIvaId,
+            ProvinciaId,
+            MunicipioId,
+            BarrioId,
+            DomicilioId,
+            OnuId,
+            ServicioId
+        });
 }
     return ( 
     <>
