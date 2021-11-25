@@ -439,47 +439,44 @@ exports.AbonadoCambioTitularidad = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
+            let abonadoNuevoDomicilio = null;
+            let nuevoDomicilio = null;
             //buscamos el abonado viejo
             const abonado = await User.findByPk( req.body.UserIdViejo, {transaction: t} );
             //cambiamos su estado a INACTIVO
-            abonado.Estado = process.env.ESTADO_ID_ABONADO_INACTIVO;;
-            const abonadoEstado = new UserEstado(req.body, {transaction: t});
-            abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INACTIVO;;
-            abonadoEstado.CambioEstadoFecha = new Date().toString();
-            abonadoEstado.CambioEstadoObservaciones = 'Cambio de Titularidad';
-            //buscamos su historial de pagos
-            const pagos = await Pago.findAll({
-                where: {
-                    UserId: abonado.UserId
-                }
-            });
+            abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INACTIVO;
             //creamos nuevo abonado con la información de la vista
             const abonadoNuevo = new User(req.body, {transaction: t});
             abonadoNuevo.UserId = uuidv4().toUpperCase();
-            abonadoNuevo.EstadoId = 1;
-            abonadoNuevo.ServicioId = req.body.ServicioId;
+            abonadoNuevo.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            abonadoNuevo.EsUsuarioDeSistema = 0;
+            const abonadoNuevoRole = new UserRole();
+            abonadoNuevoRole.UserId = abonadoNuevo.UserId;
+            abonadoNuevoRole.RoleId = process.env.ID_ROL_ABONADO;
+            const abonadoEstado = new UserEstado(req.body, {transaction: t});
+            let ultimoUserEstado = await UserEstado.findOne({
+                order: [["UserEstadoId", "DESC"]]
+            });
+            abonadoEstado.UserEstadoId = ultimoUserEstado.UserEstadoId + 1;
+            abonadoEstado.UserId = abonado.UserId;
+            abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INACTIVO;
+            abonadoEstado.CambioEstadoFecha = new Date().toString();
+            abonadoEstado.CambioEstadoObservaciones = `Dado de Baja por Cambio de Titularidad con abonado: ${abonado.Apellido}, ${abonado.Nombre}`;
             //le asignamos el nuevo usuario a los pagos del abonado viejo
-            pagos.map((pago)=>(
-                pago.PagoId = abonadoNuevo.UserId
-            ));
-            //si el domicilio es distinto al del titular, reasignar onu
             const abonadoNuevoServicio = new UserServicio(req.body, {transaction: t});
             let ultimoUserServicio = await UserServicio.findOne({
                 order: [["UserServicioId", "DESC"]]
             })
+            abonadoNuevoServicio.UserId = abonadoNuevo.UserId;
             abonadoNuevoServicio.UserServicioId = ultimoUserServicio.UserServicioId + 1;
-            abonadoNuevoServicio.ServicioId = req.body.ServicioId;
+            abonadoNuevoServicio.CambioServicioFecha = new Date().toString();
+            abonadoNuevoServicio.CambioServicioObservaciones = `Primer servicio por Cambio de Titularidad con abonado: ${abonadoNuevo.Apellido}, ${abonadoNuevo.Nombre}`;
             const abonadoNuevoEstado = new UserEstado(req.body, {transaction: t});
-            let ultimoUserEstado = await UserEstado.findOne({
-                order: [["UserEstadoId", "DESC"]]
-            })
-            abonadoNuevoEstado.UserEstadoId = ultimoUserEstado.UserEstadoId + 1;
+            abonadoNuevoEstado.UserEstadoId = ultimoUserEstado.UserEstadoId + 2;
+            abonadoNuevoEstado.UserId = abonadoNuevo.UserId;
             abonadoNuevoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
             abonadoNuevoEstado.CambioEstadoFecha = new Date().toString();
-            abonadoNuevoEstado.CambioEstadoObservaciones = 'Cambio de Servicio';
-            await abonado.save({transaction: t});
-            await abonadoEstado.save({transaction: t});
-            await abonadoNuevo.save({transaction: t});
+            abonadoNuevoEstado.CambioEstadoObservaciones =  `Dado de Alta por Cambio de Titularidad con abonado: ${abonadoNuevo.Apellido}, ${abonadoNuevo.Nombre}`;
             if(req.body.DomicilioId === 0) { //chequeamos si es mismo domicilio
                 let ultimoUserDomicilio = await UserDomicilio.findOne({
                     order: [["UserDomicilioId", "DESC"]]
@@ -487,18 +484,26 @@ exports.AbonadoCambioTitularidad = async(req, res) => {
                 let ultimoDomicilio = await Domicilio.findOne({
                     order: [["DomicilioId", "DESC"]]
                 })
+                nuevoDomicilio = new Domicilio(req.body, {transaction: t});
+                nuevoDomicilio.DomicilioId = ultimoDomicilio.DomicilioId + 1;
                 abonadoNuevo.DomicilioId = ultimoDomicilio.DomicilioId + 1;
-                const abonadoNuevoDomicilio = new UserDomicilio(req.body, {transaction: t});
+                abonadoNuevoDomicilio = new UserDomicilio(req.body, {transaction: t});
                 abonadoNuevoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
                 abonadoNuevoDomicilio.UserId = abonadoNuevo.UserId;
                 abonadoNuevoDomicilio.DomicilioId = ultimoDomicilio.DomicilioId + 1;
                 abonadoNuevoDomicilio.CambioDomicilioFecha = new Date().toString();
                 abonadoNuevoDomicilio.CambioDomicilioObservaciones = 'Primer Domicilio por cambio de Titularidad';
-                abonadoNuevoDomicilio.save({transaction: t});
-            }
-            await pagos.save({transaction: t});
+            };
+            await abonado.save({transaction: t});
+            if(nuevoDomicilio !== null) await nuevoDomicilio.save({transaction: t});
+            await abonadoEstado.save({transaction: t});
+            await abonadoNuevo.save({transaction: t});
+            await abonadoNuevoRole.save({transaction: t});
             await abonadoNuevoEstado.save({transaction: t});
-            await abonadoNuevoServicio.save({transaction: t});
+            await abonadoNuevoServicio.save({transaction: t})
+            if(abonadoNuevoDomicilio !== null) await abonadoNuevoDomicilio.save({transaction: t});
+            //buscamos su historial de pagos y lo actualizamos
+            await Pago.update({UserId: abonadoNuevo.UserId}, {where: {UserId: abonado.UserId}, transaction: t})
             return res.status(200).json({msg: 'La titularidad del abonado ha sido cambiada correctamente'})
         })
     } catch (error) {

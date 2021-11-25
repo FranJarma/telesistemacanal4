@@ -68,7 +68,7 @@ const CambioTitularidad = () => {
                 DomicilioNumero: location.state.DomicilioNumero,
                 DomicilioPiso: location.state.DomicilioPiso
             });
-            setDomicilioId(0);
+            setDomicilioId(location.state.DomicilioId);
         }
         else {
             setMunicipioId(0);
@@ -79,7 +79,7 @@ const CambioTitularidad = () => {
                 DomicilioNumero: null,
                 DomicilioPiso: null
             });
-            setDomicilioId(location.state.DomicilioId);
+            setDomicilioId(0);
         }
     }
     const handleChangeMunicipioSeleccionado = (e) => {

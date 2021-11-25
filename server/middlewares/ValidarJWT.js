@@ -13,6 +13,7 @@ module.exports = function(req, res, next){
         req.UserId = cifrado.user.UserId;
         next();
     } catch (error) {
+        res.redirect('/');
         res.status(401).json({msg:'Su sesión ya ha expirado, por favor, inicie sesión otra vez'});
     }
 }

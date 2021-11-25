@@ -48,7 +48,7 @@ exports.RoleCreate = async(req, res) => {
                 }
                 rolePermissionVec.push(obj);
                 const rolePermission = new RolePermission(obj);
-               // await rolePermission.save({transaction: t});
+                await rolePermission.save({transaction: t});
             }
             return res.status(200).json({msg: 'El Rol ha sido registrado correctamente'})
         })
