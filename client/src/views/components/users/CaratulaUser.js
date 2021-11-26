@@ -9,9 +9,10 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const CaratulaUser = () => {
     const appContext = useContext(AppContext);
-    const { roles, rolesUser, traerRoles, traerRolesPorUsuario, crearUsuario, modificarUsuario } = appContext;
+    const { usuarioLogueado, roles, rolesUser, traerRoles, traerRolesPorUsuario, crearUsuario, modificarUsuario } = appContext;
     const location = useLocation();
     const [UserInfo, setUserInfo] = useState({
+        UserIdLogueado: usuarioLogueado.User.UserId,
         UserId: null,
         Nombre: null,
         Apellido: null,

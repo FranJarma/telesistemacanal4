@@ -26,6 +26,7 @@ exports.BarrioCreate = async(req, res) => {
             const barrio = new Barrio(req.body);
             barrio.BarrioId = ultimoBarrio.BarrioId + 1;
             barrio.MunicipioId = req.body.MunicipioIdModal;
+            barrio.createdBy = req.body.usuarioLogueado.User.UserId;
             await barrio.save({transaction: t});
             return res.status(200).json({msg: 'El Barrio ha sido registrado correctamente'})
         })
@@ -41,10 +42,8 @@ exports.BarrioUpdate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            const barrio = await Barrio.findByPk(req.body.BarrioId, {transaction: t});
-            barrio.MunicipioId = req.body.MunicipioIdModal;
-            barrio.BarrioNombre = req.body.BarrioNombre;
-            await barrio.save({transaction: t});
+            const barrio = await Barrio.findByPk(req.body.BarrioId, {transaction: t})
+            await barrio.update(req.body, {transaction: t});
             return res.status(200).json({msg: 'El Barrio ha sido modificado correctamente'})
         })
     } catch (error) {
@@ -56,7 +55,8 @@ exports.BarrioDelete = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             const barrio = await Barrio.findByPk(req.body.BarrioId, {transaction: t});
-            barrio.BarrioEliminado = 1;
+            barrio.deletedAt = new Date().toString();
+            barrio.deletedBy = req.body.usuarioLogueado.User.UserId;
             await barrio.save({transaction: t});
             return res.status(200).json({msg: 'El Barrio ha sido eliminado correctamente'})
         })
@@ -71,7 +71,7 @@ exports.BarriosListarPorMunicipio = async(req, res) => {
         const barrios = await knex.select('*').from('barrio as b').innerJoin('municipio as m','b.MunicipioId', '=', 'm.MunicipioId')
         .where({
             'b.MunicipioId': req.params.id,
-            'b.BarrioEliminado': 0
+            'b.deletedAt': null
         });
         res.json(barrios);
     } catch (error) {
@@ -82,7 +82,8 @@ exports.BarriosListarPorMunicipio = async(req, res) => {
 
 exports.BarriosGet = async(req, res) => {
     try {
-        const barrios = await knex.select('*').from('barrio as b').innerJoin('municipio as m','b.MunicipioId', '=', 'm.MunicipioId').where('b.BarrioEliminado', '=', 0);
+        const barrios = await knex.select('*').from('barrio as b').innerJoin('municipio as m','b.MunicipioId', '=', 'm.MunicipioId')
+        .where({'b.deletedAt': null});
         res.json(barrios);
     } catch (error) {
         console.log(error);

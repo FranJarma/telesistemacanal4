@@ -4,7 +4,7 @@ const router = express.Router();
 const BarrioController = require('../controllers/BarrioController');
 const ValidarJWT = require('../middlewares/ValidarJWT');
 
-router.get('/', ValidarJWT,BarrioController.BarriosGet);
+router.get('/', ValidarJWT, BarrioController.BarriosGet);
 router.get('/municipio=:id', ValidarJWT, BarrioController.BarriosListarPorMunicipio);
 router.post('/create', ValidarJWT, [
     check('BarrioNombre', 'El nombre del barrio es obligatorio').notEmpty(),

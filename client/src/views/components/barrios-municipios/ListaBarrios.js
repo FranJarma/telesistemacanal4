@@ -7,7 +7,7 @@ import { Alert } from '@material-ui/lab';
 
 const ListaBarrios = () => {
     const appContext = useContext(AppContext);
-    const { barrios, municipios, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, crearBarrio, modificarBarrio, eliminarBarrio } = appContext;
+    const { usuarioLogueado, barrios, municipios, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, crearBarrio, modificarBarrio, eliminarBarrio } = appContext;
     useEffect(()=>{
         traerMunicipiosPorProvincia(10);
         traerBarriosPorMunicipio(0);
@@ -21,7 +21,12 @@ const ListaBarrios = () => {
     const [EditMode, setEditMode] = useState(false);
     const [BarrioInfo, setBarrioInfo] = useState({
         BarrioId: '',
-        BarrioNombre: ''
+        BarrioNombre: '',
+        createdBy: null,
+        updatedAt: null,
+        updatedBy: null,
+        deletedBy: null,
+        deletedAt: null
     })
     const { BarrioNombre } = BarrioInfo;
 
@@ -37,7 +42,7 @@ const ListaBarrios = () => {
         setModalEliminarBarrio(false);
         if(data !== '') {
             setEditMode(true);
-            setBarrioInfo(data);
+            setBarrioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
             setMunicipioIdModal(data.MunicipioId);
             setMunicipioNombre(data.MunicipioNombre);
         }
@@ -49,7 +54,7 @@ const ListaBarrios = () => {
     const handleChangeModalEliminarBarrio = (data = '') => {
         setModalEliminarBarrio(!ModalEliminarBarrio);
         setModalBarrio(false);
-        setBarrioInfo(data);
+        setBarrioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
     }
 
     const handleChangeMunicipioSeleccionado = (e) => {

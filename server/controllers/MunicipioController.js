@@ -24,6 +24,7 @@ exports.MunicipioCreate = async(req, res) => {
             });
             const municipio = new Municipio(req.body);
             municipio.MunicipioId = ultimoMunicipio.MunicipioId + 1;
+            municipio.createdBy = req.body.usuarioLogueado.User.UserId;
             const provinciaMunicipio = new ProvinciaMunicipio(req.body);
             provinciaMunicipio.MunicipioId = ultimoMunicipio.MunicipioId + 1;
             provinciaMunicipio.ProvinciaId = req.body.ProvinciaIdModal;
@@ -64,8 +65,7 @@ exports.MunicipioDelete = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             const municipio = await Municipio.findByPk(req.body.MunicipioId, {transaction: t});
-            municipio.MunicipioEliminado = 1;
-            await municipio.save({transaction: t});
+            await municipio.update(req.body, {transaction: t});
             return res.status(200).json({msg: 'El Municipio ha sido eliminado correctamente'})
         })
     } catch (error) {
@@ -81,7 +81,7 @@ exports.MunicipiosListarPorProvincia = async(req, res) => {
         .join('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
         .where({
             'p.ProvinciaId': req.params.id,
-            'm.MunicipioEliminado': 0
+            'm.deletedAt': null
         });
         res.json(municipios);
     } catch (error) {
@@ -94,7 +94,9 @@ exports.MunicipiosGet = async(req, res) => {
         const municipios = await knex.select('*').from('municipio as m')
         .join('provinciamunicipio as pm', 'm.MunicipioId', '=', 'pm.MunicipioId')
         .join('provincia as p', 'p.ProvinciaId', '=', 'pm.ProvinciaId')
-        .where('m.MunicipioEliminado', '=', 0);
+        .where({
+            'm.deletedAt': null
+        });
         res.json(municipios);
     } catch (error) {
         console.log(error);

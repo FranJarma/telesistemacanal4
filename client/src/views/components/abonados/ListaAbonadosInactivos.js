@@ -106,20 +106,18 @@ const ListaAbonadosInactivos = () => {
             "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
             "wrap": true,
         },
-    {
-        cell: (data) =>
-        <>
-        <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><Tooltip title="Historial de bajas"><i className='bx bx-task-x'></i></Tooltip></Typography>
-        <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><Tooltip title="Dar de alta"><i className='bx bxs-user-check bx-xs'></i></Tooltip></Typography>
-        </>,
-    }
+        {
+            cell: (data) =>
+            <>
+            <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><Tooltip title="Historial de bajas"><i className='bx bx-task-x'></i></Tooltip></Typography>
+            <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><Tooltip title="Dar de alta"><i className='bx bxs-user-check bx-xs'></i></Tooltip></Typography>
+            </>,
+        }
 ]
 const ExpandedComponent = ({ data }) =>
 <>
     <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-id-card"></i> DNI: {data.Documento}</Typography>
     <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Domicilio: {data.DomicilioCalle} {data.DomicilioNumero} | Barrio {data.BarrioNombre} | {data.MunicipioNombre}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de baja: {data.CambioEstadoFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
-    <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-question-mark"></i> Motivo de baja: {data.CambioEstadoObservaciones}</Typography>
 </>;
     return (
         <>

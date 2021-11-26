@@ -66,14 +66,6 @@ const User = db.define('_user', {
         type: DATE,
         allowNull: true
     },
-    createdAt: {
-        type: DATE,
-        allowNull: true,
-    },
-    createdBy: {
-        type: UUIDV4,
-        allowNull: true
-    },
     //Columnas Relacionadas por fk
     CondicionIvaId: {
         type: INTEGER,

@@ -30,14 +30,14 @@ exports.UserCreate = async(req, res) => {
             const salt = bcrypt.genSaltSync();
             user.Contraseña = bcrypt.hashSync(req.body.Contraseña, salt);
             user.UserId = uuidv4().toUpperCase();
-            user.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
-            user.EsUsuarioDeSistema = 1; // es el mismo estado
+            user.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;  // es el mismo estado
+            user.EsUsuarioDeSistema = 1;
             //hay que armar un array con todos los objetos a crear
             const userEstado = new UserEstado();
             userEstado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
             userEstado.UserId = user.UserId;
             userEstado.CambioEstadoFecha = new Date().toString();
-            userEstado.CambioEstadoObservaciones = 'Primer Inscripción';
+            userEstado.CambioEstadoObservaciones = 'Dado de alta';
             await user.save({transaction: t});
             await userEstado.save({transaction: t});
             for (let i=0; i<= req.body.RolesSeleccionados.length-1; i++){
@@ -91,7 +91,7 @@ exports.UserUpdate = async(req, res) => {
                 'Documento': req.body.Documento,
                 'Email': req.body.Email,
                 'Telefono': req.body.Telefono,
-                'Contraseña': bcrypt.hashSync(req.body.Contraseña, salt),
+                'Contraseña': bcrypt.hashSync(req.body.Contraseña, salt)
             },{transaction: t})
             : await user.update({
                 'Nombre': req.body.Nombre,
@@ -113,6 +113,8 @@ exports.UserDelete = async(req, res) => {
         await db.transaction(async(t)=>{
             //buscamos el user por su Id
             const user = await User.findByPk( req.body.UserId, {transaction: t} );
+            user.DeletedAt = new Date().toString();
+            user.DeletedBy = req.body.usuarioLogueado.UserId;
             await user.save({transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido eliminado correctamente'})
         })
@@ -151,7 +153,7 @@ exports.AbonadosGet = async(req, res) => {
         abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
         .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
-        .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
+        .leftJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
         .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
         .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
         .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
@@ -283,7 +285,7 @@ exports.AbonadoCreate = async(req, res) => {
             abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
             abonadoEstado.UserId = abonado.UserId;
             abonadoEstado.CambioEstadoFecha = new Date().toString();
-            abonadoEstado.CambioEstadoObservaciones = 'Primer Inscripción';
+            abonadoEstado.CambioEstadoObservaciones = 'Dado de alta';
             //traemos la ONU por id y actualizamos su estado para que pase a ASIGNADA
             if(req.body.OnuId != 0) {
                 const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
@@ -443,7 +445,9 @@ exports.AbonadoCambioTitularidad = async(req, res) => {
             let nuevoDomicilio = null;
             //buscamos el abonado viejo
             const abonado = await User.findByPk( req.body.UserIdViejo, {transaction: t} );
-            //cambiamos su estado a INACTIVO
+            //cambiamos su estado a INACTIVO, le desasignamos la ONU si es que tiene y la fecha de bajada
+            abonado.OnuId = null;
+            abonado.FechaBajada = null;
             abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INACTIVO;
             //creamos nuevo abonado con la información de la vista
             const abonadoNuevo = new User(req.body, {transaction: t});

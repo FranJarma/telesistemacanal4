@@ -7,7 +7,7 @@ import { Alert } from '@material-ui/lab';
 
 const ListaMunicipios = () => {
     const appContext = useContext(AppContext);
-    const { municipios, provincias, traerProvincias, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio } = appContext;
+    const { usuarioLogueado, municipios, provincias, traerProvincias, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio } = appContext;
     useEffect(()=>{
         traerProvincias();
         traerMunicipiosPorProvincia(10);
@@ -17,7 +17,12 @@ const ListaMunicipios = () => {
         MunicipioId: '',
         MunicipioNombre: '',
         MunicipioSigla: '',
-        MunicipioCodigoPostal: ''
+        MunicipioCodigoPostal: '',
+        createdBy: null,
+        updatedAt: null,
+        updatedBy: null,
+        deletedBy: null,
+        deletedAt: null
     })
     const [ProvinciaIdVieja, setProvinciaIdVieja] = useState('');
     const [ProvinciaId, setProvinciaId] = useState(10);
@@ -55,7 +60,7 @@ const ListaMunicipios = () => {
         if(data !== '') {
             setProvinciaIdVieja(data.ProvinciaId);
             setEditMode(true);
-            setMunicipioInfo(data);
+            setMunicipioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
             setProvinciaIdModal(data.ProvinciaId); //para que cargue JUJUY por defecto
             setProvinciaNombreModal(data.ProvinciaNombre);
         }
@@ -67,7 +72,7 @@ const ListaMunicipios = () => {
     const handleChangeModalEliminarMunicipio = (data = '') => {
         setModalEliminarMunicipio(!ModalEliminarMunicipio);
         setModalMunicipio(false);
-        setMunicipioInfo(data);
+        setMunicipioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
     }
 
     const columnasMunicipios = [
