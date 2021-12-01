@@ -8,7 +8,7 @@ require('dotenv').config({path: 'variables.env'});
 exports.ModelosOnuGet = async(req, res) => {
     try {
         const modelosONU = await knex.select('*').from('modeloonu as mo')
-        .where('mo.ModeloOnuEliminado','=', 0);
+        .where({'mo.deletedAt': null});
         res.json(modelosONU);
     } catch (error) {
         console.log(error);
@@ -56,8 +56,7 @@ exports.ModeloOnuDelete = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             const modeloOnu = await ModeloOnu.findByPk(req.body.ModeloOnuId, {transaction: t});
-            modeloOnu.ModeloOnuEliminado = 1;
-            await modeloOnu.save({transaction: t});
+            await modeloOnu.update(req.body, {transaction: t});
             return res.status(200).json({msg: 'El modelo de ONU ha sido eliminado correctamente'})
         })
     } catch (error) {

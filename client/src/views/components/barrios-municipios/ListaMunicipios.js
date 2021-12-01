@@ -66,6 +66,7 @@ const ListaMunicipios = () => {
         }
         else {
             setEditMode(false);
+            setMunicipioInfo({...data, createdBy: usuarioLogueado.User.UserId});
         }
     }
 

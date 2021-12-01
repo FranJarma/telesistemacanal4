@@ -17,7 +17,6 @@ router.put('/update', ValidarJWT, [
     check('OnuSerie', 'La serie es obligatoria').notEmpty(),
     check('OnuMac', 'La MAC es obligatoria').notEmpty(),
     check('ModeloOnuId', 'El modelo es obligatorio').notEmpty(),
-    check('OnuMac').custom(esOnuValida)
 ], OnuController.OnuUpdate);
 router.put('/delete', ValidarJWT, OnuController.OnuDelete);
 module.exports = router;

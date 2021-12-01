@@ -12,7 +12,7 @@ exports.DetallesPagoListar = async(req,res) => {
         .innerJoin('mediopago as mp','dp.MedioPagoId', '=', 'mp.MedioPagoId')
         .where({
             'dp.PagoId': req.params.id,
-            'dp.DetallePagoEliminado': 0
+            'dp.deletedAt': null
         })
         .orderBy('dp.DetallePagoFecha', 'desc');
         res.json(detallesPagos);
@@ -26,12 +26,11 @@ exports.DetallePagoDelete = async(req, res) => {
     try {
         await db.transaction(async(t)=> {
             const detallePago = await DetallePago.findByPk(req.body.DetallePagoId, {transaction: t});
-            detallePago.DetallePagoEliminado = 1;
             //buscamos el PAGO y actualizamos el saldo
             const pago = await Pago.findByPk(req.body.PagoId, {transaction: t});
             let saldo = pago.PagoSaldo;
             pago.PagoSaldo = saldo + req.body.DetallePagoMonto;
-            await detallePago.save({transaction: t});
+            await detallePago.update(req.body, {transaction: t});
             await pago.save({transaction: t});
             return res.status(200).json({msg: 'El detalle del pago ha sido eliminado correctamente'})
         })

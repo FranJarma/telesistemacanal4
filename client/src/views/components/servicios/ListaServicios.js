@@ -9,7 +9,7 @@ import { Alert } from '@material-ui/lab';
 
 const ListaServicios = () => {
     const appContext = useContext(AppContext);
-    const { servicios, traerServicios, crearServicio, modificarServicio, eliminarServicio } = appContext;
+    const { usuarioLogueado, servicios, traerServicios, crearServicio, modificarServicio, eliminarServicio } = appContext;
     useEffect(()=>{
         traerServicios();
     },[])
@@ -20,7 +20,12 @@ const ListaServicios = () => {
         ServicioNombre: '',
         ServicioPrecioUnitario: '',
         ServicioRecargo: '',
-        ServicioDescripcion: ''
+        ServicioDescripcion: '',
+        createdBy: null,
+        updatedAt: null,
+        updatedBy: null,
+        deletedBy: null,
+        deletedAt: null
     })
     const { ServicioNombre, ServicioPrecioUnitario, ServicioRecargo, ServicioDescripcion } = ServicioInfo;
 
@@ -36,17 +41,18 @@ const ListaServicios = () => {
         setModalEliminarServicio(false);
         if(data !== '') {
             setEditMode(true);
-            setServicioInfo(data);
+            setServicioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
         }
         else {
             setEditMode(false);
+            setServicioInfo({...data, createdBy: usuarioLogueado.User.UserId});
         }
     }
 
     const handleChangeModalEliminarServicio = (data = '') => {
         setModalEliminarServicio(!ModalEliminarServicio);
         setModalServicio(false);
-        setServicioInfo(data);
+        setServicioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
     }
 
     const columnasServicios = [

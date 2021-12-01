@@ -2,14 +2,15 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
+import { Autocomplete } from '@material-ui/lab';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
-    const { barrios, condicionesIva, municipios, servicios, provincias, onus, onu, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
+    const { usuarioLogueado, barrios, condicionesIva, municipios, servicios, provincias, onus, onu, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
     traerProvincias, traerONUS, traerONUPorId, crearAbonado, modificarAbonado } = appContext;
     
     const location = useLocation();
@@ -24,7 +25,10 @@ const CaratulaAbonado = () => {
         Telefono: null,
         DomicilioCalle: null,
         DomicilioNumero: null,
-        DomicilioPiso: null
+        DomicilioPiso: null,
+        createdBy: usuarioLogueado.User.UserId,
+        updatedAt: null,
+        updatedBy: null
     })
     const onInputChange = (e) => {
         setAbonadoInfo({
@@ -32,7 +36,7 @@ const CaratulaAbonado = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso} = abonadoInfo;
+    const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, createdBy, updatedAt, updatedBy} = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -47,7 +51,7 @@ const CaratulaAbonado = () => {
     const [BarrioId, setBarrioId] = useState(0);
     const [ServicioId, setServicioId] = useState(0);
     const [CondicionIvaId, setCondicionIvaId] = useState(0);
-    const [OnuId, setOnuId] = useState(0);
+    const [OnuId, setOnuId] = useState(null);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [FechaBajada, setFechaBajada] = useState(new Date());
@@ -65,10 +69,6 @@ const CaratulaAbonado = () => {
     }
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIvaId(e.target.value);
-    }
-    const handleChangeOnuSeleccionada = (e) => {
-        setOnuId(e.target.value);
-        traerONUPorId(e.target.value);
     }
 
     useEffect(() => {
@@ -94,7 +94,9 @@ const CaratulaAbonado = () => {
                 Telefono: location.state.Telefono,
                 DomicilioCalle: location.state.DomicilioCalle,
                 DomicilioNumero: location.state.DomicilioNumero,
-                DomicilioPiso: location.state.DomicilioPiso
+                DomicilioPiso: location.state.DomicilioPiso,
+                updatedAt: new Date().toString(),
+                updatedBy: usuarioLogueado.User.UserId
             });
             setServicioId(location.state.ServicioId);
             setCondicionIvaId(location.state.CondicionIvaId);
@@ -126,7 +128,8 @@ const CaratulaAbonado = () => {
                 MunicipioId,
                 BarrioId,
                 ServicioId,
-                OnuId
+                OnuId,
+                createdBy
             });
         }
         else {
@@ -142,7 +145,9 @@ const CaratulaAbonado = () => {
                 FechaContrato,
                 FechaBajada,
                 CondicionIvaId,
-                ServicioId
+                ServicioId,
+                updatedAt,
+                updatedBy
             });
         }
     }
@@ -178,7 +183,7 @@ const CaratulaAbonado = () => {
                     label="Apellido">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={2} lg={2} xl={2}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant="outlined"
                     value={Documento}
@@ -189,7 +194,7 @@ const CaratulaAbonado = () => {
                     type="number">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={2} lg={2} xl={2}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant="outlined"
                     value={Cuit}
@@ -201,7 +206,7 @@ const CaratulaAbonado = () => {
                     >
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant="outlined"
                     value={CondicionIvaId}
@@ -215,7 +220,7 @@ const CaratulaAbonado = () => {
                     ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant="outlined"
                     value={Email}
@@ -226,7 +231,7 @@ const CaratulaAbonado = () => {
                     >
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <DatePicker 
                     inputVariant="outlined"
                     value={FechaNacimiento}
@@ -239,7 +244,7 @@ const CaratulaAbonado = () => {
                     views={["year", "month", "date"]}>
                     </DatePicker >
                 </Grid>
-                <Grid item xs={12} md={3} lg={3} xl={3}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant="outlined"
                     value={Telefono}
@@ -250,7 +255,7 @@ const CaratulaAbonado = () => {
                     label="N° Teléfono">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant = {location.state ? "filled" : "outlined"}
                     disabled = {location.state ? true : false}
@@ -264,7 +269,7 @@ const CaratulaAbonado = () => {
                     )): ""}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant = {location.state ? "filled" : "outlined"}
                     disabled = {location.state ? true : false}
@@ -274,11 +279,6 @@ const CaratulaAbonado = () => {
                     fullWidth
                     select = {location.state ? false : true}
                     >
-                    <Link style={{textDecoration: 'none'}} to={{
-                            pathname: 'barrios-municipios',
-                            state: true
-                    }}>
-                    <Button variant="text" fullWidth color="primary"> + Nuevo municipio</Button></Link>
                     {!location.state ? municipios.length > 0 ? municipios.map((municipio)=>(
                         <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
                     )): <MenuItem disabled>No se encontraron municipios</MenuItem> : ""}
@@ -288,24 +288,27 @@ const CaratulaAbonado = () => {
             <Typography variant="h2"><i className="bx bx-home"></i> Datos del domicilio de instalación</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
+                {location.state ? 
                 <TextField
-                    variant = {location.state ? "filled" : "outlined"}
-                    disabled = {location.state ? true : false}
-                    onChange={handleChangeBarrioSeleccionado}
-                    value={location.state ? location.state.BarrioNombre : BarrioId}
-                    label="Barrio"
+                    variant = "filled"
+                    disabled
+                    value={location.state.BarrioNombre}
                     fullWidth
-                    select = {location.state ? false : true}
-                    >
-                    <Link style={{textDecoration: 'none'}} to={{
-                            pathname: 'barrios-municipios',
-                            state: true
-                    }}>
-                    <Button variant="text" fullWidth color="primary"> + Nuevo barrio</Button></Link>
-                    {!location.state ? barrios.length > 0 ? barrios.map((barrio)=>(
-                        <MenuItem key={barrio.BarrioId} value={barrio.BarrioId}>{barrio.BarrioNombre}</MenuItem>
-                    )): <MenuItem disabled>No se encontraron barrios</MenuItem> : ""}
-                    </TextField>
+                    label="Barrio">
+                </TextField>
+                :
+                <Autocomplete
+                disabled={location.state ? true : false}
+                value={location.state ? location.state.BarrioNombre : BarrioId}
+                onChange={(_event, newBarrioId) => {
+                    setBarrioId(newBarrioId);
+                }}
+                options={barrios}
+                noOptionsText="No se encontraron barrios"
+                getOptionLabel={(option) => option.BarrioNombre}
+                renderInput={(params) => <TextField {...params} variant = {location.state ? "filled" : "outlined"} fullWidth label="Barrios"/>}
+                />
+                }
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
@@ -362,7 +365,8 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <DatePicker 
-                    inputVariant="outlined"
+                    disabled = {location.state ? true : false}
+                    inputVariant={location.state ? "filled" : "outlined"}
                     value={FechaContrato}
                     onChange={(fecha)=>setFechaContrato(fecha)}
                     format="dd/MM/yyyy"
@@ -373,7 +377,8 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <DatePicker 
-                    inputVariant="outlined"
+                    disabled = {location.state ? true : false}
+                    inputVariant={location.state ? "filled" : "outlined"}
                     value={FechaBajada}
                     onChange={(fecha)=>setFechaBajada(fecha)}
                     format="dd/MM/yyyy"
@@ -402,25 +407,16 @@ const CaratulaAbonado = () => {
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
-                <TextField
-                    variant = {location.state ? "filled" : "outlined"}
-                    disabled = {location.state ? true : false}
-                    value={location.state ? location.state.OnuMac : OnuId }
-                    onChange={handleChangeOnuSeleccionada}
-                    label={location.state ? "MAC ONU Asignada" : "MAC ONU a asignar"}
-                    fullWidth
-                    select = {location.state ? false : true}
-                    >
-                    <Link style={{textDecoration: 'none'}} to={{
-                        pathname: 'onus-modelosONUs',
-                        state: true
-                    }}>
-                    <Button variant="text" fullWidth color="primary"> + Nueva ONU</Button></Link>
-                    {onus.length > 0 ? onus.map((onu)=>(
-                        <MenuItem key={onu.OnuId} value={onu.OnuId}>{onu.OnuMac}</MenuItem>
-                        )): <MenuItem disabled>No se encontraron ONUS disponibles para asignar</MenuItem>}
-                    </TextField>
-                    {onu ? <FormHelperText style={{color: 'teal'}}><b>Modelo: </b>{onu.ModeloOnuNombre}</FormHelperText>: ''}
+                <Autocomplete
+                disabled={location.state ? true : false}
+                value={location.state ? location.state.OnuMac : OnuId}
+                onChange={(_event, newOnuId) => {
+                    setOnuId(newOnuId);
+                }}
+                options={onus}
+                getOptionLabel={(option) => option.OnuMac + " - " + option.ModeloOnuNombre}
+                renderInput={(params) => <TextField {...params} variant="outlined" fullWidth label="Onus disponibles"/>}
+                />
                 </Grid>
             </Grid>
             </>

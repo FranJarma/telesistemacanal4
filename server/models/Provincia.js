@@ -1,4 +1,4 @@
-const { STRING } = require('sequelize');
+const { STRING, UUIDV4, DATE } = require('sequelize');
 const db = require('../config/connection');
 
 const Provincia = db.define('provincia', {
@@ -8,6 +8,30 @@ const Provincia = db.define('provincia', {
     },
     SiglaProvincia: {
         type: STRING(256),
+        allowNull: true
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    updatedBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    deletedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    deletedBy: {
+        type: UUIDV4,
         allowNull: true
     }
 });

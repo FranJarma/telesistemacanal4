@@ -48,6 +48,7 @@ const ListaBarrios = () => {
         }
         else {
             setEditMode(false);
+            setBarrioInfo({...data, createdBy: usuarioLogueado.User.UserId});
         }
     }
 

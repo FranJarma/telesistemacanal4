@@ -12,7 +12,7 @@ import useStyles from '../Styles';
 
 const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
-    const { abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    const { usuarioLogueado, abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
 
     useEffect(() => {
         traerAbonados(1);
@@ -27,8 +27,12 @@ const ListaAbonadosInscriptos = () => {
     const [AbonadoInfo, setAbonadoInfo] = useState({
         UserId: null,
         EstadoId: null,
-        CambioEstadoFecha: null,
-        CambioEstadoObservaciones: null
+        CambioEstadoObservaciones: null,
+        createdBy: null,
+        updatedAt: null,
+        updatedBy: null,
+        deletedBy: null,
+        deletedAt: null
     });
 
     const { CambioEstadoObservaciones } = AbonadoInfo;
@@ -38,7 +42,6 @@ const ListaAbonadosInscriptos = () => {
         if(!modalDarDeBaja){
             setAbonadoInfo({
                 EstadoId: 3,
-                CambioEstadoFecha: new Date().toJSON(),
                 UserId: data.UserId
             })
         }

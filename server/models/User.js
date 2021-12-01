@@ -1,4 +1,4 @@
-const { UUIDV4, DATE, STRING, INTEGER, BIGINT, BOOLEAN,  } = require('sequelize');
+const { UUIDV4, DATE, STRING, INTEGER, BIGINT, BOOLEAN  } = require('sequelize');
 const db = require('../config/connection');
 
 const User = db.define('_user', {
@@ -64,6 +64,30 @@ const User = db.define('_user', {
     },
     UltimoInicioDeSesion: {
         type: DATE,
+        allowNull: true
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    updatedBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    deletedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    deletedBy: {
+        type: UUIDV4,
         allowNull: true
     },
     //Columnas Relacionadas por fk

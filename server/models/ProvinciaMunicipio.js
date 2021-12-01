@@ -1,4 +1,4 @@
-const { INTEGER } = require('sequelize');
+const { INTEGER, UUIDV4, DATE } = require('sequelize');
 const db = require('../config/connection');
 
 const ProvinciaMunicipio = db.define('provinciamunicipio', {
@@ -13,6 +13,30 @@ const ProvinciaMunicipio = db.define('provinciamunicipio', {
     MunicipioId: {
         type: INTEGER,
         allowNull: false
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    updatedBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    deletedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    deletedBy: {
+        type: UUIDV4,
+        allowNull: true
     }
 });
 

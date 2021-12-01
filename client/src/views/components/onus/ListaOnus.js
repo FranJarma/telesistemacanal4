@@ -4,28 +4,37 @@ import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
+import { Autocomplete } from '@material-ui/lab';
 
 const ListaOnus = ({location}) => {
     const appContext = useContext(AppContext);
-    const { onus, traerONUS, modelosONU, traerModelosONU, servicios, traerServicios, crearONU, modificarONU, eliminarONU } = appContext;
+    const { usuarioLogueado, abonados, traerAbonados, onus, traerONUS, modelosONU, traerModelosONU, servicios, traerServicios, crearONU, modificarONU, eliminarONU } = appContext;
     useEffect(()=>{
         //para abrir el modal directamente cuando se quiere dar de alta una ONU desde otra vista 
         location.state ? setModalOnu(true) : setModalOnu(false);
         traerONUS();
+        traerAbonados(2);
         traerModelosONU();
         traerServicios();
     },[])
     const [ModalOnu, setModalOnu] = useState(false);
+    const [ModalAsignarAbonado, setModalAsignarAbonado] = useState(false);
     const [ModalEliminarOnu, setModalEliminarOnu] = useState(false);
     const [EditMode, setEditMode] = useState(false);
     const [OnuInfo, setOnuInfo] = useState({
         OnuId: '',
         OnuSerie: '',
-        OnuMac: ''
+        OnuMac: '',
+        createdBy: null,
+        updatedAt: null,
+        updatedBy: null,
+        deletedBy: null,
+        deletedAt: null
     })
     const [ServicioId, setServicioId] = useState(2);
+    const [ModeloOnuId, setModeloOnuId] = useState(0);
+    const [AbonadoSeleccionado, setAbonadoSeleccionado] = useState(null);
     const { OnuSerie, OnuMac } = OnuInfo;
-    const [ModeloOnuId, setModeloOnuId] = useState(1);
 
     const onInputChange= (e) =>{
         setOnuInfo({
@@ -44,18 +53,23 @@ const ListaOnus = ({location}) => {
         setModalEliminarOnu(false);
         if(data !== '') {
             setEditMode(true);
-            setOnuInfo(data);
+            setOnuInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
             setModeloOnuId(data.ModeloOnuId);
         }
         else {
             setEditMode(false);
+            setOnuInfo({...data, createdBy: usuarioLogueado.User.UserId});
         }
     }
 
     const handleChangeModalEliminarOnu = (data = '') => {
         setModalEliminarOnu(!ModalEliminarOnu);
         setModalOnu(false);
-        setOnuInfo(data);
+        setOnuInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
+    }
+
+    const handleChangeModalAsignarAbonado = (data = '') => {
+        setModalAsignarAbonado(!ModalAsignarAbonado);
     }
 
     const columnasONUS = [
@@ -92,6 +106,7 @@ const ListaOnus = ({location}) => {
             cell: (data) => 
             <>
             <Typography onClick={()=>{handleChangeModalOnu(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalAsignarAbonado(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Asignar abonado"><i className='bx bxs-user bx-xs' ></i></Tooltip></Typography>
             <Typography onClick={()=>{handleChangeModalEliminarOnu(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
             </>,
         }
@@ -194,6 +209,24 @@ const ListaOnus = ({location}) => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarONU(OnuInfo, handleChangeModalEliminarOnu)}}>Eliminar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarOnu}>Cerrar</Button>
+            </>
+        }
+        />
+        <Modal
+        abrirModal={ModalAsignarAbonado}
+        funcionCerrar={handleChangeModalAsignarAbonado}
+        titulo={<Typography variant="h2"><i className="bx bx-user"></i>Asignar ONU a abonado</Typography>}
+        formulario={
+            <Autocomplete
+            options={abonados}
+            getOptionLabel={(option) => option.Nombre + " " + option.Apellido + " | " +  option.Documento}
+            renderInput={(params) => <TextField {...params} style={{width: "25rem"}} variant="outlined" fullWidth label="Abonados Activos sin ONU"/>}
+            />
+        }
+        botones={
+            <>
+            <Button variant="contained" color="primary" onClick={()=>{eliminarONU(OnuInfo, handleChangeModalEliminarOnu)}}>Confirmar</Button>
             <Button variant="text" color="inherit" onClick={handleChangeModalEliminarOnu}>Cerrar</Button>
             </>
         }

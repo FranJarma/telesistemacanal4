@@ -6,12 +6,12 @@ import Modal from '../design/components/Modal';
 import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
-import { Alert } from '@material-ui/lab';
+import { Autocomplete } from '@material-ui/lab';
 import { DatePicker } from '@material-ui/pickers';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
-    const {barrios, historialDomicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
+    const { usuarioLogueado, barrios, historialDomicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
     traerProvincias, cambioDomicilioAbonado } = appContext;
     const location = useLocation();
     //Observables
@@ -26,8 +26,8 @@ const CambioDomicilio = () => {
         DomicilioCalle: null,
         DomicilioNumero: null,
         DomicilioPiso: null,
-        CambioDomicilioFecha: new Date().toJSON(),
         CambioDomicilioObservaciones: null,
+        createdBy: null
     })
     const onInputChange = (e) => {
         setDomicilioInfo({
@@ -35,7 +35,7 @@ const CambioDomicilio = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, CambioDomicilioFecha, CambioDomicilioObservaciones} = DomicilioInfo;
+    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, createdBy, CambioDomicilioObservaciones} = DomicilioInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -46,8 +46,7 @@ const CambioDomicilio = () => {
         setBarrioId(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [BarrioId, setBarrioId] = useState(0);
-    const [BarrioNombre, setBarrioNombre] = useState('')
+    const [Barrio, setBarrio] = useState(null);
     const [MunicipioId, setMunicipioId] = useState(0);
     const [MunicipioNombre, setMunicipioNombre] = useState('')
     const [ModalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
@@ -55,22 +54,25 @@ const CambioDomicilio = () => {
 
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
-        setBarrioId(0);
+        setBarrio(null);
         traerBarriosPorMunicipio(e.target.value);
     }
     const handleFocusMunicipioSeleccionado = (e) => {
         setMunicipioNombre(e.target.innerHTML)
     }
-    const handleFocusBarrioSeleccionado = (e) => {
-        setBarrioNombre(e.target.innerHTML)
-    }
-    const handleChangeBarrioSeleccionado = (e) => {
-        setBarrioId(e.target.value);
-    }
+    // const handleFocusBarrioSeleccionado = (e) => {
+    //     setBarrioNombre(e.target.innerHTML)
+    // }
+    // const handleChangeBarrioSeleccionado = (e) => {
+    //     setBarrioId(e.target.value);
+    // }
     const handleChangeModalNuevoDomicilio = () => {
+
         setModalNuevoDomicilio(!ModalNuevoDomicilio);
         setDomicilioInfo({
-            UserId: location.state.UserId
+            ...DomicilioInfo,
+            UserId: location.state.UserId,
+            createdBy: usuarioLogueado.User.UserId
         })
     }
 
@@ -80,16 +82,15 @@ const CambioDomicilio = () => {
             cambioDomicilioAbonado({
                 UserId,
                 //ProvinciaId
-                BarrioId,
-                BarrioNombre,
+                Barrio,
                 MunicipioId,
                 MunicipioNombre,
                 DomicilioCalle,
                 DomicilioNumero,
                 DomicilioPiso,
                 FechaBajada,
-                CambioDomicilioFecha,
-                CambioDomicilioObservaciones
+                CambioDomicilioObservaciones,
+                createdBy
             }, setModalNuevoDomicilio)
     }
 }
@@ -107,16 +108,19 @@ const CambioDomicilio = () => {
         {
             "name": "Barrio",
             "selector": row =>row["BarrioNombre"],
-            "hide": "sm"
+            "hide": "sm",
+            "wrap": true
         },
         {
             "name": "Municipio",
             "selector": row =>row["MunicipioNombre"],
+            "wrap": true
         },
         {
-            "name": "Fecha de Cambio",
-            "selector": row =>row["CambioDomicilioFecha"].split('T')[0].split('-').reverse().join('/'),
-            "hide": "sm"
+            "name": "Fecha",
+            "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('/'),
+            "hide": "sm",
+            "wrap": true
         },
         {
             "name": "Observaciones",
@@ -130,7 +134,7 @@ const CambioDomicilio = () => {
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Dirección: {data.DomicilioCalle} {data.DomicilioNumero}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-home"></i> Barrio: {data.BarrioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-building-house"></i> Municipio: {data.MunicipioNombre}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.CambioDomicilioFecha.split('T')[0].split('-').reverse().join('/')}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.createdAt.split('T')[0].split('-').reverse().join('/')}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-clipboard"></i> Observaciones: {data.CambioDomicilioObservaciones}</Typography>
     </>;
     return ( 
@@ -212,19 +216,16 @@ const CambioDomicilio = () => {
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
-                <TextField
-                    variant = "outlined"
-                    onChange={handleChangeBarrioSeleccionado}
-                    value={BarrioId}
-                    label="Barrio"
-                    fullWidth
-                    select
-                    onFocus={handleFocusBarrioSeleccionado}
-                    >
-                    {barrios.length > 0 ? barrios.map((barrio)=>(
-                        <MenuItem key={barrio.BarrioId} value={barrio.BarrioId}>{barrio.BarrioNombre}</MenuItem>
-                    )): <MenuItem disabled>No se encontraron barrios</MenuItem>}
-                    </TextField>
+                    <Autocomplete
+                    value={Barrio}
+                    onChange={(_event, nuevoBarrio) => {
+                        setBarrio(nuevoBarrio);
+                    }}
+                    options={barrios}
+                    noOptionsText="No se encontraron barrios"
+                    getOptionLabel={(option) => option.BarrioNombre}
+                    renderInput={(params) => <TextField {...params} variant = "outlined" fullWidth label="Barrios"/>}
+                    />
                 </Grid>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField

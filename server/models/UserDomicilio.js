@@ -12,11 +12,16 @@ const UserDomicilio = db.define('userdomicilio', {
     DomicilioId: {
         type: INTEGER
     },
-    CambioDomicilioFecha: {
-        type: DATE
-    },
     CambioDomicilioObservaciones: {
         type: STRING
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
     }
 });
 

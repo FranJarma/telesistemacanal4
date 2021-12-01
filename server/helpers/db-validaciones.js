@@ -30,5 +30,6 @@ module.exports = {
     esDNIValido,
     esCUITValido,
     esUserValido,
-    esEmailValido
+    esEmailValido,
+    esOnuValida
 }

@@ -6,13 +6,12 @@ import Modal from '../design/components/Modal';
 import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { Link, useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
-import { Alert } from '@material-ui/lab';
 import { DatePicker } from '@material-ui/pickers';
 import useStyles from './../Styles';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const {historialServicios, servicios, onus, onu, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId, cambioServicioAbonado } = appContext;
+    const { usuarioLogueado, historialServicios, servicios, onus, onu, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId, cambioServicioAbonado } = appContext;
 
     const location = useLocation();
     const styles = useStyles();
@@ -25,8 +24,8 @@ const CambioServicio = () => {
     //States
     const [ServicioInfo, setServicioInfo] = useState({
         UserId: location.state.UserId,
-        CambioServicioFecha: new Date().toJSON(),
-        CambioServicioObservaciones: null
+        CambioServicioObservaciones: null,
+        createdBy: null
     })
     const onInputChange = (e) => {
         setServicioInfo({
@@ -34,7 +33,7 @@ const CambioServicio = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, CambioServicioFecha, CambioServicioObservaciones} = ServicioInfo;
+    const { UserId, CambioServicioFecha, createdBy, CambioServicioObservaciones} = ServicioInfo;
     const [ServicioId, setServicioId] = useState(1);
     const [ServicioNombre, setServicioNombre] = useState('Cable');
     const [ModalNuevoServicio, setModalNuevoServicio] = useState(false);
@@ -56,7 +55,8 @@ const CambioServicio = () => {
         setModalNuevoServicio(!ModalNuevoServicio);
         if(!ModalNuevoServicio){
             setServicioInfo({
-                UserId: location.state.UserId
+                UserId: location.state.UserId,
+                createdBy: usuarioLogueado.User.UserId
             })
         }
         else {
@@ -75,7 +75,8 @@ const CambioServicio = () => {
                 ServicioNombre,
                 FechaBajada,
                 CambioServicioFecha,
-                CambioServicioObservaciones
+                CambioServicioObservaciones,
+                createdBy
             }, setModalNuevoServicio)
             traerONUPorId(location.state.OnuId);
     }

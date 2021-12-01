@@ -4,10 +4,9 @@ import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import { Button, Card, CardContent, Grid, TextField, Typography} from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
-import Modal from '../design/components/Modal';
-import { Alert } from '@material-ui/lab';
 import DataTable from 'react-data-table-component';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import paginacionOpciones from '../design/components/PaginacionOpciones';
 
 const CaratulaRole = () => {
     const appContext = useContext(AppContext);
@@ -84,12 +83,6 @@ const CaratulaRole = () => {
             wrap: true
         },
 ]
-const paginacionOpciones = {
-    rowsPerPageText: 'Registros por página',
-    rangeSeparatorText: 'de',
-    selectAllRowsItem: true,
-    selectAllRowsItemText: 'Mostrar todos'
-}
 
     return ( 
     <>
@@ -143,13 +136,13 @@ const paginacionOpciones = {
     <TabPanel>
         <Card>
         <DataTable
-                columns={columnasPermisos}
-                data={permisos}
-                onSelectedRowsChange={row => setPermisosSeleccionados(row.selectedRows)}
-                paginationComponentOptions={paginacionOpciones}
-                pagination={true}
-                selectableRows
-                selectableRowSelected={row => PermisosSeleccionados.find((permiso) => row.PermissionId === permiso.PermissionId)}>
+            columns={columnasPermisos}
+            data={permisos}
+            onSelectedRowsChange={row => setPermisosSeleccionados(row.selectedRows)}
+            paginationComponentOptions={paginacionOpciones}
+            pagination={true}
+            selectableRows
+            selectableRowSelected={row => PermisosSeleccionados.find((permiso) => row.PermissionId === permiso.PermissionId)}>
         </DataTable>
         </Card>
     </TabPanel>

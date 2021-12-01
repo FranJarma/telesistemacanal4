@@ -12,12 +12,12 @@ import { Link } from "react-router-dom";
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pago, pagos, detallesPago, mediosPago, crearPago, eliminarDetallePago, traerPagosPorAbonado, traerPago, traerDetallesPago, traerMediosPago } = appContext;
+    const { usuarioLogueado, pago, pagos, detallesPago, mediosPago, crearPago, eliminarDetallePago, traerPagosPorAbonado, traerPago, traerDetallesPago, traerMediosPago } = appContext;
 
     const location = useLocation();
 
     const [FechaActual, setFechaActual] = useState({
-        diaActual: new Date().getDay(),
+        diaActual: new Date().getDate(),
         mesActual: new Date().getMonth() + 1 //+1 debido que getMonth comienza en 0
     })
 
@@ -36,7 +36,12 @@ const ListaPagos = () => {
         ? location.state.ServicioRecargo : 0,
         PagoTotal: (FechaActual.diaActual >= 21 && FechaActual.mesActual === PagoPeriodo.getMonth()+1)
         || (FechaActual.mesActual > PagoPeriodo.getMonth()+1)
-        ? location.state.ServicioPrecioUnitario + location.state.ServicioRecargo : location.state.ServicioPrecioUnitario
+        ? location.state.ServicioPrecioUnitario + location.state.ServicioRecargo : location.state.ServicioPrecioUnitario,
+        createdBy: null,
+        updatedAt: null,
+        updatedBy: null,
+        deletedBy: null,
+        deletedAt: null
     });
 
     const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
@@ -63,6 +68,10 @@ const ListaPagos = () => {
             MedioPagoId: e.target.value});
     }
     const handleChangeModalNuevoPago = (data) => {
+        setPagoInfo({
+            ...PagoInfo,
+            createdBy: usuarioLogueado.User.UserId
+        })
         setModalNuevoPago(!ModalNuevoPago);
     }
     const handleChangeModalDetallesPago = (data) => {
@@ -70,7 +79,7 @@ const ListaPagos = () => {
         setModalDetallesPago(!ModalDetallesPago);
     }
     const handleChangeModalEliminarDetallePago = (data) => {
-        setPagoInfo(data);
+        setPagoInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
         setModalEliminarDetallePago(!ModalEliminarDetallePago);
     }
     
@@ -138,7 +147,7 @@ const ListaPagos = () => {
         {
             cell: (data) => 
             <>
-            <Typography style={{color: "slategrey", cursor: 'pointer'}}><Tooltip title="Generar recibo"><i className="bx bxs-receipt bx-xs"></i></Tooltip></Typography>
+            {/* <Typography style={{color: "slategrey", cursor: 'pointer'}}><Tooltip title="Generar recibo"><i className="bx bxs-receipt bx-xs"></i></Tooltip></Typography> */}
             <Typography onClick={()=>{handleChangeModalEliminarDetallePago(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
             </>,
         }

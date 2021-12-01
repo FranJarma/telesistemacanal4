@@ -15,11 +15,16 @@ const UserServicio = db.define('userservicio', {
     OnuId: {
         type: INTEGER
     },
-    CambioServicioFecha: {
-        type: DATE
-    },
     CambioServicioObservaciones: {
         type: STRING
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
     }
 });
 

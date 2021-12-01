@@ -12,11 +12,16 @@ const UserEstado = db.define('userestado', {
     EstadoId: {
         type: INTEGER
     },
-    CambioEstadoFecha: {
-        type: DATE
-    },
     CambioEstadoObservaciones: {
         type: STRING
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
     }
 });
 

@@ -10,7 +10,7 @@ import Modal from '../design/components/Modal';
 
 const ListaAbonadosInactivos = () => {
     const appContext = useContext(AppContext);
-    const { abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    const { usuarioLogueado, abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
 
     useEffect(() => {
         traerAbonados(3);
@@ -24,8 +24,12 @@ const ListaAbonadosInactivos = () => {
     const [AbonadoInfo, setAbonadoInfo] = useState({
         UserId: null,
         EstadoId: null,
-        CambioEstadoFecha: null,
-        CambioEstadoObservaciones: null
+        CambioEstadoObservaciones: null,
+        createdBy: null,
+        updatedAt: null,
+        updatedBy: null,
+        deletedBy: null,
+        deletedAt: null
     });
 
     const { CambioEstadoObservaciones } = AbonadoInfo;

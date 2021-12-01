@@ -36,7 +36,6 @@ exports.UserCreate = async(req, res) => {
             const userEstado = new UserEstado();
             userEstado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
             userEstado.UserId = user.UserId;
-            userEstado.CambioEstadoFecha = new Date().toString();
             userEstado.CambioEstadoObservaciones = 'Dado de alta';
             await user.save({transaction: t});
             await userEstado.save({transaction: t});
@@ -65,6 +64,7 @@ exports.UserUpdate = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             let userRoleVec = [];
+            console.log(req.body);
             //buscamos el user por su Id
             const user = await User.findByPk( req.body.UserId, {transaction: t} );
             if(req.body.RolesSeleccionados.length !== 0){
@@ -91,14 +91,18 @@ exports.UserUpdate = async(req, res) => {
                 'Documento': req.body.Documento,
                 'Email': req.body.Email,
                 'Telefono': req.body.Telefono,
-                'Contraseña': bcrypt.hashSync(req.body.Contraseña, salt)
+                'Contraseña': bcrypt.hashSync(req.body.Contraseña, salt),
+                'updatedAt': req.body.updatedAt,
+                'updatedBy': req.body.updatedBy,
             },{transaction: t})
             : await user.update({
                 'Nombre': req.body.Nombre,
                 'Apellido': req.body.Apellido,
                 'Documento': req.body.Documento,
                 'Email': req.body.Email,
-                'Telefono': req.body.Telefono
+                'Telefono': req.body.Telefono,
+                'updatedAt': req.body.updatedAt,
+                'updatedBy': req.body.updatedBy,
             },{transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido modificado correctamente'})
         }) 
@@ -164,7 +168,7 @@ exports.AbonadosGet = async(req, res) => {
         .where({
             'r.RoleId': process.env.ID_ROL_ABONADO,
             'm.MunicipioId': req.params.municipioId,
-            'u.estadoId': req.params.estadoId
+            'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId == 0 && req.params.estadoId != 0 ?
         abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
@@ -180,7 +184,7 @@ exports.AbonadosGet = async(req, res) => {
         .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
         .where({
             'r.RoleId': process.env.ID_ROL_ABONADO,
-            'u.estadoId': req.params.estadoId
+            'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId != 0 && req.params.estadoId == 0 ?
         abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
@@ -227,7 +231,7 @@ exports.AbonadoListarDomicilios = async(req, res) => {
         .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
         .innerJoin('municipio as m', 'm.MunicipioId', '=', 'b.MunicipioId')
         .where('ud.UserId', '=', req.params.id)
-        .orderBy('ud.CambioDomicilioFecha', 'desc');
+        .orderBy('ud.createdAt', 'desc');
         res.json(domicilios);
     } catch (error) {
         res.status(500).json({ msg: 'Hubo un error al encontrar los domicilios de los abonados'});
@@ -236,11 +240,11 @@ exports.AbonadoListarDomicilios = async(req, res) => {
 
 exports.AbonadoListarServicios = async(req, res) => {
     try {
-        const servicios = await knex.select('us.CambioServicioFecha', 'us.CambioServicioObservaciones', 's.ServicioNombre', 'o.OnuMac').from('userservicio as us')
+        const servicios = await knex.select('us.createdAt', 'us.CambioServicioObservaciones', 's.ServicioNombre', 'o.OnuMac').from('userservicio as us')
         .innerJoin('servicio as s', 's.ServicioId', '=', 'us.ServicioId')
         .leftJoin('onu as o', 'o.OnuId', '=','us.OnuId')
         .where('us.UserId', '=', req.params.id)
-        .orderBy('us.CambioServicioFecha', 'desc');
+        .orderBy('us.createdAt', 'desc');
         res.json(servicios);
     } catch (error) {
         res.status(500).json({ msg: 'Hubo un error al encontrar los servicios de los abonados'});
@@ -366,24 +370,26 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                 order: [['DomicilioId', 'DESC']],
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
-            const domicilio = new Domicilio(req.body, {transaction: t});
-            domicilio.DomicilioId = ultimoDomicilioId + 1;
-            //buscamos el user para actualizarle el domicilio y el estado
-            const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
-            abonado.DomicilioId = ultimoDomicilioId + 1;
-            abonado.EstadoId = 1;
-            abonado.FechaBajada = req.body.FechaBajada;
-            //await abonado.update(req.body.DomicilioId);
-            let ultimoUserDomicilio = await UserDomicilio.findOne({
-                order: [["UserDomicilioId", "DESC"]]
-            })
-            const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
-            abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
-            abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
-            await domicilio.save({transaction: t}),
-            await abonado.save({transaction: t});
-            await abonadoDomicilio.save({transaction: t});
-            return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})
+            console.log(req.body);
+            // const domicilio = new Domicilio(req.body, {transaction: t});
+            // domicilio.DomicilioId = ultimoDomicilioId + 1;
+            // domicilio.BarrioId = req.body.Barrio.BarrioId;
+            // //buscamos el user para actualizarle el domicilio y el estado
+            // const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
+            // abonado.DomicilioId = ultimoDomicilioId + 1;
+            // abonado.EstadoId = 1;
+            // abonado.FechaBajada = req.body.FechaBajada;
+            // //await abonado.update(req.body.DomicilioId);
+            // let ultimoUserDomicilio = await UserDomicilio.findOne({
+            //     order: [["UserDomicilioId", "DESC"]]
+            // })
+            // const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
+            // abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
+            // abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
+            // await domicilio.save({transaction: t}),
+            // await abonado.save({transaction: t});
+            // await abonadoDomicilio.save({transaction: t});
+            // return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})
         })
 
     } catch (error) {

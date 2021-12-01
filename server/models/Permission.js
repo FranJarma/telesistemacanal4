@@ -1,4 +1,4 @@
-const { UUIDV4, STRING } = require('sequelize');
+const { UUIDV4, STRING, UUIDV4, DATE } = require('sequelize');
 const db = require('../config/connection');
 
 const Permission = db.define('_permission', {
@@ -10,8 +10,32 @@ const Permission = db.define('_permission', {
         type: STRING(256),
         allowNull: false
     },
-    Description: {
+    PermissionDescription: {
         type: STRING(256),
+        allowNull: true
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    updatedBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    deletedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    deletedBy: {
+        type: UUIDV4,
         allowNull: true
     }
 });

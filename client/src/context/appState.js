@@ -317,7 +317,7 @@ const AppState = props => {
                     payload: abonado
                 })
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/abonados-inscriptos');
+                history.goBack();
         })
         .catch(err => {
             if(!err.response){
@@ -859,6 +859,7 @@ const AppState = props => {
                 });
                 Swal('Operación completa', resOk.data.msg);
                 cerrarModal(true);
+                window.location.reload();
         })
         .catch(err => {
             if(!err.response){

@@ -1,4 +1,4 @@
-const { STRING, INTEGER } = require('sequelize');
+const { STRING, INTEGER, UUIDV4, DATE } = require('sequelize');
 const db = require('../config/connection');
 
 const MedioPago = db.define('mediopago', {
@@ -14,6 +14,30 @@ const MedioPago = db.define('mediopago', {
     MedioPagoDescripcion: {
         type: STRING(256),
         allowNull: false
+    },
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    updatedBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    deletedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    deletedBy: {
+        type: UUIDV4,
+        allowNull: true
     }
 });
 

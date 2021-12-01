@@ -12,7 +12,7 @@ exports.OnuGet = async(req, res) => {
         .innerJoin('modeloonu as mo','o.ModeloOnuId','=','mo.ModeloOnuId')
         .leftJoin('_user as u','u.OnuId','=','o.OnuId')
         .where({
-            'o.OnuEliminada': 0,
+            'o.deletedAt': null,
             'o.EstadoId': req.params.estadoId
         })
         :
@@ -20,7 +20,7 @@ exports.OnuGet = async(req, res) => {
         .innerJoin('modeloonu as mo','o.ModeloOnuId','=','mo.ModeloOnuId')
         .leftJoin('_user as u','u.OnuId','=','o.OnuId')
         .where({
-            'o.OnuEliminada': 0
+            'o.deletedAt': null
         })
         res.json(onu);
     } catch (error) {
@@ -34,11 +34,10 @@ exports.OnuGetById = async(req, res) => {
         .innerJoin('modeloonu as mo','o.ModeloOnuId','=','mo.ModeloOnuId')
         .leftJoin('_user as u','u.OnuId','=','o.OnuId')
         .where({
-            'o.OnuEliminada': 0,
+            'o.deletedAt': null,
             'o.OnuId': req.params.id
         })
         .first();
-        console.log(onu);
         res.json(onu);
     } catch (error) {
         res.status(500).send('Hubo un error al encontrar la onu');
@@ -55,7 +54,12 @@ exports.OnuCreate = async(req, res) => {
                 order: [['OnuId', 'DESC']]
             });
             const onu = new Onu(req.body);
-            onu.OnuId = ultimaOnu.OnuId + 1;
+            if(ultimaOnu){
+                onu.OnuId = ultimaOnu.OnuId + 1
+            }
+            else {
+                onu.OnuId = 1;
+            };
             onu.EstadoId = 5; //estado=registrada
             await onu.save({transaction: t});
             return res.status(200).json({msg: 'La ONU ha sido registrado correctamente'})
@@ -85,8 +89,7 @@ exports.OnuDelete = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
-            onu.OnuEliminada = 1;
-            await onu.save({transaction: t});
+            await onu.update(req.body, {transaction: t});
             return res.status(200).json({msg: 'La ONU ha sido eliminada correctamente'})
         })
     } catch (error) {

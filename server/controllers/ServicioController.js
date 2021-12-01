@@ -48,8 +48,7 @@ exports.ServicioDelete = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             const servicio = await Servicio.findByPk(req.body.ServicioId, {transaction: t});
-            servicio.ServicioEliminado = 1;
-            await servicio.save({transaction: t});
+            await servicio.update(req.body, {transaction: t});
             return res.status(200).json({msg: 'El Servicio ha sido eliminado correctamente'})
         })
     } catch (error) {
@@ -59,7 +58,9 @@ exports.ServicioDelete = async(req, res) => {
 }
 exports.ServiciosListar = async(req, res) => {
     try {
-        const servicios = await knex.select('*').from('servicio as s').where('s.ServicioEliminado', '=', '0');
+        const servicios = await knex.select('*').from('servicio as s').where({
+            's.deletedAt': null
+        });
         res.json(servicios);
     } catch (error) {
         console.log(error);

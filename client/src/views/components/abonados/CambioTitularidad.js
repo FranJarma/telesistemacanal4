@@ -10,7 +10,7 @@ import { Alert } from '@material-ui/lab';
 
 const CambioTitularidad = () => {
     const appContext = useContext(AppContext);
-    const {barrios, condicionesIva, municipios, provincias, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, traerProvincias, traerCondicionesIva, cambioTitularidadAbonado } = appContext;
+    const { usuarioLogueado, barrios, condicionesIva, municipios, provincias, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, traerProvincias, traerCondicionesIva, cambioTitularidadAbonado } = appContext;
     
     const location = useLocation();
     const styles = useStyles();
@@ -27,7 +27,8 @@ const CambioTitularidad = () => {
         DomicilioNumero: null,
         DomicilioPiso: null,
         OnuId: location.state.OnuId ? location.state.OnuId : null,
-        ServicioId: location.state.ServicioId
+        ServicioId: location.state.ServicioId,
+        createdBy: null
     });
 
     const onInputChange = (e) => {
@@ -36,7 +37,7 @@ const CambioTitularidad = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserIdViejo, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, OnuId, ServicioId} = abonadoInfo;
+    const { UserIdViejo, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, OnuId, ServicioId, createdBy} = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -66,7 +67,8 @@ const CambioTitularidad = () => {
                 ...abonadoInfo,
                 DomicilioCalle: location.state.DomicilioCalle,
                 DomicilioNumero: location.state.DomicilioNumero,
-                DomicilioPiso: location.state.DomicilioPiso
+                DomicilioPiso: location.state.DomicilioPiso,
+                createdBy: usuarioLogueado.User.UserId
             });
             setDomicilioId(location.state.DomicilioId);
         }
@@ -124,7 +126,8 @@ const CambioTitularidad = () => {
             BarrioId,
             DomicilioId,
             OnuId,
-            ServicioId
+            ServicioId,
+            createdBy
         });
 }
     return ( 

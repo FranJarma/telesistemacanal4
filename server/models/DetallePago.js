@@ -1,4 +1,4 @@
-const { STRING, INTEGER, FLOAT, DATE } = require('sequelize');
+const { STRING, INTEGER, FLOAT, DATE, UUIDV4 } = require('sequelize');
 const db = require('../config/connection');
 
 const DetallePago = db.define('detallepago', {
@@ -18,9 +18,29 @@ const DetallePago = db.define('detallepago', {
         type: STRING,
         allowNull: true
     },
-    DetallePagoEliminado: {
-        type: INTEGER,
-        defaultValue: 0
+    createdAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    updatedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    updatedBy: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    deletedAt: {
+        type: DATE,
+        allowNull: true,
+    },
+    deletedBy: {
+        type: UUIDV4,
+        allowNull: true
     },
     //fk
     PagoId: {
