@@ -34,7 +34,9 @@ const AppState = props => {
         mediosPago: [],
         pagos: [],
         pago: {},
-        detallesPago: []
+        detallesPago: [],
+        tareas: [],
+        tiposTareas: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -1012,6 +1014,30 @@ const AppState = props => {
             console.log(error);
         }
     }
+    //TAREAS
+    const traerTareas = async () => {
+        try {
+            const resultado = await clienteAxios.get('/api/tareas');
+            dispatch({
+                type: TYPES.LISTA_TAREAS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    //TIPOS DE TAREAS
+    const traerTiposTareas = async () => {
+        try {
+            const resultado = await clienteAxios.get('/api/tiposTareas');
+            dispatch({
+                type: TYPES.LISTA_TIPOS_TAREAS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return(
         <AppContext.Provider
         value={{
@@ -1041,6 +1067,8 @@ const AppState = props => {
             pagos: state.pagos,
             pago: state.pago,
             detallesPago: state.detallesPago,
+            tareas: state.tareas,
+            tiposTareas: state.tiposTareas,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
@@ -1055,7 +1083,8 @@ const AppState = props => {
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago,
             traerPagosPorAbonado, traerPago, crearPago,
-            traerDetallesPago, eliminarDetallePago
+            traerDetallesPago, eliminarDetallePago,
+            traerTareas, traerTiposTareas
         }}>{props.children}
         </AppContext.Provider>
     )

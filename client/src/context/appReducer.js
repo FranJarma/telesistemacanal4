@@ -245,7 +245,17 @@ export default (state, action) => {
                 detallesPago: state.detallesPago.filter(detallePago => detallePago.DetallePagoId !== action.payload.DetallePagoId),
                 pagos: [...state.pagos]
 
-        } 
+        }
+        case TYPES.LISTA_TAREAS:
+            return {
+                ...state,
+                tareas: action.payload,
+        }
+        case TYPES.LISTA_TIPOS_TAREAS:
+            return {
+                ...state,
+                tiposTareas: action.payload,
+        }
         default:
             return state;
     }

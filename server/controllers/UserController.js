@@ -12,6 +12,7 @@ const UserEstado = require('./../models/UserEstado');
 const UserServicio = require('./../models/UserServicio');
 const UserRole = require('./../models/UserRole');
 const Onu = require('../models/Onu');
+const Tarea = require('../models/Tarea');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -258,12 +259,18 @@ exports.AbonadoCreate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-        //traemos el id del ultimo domicilio registrado y de la ultima onu registrada
+        //traemos el id del ultimo domicilio registrado
             let ultimoDomicilioId = 0;
             const ultimoDomicilio = await Domicilio.findOne({
                 order: [['DomicilioId', 'DESC']]
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
+        //traemos el id de la ultima tarea
+            let ultimaTareaId = 0;
+            const ultimaTarea = await Tarea.findOne({
+                order: [['TareaId', 'DESC']]
+            });
+            if (ultimaTarea) ultimaTareaId = ultimaTarea.TareaId;
             // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
             const abonado = new User(req.body);
             abonado.UserId = uuidv4().toUpperCase();
@@ -272,6 +279,15 @@ exports.AbonadoCreate = async(req, res) => {
             abonado.EsUsuarioDeSistema = 0;
             const domicilio = new Domicilio(req.body);
             domicilio.DomicilioId = ultimoDomicilioId + 1;
+            domicilio.BarrioId = req.body.Barrio.BarrioId;
+            //crear tarea
+            const tarea = new Tarea(req.body);
+            tarea.TareaId = ultimaTareaId + 1;
+            tarea.TipoTareaId = 1;
+            tarea.DomicilioId = ultimoDomicilioId + 1;
+            tarea.FechaEstimadaTarea = req.body.FechaBajada;
+            tarea.createdAt = new Date().toString();
+            tarea.EstadoId = 5;
             const abonadoRole = new UserRole();
             abonadoRole.UserId = abonado.UserId;
             abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
@@ -291,12 +307,13 @@ exports.AbonadoCreate = async(req, res) => {
             abonadoEstado.CambioEstadoFecha = new Date().toString();
             abonadoEstado.CambioEstadoObservaciones = 'Dado de alta';
             //traemos la ONU por id y actualizamos su estado para que pase a ASIGNADA
-            if(req.body.OnuId != 0) {
+            if(req.body.OnuId !== 0) {
                 const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
                 onu.EstadoId = 4;
                 await onu.save({transaction: t});
             }
             await domicilio.save({transaction: t});
+            await tarea.save({transaction: t});
             await abonado.save({transaction: t});
             await abonadoRole.save({transaction: t});
             await abonadoDomicilio.save({transaction: t});
@@ -370,26 +387,25 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                 order: [['DomicilioId', 'DESC']],
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
-            console.log(req.body);
-            // const domicilio = new Domicilio(req.body, {transaction: t});
-            // domicilio.DomicilioId = ultimoDomicilioId + 1;
-            // domicilio.BarrioId = req.body.Barrio.BarrioId;
-            // //buscamos el user para actualizarle el domicilio y el estado
-            // const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
-            // abonado.DomicilioId = ultimoDomicilioId + 1;
-            // abonado.EstadoId = 1;
-            // abonado.FechaBajada = req.body.FechaBajada;
-            // //await abonado.update(req.body.DomicilioId);
-            // let ultimoUserDomicilio = await UserDomicilio.findOne({
-            //     order: [["UserDomicilioId", "DESC"]]
-            // })
-            // const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
-            // abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
-            // abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
-            // await domicilio.save({transaction: t}),
-            // await abonado.save({transaction: t});
-            // await abonadoDomicilio.save({transaction: t});
-            // return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})
+            const domicilio = new Domicilio(req.body, {transaction: t});
+            domicilio.DomicilioId = ultimoDomicilioId + 1;
+            domicilio.BarrioId = req.body.Barrio.BarrioId;
+            //buscamos el user para actualizarle el domicilio y el estado
+            const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
+            abonado.DomicilioId = ultimoDomicilioId + 1;
+            abonado.EstadoId = 1;
+            abonado.FechaBajada = req.body.FechaBajada;
+            //await abonado.update(req.body.DomicilioId);
+            let ultimoUserDomicilio = await UserDomicilio.findOne({
+                order: [["UserDomicilioId", "DESC"]]
+            })
+            const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
+            abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
+            abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
+            await domicilio.save({transaction: t}),
+            await abonado.save({transaction: t});
+            await abonadoDomicilio.save({transaction: t});
+            return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})
         })
 
     } catch (error) {

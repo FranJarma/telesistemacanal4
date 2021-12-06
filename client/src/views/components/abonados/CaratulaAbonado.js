@@ -44,25 +44,25 @@ const CaratulaAbonado = () => {
     const handleChangeProvinciaSeleccionada = (e) => {
         setProvinciaId(e.target.value);
         setMunicipioId(0);
-        setBarrioId(0);
+        setBarrio(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
     const [MunicipioId, setMunicipioId] = useState(0);
-    const [BarrioId, setBarrioId] = useState(0);
+    const [Barrio, setBarrio] = useState(null);
     const [ServicioId, setServicioId] = useState(0);
     const [CondicionIvaId, setCondicionIvaId] = useState(0);
-    const [OnuId, setOnuId] = useState(null);
+    const [OnuId, setOnuId] = useState(0);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [FechaBajada, setFechaBajada] = useState(new Date());
 
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
-        setBarrioId(0);
+        setBarrio(null);
         traerBarriosPorMunicipio(e.target.value);
     }
     const handleChangeBarrioSeleccionado = (e) => {
-        setBarrioId(e.target.value);
+        setBarrio(e.target.value);
     }
     const handleChangeServicioSeleccionado = (e) => {
         setServicioId(e.target.value);
@@ -126,7 +126,7 @@ const CaratulaAbonado = () => {
                 CondicionIvaId,
                 ProvinciaId,
                 MunicipioId,
-                BarrioId,
+                Barrio,
                 ServicioId,
                 OnuId,
                 createdBy
@@ -299,9 +299,9 @@ const CaratulaAbonado = () => {
                 :
                 <Autocomplete
                 disabled={location.state ? true : false}
-                value={location.state ? location.state.BarrioNombre : BarrioId}
+                value={location.state ? location.state.BarrioNombre : Barrio}
                 onChange={(_event, newBarrioId) => {
-                    setBarrioId(newBarrioId);
+                    setBarrio(newBarrioId);
                 }}
                 options={barrios}
                 noOptionsText="No se encontraron barrios"

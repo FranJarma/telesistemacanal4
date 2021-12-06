@@ -38,6 +38,9 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     || (item.DetallePagoFecha && item.DetallePagoFecha.toString().includes(textoFiltrado.toLowerCase()))
     || (item.RoleName && item.RoleName.toString().includes(textoFiltrado.toLowerCase()))
     || (item.RoleDescription && item.RoleDescription.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.TareaId && item.TareaId.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.TipoTareaId && item.TipoTareaId.toString().includes(textoFiltrado.toLowerCase()))
+
     );
     const paginacionOpciones = {
         rowsPerPageText: 'Registros por página',

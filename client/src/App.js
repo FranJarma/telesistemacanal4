@@ -20,6 +20,9 @@ import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
 import PrivateRoute from './routes/PrivateRoute';
 import Login from './views/components/auth/Login';
+import ListaTareas from './views/components/tareas/ListaTareas';
+import ListaMisTareas from './views/components/tareas/ListaMisTareas';
+import ListaTiposTareas from './views/components/tareas/ListaTiposTareas';
 
 
 //revisamos si tenemos un token
@@ -150,6 +153,12 @@ function App() {
                   <PrivateRoute exact path="/barrios-municipios" component={BarriosMunicipios}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/onus-modelosOnus" component={OnusModelosOnus}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/tareas" component={ListaTareas}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/mis-tareas" component={ListaMisTareas}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/tipos-de-tareas" component={ListaTiposTareas}>
                   </PrivateRoute>
                 </Suspense>
             </Switch>
