@@ -94,7 +94,7 @@ const CambioServicio = () => {
         },
         {
             "name": "Fecha de Cambio",
-            "selector": row =>row["CambioServicioFecha"].split('T')[0].split('-').reverse().join('/'),
+            "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('/'),
         },
         {
             "name": "Observaciones",

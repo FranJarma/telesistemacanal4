@@ -116,12 +116,12 @@ const CambioDomicilio = () => {
             "selector": row =>row["MunicipioNombre"],
             "wrap": true
         },
-        {
-            "name": "Fecha",
-            "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('/'),
-            "hide": "sm",
-            "wrap": true
-        },
+        // {
+        //     "name": "Fecha",
+        //     "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('/'),
+        //     "hide": "sm",
+        //     "wrap": true
+        // },
         {
             "name": "Observaciones",
             "selector": row =>row["CambioDomicilioObservaciones"],

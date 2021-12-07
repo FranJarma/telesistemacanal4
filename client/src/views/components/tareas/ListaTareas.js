@@ -1,11 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Box, Button, Card, CardContent, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import MobileDateRangePicker from '@mui/lab/MobileDateRangePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import esLocale from 'date-fns/locale/es';
 
 const ListaTareas = () => {
     const appContext = useContext(AppContext);
@@ -23,6 +27,7 @@ const ListaTareas = () => {
         deletedBy: null,
         deletedAt: null
     })
+    const [rangoFechas, setRangoFechas] = useState([null, null]);
 
     const handleChangeModalTarea = (data = '') => {
         setModalTarea(!ModalTarea);
@@ -82,6 +87,31 @@ const ListaTareas = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Card>
+            <CardContent>
+                <div style={{display: 'flex'}}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={esLocale}>
+                <MobileDateRangePicker
+                    startText="Desde"
+                    endText="Hasta"
+                    value={rangoFechas}
+                    onChange={(newValue) => {
+                    setRangoFechas(newValue);
+                    }}
+                    renderInput={(startProps, endProps) => (
+                    <React.Fragment>
+                        <TextField {...startProps} />
+                        <Box sx={{ mx: 2 }}></Box>
+                        <TextField  {...endProps} />
+                    </React.Fragment>
+                    )}
+                />
+                </LocalizationProvider>
+                    <Button style={{marginLeft: '2rem'}} variant="contained" color="secondary">Buscar</Button>
+                </div>
+            </CardContent>
+        </Card>
+        <br/>
         <Card>
             <CardContent>
                 <Typography variant="h1">Listado de Tareas</Typography>
