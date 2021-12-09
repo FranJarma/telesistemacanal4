@@ -20,9 +20,8 @@ import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
 import PrivateRoute from './routes/PrivateRoute';
 import Login from './views/components/auth/Login';
-import ListaTareas from './views/components/tareas/ListaTareas';
-import ListaMisTareas from './views/components/tareas/ListaMisTareas';
-import ListaTiposTareas from './views/components/tareas/ListaTiposTareas';
+import ListaMisTareas from './views/components/tecnicos/ListaMisTareas';
+import ListaTiposTareas from './views/components/tecnicos/ListaTiposTareas';
 
 
 //revisamos si tenemos un token
@@ -64,6 +63,12 @@ const CaratulaRole = lazy(() => {
 const CambioTitularidad = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
     () => import('./views/components/abonados/CambioTitularidad')
+  );
+});
+
+const CaratulaOT = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+    () => import('./views/components/tecnicos/CaratulaOT')
   );
 });
 
@@ -154,9 +159,9 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute exact path="/onus-modelosOnus" component={OnusModelosOnus}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/tareas" component={ListaTareas}>
+                  <PrivateRoute exact path="/caratula-ot" component={CaratulaOT}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/mis-tareas" component={ListaMisTareas}>
+                  <PrivateRoute exact path="/mis-ot" component={ListaMisTareas}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/tipos-de-tareas" component={ListaTiposTareas}>
                   </PrivateRoute>

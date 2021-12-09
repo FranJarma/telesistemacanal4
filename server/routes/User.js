@@ -6,6 +6,8 @@ const { esDNIValido, esCUITValido, esUserValido, esEmailValido } =  require('./.
 const ValidarJWT = require('../middlewares/ValidarJWT');
 
 router.get('/estado=:estadoId', ValidarJWT, UserController.UsersGet);
+router.get('/rol=:rolId', ValidarJWT, UserController.UsersGetByRole);
+router.get('/abonados/UserId=:UserId', ValidarJWT, UserController.AbonadoGetById);
 router.get('/abonados/municipio=:municipioId&estado=:estadoId', ValidarJWT, UserController.AbonadosGet);
 router.get('/abonados/domicilios/:id', ValidarJWT, UserController.AbonadoListarDomicilios);
 router.get('/abonados/servicios/:id', ValidarJWT, UserController.AbonadoListarServicios);

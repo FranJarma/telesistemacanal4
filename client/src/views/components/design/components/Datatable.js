@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Spinner from './Spinner';
 import Buscador from './Buscador';
 
-const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, buscar}) => {
+const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, buscar, seleccionable, fnSeleccionable}) => {
     //state y effect para spinner
     const [cargando, setCargando] = useState(true);
 
@@ -39,7 +39,7 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     || (item.RoleName && item.RoleName.toString().includes(textoFiltrado.toLowerCase()))
     || (item.RoleDescription && item.RoleDescription.toString().includes(textoFiltrado.toLowerCase()))
     || (item.TareaId && item.TareaId.toString().includes(textoFiltrado.toLowerCase()))
-    || (item.TipoTareaId && item.TipoTareaId.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.TipoTareaNombre && item.TipoTareaNombre.toString().includes(textoFiltrado.toLowerCase()))
 
     );
     const paginacionOpciones = {
@@ -62,6 +62,8 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
             progressComponent={<Spinner/>}
             progressPending={loader ? cargando : false}
             responsive
+            selectableRows={seleccionable ? true : false}
+            onSelectedRowsChange={row => fnSeleccionable(row.selectedRows)}
             subHeader = {buscar ? true : false}
             subHeaderComponent={
                 buscar ? 

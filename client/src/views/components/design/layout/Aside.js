@@ -71,9 +71,9 @@ const Aside = () => {
           </>
           : rol.RoleName === "Jefe" || rol.RoleName === "Admin" ?
           <>
-          <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Tareas" icon={<i className="bx bx-wrench"></i>}>
-            <MenuItem icon={<i className='bx bx-task'></i>}>Mis tareas a realizar<Link to="/mis-tareas"></Link></MenuItem>
-            <MenuItem icon={<i className='bx bx-list-ol'></i>}>Listado de tareas<Link to="/tareas"></Link></MenuItem>
+          <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Técnicos y OT" icon={<i className="bx bx-wrench"></i>}>
+            <MenuItem icon={<i className='bx bx-task'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
+            <MenuItem icon={<i className='bx bx-list-ol'></i>}>Nueva OT<Link to="/caratula-ot"></Link></MenuItem>
           </SubMenu>
           <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
             <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>

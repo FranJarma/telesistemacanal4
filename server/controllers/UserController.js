@@ -139,6 +139,18 @@ exports.UsersGet = async(req, res) => {
         res.status(500).json({ msg: 'Hubo un error al encontrar los usuarios'});
     }
 }
+exports.UsersGetByRole = async(req, res) => {
+    console.log(req.body);
+    try {
+        const users = await knex.select('*').from('_userrole as ur')
+        .innerJoin('_user as u', 'u.UserId', '=', 'ur.UserId')
+        .where({'ur.RoleId': '3EF5B486-2604-44E6-BA2C-D9F78BF7A612'});
+        res.json(users);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al encontrar los usuarios'});
+    }
+}
 exports.UserGetRoles = async(req, res) => {
     try {
         const roles = await knex.select('*').select('e.EstadoNombre').from('_role as r')
@@ -223,7 +235,17 @@ exports.AbonadosGet = async(req, res) => {
         res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
-
+exports.AbonadoGetById = async(req, res) => {
+    try {
+        const abonado = await knex.select('*').from('_user as u')
+        .innerJoin('domicilio as d', 'u.DomicilioId', '=', 'd.DomicilioId')
+        .where({'u.UserId ': req.params.UserId});
+        res.json(abonado);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al encontrar el abonado'});
+    }
+}
 exports.AbonadoListarDomicilios = async(req, res) => {
     try {
         const domicilios = await knex.select('*').from('userdomicilio as ud')
@@ -280,14 +302,14 @@ exports.AbonadoCreate = async(req, res) => {
             const domicilio = new Domicilio(req.body);
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
-            //crear tarea
-            const tarea = new Tarea(req.body);
-            tarea.TareaId = ultimaTareaId + 1;
-            tarea.TipoTareaId = 1;
-            tarea.DomicilioId = ultimoDomicilioId + 1;
-            tarea.FechaEstimadaTarea = req.body.FechaBajada;
-            tarea.createdAt = new Date().toString();
-            tarea.EstadoId = 5;
+            // //crear tarea
+            // const tarea = new Tarea(req.body);
+            // tarea.TareaId = ultimaTareaId + 1;
+            // tarea.TipoTareaId = 1;
+            // tarea.DomicilioId = ultimoDomicilioId + 1;
+            // tarea.FechaEstimadaTarea = req.body.FechaBajada;
+            // tarea.createdAt = new Date().toString();
+            // tarea.EstadoId = 5;
             const abonadoRole = new UserRole();
             abonadoRole.UserId = abonado.UserId;
             abonadoRole.RoleId = process.env.ID_ROL_ABONADO;

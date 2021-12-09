@@ -10,6 +10,7 @@ export default (state, action) => {
                 usuarioAutenticado: true
         }
         case TYPES.OBTENER_INFO_USUARIO:
+            localStorage.setItem('usr', action.payload.User.Apellido + ", "+ action.payload.User.Nombre);
             return {
                 ...state,
                 usuarioLogueado: action.payload,
@@ -18,6 +19,7 @@ export default (state, action) => {
         }
         case TYPES.CERRAR_SESION:
             localStorage.removeItem('token');
+            localStorage.removeItem('usr');
             return {
                 ...state,
                 usuarioAutenticado: false,
@@ -91,6 +93,11 @@ export default (state, action) => {
             return {
                 ...state,
                 abonados: action.payload,
+        }
+        case TYPES.TRAER_ABONADO:
+            return {
+                ...state,
+                abonado: action.payload
         }
         case TYPES.LISTA_DOMICILIOS_ABONADO: 
             return {

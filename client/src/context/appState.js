@@ -20,6 +20,7 @@ const AppState = props => {
         permisos: [],
         permisosRol: [],
         abonados: [],
+        abonado: {},
         domicilios: [],
         barrios: [],
         condicionesIva: [],
@@ -241,6 +242,17 @@ const AppState = props => {
             console.log(error);
         }
     }
+    const traerUsuariosPorRol = async (rolId = 0) => {
+        try {
+            const resultado =  await clienteAxios.get(`/api/usuarios/rol=${rolId}`);
+            dispatch({
+                type: TYPES.LISTA_USUARIOS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const traerRoles = async (estadoId = 0) => {
         try {
             const resultado =  await clienteAxios.get(`/api/roles`);
@@ -431,6 +443,18 @@ const AppState = props => {
             const resultado =  await clienteAxios.get(`/api/usuarios/abonados/municipio=${municipioId}&estado=${estadoId}`);
             dispatch({
                 type: TYPES.LISTA_ABONADOS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerAbonado = async (UserId) => {
+        console.log(UserId)
+        try {
+            const resultado =  await clienteAxios.get(`/api/usuarios/abonados/UserId=${UserId}`);
+            dispatch({
+                type: TYPES.TRAER_ABONADO,
                 payload: resultado.data
             })
         } catch (error) {
@@ -1052,6 +1076,7 @@ const AppState = props => {
             permisos: state.permisos,
             permisosRol: state.permisosRol,
             abonados: state.abonados,
+            abonado: state.abonado,
             domicilios: state.domicilios,
             barrios: state.barrios,
             condicionesIva: state.condicionesIva,
@@ -1069,10 +1094,10 @@ const AppState = props => {
             detallesPago: state.detallesPago,
             tareas: state.tareas,
             tiposTareas: state.tiposTareas,
-            iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, crearUsuario, modificarUsuario, eliminarUsuario,
+            iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
-            traerAbonados, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado, cambioTitularidadAbonado,
+            traerAbonados, traerAbonado, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado, cambioTitularidadAbonado,
             cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
             traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 
             traerCondicionesIva,
