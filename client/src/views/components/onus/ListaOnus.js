@@ -219,6 +219,7 @@ const ListaOnus = ({location}) => {
         titulo={<Typography variant="h2"><i className="bx bx-user"></i>Asignar ONU a abonado</Typography>}
         formulario={
             <Autocomplete
+            disableClearable
             options={abonados}
             getOptionLabel={(option) => option.Nombre + " " + option.Apellido + " | " +  option.Documento}
             renderInput={(params) => <TextField {...params} style={{width: "25rem"}} variant="outlined" fullWidth label="Abonados Activos sin ONU"/>}

@@ -298,6 +298,7 @@ const CaratulaAbonado = () => {
                 </TextField>
                 :
                 <Autocomplete
+                disableClearable
                 disabled={location.state ? true : false}
                 value={location.state ? location.state.BarrioNombre : Barrio}
                 onChange={(_event, newBarrioId) => {
