@@ -45,8 +45,9 @@ app.use('/api/detallesPago', require('./routes/DetallePago'));
 app.use('/api/mediosPago', require('./routes/MedioPago.js'));
 //TAREAS
 app.use('/api/tareas', require('./routes/Tarea.js'));
-//TIPOS DE TAREAS
-app.use('/api/tiposTareas', require('./routes/TipoTarea.js'));
+//OT
+app.use('/api/ot', require('./routes/Ot.js'));
+
 //pág principal
 app.get('/', (req, res)=>{
     res.send(`Conectado a: ${process.env.DB_NAME} en puerto: ${PORT}`)

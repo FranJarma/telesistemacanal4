@@ -37,7 +37,7 @@ const AppState = props => {
         pago: {},
         detallesPago: [],
         tareas: [],
-        tiposTareas: []
+        ordenesDeTrabajo: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -1050,18 +1050,41 @@ const AppState = props => {
             console.log(error);
         }
     }
-    //TIPOS DE TAREAS
-    const traerTiposTareas = async () => {
+    //OT
+    const traerOrdenesDeTrabajo = async => {
         try {
-            const resultado = await clienteAxios.get('/api/tiposTareas');
+            const resultado = clienteAxios.get('/api/ot');
             dispatch({
-                type: TYPES.LISTA_TIPOS_TAREAS,
+                type: TYPES.LISTA_OT,
                 payload: resultado.data
             })
         } catch (error) {
             console.log(error);
         }
     }
+    const crearOrdenDeTrabajo = async (ot) => {
+        clienteAxios.post('/api/ot/create', ot)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    payload: ot
+                });
+                // Swal('Operación completa', resOk.data.msg);
+                // history.push('/ordenes-de-trabajo');
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+
     return(
         <AppContext.Provider
         value={{
@@ -1093,7 +1116,7 @@ const AppState = props => {
             pago: state.pago,
             detallesPago: state.detallesPago,
             tareas: state.tareas,
-            tiposTareas: state.tiposTareas,
+            ordenesDeTrabajo: state.ordenesDeTrabajo,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
@@ -1109,7 +1132,8 @@ const AppState = props => {
             traerMediosPago,
             traerPagosPorAbonado, traerPago, crearPago,
             traerDetallesPago, eliminarDetallePago,
-            traerTareas, traerTiposTareas
+            traerTareas,
+            traerOrdenesDeTrabajo, crearOrdenDeTrabajo
         }}>{props.children}
         </AppContext.Provider>
     )

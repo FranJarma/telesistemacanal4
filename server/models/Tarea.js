@@ -1,4 +1,4 @@
-const { INTEGER, DATE, UUIDV4 } = require('sequelize');
+const { INTEGER, DATE, UUIDV4, STRING, FLOAT } = require('sequelize');
 const db = require('../config/connection');
 
 const Tarea = db.define('tarea', {
@@ -6,12 +6,15 @@ const Tarea = db.define('tarea', {
         type: INTEGER,
         primaryKey: true
     },
-    FechaEstimadaTarea: {
-        type: DATE,
+    TareaNombre: {
+        type: STRING,
         allowNull: false
     },
-    FechaRealizacionTarea: {
-        type: DATE,
+    TareaDescripcion: {
+        type: STRING,
+    },
+    TareaPrecioUnitario: {
+        type: FLOAT,
     },
     createdAt: {
         type: DATE,
@@ -36,15 +39,6 @@ const Tarea = db.define('tarea', {
     deletedBy: {
         type: UUIDV4,
         allowNull: true
-    },
-    EstadoId: {
-        type: INTEGER,
-    },
-    TipoTareaId: {
-        type: INTEGER,
-    },
-    DomicilioId: {
-        type: INTEGER
     }
 });
 

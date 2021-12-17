@@ -70,3 +70,5 @@ export const LISTA_MEDIOS_DE_PAGO = 'LISTA_MEDIOS_DE_PAGO';
 //TAREAS
 export const LISTA_TAREAS = 'LISTA_TAREAS';
 export const LISTA_TIPOS_TAREAS = 'LISTA_TIPOS_TAREAS';
+//OT
+export const LISTA_OT = 'LISTA_OT';

@@ -1,17 +1,18 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
+import { Link } from 'react-router-dom';
 
-const ListaTiposTareas = () => {
+const ListaOT = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, tiposTareas, traerTiposTareas, modificarTarea, eliminarTarea } = appContext;
+    const { usuarioLogueado, tareas, traerTareas, modificarTarea, eliminarTarea } = appContext;
     useEffect(()=>{
-        traerTiposTareas();
+        traerTareas();
     },[])
     const [ModalTarea, setModalTarea] = useState(false);
     const [ModalEliminarTarea, setModalEliminarTarea] = useState(false);
@@ -49,25 +50,26 @@ const ListaTiposTareas = () => {
     const columnasTareas = [
         {
             "name": "id",
-            "selector": row => row["TipoTareaId"],
+            "selector": row => row["TareaId"],
             "omit": true
         },
         {
             "name": "Tipo de tarea",
-            "selector": row => row["TipoTareaNombre"],
+            "selector": row => row["TareaNombre"],
         },
         {
             "name": "Descripcion",
-            "selector": row => row["TipoTareaDescripcion"],
+            "selector": row => row["TareaDescripcion"],
         },
         {
             "name": "Precio Unitario",
-            "selector": row => "$ " + row["TipoTareaPrecioUnitario"],
+            "selector": row => "$ " + row["TareaPrecioUnitario"],
         },
         {
             cell: (data) => 
             <>
             <Typography onClick={()=>{handleChangeModalTarea(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalTarea(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Finalizar OT"><i className='bx bx-calendar-check bx-xs' ></i></Tooltip></Typography>
             <Typography onClick={()=>{handleChangeModalEliminarTarea(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
             </>,
         }
@@ -78,11 +80,12 @@ const ListaTiposTareas = () => {
         <Aside/>
         <main>
         <Card>
+            <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" color="primary">+ Nueva OT</Button></Link>}></CardHeader>
             <CardContent>
-                <Typography variant="h1">Listado de Tipos de tareas</Typography>
+                <Typography variant="h1">Listado de Órdenes de Trabajo</Typography>
                 <Datatable
                     loader={true}
-                    datos={tiposTareas}
+                    datos={tareas}
                     columnas={columnasTareas}
                     paginacion={true}
                     buscar={true}
@@ -120,4 +123,4 @@ const ListaTiposTareas = () => {
     );
 }
  
-export default ListaTiposTareas;
+export default ListaOT;

@@ -72,8 +72,8 @@ const Aside = () => {
           : rol.RoleName === "Jefe" || rol.RoleName === "Admin" ?
           <>
           <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Técnicos y OT" icon={<i className="bx bx-wrench"></i>}>
+            <MenuItem icon={<i className='bx bx-clipboard'></i>}>Listado de OT<Link to="/ordenes-de-trabajo"></Link></MenuItem>
             <MenuItem icon={<i className='bx bx-task'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
-            <MenuItem icon={<i className='bx bx-list-ol'></i>}>Nueva OT<Link to="/caratula-ot"></Link></MenuItem>
           </SubMenu>
           <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
             <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
@@ -89,7 +89,7 @@ const Aside = () => {
             <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
             <MenuItem icon={<i className="bx bx-map"></i>}>Barrios y Municipios<Link to="/barrios-municipios"></Link></MenuItem>
             <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus y Modelos ONUS<Link to="/onus-modelosOnus"></Link></MenuItem>
-            <MenuItem icon={<i className='bx bx-clipboard'></i>}>Tipos de tareas<Link to="/tipos-de-tareas"></Link></MenuItem>
+            <MenuItem icon={<i className='bx bx-clipboard'></i>}>Tareas<Link to="/tareas"></Link></MenuItem>
           </SubMenu>
           </>
         : "" ))}

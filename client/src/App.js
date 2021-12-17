@@ -21,8 +21,8 @@ import tokenAuthHeaders from './config/token';
 import PrivateRoute from './routes/PrivateRoute';
 import Login from './views/components/auth/Login';
 import ListaMisTareas from './views/components/tecnicos/ListaMisTareas';
-import ListaTiposTareas from './views/components/tecnicos/ListaTiposTareas';
-
+import ListaTareas from './views/components/tecnicos/ListaTareas';
+import ListaOT from './views/components/tecnicos/ListaOT';
 
 //revisamos si tenemos un token
 const token = localStorage.getItem('token');
@@ -161,9 +161,11 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute exact path="/caratula-ot" component={CaratulaOT}>
                   </PrivateRoute>
+                  <PrivateRoute exact path="/ordenes-de-trabajo" component={ListaOT}>
+                  </PrivateRoute>
                   <PrivateRoute exact path="/mis-ot" component={ListaMisTareas}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/tipos-de-tareas" component={ListaTiposTareas}>
+                  <PrivateRoute exact path="/tareas" component={ListaTareas}>
                   </PrivateRoute>
                 </Suspense>
             </Switch>

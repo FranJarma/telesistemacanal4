@@ -263,6 +263,12 @@ export default (state, action) => {
                 ...state,
                 tiposTareas: action.payload,
         }
+        case TYPES.LISTA_OT: {
+            return {
+                ...state,
+                ordenesDeTrabajo: action.payload
+            }
+        }
         default:
             return state;
     }

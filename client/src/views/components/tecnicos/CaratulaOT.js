@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Card, CardContent, Checkbox, FormControl, FormControlLabel, Grid, LinearProgress, MenuItem, TextField, Typography } from '@material-ui/core';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
@@ -8,40 +8,47 @@ import { Alert, Autocomplete } from '@material-ui/lab';
 import { useLocation } from 'react-router';
 import olinet from '../../images/olinet.PNG';
 import logo3 from '../../images/logo3.PNG';
+import { DatePicker } from '@material-ui/pickers';
 
 const CaratulaOT = () => {
     const appContext = useContext(AppContext);
-    const { tiposTareas, abonados, municipios, barrios, usuarios, traerBarriosPorMunicipio, traerMunicipios,
-    traerTiposTareas, traerAbonados, traerAbonado, traerUsuariosPorRol } = appContext;
+    const { tareas, abonados, municipios, barrios, usuarios, traerBarriosPorMunicipio, traerMunicipios,
+    traerTareas, traerAbonados, traerAbonado, traerUsuariosPorRol, crearOrdenDeTrabajo, usuarioLogueado } = appContext;
     useEffect(()=>{
-        traerTiposTareas();
-        traerBarriosPorMunicipio(0);
+        traerTareas();
         traerMunicipios();
         traerAbonados();
-        traerUsuariosPorRol('3EF5B486-2604-44E6-BA2C-D9F78BF7A612');
-    },[]);
+        traerUsuariosPorRol(process.env.TECNICO_ID);
+    },[])
+
     const location = useLocation();
+
     const [OtInfo, setOtInfo] = useState({
-        NuevoDomicilioCalle: null,
-        NuevoDomicilioNumero: null,
-        NuevoDomicilioPiso: null,
+        DomicilioCalle: null,
+        DomicilioNumero: null,
+        DomicilioPiso: null,
+        OtObservacionesResponsableEmision: null,
         createdBy: null
     })
-    const {NuevoDomicilioCalle, NuevoDomicilioNumero, NuevoDomicilioPiso } = OtInfo;
+    const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
+    const {DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision } = OtInfo;
+
     const onInputChange = (e) => {
         setOtInfo({
             ...OtInfo,
             [e.target.name] : e.target.value
         });
     }
-
+    const [cargando, setCargando] = useState(false);
     const [ModalConfirmarOt, setModalConfirmarOt] = useState(false);
-    const [Tecnico, setTecnico] = useState();
-    const [Abonado, setAbonado] = useState();
-    const [Tarea, setTarea] = useState();
-    const [Barrio, setBarrio] = useState(null);
+    const [tecnicos, setTecnicos] = useState([]);
+    const [abonado, setAbonado] = useState();
+    const [tareasOt, setTareasOt] = useState([]);
+
+    const [barrio, setBarrio] = useState(null);
     const [MunicipioId, setMunicipioId] = useState(0);
-    const [MunicipioNombre, setMunicipioNombre] = useState('');
+    const [OtRetiraOnu, setOtRetiraOnu]= useState(0);
+    const [OtRetiraCable, setOtRetiraCable]= useState(0);
 
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
@@ -51,8 +58,28 @@ const CaratulaOT = () => {
     const handleChangeModalConfirmarOt = () => {
         setModalConfirmarOt(!ModalConfirmarOt);
     }
+    const handleChangeRetiraOnu = (e) => {
+        e.target.checked ? setOtRetiraOnu(1) : setOtRetiraOnu(0);
+    };
+    const handleChangeRetiraCable = (e) => {
+        e.target.checked ? setOtRetiraCable(1) : setOtRetiraCable(0);
+    };
     const onSubmitOT = (e) => {
         e.preventDefault();
+        setOtInfo({
+            ...OtInfo,
+            createdBy: usuarioLogueado.User.UserId
+        });
+        crearOrdenDeTrabajo({
+            ...OtInfo,
+            OtFechaPrevistaVisita,
+            abonado,
+            tecnicos,
+            tareasOt,
+            barrio,
+            OtRetiraCable,
+            OtRetiraOnu
+        }, setModalConfirmarOt);
     }
 
     return ( 
@@ -66,7 +93,7 @@ const CaratulaOT = () => {
                 <Typography variant="h1">Nueva Orden de Trabajo</Typography>
                 <Typography variant="h2"><i className="bx bx-file-blank"></i> Datos de la OT</Typography>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
                         <TextField
                         variant="outlined"
                         value={localStorage.getItem('usr')}
@@ -74,14 +101,14 @@ const CaratulaOT = () => {
                         label="Responsable de emisión de OT">
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
                         <Autocomplete
                             multiple
                             disableCloseOnSelect
                             disableClearable
-                            value={location.state ? location.state.BarrioNombre : Abonado}
+                            value={location.state ? location.state.BarrioNombre : abonado}
                             onChange={(_event, newTecnico) => {
-                                setTecnico(newTecnico);
+                                setTecnicos(newTecnico);
                             }}
                             options={usuarios}
                             noOptionsText="No se encontraron técnicos"
@@ -89,7 +116,7 @@ const CaratulaOT = () => {
                             renderInput={(params) => <TextField {...params} variant = {location.state ? "filled" : "outlined"} fullWidth label="Responsable/s de ejecución"/>}
                         />
                     </Grid>
-                    <Grid item xs={6} md={2} lg={2} xl={2}>
+                    <Grid item xs={6} md={4} lg={4} xl={4}>
                         <TextField
                             value={new Date().getDate()+"/"+(new Date().getMonth()+1) +"/"+new Date().getFullYear()}
                             variant="outlined"
@@ -97,7 +124,7 @@ const CaratulaOT = () => {
                             label="Fecha de emisión de OT"
                         ></TextField>
                     </Grid>
-                    <Grid item xs={6} md={2} lg={2} xl={2}>
+                    <Grid item xs={6} md={4} lg={4} xl={4}>
                         <TextField
                             value={new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})}
                             variant="outlined"
@@ -105,16 +132,31 @@ const CaratulaOT = () => {
                             label="Hora de emisión de OT"
                         ></TextField>
                     </Grid>
+                    <Grid item xs={6} md={4} lg={4} xl={4}>
+                        <DatePicker
+                        inputVariant="outlined"
+                        value={OtFechaPrevistaVisita}
+                        onChange={(fecha)=>setOtFechaPrevistaVisita(fecha)}
+                        format="dd/MM/yyyy"
+                        fullWidth
+                        label="Fecha prevista de visita"
+                        >
+                        </DatePicker>
+                    </Grid>
                 </Grid>
                 <Typography variant="h2"><i className="bx bx-user"></i> Datos del abonado</Typography>
                 <Grid container spacing={3}>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <Autocomplete
-                        value={location.state ? location.state.BarrioNombre : Abonado}
+                        value={location.state ? location.state.BarrioNombre : abonado}
                         disableClearable
                         onChange={(_event, newAbonado) => {
-                            setAbonado(newAbonado);
-                            traerAbonado(newAbonado.UserId);
+                            setCargando(true);
+                            setTimeout(()=>{
+                                setAbonado(newAbonado);
+                                traerAbonado(newAbonado.UserId);
+                                setCargando(false);
+                            }, 2000)
                         }}
                         options={abonados}
                         noOptionsText="No se encontraron abonados"
@@ -122,9 +164,11 @@ const CaratulaOT = () => {
                         renderInput={(params) => <TextField {...params} variant = {location.state ? "filled" : "outlined"} fullWidth label="Abonado"/>}
                         />
                 </Grid>
+                {cargando ?<Grid item xs={12} md={3} lg={3} xl={3}>Buscando domicilio...<LinearProgress /></Grid> :
+                <>
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
-                        value={Abonado ? Abonado.DomicilioCalle + " " +  Abonado.DomicilioNumero : ""}
+                        value={abonado ? abonado.DomicilioCalle + " " +  abonado.DomicilioNumero : ""}
                         variant="outlined"
                         fullWidth
                         label="Domicilio completo"
@@ -133,7 +177,7 @@ const CaratulaOT = () => {
                 </Grid>
                 <Grid item xs={6} md={2} lg={2} xl={2}>
                     <TextField
-                        value={Abonado ? Abonado.MunicipioNombre : "" }
+                        value={abonado ? abonado.MunicipioNombre : "" }
                         variant="outlined"
                         fullWidth
                         label="Municipio"
@@ -142,13 +186,15 @@ const CaratulaOT = () => {
                 </Grid>
                 <Grid item xs={6} md={3} lg={3} xl={3}>
                     <TextField
-                        value={Abonado ? Abonado.BarrioNombre : ""}
+                        value={abonado ? abonado.BarrioNombre : ""}
                         variant="outlined"
                         fullWidth
                         label="Barrio"
                     >
                     </TextField>
                 </Grid>
+                </>
+                }
                 </Grid>
                 <Typography variant="h2"><i className="bx bx-task"></i> Tareas a realizar</Typography>
                 <Grid container spacing={3}>
@@ -157,19 +203,18 @@ const CaratulaOT = () => {
                         multiple
                         disableCloseOnSelect
                         disableClearable
-                        value={location.state ? location.state.BarrioNombre : Abonado}
                         onChange={(_event, newTarea) => {
-                            setTarea(newTarea);
+                            setTareasOt(newTarea);
                         }}
-                        options={tiposTareas}
+                        options={tareas}
                         noOptionsText="No se encontraron tareas"
-                        getOptionLabel={(option) => option.TipoTareaNombre}
+                        getOptionLabel={(option) => option.TareaNombre}
                         renderInput={(params) => <TextField {...params} variant = {location.state ? "filled" : "outlined"} fullWidth label="Tarea/s"/>}
                         />
                     </Grid>
                 </Grid>
-                {/* SOLO CAMBIO DE DOMICILIO */}
-                <br/>
+                {tareasOt.length > 0 && tareasOt.find((tareasOt => tareasOt.TareaId === 14 || tareasOt.TareaId === 15 )) ?
+                <>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={3} lg={3} xl={3}>
                         <TextField
@@ -189,7 +234,7 @@ const CaratulaOT = () => {
                     <Grid item xs={12} md={3} lg={3} xl={3}>
                         <Autocomplete
                         disableClearable
-                        value={Barrio}
+                        value={barrio}
                         onChange={(_event, nuevoBarrio) => {
                             setBarrio(nuevoBarrio);
                         }}
@@ -202,8 +247,8 @@ const CaratulaOT = () => {
                     <Grid item xs={12} md={3} lg={3} xl={3}>
                         <TextField
                         variant = "outlined"
-                        value={NuevoDomicilioCalle}
-                        name="NuevoDomicilioCalle"
+                        value={DomicilioCalle}
+                        name="DomicilioCalle"
                         onChange={onInputChange}
                         fullWidth
                         label="Calle nuevo domicilio">
@@ -212,8 +257,8 @@ const CaratulaOT = () => {
                     <Grid item xs={12} md={2} lg={2} xl={2}>
                         <TextField
                         variant = "outlined"
-                        value={NuevoDomicilioNumero}
-                        name="NuevoDomicilioNumero"
+                        value={DomicilioNumero}
+                        name="DomicilioNumero"
                         onChange={onInputChange}
                         type="number"
                         fullWidth
@@ -223,35 +268,39 @@ const CaratulaOT = () => {
                     <Grid item xs={12} md={1} lg={1} xl={1}>
                         <TextField
                         variant = "outlined"
-                        value={NuevoDomicilioPiso}
-                        name="NuevoDomicilioPiso"
+                        value={DomicilioPiso}
+                        name="DomicilioPiso"
                         onChange={onInputChange}
                         type="number"
                         fullWidth
                         label="Piso nuevo domicilio">
                         </TextField>
                     </Grid>
+                </Grid>
+                </>
+                : ""}
+                    <Grid container spacing={3}>
                     <Grid item xs={12} md={12} lg={12} xl={12}>
                         <TextField
                         variant = "outlined"
                         multiline
                         minRows={3}
-                        //value={CambioServicioObservaciones}
-                        name="OtObservaciones"
+                        value={OtObservacionesResponsableEmision}
+                        name="OtObservacionesResponsableEmision"
                         inputProps={{
                             maxLength: 1000
                         }}
-                        //onChange={onInputChange}
+                        onChange={onInputChange}
                         fullWidth
-                        label="Observaciones">
+                        label="Observaciones registro de OT">
                         </TextField>
                     </Grid>
-                </Grid>
+                    </Grid>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                     <FormControl>
-                        <FormControlLabel label="Retira ONU" control={<Checkbox></Checkbox>}></FormControlLabel>
-                        <FormControlLabel label="Retira Cable" control={<Checkbox></Checkbox>}></FormControlLabel>
+                        <FormControlLabel label="Retira ONU" control={<Checkbox checked={OtRetiraOnu} onClick={handleChangeRetiraOnu}></Checkbox>}></FormControlLabel>
+                        <FormControlLabel label="Retira Cable" control={<Checkbox checked={OtRetiraCable} onClick={handleChangeRetiraCable}></Checkbox>}></FormControlLabel>
                     </FormControl>
                     </Grid>
                 </Grid>
@@ -296,7 +345,7 @@ const CaratulaOT = () => {
                 <Typography variant="h6"><b>Domicilio:</b></Typography>
                 <hr/>
                 <br/>
-                <Typography variant="h6"><b>Tarea a realizar:</b></Typography>
+                <Typography variant="h6"><b>Tareas a realizar:</b></Typography>
                 <hr/>
                 <br/>
                 <Typography variant="h6"><b>Observaciones:</b></Typography>
