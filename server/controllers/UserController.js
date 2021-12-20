@@ -287,12 +287,6 @@ exports.AbonadoCreate = async(req, res) => {
                 order: [['DomicilioId', 'DESC']]
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
-        //traemos el id de la ultima tarea
-            let ultimaTareaId = 0;
-            const ultimaTarea = await Tarea.findOne({
-                order: [['TareaId', 'DESC']]
-            });
-            if (ultimaTarea) ultimaTareaId = ultimaTarea.TareaId;
             // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
             const abonado = new User(req.body);
             abonado.UserId = uuidv4().toUpperCase();
@@ -302,14 +296,6 @@ exports.AbonadoCreate = async(req, res) => {
             const domicilio = new Domicilio(req.body);
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
-            // //crear tarea
-            // const tarea = new Tarea(req.body);
-            // tarea.TareaId = ultimaTareaId + 1;
-            // tarea.TipoTareaId = 1;
-            // tarea.DomicilioId = ultimoDomicilioId + 1;
-            // tarea.FechaEstimadaTarea = req.body.FechaBajada;
-            // tarea.createdAt = new Date().toString();
-            // tarea.EstadoId = 5;
             const abonadoRole = new UserRole();
             abonadoRole.UserId = abonado.UserId;
             abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
@@ -335,7 +321,6 @@ exports.AbonadoCreate = async(req, res) => {
                 await onu.save({transaction: t});
             }
             await domicilio.save({transaction: t});
-            await tarea.save({transaction: t});
             await abonado.save({transaction: t});
             await abonadoRole.save({transaction: t});
             await abonadoDomicilio.save({transaction: t});

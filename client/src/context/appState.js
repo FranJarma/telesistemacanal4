@@ -1069,8 +1069,8 @@ const AppState = props => {
                 dispatch({
                     payload: ot
                 });
-                // Swal('Operación completa', resOk.data.msg);
-                // history.push('/ordenes-de-trabajo');
+                Swal('Operación completa', resOk.data.msg);
+                history.push('/ordenes-de-trabajo');
         })
         .catch(err => {
             if(!err.response){
