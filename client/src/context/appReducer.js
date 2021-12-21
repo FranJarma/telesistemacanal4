@@ -269,6 +269,18 @@ export default (state, action) => {
                 ordenesDeTrabajo: action.payload
             }
         }
+        case TYPES.LISTA_TECNICOS_OT: {
+            return {
+                ...state,
+                tecnicosOt: action.payload
+            }
+        }
+        case TYPES.LISTA_TAREAS_OT: {
+            return {
+                ...state,
+                tareasOt: action.payload
+            }
+        }
         default:
             return state;
     }

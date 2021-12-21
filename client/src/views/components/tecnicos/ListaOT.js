@@ -1,76 +1,71 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Tooltip, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
-import { Alert } from '@material-ui/lab';
 import { Link } from 'react-router-dom';
+import CaratulaImpresionOt from './CaratulaImpresionOt';
 
 const ListaOT = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, tareas, traerTareas, modificarTarea, eliminarTarea } = appContext;
-    useEffect(()=>{
-        traerTareas();
-    },[])
-    const [ModalTarea, setModalTarea] = useState(false);
-    const [ModalEliminarTarea, setModalEliminarTarea] = useState(false);
-    const [EditMode, setEditMode] = useState(false);
-    const [TareaInfo, SetTareaInfo] = useState({
-        EstadoId: '',
-        createdBy: null,
-        updatedAt: null,
-        updatedBy: null,
-        deletedBy: null,
-        deletedAt: null
-    })
-    const { EstadoId } = TareaInfo;
+    const { ordenesDeTrabajo, traerOrdenesDeTrabajo, traerTareasOt } = appContext;
 
-    const handleChangeModalTarea = (data = '') => {
-        setModalTarea(!ModalTarea);
-        setModalEliminarTarea(false);
-        if(data !== '') {
-            setEditMode(true);
-            SetTareaInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
+    useEffect(()=>{
+        traerOrdenesDeTrabajo();
+    },[])
+
+    const [ModalImprimirOt, setModalImprimirOt] = useState(false);
+    const [ModalEliminarTarea, setModalEliminarTarea] = useState(false);
+    const [OtInfoImpresion, setOtInfoImpresion] = useState({})
+
+    const handleChangeModalImprimirOt = (data = '') => {
+        if(!ModalImprimirOt) {
+            setOtInfoImpresion(data);
+            setModalImprimirOt(true);
         }
         else {
-            setEditMode(false);
-            SetTareaInfo({...data, createdBy: usuarioLogueado.User.UserId});
+            setOtInfoImpresion('');
+            setModalImprimirOt(false);
         }
+
     }
 
-    const handleChangeModalEliminarTarea = (data = '') => {
-        setModalEliminarTarea(!ModalEliminarTarea);
-        setModalTarea(false);
-        SetTareaInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
-    }
-
-
-    const columnasTareas = [
+    const columnasOt = [
         {
             "name": "id",
-            "selector": row => row["TareaId"],
+            "selector": row => row["OtId"],
             "omit": true
         },
         {
-            "name": "Tipo de tarea",
-            "selector": row => row["TareaNombre"],
+            "name": "Abonado",
+            "wrap": true,
+            "selector": row => row["ApellidoAbonado"] + ", " + row["NombreAbonado"]
         },
         {
-            "name": "Descripcion",
-            "selector": row => row["TareaDescripcion"],
+            "name": "Domicilio",
+            "wrap": true,
+            "selector": row => row["DomicilioCalle"] + " " + row["DomicilioNumero"]
         },
         {
-            "name": "Precio Unitario",
-            "selector": row => "$ " + row["TareaPrecioUnitario"],
+            "name": "Fecha prevista de visita",
+            "wrap": true,
+            "selector": row => row["OtFechaPrevistaVisita"].split('T')[0].split('-').reverse().join('/'),
         },
+        {
+            "name": "Observaciones",
+            "wrap": true,
+            "selector": row => row["OtObservacionesResponsableEmision"] ? row["OtObservacionesResponsableEmision"] : "-",
+        },        
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeModalTarea(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalTarea(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Finalizar OT"><i className='bx bx-calendar-check bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalEliminarTarea(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
+            <Typography style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
+            <Typography style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Registrar visita"><i className='bx bxs-calendar bx-xs' ></i></Tooltip></Typography>
+            <Typography style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Finalizar OT"><i className='bx bx-calendar-check bx-xs' ></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalImprimirOt(data)}} style={{color: "orange", cursor: 'pointer'}}><Tooltip title="Imprimir"><i className="bx bx-printer bx-xs"></i></Tooltip></Typography>
+            <Typography style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
             </>,
         }
     ]
@@ -85,37 +80,18 @@ const ListaOT = () => {
                 <Typography variant="h1">Listado de Órdenes de Trabajo</Typography>
                 <Datatable
                     loader={true}
-                    datos={tareas}
-                    columnas={columnasTareas}
+                    datos={ordenesDeTrabajo}
+                    columnas={columnasOt}
                     paginacion={true}
                     buscar={true}
                 />
             </CardContent>
         </Card>
-        <Modal
-        abrirModal={ModalTarea}
-        funcionCerrar={handleChangeModalTarea}
-        titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Servicio" : "Nuevo Servicio"}</Typography>}
-    
-        botones={
-            <>
-            <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarTarea(TareaInfo, handleChangeModalTarea)
-            : modificarTarea(TareaInfo, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Agregar"}</Button>
-            <Button variant="text" color="inherit" >Cerrar</Button>
-            </>
-        }
-        />
-        <Modal
-        abrirModal={ModalEliminarTarea}
-        funcionCerrar={handleChangeModalEliminarTarea}
-        titulo={<Alert severity="error">¿Está seguro que quiere eliminar el servicio?</Alert>}
-        botones={
-            <>
-            <Button variant="contained" color="secondary" onClick={()=>{eliminarTarea(TareaInfo, handleChangeModalEliminarTarea)}}>Eliminar</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarTarea}>Cerrar</Button>
-            </>
-        }
-        />
+           <Modal
+            abrirModal={ModalImprimirOt}
+            funcionCerrar={handleChangeModalImprimirOt}
+            formulario={<CaratulaImpresionOt datos={OtInfoImpresion}/>}
+            ></Modal>
         </main>
         <Footer/>
         </div>

@@ -37,7 +37,9 @@ const AppState = props => {
         pago: {},
         detallesPago: [],
         tareas: [],
-        ordenesDeTrabajo: []
+        ordenesDeTrabajo: [],
+        tecnicosOt: [],
+        tareasOt: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -1051,11 +1053,35 @@ const AppState = props => {
         }
     }
     //OT
-    const traerOrdenesDeTrabajo = async => {
+    const traerOrdenesDeTrabajo = async () => {
         try {
-            const resultado = clienteAxios.get('/api/ot');
+            const resultado = await clienteAxios.get('/api/ot');
             dispatch({
                 type: TYPES.LISTA_OT,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerTecnicosOt = async (ot) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/ot/tecnicos/${ot}`);
+            console.log(resultado);
+            dispatch({
+                type: TYPES.LISTA_TECNICOS_OT,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerTareasOt = async (ot) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/ot/tareas/${ot}`);
+            console.log(resultado);
+            dispatch({
+                type: TYPES.LISTA_TAREAS_OT,
                 payload: resultado.data
             })
         } catch (error) {
@@ -1117,6 +1143,8 @@ const AppState = props => {
             detallesPago: state.detallesPago,
             tareas: state.tareas,
             ordenesDeTrabajo: state.ordenesDeTrabajo,
+            tecnicosOt: state.tecnicosOt,
+            tareasOt: state.tareasOt,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
@@ -1133,7 +1161,7 @@ const AppState = props => {
             traerPagosPorAbonado, traerPago, crearPago,
             traerDetallesPago, eliminarDetallePago,
             traerTareas,
-            traerOrdenesDeTrabajo, crearOrdenDeTrabajo
+            traerOrdenesDeTrabajo, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo
         }}>{props.children}
         </AppContext.Provider>
     )

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Spinner from './Spinner';
 import Buscador from './Buscador';
 
-const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, buscar, seleccionable, fnSeleccionable}) => {
+const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, buscar, seleccionable, fnSeleccionable, fnExpandible}) => {
     //state y effect para spinner
     const [cargando, setCargando] = useState(true);
 
@@ -36,10 +36,10 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     || (item.PagoTotal && item.PagoTotal.toString().includes(textoFiltrado.toLowerCase()))
     || (item.DetallePagoMonto && item.DetallePagoMonto.toString().includes(textoFiltrado.toLowerCase()))
     || (item.DetallePagoFecha && item.DetallePagoFecha.toString().includes(textoFiltrado.toLowerCase()))
-    || (item.RoleName && item.RoleName.toString().includes(textoFiltrado.toLowerCase()))
-    || (item.RoleDescription && item.RoleDescription.toString().includes(textoFiltrado.toLowerCase()))
-    || (item.TareaId && item.TareaId.toString().includes(textoFiltrado.toLowerCase()))
-    || (item.TipoTareaNombre && item.TipoTareaNombre.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.RoleName && item.RoleName.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.RoleDescription && item.RoleDescription.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.TareaNombre && item.TareaNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.OtFechaPrevistaVisita && item.OtFechaPrevistaVisita.toString().includes(textoFiltrado.toLowerCase()))
 
     );
     const paginacionOpciones = {
@@ -64,6 +64,7 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
             responsive
             selectableRows={seleccionable ? true : false}
             onSelectedRowsChange={row => fnSeleccionable(row.selectedRows)}
+            onRowExpandToggled={fnExpandible}
             subHeader = {buscar ? true : false}
             subHeaderComponent={
                 buscar ? 

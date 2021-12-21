@@ -6,8 +6,6 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import { useLocation } from 'react-router';
-import olinet from '../../images/olinet.PNG';
-import logo3 from '../../images/logo3.PNG';
 import { DatePicker } from '@material-ui/pickers';
 
 const CaratulaOT = () => {
@@ -40,7 +38,6 @@ const CaratulaOT = () => {
         });
     }
     const [cargando, setCargando] = useState(false);
-    const [ModalConfirmarOt, setModalConfirmarOt] = useState(false);
     const [tecnicos, setTecnicos] = useState([]);
     const [abonado, setAbonado] = useState();
     const [tareasOt, setTareasOt] = useState([]);
@@ -54,9 +51,6 @@ const CaratulaOT = () => {
         setMunicipioId(e.target.value);
         setBarrio(null);
         traerBarriosPorMunicipio(e.target.value);
-    }
-    const handleChangeModalConfirmarOt = () => {
-        setModalConfirmarOt(!ModalConfirmarOt);
     }
     const handleChangeRetiraOnu = (e) => {
         e.target.checked ? setOtRetiraOnu(1) : setOtRetiraOnu(0);
@@ -79,7 +73,7 @@ const CaratulaOT = () => {
             barrio,
             OtRetiraCable,
             OtRetiraOnu
-        }, setModalConfirmarOt);
+        });
     }
 
     return ( 
@@ -307,80 +301,6 @@ const CaratulaOT = () => {
             <Alert severity="info"><b>ACLARACIÓN:</b> EL NUEVO DOMICILIO ÚNICAMENTE SE DEBE LLENAR PARA <b>CAMBIO DE DOMICILIO</b> Y LOS CHECKBOX DE RETIRO UNICAMENTE PARA <b>DESCONEXIÓN</b></Alert>
             <br/>
             </CardContent>
-            <Modal
-            abrirModal={ModalConfirmarOt}
-            funcionCerrar={handleChangeModalConfirmarOt}
-            titulo={
-                <>
-                <div style={{display: 'flex'}}>
-                    <img src={logo3} alt="" style={{width: '6rem', height: '3rem', marginRight: '3rem'}}/>
-                    <Typography variant="h1">Orden de trabajo N°1800</Typography>
-                    <img src={olinet} alt="" style={{width: '6rem', height: '3rem', marginLeft: '3rem'}}/>
-                </div>
-                </>
-            }
-            formulario={
-                <>
-                <Typography variant="h6"><b>Responsable de emisión: </b>{localStorage.getItem('usr')}</Typography>
-                <hr/>
-                <br/>
-                <Typography variant="h6"><b>Responsable de ejecución: </b></Typography>
-                <hr/>
-                <br/>
-                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <Typography variant="h6"><b>Fecha de emisión OT:</b> {new Date().getDate()+"/"+(new Date().getMonth()+1) +"/"+new Date().getFullYear()}</Typography>
-                    <Typography variant="h6"><b>Hora: </b>{new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})}</Typography>
-                </div>
-                <hr/>
-                <br/>
-                <Typography variant="h6"><b>Abonado:</b></Typography>
-                <hr/>
-                <br/>
-                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <Typography variant="h6"><b>Localidad:</b></Typography>
-                    <Typography variant="h6"><b>Barrio: </b></Typography>
-                </div>
-                <hr/>
-                <br/>
-                <Typography variant="h6"><b>Domicilio:</b></Typography>
-                <hr/>
-                <br/>
-                <Typography variant="h6"><b>Tareas a realizar:</b></Typography>
-                <hr/>
-                <br/>
-                <Typography variant="h6"><b>Observaciones:</b></Typography>
-                <hr/>
-                <br/>
-                <div style={{marginLeft: '10rem', display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant="h6"><b>1era visita:</b></Typography>
-                <Typography variant="h6"><b>2da visita:</b></Typography>
-                <Typography variant="h6"><b>3era visita:</b></Typography>
-                <br/>
-                <br/>
-                </div>
-                <Typography variant="h6"><b>Fecha de realización:</b></Typography>
-                <hr/>
-                <br/>
-                <Typography variant="h6"><b>Hora de inicio:</b></Typography>
-                <hr/>
-                <br/>
-                <Typography variant="h6"><b>Hora de finalización:</b></Typography>
-                <hr/>
-                <br/>
-                <FormControl>
-                        <FormControlLabel label="Se verificó señal" control={<Checkbox></Checkbox>}></FormControlLabel>
-                </FormControl>
-                <Typography variant="h6"><b>Observaciones:</b></Typography>
-                <br/>
-                <br/>
-                <br/>
-                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant="h6"><b>Firma responsable de ejecución</b></Typography>
-                <Typography variant="h6"><b>Conformidad del abonado</b></Typography>
-                </div>
-                </>
-            }
-            ></Modal>
             <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
                 <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
                 variant="contained" color="primary">

@@ -25,14 +25,23 @@ const Ot = db.define('ot', {
     OtObservacionesResponsableEjecucion: {
         type: STRING
     },
-    OtCantidadVisitas: {
-        type: INTEGER
-    },
     OtRetiraOnu: {
         type: INTEGER
     },
     OtRetiraCable: {
         type: INTEGER
+    },
+    OtPrimeraVisita: {
+        type: DATE
+    },
+    OtSegundaVisita: {
+        type: DATE
+    },
+    OtTerceraVisita: {
+        type: DATE
+    },
+    OtCuartaVisita: {
+        type: DATE
     },
     createdAt: {
         type: DATE,
@@ -58,13 +67,13 @@ const Ot = db.define('ot', {
         type: UUIDV4,
         allowNull: true
     },
-    OtNuevoDomicilioId: {
+    NuevoDomicilioId: {
         type: STRING,
     },
-    OtAbonadoId: {
+    AbonadoId: {
         type: CHAR
     },
-    OtEstadoId: {
+    EstadoId: {
         type: INTEGER
     }
 });

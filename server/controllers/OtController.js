@@ -13,7 +13,17 @@ require('dotenv').config({path: 'variables.env'});
 
 exports.OtGet = async(req, res) => {
     try {
-        const ot = await knex.select('*').from('ot as ot')
+        const ot = await knex
+        .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtObservacionesResponsableEmision', 'ot.createdAt', 'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
+        'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
+        'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre'
+        )
+        .from('ot as ot')
+        .innerJoin('_user as u', 'u.UserId', '=', 'ot.AbonadoId')
+        .innerJoin('_user as u1', 'u1.UserId', '=', 'ot.createdBy')
+        .innerJoin('domicilio as d', 'u.DomicilioId', '=', 'd.DomicilioId')
+        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
         .where({'ot.deletedAt': null});
         res.json(ot);
     } catch (error) {
@@ -44,18 +54,19 @@ exports.OtCreate = async(req, res) => {
             let ultimoOtTecnicoRegistrado = await OtTecnico.findOne({
                 order: [['OtTecnicoId', 'DESC']]
             });
-            if(ultimoOtTecnicoRegistrado) ultimoOtTecnicoRegistradoId = ultimoOtTecnicoRegistradoId.OtTecnicoId;
+            if(ultimoOtTecnicoRegistrado) ultimoOtTecnicoRegistradoId = ultimoOtTecnicoRegistrado.OtTecnicoId;
 
             //Buscamos la ultima OTTarea registrada
             let ultimaOtTareaRegistrada = await OtTarea.findOne({
                 order: [['OtTareaId', 'DESC']]
             });
-            if(ultimaOtTareaRegistrada) ultimaOtTareaRegistradaId = ultimaOtTareaRegistradaId.OtTareaId;
+            if(ultimaOtTareaRegistrada) ultimaOtTareaRegistradaId = ultimaOtTareaRegistrada.OtTareaId;
             //verificar que no existe una OT registrada para ese día, ese abonado y esas tareas seleccionadas
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
-            ot.OtAbonadoId = req.body.abonado.UserId;
-            ot.OtEstadoId = process.env.ESTADO_ID_OT_REGISTRADA; //registrada
+            ot.AbonadoId = req.body.abonado.UserId;
+            ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.createdBy = req.body.createdBy; //registrada
             await ot.save({transaction: t});
 
             for (let i=0; i<= req.body.tecnicos.length-1; i++){
@@ -123,3 +134,36 @@ exports.OtCreate = async(req, res) => {
         res.status(500).send({ msg: 'Hubo un error al registrar la orden de trabajo'});
     }
 }
+
+exports.OtObtenerTecnicos = async (req, res) => {
+    try {
+        const otTecnicos = await knex.select('u.Apellido as ApellidoTecnico', 'u.Nombre as NombreTecnico').from('ot as ot')
+        .innerJoin('ottecnico as ott', 'ott.OtId', '=', 'ot.OtId')
+        .innerJoin('_user as u', 'u.UserId', 'ott.TecnicoId')
+        .where({
+            'ot.OtId': req.params.OtId
+        })
+        res.json(otTecnicos);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ msg: 'Hubo un error al obtener la información de la orden de trabajo'});
+    }
+}
+
+exports.OtObtenerTareas = async (req, res) => {
+    try {
+        const otTecnicos = await knex.select('t.TareaNombre').from('ot as ot')
+        .innerJoin('ottarea as ott', 'ott.OtId', '=', 'ot.OtId')
+        .innerJoin('tarea as t', 't.TareaId', 'ott.TareaId')
+        .where({
+            'ot.OtId': req.params.OtId
+        })
+        res.json(otTecnicos);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ msg: 'Hubo un error al obtener la información de la orden de trabajo'});
+    }
+}
+

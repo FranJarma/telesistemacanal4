@@ -72,3 +72,5 @@ export const LISTA_TAREAS = 'LISTA_TAREAS';
 export const LISTA_TIPOS_TAREAS = 'LISTA_TIPOS_TAREAS';
 //OT
 export const LISTA_OT = 'LISTA_OT';
+export const LISTA_TECNICOS_OT = 'LISTA_TECNICOS_OT';
+export const LISTA_TAREAS_OT = 'LISTA_TAREAS_OT';
