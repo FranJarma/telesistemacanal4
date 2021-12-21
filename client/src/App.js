@@ -22,7 +22,7 @@ import PrivateRoute from './routes/PrivateRoute';
 import Login from './views/components/auth/Login';
 import ListaMisTareas from './views/components/tecnicos/ListaMisTareas';
 import ListaTareas from './views/components/tecnicos/ListaTareas';
-import ListaOT from './views/components/tecnicos/ListaOT';
+import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
 
 //revisamos si tenemos un token
 const token = localStorage.getItem('token');
@@ -161,7 +161,7 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute exact path="/caratula-ot" component={CaratulaOT}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/ordenes-de-trabajo" component={ListaOT}>
+                  <PrivateRoute exact path="/ot-pendientes" component={ListaOtPendientes}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/mis-ot" component={ListaMisTareas}>
                   </PrivateRoute>

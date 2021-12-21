@@ -8,7 +8,7 @@ import AppContext from '../../../context/appContext';
 import { Link } from 'react-router-dom';
 import CaratulaImpresionOt from './CaratulaImpresionOt';
 
-const ListaOT = () => {
+const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
     const { ordenesDeTrabajo, traerOrdenesDeTrabajo, traerTareasOt } = appContext;
 
@@ -77,7 +77,7 @@ const ListaOT = () => {
         <Card>
             <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" color="primary">+ Nueva OT</Button></Link>}></CardHeader>
             <CardContent>
-                <Typography variant="h1">Listado de Órdenes de Trabajo</Typography>
+                <Typography variant="h1">Listado de Órdenes de Trabajo sin finalizar</Typography>
                 <Datatable
                     loader={true}
                     datos={ordenesDeTrabajo}
@@ -99,4 +99,4 @@ const ListaOT = () => {
     );
 }
  
-export default ListaOT;
+export default ListaOtPendientes;

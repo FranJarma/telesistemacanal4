@@ -49,7 +49,7 @@ const Aside = () => {
     return (   
     (push ?
     <>
-    <ProSidebar collapsed={Collapsed} breakPoint="md">
+    <ProSidebar collapsed={Collapsed}>
     <img alt="" src={logo2}/>
       <Menu iconShape="square">
         <SidebarHeader style={{marginLeft: '1rem'}}>
@@ -100,6 +100,7 @@ const Aside = () => {
     </ProSidebar>
     <div className="header">
         <i onClick={onClickCollapsed} className="bx bx-menu"/>
+        <i style={{float:'right'}} className="bx bxs-user-circle"/>
     </div>
   </>
   : "") 
