@@ -1096,7 +1096,50 @@ const AppState = props => {
                     payload: ot
                 });
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/ordenes-de-trabajo');
+                history.push('/ot-pendientes');
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const registrarVisitaOrdenDeTrabajo = async (ot, cerrarModal) => {
+        clienteAxios.put('/api/ot/registrar-visita', ot)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    payload: ot
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarOrdenDeTrabajo = async (ot) => {
+        clienteAxios.put('/api/ot/delete', ot)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    payload: ot
+                });
+                Swal('Operación completa', resOk.data.msg);
         })
         .catch(err => {
             if(!err.response){
@@ -1161,7 +1204,7 @@ const AppState = props => {
             traerPagosPorAbonado, traerPago, crearPago,
             traerDetallesPago, eliminarDetallePago,
             traerTareas,
-            traerOrdenesDeTrabajo, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo
+            traerOrdenesDeTrabajo, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo
         }}>{props.children}
         </AppContext.Provider>
     )

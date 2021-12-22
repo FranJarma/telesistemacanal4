@@ -372,9 +372,6 @@ main {
   .header i {
     margin-left: auto;
   }
-  .pro-sidebar.collapsed {
-    margin-left: 80px;
-  }
 }
 @media (min-width: 768px) {
   main {
@@ -383,10 +380,9 @@ main {
   }
   .pro-sidebar {
     z-index: 10000;
+    width: 270px;
+    min-width: 270px;
   }
-  .pro-sidebar.collapsed {
-    width: 280px;
-    min-width: 280px; }
 }
 .footer {
   padding: 40px;

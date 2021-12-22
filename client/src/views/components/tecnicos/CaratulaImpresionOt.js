@@ -15,10 +15,10 @@ const CaratulaImpresionOt = ({datos}) => {
     return (
         (datos ? 
         <>
-        <div style={{display: 'flex'}}>
-            <img src={logo3} alt="" style={{width: '6rem', height: '3rem', marginRight: '3rem'}}/>
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <img src={logo3} alt="" style={{width: '6rem', height: '3rem'}}/>
             <Typography variant="h1">Orden de trabajo N° {datos.OtId}</Typography>
-            <img src={olinet} alt="" style={{width: '6rem', height: '3rem', marginLeft: '3rem'}}/>
+            <img src={olinet} alt="" style={{width: '6rem', height: '3rem'}}/>
         </div>
         <br/>
         <Typography variant="h6"><b>Responsable de emisión: </b>{datos.ApellidoResponsableCreacion} {datos.NombreResponsableCreacion}</Typography>
@@ -45,7 +45,7 @@ const CaratulaImpresionOt = ({datos}) => {
             <Typography variant="h6"><b>Domicilio:</b> {datos.DomicilioCalle} {datos.DomicilioNumero}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Tareas a realizar:</b> {tareasOt.map(tarea=>(tarea.TareaNombre + " - "))}</Typography>
+            <Typography variant="h6"><b>Tareas a realizar:</b> {tareasOt.map(tarea=>(tarea.TareaNombre + "($"+tarea.TareaPrecioUnitario+") - "))}</Typography>
             <hr/>
             <br/>
             <Typography variant="h6"><b>Observaciones:</b> {datos.OtObservacionesResponsableEmision}</Typography>

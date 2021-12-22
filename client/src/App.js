@@ -81,9 +81,9 @@ const theme = createTheme({
     },
     h2: {
       fontSize: 14,
-      marginBottom: '1.5rem',
       fontFamily: 'Poppins',
-      marginTop: '3rem',
+      marginTop: '1rem',
+      marginBottom: '1rem',
       color: "teal",
       textTransform: "uppercase",
     },

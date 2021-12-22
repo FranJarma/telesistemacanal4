@@ -59,12 +59,11 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
             noDataComponent="No se encontraron registros"
             pagination = {paginacion ? true : false}
             paginationComponentOptions={paginacion ? paginacionOpciones : ""}
+            pointerOnHover
             progressComponent={<Spinner/>}
             progressPending={loader ? cargando : false}
-            responsive
             selectableRows={seleccionable ? true : false}
             onSelectedRowsChange={row => fnSeleccionable(row.selectedRows)}
-            onRowExpandToggled={fnExpandible}
             subHeader = {buscar ? true : false}
             subHeaderComponent={
                 buscar ? 

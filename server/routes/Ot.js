@@ -14,5 +14,9 @@ router.post('/create', ValidarJWT, [
     check('abonado', 'El abonado es obligatorio').notEmpty(),
     check('tareasOt', 'Seleccione el o las tareas a realizar').notEmpty()
 ], OtController.OtCreate);
+
+router.put('/update', ValidarJWT, OtController.OtUpdate);
+router.put('/registrar-visita', ValidarJWT, OtController.OtRegistrarVisita);
+
 module.exports = router;
 
