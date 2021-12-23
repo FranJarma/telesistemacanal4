@@ -281,6 +281,12 @@ export default (state, action) => {
                 tareasOt: action.payload
             }
         }
+        case TYPES.FINALIZAR_OT: {
+            return {
+                ...state,
+                ordenesDeTrabajo: state.ordenesDeTrabajo.filter(ordenDeTrabajo => ordenDeTrabajo.OtId !== action.payload.OtId)
+            }
+        }
         default:
             return state;
     }

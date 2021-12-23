@@ -379,7 +379,6 @@ main {
     margin-right: 30px;
   }
   .pro-sidebar {
-    z-index: 10000;
     width: 270px;
     min-width: 270px;
   }

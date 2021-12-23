@@ -120,7 +120,7 @@ const AppState = props => {
             }
         })
     }
-    const modificarUsuario = async (usuario) => {
+    const modificarUsuario = async (usuario, desdePerfilUser) => {
         clienteAxios.put(`/api/usuarios/update/${usuario.UserId}`, usuario)
         .then(resOk => {
             if (resOk.data)
@@ -129,7 +129,7 @@ const AppState = props => {
                     payload: usuario
                 })
                 Swal('Operación completa', resOk.data.msg);
-                history.push('/users');
+                if (!desdePerfilUser) history.push('/users');
         })
         .catch(err => {
             if(!err.response){
@@ -1053,9 +1053,9 @@ const AppState = props => {
         }
     }
     //OT
-    const traerOrdenesDeTrabajo = async () => {
+    const traerOrdenesDeTrabajo = async (estadoId) => {
         try {
-            const resultado = await clienteAxios.get('/api/ot');
+            const resultado = await clienteAxios.get(`/api/ot/estado=${estadoId}`);
             dispatch({
                 type: TYPES.LISTA_OT,
                 payload: resultado.data
@@ -1132,6 +1132,55 @@ const AppState = props => {
             }
         })
     }
+
+    const finalizarOrdenDeTrabajo = async (ot, cerrarModal) => {
+        clienteAxios.put('/api/ot/finalizar-ot', ot)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.FINALIZAR_OT,
+                    payload: ot
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+
+    const modificarOrdenDeTrabajo = async (ot, cerrarModal) => {
+        console.log(ot);
+        clienteAxios.put('/api/ot/update', ot)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    payload: ot
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+
     const eliminarOrdenDeTrabajo = async (ot) => {
         clienteAxios.put('/api/ot/delete', ot)
         .then(resOk => {
@@ -1204,7 +1253,8 @@ const AppState = props => {
             traerPagosPorAbonado, traerPago, crearPago,
             traerDetallesPago, eliminarDetallePago,
             traerTareas,
-            traerOrdenesDeTrabajo, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo
+            traerOrdenesDeTrabajo, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,
+            finalizarOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo
         }}>{props.children}
         </AppContext.Provider>
     )

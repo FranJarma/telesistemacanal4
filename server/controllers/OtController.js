@@ -13,10 +13,12 @@ const OtTarea = require('../models/OtTarea');
 require('dotenv').config({path: 'variables.env'});
 
 exports.OtGet = async(req, res) => {
+    console.log(req.params);
     try {
         const ot = await knex
         .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
-        'ot.OtObservacionesResponsableEmision', 'ot.createdAt', 'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
+        'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion',
+        'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
         'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre'
         )
@@ -29,7 +31,10 @@ exports.OtGet = async(req, res) => {
         .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
         .innerJoin('ottarea as ott', 'ott.OtId', '=' ,'ot.OtId')
         .innerJoin('tarea as t', 'ott.TareaId', '=' ,'t.TareaId')
-        .where({'ot.deletedAt': null})
+        .where(
+            {'ot.deletedAt': null,
+            'ot.EstadoId': req.params.estadoId
+            })
         .groupBy('ot.OtId')
         .orderBy('ot.createdAt', 'desc');
         res.json(ot);
@@ -182,6 +187,27 @@ exports.OtRegistrarVisita = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({ msg: 'Hubo un error al registrar la visita de la OT'});
+    }
+}
+
+exports.OtFinalizar = async (req, res) => {
+    try {
+        const { OtId, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy } = req.body;
+        await db.transaction(async (t)=> {
+            if( OtFechaInicio > OtFechaFinalizacion ) return res.status(400).send({msg: 'La hora de Inicio no puede ser mayor a la de finalización'});
+            const ot = await Ot.findByPk(OtId);
+            ot.OtFechaInicio = OtFechaInicio;
+            ot.OtFechaFinalizacion = OtFechaFinalizacion;
+            ot.OtObservacionesResponsableEjecucion = OtObservacionesResponsableEjecucion;
+            ot.EstadoId = process.env.ESTADO_ID_OT_FINALIZADA;
+            ot.updatedAt = new Date();
+            ot.updatedBy = updatedBy;
+            await ot.save({transaction: t});
+            return res.status(200).json({msg: 'La OT ha sido finalizada correctamente'})
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ msg: 'Hubo un error al finalizar la OT'});
     }
 }
 

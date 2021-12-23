@@ -65,10 +65,9 @@ exports.UserUpdate = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             let userRoleVec = [];
-            console.log(req.body);
             //buscamos el user por su Id
             const user = await User.findByPk( req.body.UserId, {transaction: t} );
-            if(req.body.RolesSeleccionados.length !== 0){
+            if(req.body.RolesSeleccionados && req.body.RolesSeleccionados.length !== 0){
                 //eliminamos los roles que tiene actualmente el user
                 await UserRole.destroy({where: {
                     UserId: req.body.UserId
@@ -140,7 +139,6 @@ exports.UsersGet = async(req, res) => {
     }
 }
 exports.UsersGetByRole = async(req, res) => {
-    console.log(req.body);
     try {
         const users = await knex.select('*').from('_userrole as ur')
         .innerJoin('_user as u', 'u.UserId', '=', 'ur.UserId')

@@ -51,26 +51,27 @@ const CaratulaImpresionOt = ({datos}) => {
             <Typography variant="h6"><b>Observaciones:</b> {datos.OtObservacionesResponsableEmision}</Typography>
             <hr/>
             <br/>
-            <div style={{marginLeft: '10rem', display: 'flex', justifyContent: 'space-between'}}>
-            <Typography variant="h6"><b>1era visita:</b></Typography>
-            <Typography variant="h6"><b>2da visita:</b></Typography>
-            <Typography variant="h6"><b>3era visita:</b></Typography>
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <Typography variant="h6"><b>1era visita:</b>{datos.OtPrimeraVisita ? datos.OtPrimeraVisita.split('T')[0].split('-').reverse().join('/') : ""}</Typography>
+            <Typography variant="h6"><b>2da visita:</b>{datos.OtSegundaVisita ? datos.OtSegundaVisita.split('T')[0].split('-').reverse().join('/') : ""}</Typography>
+            <Typography variant="h6"><b>3era visita:</b>{datos.OtTerceraVisita ? datos.OtTerceraVisita.split('T')[0].split('-').reverse().join('/') : ""}</Typography>
             <br/>
             <br/>
             </div>
-            <Typography variant="h6"><b>Fecha de realización:</b></Typography>
+            <Typography variant="h6"><b>Fecha de realización:</b>{datos.OtFechaFinalizacion ? datos.OtFechaFinalizacion.split('T')[0].split('-').reverse().join('/') : ""}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Hora de inicio:</b></Typography>
+            <Typography variant="h6"><b>Hora de inicio:</b>{datos.OtFechaInicio ? datos.OtFechaInicio.split('T')[1].split('.')[0] : ""}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Hora de finalización:</b></Typography>
+            <Typography variant="h6"><b>Hora de finalización:</b>{datos.OtFechaFinalizacion ? datos.OtFechaFinalizacion.split('T')[1].split('.')[0] : ""}</Typography>
             <hr/>
             <br/>
             <FormControl>
                     <FormControlLabel label="Se verificó señal" control={<Checkbox></Checkbox>}></FormControlLabel>
             </FormControl>
-            <Typography variant="h6"><b>Observaciones:</b></Typography>
+            <Typography variant="h6"><b>Observaciones:</b>{datos.OtObservacionesResponsableEjecucion !== "" ? datos.OtObservacionesResponsableEjecucion : ""}
+            </Typography>
             <br/>
             <br/>
             <br/>

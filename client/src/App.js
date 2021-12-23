@@ -23,6 +23,7 @@ import Login from './views/components/auth/Login';
 import ListaMisTareas from './views/components/tecnicos/ListaMisTareas';
 import ListaTareas from './views/components/tecnicos/ListaTareas';
 import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
+import ListaOtFinalizadas from './views/components/tecnicos/ListaOtFinalizadas';
 
 //revisamos si tenemos un token
 const token = localStorage.getItem('token');
@@ -51,6 +52,12 @@ const CaratulaAbonado = lazy(() => {
 const CaratulaUser = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(
     () => import('./views/components/users/CaratulaUser')
+  );
+});
+
+const PerfilUser = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+    () => import('./views/components/users/PerfilUser')
   );
 });
 
@@ -143,6 +150,8 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute path="/caratula-user" component={CaratulaUser}>
                   </PrivateRoute>
+                  <PrivateRoute path="/perfil-user" component={PerfilUser}>
+                  </PrivateRoute>
                   <PrivateRoute exact path="/caratula-role" component={CaratulaRole}>
                   </PrivateRoute>
                   <PrivateRoute path="/cambio-domicilio" component={CambioDomicilio}>
@@ -162,6 +171,8 @@ function App() {
                   <PrivateRoute exact path="/caratula-ot" component={CaratulaOT}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/ot-pendientes" component={ListaOtPendientes}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/ot-finalizadas" component={ListaOtFinalizadas}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/mis-ot" component={ListaMisTareas}>
                   </PrivateRoute>

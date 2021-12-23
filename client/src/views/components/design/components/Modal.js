@@ -3,9 +3,9 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 
 const Modal = ({abrirModal, funcionCerrar, titulo, mensaje, formulario, botones}) => {
     return (
-        <Dialog style={{zIndex: 1}} open={abrirModal} onClose={funcionCerrar} maxWidth={'sm'}>
+        <Dialog style={{zIndex: 1}} open={abrirModal} onClose={funcionCerrar} fullWidth maxWidth={'sm'}>
             <DialogTitle>{titulo}</DialogTitle>
-            <DialogContent style={{overflow: 'hidden'}}>
+            <DialogContent>
                 <DialogContentText>{mensaje}</DialogContentText>
                     {formulario}
             </DialogContent>

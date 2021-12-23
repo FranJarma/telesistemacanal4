@@ -128,8 +128,13 @@ const Aside = () => {
           }}
         >
           <List style={{cursor: 'pointer'}}>
-            <ListItem><ListItemIcon><i className="bx bx-user"></i></ListItemIcon>Perfil del Usuario</ListItem>
-            <ListItem onClick={() => cerrarSesion()}><ListItemIcon><i className="bx bx-log-out-circle"></i></ListItemIcon>Salir</ListItem>
+            <Link style={{textDecoration: 'none', color: '#000'}} to={{
+              pathname: `/perfil-user/UserId=${usuarioLogueado.User.UserId}`,
+              state: usuarioLogueado
+            }
+            }><ListItem ><ListItemIcon><i className="bx bx-user"></i></ListItemIcon>Perfil del Usuario</ListItem></Link>
+            <hr style={{margin: '0 15px 0 15px'}}/>
+            <ListItem  onClick={() => cerrarSesion()}><ListItemIcon><i className="bx bx-log-out-circle"></i></ListItemIcon>Salir</ListItem>
           </List>
         </Popover>
     </div>

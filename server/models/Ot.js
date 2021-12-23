@@ -1,4 +1,4 @@
-const { INTEGER, DATE, UUIDV4, STRING, TIME, CHAR } = require('sequelize');
+const { INTEGER, DATE, UUIDV4, STRING, CHAR } = require('sequelize');
 const db = require('../config/connection');
 
 const Ot = db.define('ot', {
@@ -10,14 +10,11 @@ const Ot = db.define('ot', {
         type: DATE,
         allowNull: false
     },
-    OtFechaRealizacion: {
+    OtFechaInicio: {
         type: DATE,
     },
-    OtHoraInicio: {
-        type: TIME,
-    },
-    OtHoraFinalizacion: {
-        type: TIME,
+    OtFechaFinalizacion: {
+        type: DATE,
     },
     OtObservacionesResponsableEmision: {
         type: STRING

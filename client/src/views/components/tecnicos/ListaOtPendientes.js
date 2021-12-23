@@ -7,15 +7,16 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Link } from 'react-router-dom';
 import CaratulaImpresionOt from './CaratulaImpresionOt';
-import { DatePicker, TimePicker } from '@material-ui/pickers';
+import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
+
 import { Alert } from '@material-ui/lab';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
-    const { ordenesDeTrabajo, traerOrdenesDeTrabajo, registrarVisitaOrdenDeTrabajo} = appContext;
+    const { usuarioLogueado, ordenesDeTrabajo, traerOrdenesDeTrabajo, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
 
     useEffect(()=>{
-        traerOrdenesDeTrabajo();
+        traerOrdenesDeTrabajo(5);
     },[])
 
     const [ModalImprimirOt, setModalImprimirOt] = useState(false);
@@ -25,9 +26,14 @@ const ListaOtPendientes = () => {
 
     const [OtInfo, setOtInfo] = useState({})
 
+    const [OtObservacionesResponsableEjecucion, setOtObservacionesResponsableEjecucion] = useState("");
     const [FechaVisita, setFechaVisita] = useState(new Date());
-    const [HoraInicio, setHoraInicio] = useState(new Date());
-    const [HoraFinalizacion, setHoraFinalizacion] = useState(new Date());
+    const [OtFechaInicio, setOtFechaInicio] = useState(new Date());
+    const [OtFechaFinalizacion, setOtFechaFinalizacion] = useState(new Date());
+
+    const onInputChange = (e) => {
+        setOtObservacionesResponsableEjecucion(e.target.value);
+    }
 
     const handleChangeModalImprimirOt = (data = '') => {
         if(!ModalImprimirOt) {
@@ -145,7 +151,8 @@ const ListaOtPendientes = () => {
             abrirModal={ModalRegistrarVisitaOt}
             funcionCerrar={handleChangeModalRegistrarVisitaOt}
             titulo ={<Typography variant="h2"><i className="bx bxs-calendar"></i> Registrar Visita OT</Typography>}
-            botones={<><Button variant='contained' color="primary" onClick={() => registrarVisitaOrdenDeTrabajo({...OtInfo, FechaVisita}, handleChangeModalRegistrarVisitaOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalRegistrarVisitaOt}>Cerrar</Button></>}
+            botones={<><Button variant='contained' color="primary" onClick={() =>
+                registrarVisitaOrdenDeTrabajo({...OtInfo, FechaVisita}, handleChangeModalRegistrarVisitaOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalRegistrarVisitaOt}>Cerrar</Button></>}
             formulario={
             <>
             <Grid container spacing ={3}>
@@ -187,49 +194,45 @@ const ListaOtPendientes = () => {
             abrirModal={ModalFinalizarOt}
             funcionCerrar={handleChangeModalFinalizarOt}
             titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
-            botones={<><Button variant='contained' color="primary">Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cerrar</Button></>}
+            botones={<><Button variant='contained' color="primary"
+            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: usuarioLogueado.User.UserId},
+            handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cerrar</Button></>}
             formulario={
                 <>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} lg={12} xl={12}>
-                        <DatePicker
+                        <KeyboardDateTimePicker
                         inputVariant="outlined"
-                        value={FechaVisita}
-                        onChange={(fecha)=>setFechaVisita(fecha)}
-                        format="dd/MM/yyyy"
+                        value={OtFechaInicio}
+                        format="dd/MM/yyyy HH:mm"
+                        invalidDateMessage="Seleccione una fecha y hora válido"
+                        onChange={(fecha)=>setOtFechaInicio(fecha)}
                         fullWidth
-                        label="Fecha de Finalización"
-                        ></DatePicker>
+                        label="Fecha y hora de inicio"
+                        />
                     </Grid>
                     <Grid item xs={12} md={12} lg={12} xl={12}>
-                        <TimePicker
+                        <KeyboardDateTimePicker
                         inputVariant="outlined"
-                        value={HoraInicio}
-                        onChange={(hora)=>setHoraInicio(hora)}
+                        value={OtFechaFinalizacion}
+                        format="dd/MM/yyyy HH:mm"
+                        invalidDateMessage="Seleccione una fecha y hora válido"
+                        onChange={(fecha)=>setOtFechaFinalizacion(fecha)}
                         fullWidth
-                        label="Hora de Inicio"
-                        ></TimePicker>
-                    </Grid>
-                    <Grid item xs={12} md={12} lg={12} xl={12}>
-                        <TimePicker
-                        inputVariant="outlined"
-                        value={HoraFinalizacion}
-                        onChange={(hora)=>setHoraFinalizacion(hora)}
-                        fullWidth
-                        label="Hora de Finalización"
-                        ></TimePicker>
+                        label="Fecha y hora de finalización"
+                        ></KeyboardDateTimePicker>
                     </Grid>
                     <Grid item xs={12} md={12} lg={12} xl={12}>
                         <TextField
                         variant = "outlined"
                         multiline
                         minRows={3}
-                        // value={CambioDomicilioObservaciones}
-                        name="CambioDomicilioObservaciones"
+                        value={OtObservacionesResponsableEjecucion}
+                        name="OtObservacionesResponsableEjecucion"
                         inputProps={{
                             maxLength: 1000
                         }}
-                        // onChange={onInputChange}
+                        onChange={onInputChange}
                         fullWidth
                         label="Observaciones">
                         </TextField>
