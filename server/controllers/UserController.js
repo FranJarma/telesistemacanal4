@@ -140,7 +140,7 @@ exports.UsersGet = async(req, res) => {
 }
 exports.UsersGetByRole = async(req, res) => {
     try {
-        const users = await knex.select('*').from('_userrole as ur')
+        const users = await knex.select('u.UserId', 'u.Apellido', 'u.Nombre').from('_userrole as ur')
         .innerJoin('_user as u', 'u.UserId', '=', 'ur.UserId')
         .where({'ur.RoleId': '3EF5B486-2604-44E6-BA2C-D9F78BF7A612'});
         res.json(users);
@@ -235,9 +235,12 @@ exports.AbonadosGet = async(req, res) => {
 }
 exports.AbonadoGetById = async(req, res) => {
     try {
-        const abonado = await knex.select('*').from('_user as u')
+        const abonado = await knex.select('u.UserId', 'u.Nombre', 'u.Apellido', 'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre').from('_user as u')
         .innerJoin('domicilio as d', 'u.DomicilioId', '=', 'd.DomicilioId')
-        .where({'u.UserId ': req.params.UserId});
+        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
+        .where({'u.UserId ': req.params.UserId})
+        .first();
         res.json(abonado);
     } catch (error) {
         console.log(error);

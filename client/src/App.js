@@ -19,11 +19,11 @@ import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
 import PrivateRoute from './routes/PrivateRoute';
-import Login from './views/components/auth/Login';
 import ListaMisTareas from './views/components/tecnicos/ListaMisTareas';
 import ListaTareas from './views/components/tecnicos/ListaTareas';
 import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
 import ListaOtFinalizadas from './views/components/tecnicos/ListaOtFinalizadas';
+import ErrorBoundary from './views/components/errorBoundary/ErrorBoundary';
 
 //revisamos si tenemos un token
 const token = localStorage.getItem('token');
@@ -31,11 +31,11 @@ if (token) {
   tokenAuthHeaders(token);
 }
 
-// const Login = lazy(() => {
-//   return new Promise(resolve => setTimeout(resolve, 3000)).then(
-//     () => import('./views/components/auth/Login')
-//   );
-// });
+const Login = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+    () => import('./views/components/auth/Login')
+  );
+});
 
 const Home = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 4000)).then(
@@ -130,10 +130,10 @@ function App() {
         <Router>
           <AppState>
             <Switch>
-                <Route exact path="/">
-                  <Login/>
-                </Route>
                 <Suspense fallback={<Cargando/>}>
+                  <Route exact path="/">
+                    <Login/>
+                  </Route>
                   <PrivateRoute exact path="/home" component={Home}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/users" component={ListaUsers}>

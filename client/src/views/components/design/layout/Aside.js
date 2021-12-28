@@ -10,7 +10,7 @@ const Aside = () => {
     const appContext = useContext(AppContext);
     const { obtenerUsuarioAutenticado, usuarioLogueado, push, cerrarSesion } = appContext;
     
-    const [Collapsed, setCollapsed] = useState(false);
+    const [width, setWidth] = useState('0px');
     const [SubMenuAbonados, setSubMenuAbonados] = useState(false);
     const [SubMenuTecnicos, setSubMenuTecnicos] = useState(false);
     const [SubMenuUsuarios, setSubMenuUsuarios] = useState(false);
@@ -28,8 +28,12 @@ const Aside = () => {
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
 
-    const onClickCollapsed = () => {
-      setCollapsed(!Collapsed);
+    const onClickWidth = () => {
+      if(width === '0px')
+        setWidth('280px');
+      else {
+        setWidth('0px');
+      }
     }
     const onClickMenuAbonados = () => {
       setSubMenuAbonados(!SubMenuAbonados);
@@ -61,17 +65,17 @@ const Aside = () => {
     return (   
     (push ?
     <>
-    <ProSidebar collapsed={Collapsed}>
+    <ProSidebar width={width}>
     <img alt="" src={logo2}/>
       <Menu iconShape="square">
         <SidebarHeader style={{marginLeft: '1rem'}}>
-          <Typography variant="h6">{usuarioLogueado.User.Nombre} {usuarioLogueado.User.Apellido}</Typography>
+          <Typography variant="h6">{localStorage.getItem('usr')}</Typography>
         </SidebarHeader>
         <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
         {
           usuarioLogueado.Roles.map((rol)=>(
             rol.RoleName === "Tecnico" ?
-              <MenuItem icon={<i className='bx bx-task'></i>}>Mis tareas a realizar<Link to="/tareas"></Link></MenuItem>
+              <MenuItem icon={<i className='bx bx-task'></i>}>Mis órdenes de trabajo<Link to="/mis-ot"></Link></MenuItem>
           : rol.RoleName === "Mesa" ?
           <>
             <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
@@ -111,7 +115,7 @@ const Aside = () => {
       </Menu>
     </ProSidebar>
     <div className="header">
-        <i onClick={onClickCollapsed} className="bx bx-menu"/>
+        <i onClick={onClickWidth} className="bx bx-menu"/>
         <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{localStorage.getItem('usr')}</Button>
         <Popover 
           id={id}

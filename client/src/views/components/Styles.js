@@ -7,7 +7,7 @@ const useStyles = makeStyles(theme =>({
         marginTop: '1.5rem'
     },
     cartaPrincipal: {
-        marginLeft: '7rem',
+        marginLeft: '3rem',
         marginRight: '3rem',
         marginTop: '3rem',
         marginBottom: '3rem'

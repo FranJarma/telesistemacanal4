@@ -202,6 +202,7 @@ const ListaOtPendientes = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} lg={12} xl={12}>
                         <KeyboardDateTimePicker
+                        disableToolbar
                         inputVariant="outlined"
                         value={OtFechaInicio}
                         format="dd/MM/yyyy HH:mm"
@@ -213,6 +214,7 @@ const ListaOtPendientes = () => {
                     </Grid>
                     <Grid item xs={12} md={12} lg={12} xl={12}>
                         <KeyboardDateTimePicker
+                        disableToolbar
                         inputVariant="outlined"
                         value={OtFechaFinalizacion}
                         format="dd/MM/yyyy HH:mm"

@@ -256,7 +256,7 @@ const CaratulaUser = () => {
                 onSelectedRowsChange={row => setRolesSeleccionados(row.selectedRows)}
                 selectableRows
                 selectableRowSelected={row => RolesSeleccionados.find((rol) => rol.RoleId === row.RoleId)}>
-                </DataTable>
+            </DataTable>
             </Card>
         </TabPanel>
     </Tabs> 

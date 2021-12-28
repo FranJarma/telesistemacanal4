@@ -452,7 +452,6 @@ const AppState = props => {
         }
     }
     const traerAbonado = async (UserId) => {
-        console.log(UserId)
         try {
             const resultado =  await clienteAxios.get(`/api/usuarios/abonados/UserId=${UserId}`);
             dispatch({

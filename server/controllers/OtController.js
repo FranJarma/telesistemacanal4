@@ -13,7 +13,6 @@ const OtTarea = require('../models/OtTarea');
 require('dotenv').config({path: 'variables.env'});
 
 exports.OtGet = async(req, res) => {
-    console.log(req.params);
     try {
         const ot = await knex
         .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
@@ -81,10 +80,10 @@ exports.OtCreate = async(req, res) => {
             ot.createdBy = req.body.createdBy; //registrada
             await ot.save({transaction: t});
 
-            for (let i=0; i<= req.body.tecnicos.length-1; i++){
+            for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
                 let obj = {
                     OtTecnicoId: ultimoOtTecnicoRegistradoId + 1,
-                    TecnicoId: req.body.tecnicos[i].UserId,
+                    TecnicoId: req.body.tecnicosOt[i].UserId,
                     OtId: ot.OtId,
                     createdBy: req.body.createdBy
                 }

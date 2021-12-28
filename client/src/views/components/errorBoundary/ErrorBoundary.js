@@ -1,12 +1,13 @@
+import { useHistory } from 'react-router-dom';
 
-function ErrorFallback({error, resetErrorBoundary}) {
+const ErrorBoundary = () => {
+  const history = useHistory();
+
   return (
     <div role="alert">
-      <p>Algo salió mal:</p>
-      <pre>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Recargue la página</button>
+      <p>Algo salió mal</p>
+      <button onClick={() => history.push('/home')}>Volver a home</button>
     </div>
   )
 }
-
-export default ErrorFallback;
+export default ErrorBoundary;
