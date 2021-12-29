@@ -38,8 +38,8 @@ const AppState = props => {
         detallesPago: [],
         tareas: [],
         ordenesDeTrabajo: [],
-        tecnicosOt: [],
-        tareasOt: []
+        tecnicosOrdenDeTrabajo: [],
+        tareasOrdenDeTrabajo: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -1066,7 +1066,6 @@ const AppState = props => {
     const traerTecnicosOt = async (ot) => {
         try {
             const resultado = await clienteAxios.get(`/api/ot/tecnicos/${ot}`);
-            console.log(resultado);
             dispatch({
                 type: TYPES.LISTA_TECNICOS_OT,
                 payload: resultado.data
@@ -1078,7 +1077,6 @@ const AppState = props => {
     const traerTareasOt = async (ot) => {
         try {
             const resultado = await clienteAxios.get(`/api/ot/tareas/${ot}`);
-            console.log(resultado);
             dispatch({
                 type: TYPES.LISTA_TAREAS_OT,
                 payload: resultado.data
@@ -1156,28 +1154,28 @@ const AppState = props => {
         })
     }
 
-    const modificarOrdenDeTrabajo = async (ot, cerrarModal) => {
+    const modificarOrdenDeTrabajo = async (ot) => {
         console.log(ot);
-        clienteAxios.put('/api/ot/update', ot)
-        .then(resOk => {
-            if (resOk.data)
-                dispatch({
-                    payload: ot
-                });
-                Swal('Operación completa', resOk.data.msg);
-                cerrarModal(true);
-        })
-        .catch(err => {
-            if(!err.response){
-                Toast('Error de conexión', 'error');
-            }
-            else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'warning');
-            }
-            else if(err.response.data.errors){
-                Toast(err.response.data.errors[0].msg, 'warning');
-            }
-        })
+        // clienteAxios.put('/api/ot/update', ot)
+        // .then(resOk => {
+        //     if (resOk.data)
+        //         dispatch({
+        //             payload: ot
+        //         });
+        //         Swal('Operación completa', resOk.data.msg);
+        //         history.push('/ot-pendientes')
+        // })
+        // .catch(err => {
+        //     if(!err.response){
+        //         Toast('Error de conexión', 'error');
+        //     }
+        //     else if(err.response.data.msg){
+        //         Toast(err.response.data.msg, 'warning');
+        //     }
+        //     else if(err.response.data.errors){
+        //         Toast(err.response.data.errors[0].msg, 'warning');
+        //     }
+        // })
     }
 
     const eliminarOrdenDeTrabajo = async (ot) => {
@@ -1234,8 +1232,8 @@ const AppState = props => {
             detallesPago: state.detallesPago,
             tareas: state.tareas,
             ordenesDeTrabajo: state.ordenesDeTrabajo,
-            tecnicosOt: state.tecnicosOt,
-            tareasOt: state.tareasOt,
+            tecnicosOrdenDeTrabajo: state.tecnicosOrdenDeTrabajo,
+            tareasOrdenDeTrabajo: state.tareasOrdenDeTrabajo,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,

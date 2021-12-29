@@ -272,13 +272,13 @@ export default (state, action) => {
         case TYPES.LISTA_TECNICOS_OT: {
             return {
                 ...state,
-                tecnicosOt: action.payload
+                tecnicosOrdenDeTrabajo: action.payload
             }
         }
         case TYPES.LISTA_TAREAS_OT: {
             return {
                 ...state,
-                tareasOt: action.payload
+                tareasOrdenDeTrabajo: action.payload
             }
         }
         case TYPES.FINALIZAR_OT: {

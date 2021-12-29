@@ -6,7 +6,7 @@ import logo3 from '../../images/logo3.PNG';
 
 const CaratulaImpresionOt = ({datos}) => {
     const appContext = useContext(AppContext);
-    const { tareasOt, tecnicosOt, traerTareasOt, traerTecnicosOt } = appContext;
+    const { tareasOrdenDeTrabajo, tecnicosOrdenDeTrabajo, traerTareasOt, traerTecnicosOt } = appContext;
     useEffect(()=> {
         traerTareasOt(datos.OtId);
         traerTecnicosOt(datos.OtId);
@@ -24,7 +24,7 @@ const CaratulaImpresionOt = ({datos}) => {
         <Typography variant="h6"><b>Responsable de emisión: </b>{datos.ApellidoResponsableCreacion} {datos.NombreResponsableCreacion}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Responsable/s de ejecución: </b> {tecnicosOt.map(tecnico=>(tecnico.NombreTecnico + " " + tecnico.ApellidoTecnico + " - "))}</Typography>
+            <Typography variant="h6"><b>Responsable/s de ejecución: </b> {tecnicosOrdenDeTrabajo.map(tecnico=>(tecnico.NombreTecnico + " " + tecnico.ApellidoTecnico + " - "))}</Typography>
             <hr/>
             <br/>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -45,7 +45,7 @@ const CaratulaImpresionOt = ({datos}) => {
             <Typography variant="h6"><b>Domicilio:</b> {datos.DomicilioCalle} {datos.DomicilioNumero}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Tareas a realizar:</b> {tareasOt.map(tarea=>(tarea.TareaNombre + "($"+tarea.TareaPrecioUnitario+") - "))}</Typography>
+            <Typography variant="h6"><b>Tareas a realizar:</b> {tareasOrdenDeTrabajo.map(tarea=>(tarea.TareaNombre + "($"+tarea.TareaPrecioUnitario+") - "))}</Typography>
             <hr/>
             <br/>
             <Typography variant="h6"><b>Observaciones:</b> {datos.OtObservacionesResponsableEmision}</Typography>

@@ -152,7 +152,7 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute path="/perfil-user" component={PerfilUser}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/caratula-role" component={CaratulaRole}>
+                  <PrivateRoute path="/caratula-role" component={CaratulaRole}>
                   </PrivateRoute>
                   <PrivateRoute path="/cambio-domicilio" component={CambioDomicilio}>
                   </PrivateRoute>
@@ -168,7 +168,7 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute exact path="/onus-modelosOnus" component={OnusModelosOnus}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/caratula-ot" component={CaratulaOT}>
+                  <PrivateRoute path="/caratula-ot" component={CaratulaOT}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/ot-pendientes" component={ListaOtPendientes}>
                   </PrivateRoute>

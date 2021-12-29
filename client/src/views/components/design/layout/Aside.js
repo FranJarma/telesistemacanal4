@@ -4,13 +4,14 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import { Link } from 'react-router-dom';
 import logo2 from './../../../images/logo2.png';
 import AppContext from '../../../../context/appContext';
-import { Button, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
+import { Backdrop, Button, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
     const { obtenerUsuarioAutenticado, usuarioLogueado, push, cerrarSesion } = appContext;
     
     const [width, setWidth] = useState('0px');
+    const [backdrop, setBackDrop] = useState(false);
     const [SubMenuAbonados, setSubMenuAbonados] = useState(false);
     const [SubMenuTecnicos, setSubMenuTecnicos] = useState(false);
     const [SubMenuUsuarios, setSubMenuUsuarios] = useState(false);
@@ -29,6 +30,7 @@ const Aside = () => {
     const id = open ? 'simple-popover' : undefined;
 
     const onClickWidth = () => {
+      setBackDrop(!backdrop);
       if(width === '0px')
         setWidth('280px');
       else {
@@ -142,7 +144,11 @@ const Aside = () => {
           </List>
         </Popover>
     </div>
-
+    {/* <Backdrop
+        sx={{ color: '#fff', zIndex: 3 }}
+        open={backdrop}
+        onClick={onClickWidth}>
+    </Backdrop> */}
   </>
   : "") 
   );

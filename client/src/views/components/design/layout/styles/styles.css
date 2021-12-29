@@ -261,10 +261,10 @@ main {
   z-index: -1;   
 }
 .header{
+  z-index: 2;
   display: inline;
   padding: 15px 16px;
   background: #000;
-  z-index: 1;
 }
 .header i {
   color: #f1f1f7;
@@ -287,7 +287,6 @@ main {
 .footer {
   padding: 40px;
   height: 20px;
-  background-color: #f1f1f7;
   color: #11101d;
   text-align: right;
 }

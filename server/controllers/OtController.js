@@ -212,7 +212,7 @@ exports.OtFinalizar = async (req, res) => {
 
 exports.OtObtenerTecnicos = async (req, res) => {
     try {
-        const otTecnicos = await knex.select('u.Apellido as ApellidoTecnico', 'u.Nombre as NombreTecnico').from('ot as ot')
+        const otTecnicos = await knex.select('u.UserId','u.Apellido as ApellidoTecnico', 'u.Nombre as NombreTecnico').from('ot as ot')
         .innerJoin('ottecnico as ott', 'ott.OtId', '=', 'ot.OtId')
         .innerJoin('_user as u', 'u.UserId', 'ott.TecnicoId')
         .where({
@@ -228,7 +228,7 @@ exports.OtObtenerTecnicos = async (req, res) => {
 
 exports.OtObtenerTareas = async (req, res) => {
     try {
-        const otTecnicos = await knex.select('t.TareaNombre', 't.TareaPrecioUnitario').from('ot as ot')
+        const otTecnicos = await knex.select('t.TareaId', 't.TareaNombre', 't.TareaPrecioUnitario').from('ot as ot')
         .innerJoin('ottarea as ott', 'ott.OtId', '=', 'ot.OtId')
         .innerJoin('tarea as t', 't.TareaId', 'ott.TareaId')
         .where({

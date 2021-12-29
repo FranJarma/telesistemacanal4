@@ -15,11 +15,19 @@ router.post('/create', ValidarJWT, [
     check('tareasOt', 'Seleccione el o las tareas a realizar').notEmpty()
 ], OtController.OtCreate);
 
+router.put('/update', ValidarJWT, [
+    check('OtFechaPrevistaVisita', 'La fecha prevista de visita es obligatoria').notEmpty(),
+    check('tecnicosOt', 'Seleccione el o los técnicos encargados').notEmpty(),
+    check('abonado', 'El abonado es obligatorio').notEmpty(),
+    check('tareasOt', 'Seleccione el o las tareas a realizar').notEmpty()
+], OtController.OtUpdate);
+
 router.put('/finalizar-ot', ValidarJWT, [
     check('OtFechaFinalizacion', 'La fecha de finalización es obligatoria').notEmpty(),
     check('OtHoraInicio', 'La hora de inicio es obligatoria').notEmpty(),
     check('OtHoraFin', 'La hora de finalización es obligatoria').notEmpty(),
 ], OtController.OtFinalizar);
+
 router.put('/registrar-visita', ValidarJWT, OtController.OtRegistrarVisita);
 
 module.exports = router;
