@@ -38,19 +38,23 @@ const CaratulaOT = () => {
             setOtInfo(location.state);
             traerTareasOt(location.state.OtId);
             traerTecnicosOt(location.state.OtId);
+            setTareasOt(tareasOrdenDeTrabajo);
+            setTecnicosOt(tecnicosOrdenDeTrabajo);
         }
     },[])
 
     const [OtInfo, setOtInfo] = useState({
-        DomicilioCalle: null,
-        DomicilioNumero: null,
+        OtId: null,
+        DomicilioCalle: "",
+        DomicilioNumero: "",
         DomicilioPiso: null,
         OtObservacionesResponsableEmision: null,
         createdBy: null,
-        updatedAt : null
+        updatedAt : null,
+        updatedBy: null
     })
     const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
-    const {DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision } = OtInfo;
+    const {OtId, DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision } = OtInfo;
 
     const onInputChange = (e) => {
         setOtInfo({
@@ -70,6 +74,11 @@ const CaratulaOT = () => {
     const handleChangeRetiraCable = (e) => {
         e.target.checked ? setOtRetiraCable(1) : setOtRetiraCable(0);
     };
+    const handleChangeTabOt = () => {
+        setAbonadoOt({
+            ...abonado
+        });
+    }
     const handleChangeTabTecnicos = () => {
         setTecnicosOt(tecnicosOrdenDeTrabajo);
     }
@@ -84,7 +93,7 @@ const CaratulaOT = () => {
                 createdBy: usuarioLogueado.User.UserId
             });
             crearOrdenDeTrabajo({
-                ...OtInfo,
+                OtInfo,
                 OtFechaPrevistaVisita,
                 abonado,
                 tecnicosOt,
@@ -97,11 +106,12 @@ const CaratulaOT = () => {
         else {
             setOtInfo({
                 ...OtInfo,
+                OtId: location.state.OtId,
                 updatedBy: usuarioLogueado.User.UserId,
                 updatedAt: new Date()
             });
             modificarOrdenDeTrabajo({
-                ...OtInfo,
+                OtInfo,
                 OtFechaPrevistaVisita,
                 abonado,
                 tecnicosOt,
@@ -147,7 +157,7 @@ const CaratulaOT = () => {
         <form onSubmit={onSubmitOT}>
         <Tabs>
             <TabList>
-                <Tab><i style={{color: 'teal'}} className="bx bx-task"></i> Datos de la OT</Tab>
+                <Tab><i onClick={handleChangeTabOt} style={{color: 'teal'}} className="bx bx-task"></i> Datos de la OT</Tab>
                 <Tab><i onClick={handleChangeTabTecnicos} style={{color: 'teal'}} className='bx bxs-wrench'></i> Técnicos</Tab>
                 <Tab><i onClick={handleChangeTabTareas} style={{color: 'teal'}} className='bx bx-list-ol'></i> Tareas</Tab>
             </TabList>
@@ -168,7 +178,7 @@ const CaratulaOT = () => {
                         </Grid>
                         <Grid item xs={6} md={3} lg={3} xl={3}>
                             <TextField
-                                value={location.state ? location.state.createdAt.split('T')[0].split('.')[0] : new Date().getDate()+"/"+(new Date().getMonth()+1) +"/"+new Date().getFullYear()}
+                                value={location.state ? location.state.createdAt.split('T')[0].split('-').reverse().join('/') : new Date().getDate()+"/"+(new Date().getMonth()+1) +"/"+new Date().getFullYear()}
                                 variant="outlined"
                                 fullWidth
                                 label="Fecha de emisión de OT"
@@ -176,7 +186,7 @@ const CaratulaOT = () => {
                         </Grid>
                         <Grid item xs={6} md={3} lg={3} xl={3}>
                             <TextField
-                                value={location.state ? location.state.createdAt.split('T')[1].split('-').reverse().join('/') : new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})}
+                                value={location.state ? location.state.createdAt.split('T')[1].split('.')[0] : new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})}
                                 variant="outlined"
                                 fullWidth
                                 label="Hora de emisión de OT"
@@ -221,6 +231,7 @@ const CaratulaOT = () => {
                         </TextField>
                         :
                         <Autocomplete
+                            value={abonadoOt}
                             disableClearable
                             onChange={(_event, newAbonado) => {
                                 setCargando(true);
@@ -241,7 +252,7 @@ const CaratulaOT = () => {
                     <>
                     <Grid item xs={12} md={3} lg={3} xl={3}>
                         <TextField
-                            value={abonadoOt ? abonadoOt.DomicilioCalle + " " +  abonadoOt.DomicilioNumero : DomicilioCalle + " " + DomicilioNumero }
+                            value={abonadoOt ? abonadoOt.DomicilioCalle + " " +  abonadoOt.DomicilioNumero : DomicilioCalle + " " + DomicilioNumero}
                             variant="outlined"
                             fullWidth
                             label="Domicilio completo"
@@ -259,7 +270,7 @@ const CaratulaOT = () => {
                     </Grid>
                     <Grid item xs={6} md={3} lg={3} xl={3}>
                         <TextField
-                            value={location.state ? location.state.BarrioNombre : abonadoOt ? abonadoOt.BarrioNombre : ""}
+                            value={location.state ? location.state.MunicipioNombre : abonadoOt ? abonadoOt.BarrioNombre : ""}
                             variant="outlined"
                             fullWidth
                             label="Barrio"
@@ -279,7 +290,7 @@ const CaratulaOT = () => {
                     <DataTable
                         columns={columnasTecnicos}
                         data={usuarios}
-                        onSelectedRowsChange={row =>{ setTecnicosOt(row.selectedRows)}}
+                        onSelectedRowsChange={row => setTecnicosOt(row.selectedRows)}
                         selectableRows
                         selectableRowSelected={row => tecnicosOt.find((tecnico) => tecnico.UserId === row.UserId)}>
                     </DataTable>
@@ -295,8 +306,7 @@ const CaratulaOT = () => {
                             <DataTable
                                 columns={columnasTareas}
                                 data={tareas}
-                                onSelectedRowsChange={row => {
-                                    setTareasOt(row.selectedRows)}}  
+                                onSelectedRowsChange={row => setTareasOt(row.selectedRows)}  
                                 selectableRows
                                 selectableRowSelected={row => tareasOt.find((tarea) => tarea.TareaId === row.TareaId)}>
                             </DataTable>

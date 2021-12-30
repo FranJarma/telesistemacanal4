@@ -50,97 +50,41 @@ exports.OtCreate = async(req, res) => {
             return res.status(400).json({errors: errors.array()})
         }
         await db.transaction(async(t) => {
-
             let ultimaOtRegistradaId = 0;
-            let ultimoOtTecnicoRegistradoId = 0;
-            let ultimaOtTareaRegistradaId = 0;
-
             //Buscamos la ultima OT registrada
             let ultimaOtRegistrada = await Ot.findOne({
                 order: [['OtId', 'DESC']]
             });
             if(ultimaOtRegistrada) ultimaOtRegistradaId = ultimaOtRegistrada.OtId;
-
-            //Buscamos el ultimo OTTecnico registrado
-            let ultimoOtTecnicoRegistrado = await OtTecnico.findOne({
-                order: [['OtTecnicoId', 'DESC']]
-            });
-            if(ultimoOtTecnicoRegistrado) ultimoOtTecnicoRegistradoId = ultimoOtTecnicoRegistrado.OtTecnicoId;
-
-            //Buscamos la ultima OTTarea registrada
-            let ultimaOtTareaRegistrada = await OtTarea.findOne({
-                order: [['OtTareaId', 'DESC']]
-            });
-            if(ultimaOtTareaRegistrada) ultimaOtTareaRegistradaId = ultimaOtTareaRegistrada.OtTareaId;
             //verificar que no existe una OT registrada para ese día, ese abonado y esas tareas seleccionadas
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = req.body.abonado.UserId;
             ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
-            ot.createdBy = req.body.createdBy; //registrada
-            await ot.save({transaction: t});
-
+            ot.createdBy = req.body.OtInfo.createdBy; //registrada
+            //await ot.save({transaction: t});
+            console.log(req.body);
             for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
                 let obj = {
-                    OtTecnicoId: ultimoOtTecnicoRegistradoId + 1,
                     TecnicoId: req.body.tecnicosOt[i].UserId,
                     OtId: ot.OtId,
-                    createdBy: req.body.createdBy
+                    createdBy: req.body.OtInfo.createdBy
                 }
                 const otTecnico = new OtTecnico(obj);
-                ultimoOtTecnicoRegistradoId = ultimoOtTecnicoRegistradoId + 1;
-                await otTecnico.save({transaction: t});
+                //await otTecnico.save({transaction: t});
             }
-            
+        
             for (let i=0; i<= req.body.tareasOt.length-1; i++){
                 let obj = {
-                    OtTareaId: ultimaOtTareaRegistradaId + 1,
                     TareaId: req.body.tareasOt[i].TareaId,
                     OtId: ot.OtId,
-                    createdBy: req.body.createdBy
+                    createdBy: req.body.OtInfo.createdBy
                 }
                 const otTarea = new OtTarea(obj);
-                ultimaOtTareaRegistradaId = ultimaOtTareaRegistradaId + 1;
-                await otTarea.save({transaction: t});
+                //await otTarea.save({transaction: t});
             }
-            // //si la tarea seleccionada es Cambio Domicilio (de cualquier tipo), instanciamos un objeto de la clase CambioDomicilio
-            // if(req.body.tareasOt.find((tareasOt => tareasOt.TareaId === 14 || tareasOt.TareaId === 15 ))){
-            //     //traemos el id del ultimo domicilio registrado
-            //     let ultimoDomicilioId = 0;
-            //     const ultimoDomicilio = await Domicilio.findOne({
-            //         order: [['DomicilioId', 'DESC']],
-            //     });
-            //     if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
-            //     const domicilio = new Domicilio(req.body, {transaction: t});
-            //     domicilio.DomicilioId = ultimoDomicilioId + 1;
-            //     domicilio.BarrioId = req.body.barrio.BarrioId;
-            //     //buscamos el user para actualizarle el estado, el domicilio se lo actualiza cuando se confirme la instalación
-            //     const abonado = await User.findByPk( req.body.abonado.UserId, {transaction: t} );
-            //     let ultimoUserDomicilio = await UserDomicilio.findOne({
-            //         order: [["UserDomicilioId", "DESC"]]
-            //     })
-            //     const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
-            //     abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
-            //     abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
-            //     await domicilio.save({transaction: t}),
-            //     await abonado.save({transaction: t});
-            //     await abonadoDomicilio.save({transaction: t});
-            // }
-            // //si la tarea seleccionada es algo relacionado a cambio de servicio, instanciamos un objeto de la clase CambioServicio  
-            // if(req.body.tareasOt.find((tareasOt => tareasOt.TareaId === 16 || tareasOt.TareaId === 17 ))){
-            //     let ultimoUserServicio = await UserServicio.findOne({
-            //         order: [["UserServicioId", "DESC"]]
-            //     })
-            //     const abonado = await User.findByPk( req.body.abonado.UserId, {transaction: t} );
-            //     const abonadoServicio = new UserServicio(req.body, {transaction: t});
-            //     abonadoServicio.UserServicioId = ultimoUserServicio.UserServicioId + 1;
-            //     abonadoServicio.ServicioId = process.env.ESTADO_ID_SERVICIO_INTERNET;
-            //     abonado.ServicioId = process.env.ESTADO_ID_SERVICIO_INTERNET; //cambia a INTERNET
-            //     await abonado.save({transaction: t});
-            //     await abonadoServicio.save({transaction: t});
-            // }
+            return res.status(200).send({ msg: 'La Orden de Trabajo ha sido registrada correctamente'});
         })
-        return res.status(200).send({ msg: 'La Orden de Trabajo ha sido registrada correctamente'});
     } catch (error) {
         console.log(error);
         res.status(500).send({ msg: 'Hubo un error al registrar la orden de trabajo'});
@@ -150,8 +94,46 @@ exports.OtCreate = async(req, res) => {
 exports.OtUpdate = async (req, res) => {
     try {
         await db.transaction(async (t)=> {
+            console.log(req.body);
             const ot = await Ot.findByPk(req.body.OtId, {transaction: t});
             await ot.update(req.body, {transaction: t});
+
+            if(req.body.tareasOt && req.body.tareasOt.length !== 0){
+                //eliminamos las tareas que tiene la OT
+                await OtTarea.destroy({where: {
+                    OtId: req.body.OtInfo.OtId
+                }}, {transaction: t});
+                //creamos las nuevas tareas
+                for (let i=0; i<= req.body.tareasOt.length-1; i++){
+                    let obj = {
+                        OtId: req.body.OtInfo.OtId,
+                        TareaId: req.body.tareasOt[i].TareaId,
+                        createdAt: req.body.OtInfo.createdAt,
+                        createdBy: req.body.OtInfo.createdBy
+                    }
+                    const nuevaTareaOt = new OtTarea(obj);
+                    await nuevaTareaOt.save({transaction: t});
+                }
+            }
+
+            if(req.body.tecnicosOt && req.body.tecnicosOt.length !== 0){
+                //eliminamos los técnicos que tiene la OT
+                await OtTecnico.destroy({where: {
+                    OtId: req.body.OtInfo.OtId
+                }}, {transaction: t});
+                //creamos las nuevas tareas
+                for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
+                    let obj = {
+                        OtId: req.body.OtInfo.OtId,
+                        TecnicoId: req.body.tecnicosOt[i].TecnicoId,
+                        updatedAt: req.body.OtInfo.updatedAt,
+                        updatedBy: req.body.OtInfo.updatedBy
+                    }
+                    const nuevoTecnicoOt = new OtTecnico(obj);
+                    await nuevoTecnicoOt.save({transaction: t});
+                }
+            }
+
             return res.status(200).json({msg: 'La orden de trabajo ha sido modificada correctamente'})
         })
     } catch (error) {
@@ -192,6 +174,7 @@ exports.OtRegistrarVisita = async (req, res) => {
 exports.OtFinalizar = async (req, res) => {
     try {
         const { OtId, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy } = req.body;
+        console.log(req.body);
         await db.transaction(async (t)=> {
             if( OtFechaInicio > OtFechaFinalizacion ) return res.status(400).send({msg: 'La hora de Inicio no puede ser mayor a la de finalización'});
             const ot = await Ot.findByPk(OtId);
@@ -202,6 +185,74 @@ exports.OtFinalizar = async (req, res) => {
             ot.updatedAt = new Date();
             ot.updatedBy = updatedBy;
             await ot.save({transaction: t});
+            const tareasOt = await OtTarea.findAll({
+                where: {
+                    OtId: OtId
+                }
+            });
+            //si la tarea seleccionada es Cambio Domicilio (de cualquier tipo), instanciamos un objeto de la clase CambioDomicilio
+            for (let i=0; i<= tareasOt.length-1; i++) {
+                if(tareasOt[i].TareaId === 14 || tareasOt[i].TareaId === 15) {
+                    //traemos el id del ultimo domicilio registrado
+                    let ultimoDomicilioId = 0;
+                    const ultimoDomicilio = await Domicilio.findOne({
+                        order: [['DomicilioId', 'DESC']],
+                    });
+                    if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
+                    const domicilio = new Domicilio(req.body, {transaction: t});
+                    domicilio.DomicilioId = ultimoDomicilioId + 1;
+                    domicilio.BarrioId = req.body.barrio.BarrioId;
+                    domicilio.DomicilioCalle = req.body.OtInfo.DomicilioCalle;
+                    domicilio.DomicilioNumero = req.body.OtInfo.DomicilioNumero;
+                    domicilio.DomicilioPiso = req.body.OtInfo.DomicilioPiso;
+                    domicilio.createdAt = req.body.OtInfo.createdAt;
+                    domicilio.createdBy = req.body.OtInfo.createdBy;
+                    //buscamos el user para actualizarle el estado, el domicilio se lo actualiza cuando se confirme la instalación
+                    const abonado = await User.findByPk( req.body.abonado.UserId, {transaction: t} );
+                    let ultimoUserDomicilio = await UserDomicilio.findOne({
+                        order: [["UserDomicilioId", "DESC"]]
+                    })
+                    const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
+                    abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
+                    abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
+                    abonadoDomicilio.UserId = abonado.UserId;
+                    abonadoDomicilio.CambioDomicilioObservaciones = `Cambio de domicilio realizado en fecha: ${createdAt.split('T')[0]} por orden de trabajo N°: ${ot.OtId}`;
+                    abonadoDomicilio.createdAt = req.body.OtInfo.createdAt;
+                    abonadoDomicilio.createdBy = req.body.OtInfo.createdBy;
+                    await domicilio.save({transaction: t}),
+                    await abonado.save({transaction: t});
+                    await abonadoDomicilio.save({transaction: t});
+                }
+                //si la tarea seleccionada es algo relacionado a cambio de servicio, instanciamos un objeto de la clase CambioServicio  
+                if(tareasOt[i].TareaId === 16 || tareasOt[i].TareaId === 17) {
+                    if (abonado.ServicioId === req.body.ServicioId){
+                        return res.status(400).json({msg: 'Seleccione un servicio diferente al que ya tiene el abonado actualmente'});
+                    }
+                    else {
+                        let ultimoUserServicio = await UserServicio.findOne({
+                            order: [["UserServicioId", "DESC"]]
+                        })
+                        const abonadoServicio = new UserServicio(req.body, {transaction: t});
+                        const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
+                        abonadoServicio.UserServicioId = ultimoUserServicio.UserServicioId + 1;
+                        abonadoServicio.ServicioId = req.body.ServicioId;
+                        abonadoServicio.createdAt = req.body.OtInfo.createdAt;
+                        abonadoServicio.createdBy = req.body.OtInfo.createdBy;
+                        abonado.ServicioId = req.body.ServicioId;
+                        await abonado.save({transaction: t});
+                        await abonadoServicio.save({transaction: t});
+                        //si el servicio es INTERNET O COMBO, cambiamos el estado de la ONU a asignada
+                        if(req.body.ServicioId !== 1) {
+                            abonado.OnuId = req.body.OnuId;
+                            onu.EstadoId = 4;
+                        }
+                        else {
+                            abonado.OnuId = null;
+                            onu.EstadoId = 5; //desasignamos onu
+                        }
+                    }
+                }
+            }
             return res.status(200).json({msg: 'La OT ha sido finalizada correctamente'})
         })
     } catch (error) {

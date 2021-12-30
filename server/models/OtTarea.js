@@ -2,8 +2,14 @@ const { INTEGER, DATE, UUIDV4 } = require('sequelize');
 const db = require('../config/connection');
 
 const OtTarea = db.define('ottarea', {
-    OtTareaId: {
+    TareaId: {
         type: INTEGER,
+        allowNull: false,
+        primaryKey: true
+    },
+    OtId: {
+        type: INTEGER,
+        allowNull: false,
         primaryKey: true
     },
     createdAt: {
@@ -29,15 +35,7 @@ const OtTarea = db.define('ottarea', {
     deletedBy: {
         type: UUIDV4,
         allowNull: true
-    },
-    TareaId: {
-        type: INTEGER,
-        allowNull: false
-    },
-    OtId: {
-        type: INTEGER,
-        allowNull: false
-    },
+    }
 });
 
 module.exports = OtTarea;

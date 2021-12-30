@@ -2,8 +2,14 @@ const { INTEGER, DATE, UUIDV4 } = require('sequelize');
 const db = require('../config/connection');
 
 const OtTecnico = db.define('ottecnico', {
-    OtTecnicoId: {
+    TecnicoId: {
+        type: UUIDV4,
+        allowNull: false,
+        primaryKey: true
+    },
+    OtId: {
         type: INTEGER,
+        allowNull: false,
         primaryKey: true
     },
     createdAt: {
@@ -29,15 +35,7 @@ const OtTecnico = db.define('ottecnico', {
     deletedBy: {
         type: UUIDV4,
         allowNull: true
-    },
-    TecnicoId: {
-        type: UUIDV4,
-        allowNull: false
-    },
-    OtId: {
-        type: INTEGER,
-        allowNull: false
-    },
+    }
 });
 
 module.exports = OtTecnico;

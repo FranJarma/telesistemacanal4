@@ -1092,8 +1092,8 @@ const AppState = props => {
                 dispatch({
                     payload: ot
                 });
-                Swal('Operación completa', resOk.data.msg);
-                history.push('/ot-pendientes');
+                // Swal('Operación completa', resOk.data.msg);
+                // history.push('/ot-pendientes');
         })
         .catch(err => {
             if(!err.response){
@@ -1155,27 +1155,26 @@ const AppState = props => {
     }
 
     const modificarOrdenDeTrabajo = async (ot) => {
-        console.log(ot);
-        // clienteAxios.put('/api/ot/update', ot)
-        // .then(resOk => {
-        //     if (resOk.data)
-        //         dispatch({
-        //             payload: ot
-        //         });
-        //         Swal('Operación completa', resOk.data.msg);
-        //         history.push('/ot-pendientes')
-        // })
-        // .catch(err => {
-        //     if(!err.response){
-        //         Toast('Error de conexión', 'error');
-        //     }
-        //     else if(err.response.data.msg){
-        //         Toast(err.response.data.msg, 'warning');
-        //     }
-        //     else if(err.response.data.errors){
-        //         Toast(err.response.data.errors[0].msg, 'warning');
-        //     }
-        // })
+        clienteAxios.put('/api/ot/update', ot)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    payload: ot
+                });
+                // Swal('Operación completa', resOk.data.msg);
+                // history.push('/ot-pendientes')
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
     }
 
     const eliminarOrdenDeTrabajo = async (ot) => {

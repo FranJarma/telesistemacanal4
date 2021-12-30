@@ -431,7 +431,6 @@ exports.AbonadoCambioServicio = async(req, res) => {
         await db.transaction(async(t)=>{
             //buscamos el user para actualizarle el servicio
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
-            console.log(req.body);
             if (abonado.ServicioId === req.body.ServicioId){
                 return res.status(400).json({msg: 'Seleccione un servicio diferente al que ya tiene el abonado actualmente'});
             }
