@@ -30,7 +30,7 @@ const CaratulaOT = () => {
         traerTareas();
         traerMunicipios();
         traerAbonados();
-        traerUsuariosPorRol(process.env.TECNICO_ID);
+        traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
     },[])
 
     useEffect(()=>{
