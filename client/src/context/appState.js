@@ -77,7 +77,7 @@ const AppState = props => {
             obtenerUsuarioAutenticado();
         } catch (error) {
             if(!error.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(error.response.data.msg){
                 Toast(error.response.data.msg, 'warning');
@@ -110,7 +110,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -133,7 +133,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -155,7 +155,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -178,7 +178,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -201,7 +201,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -223,7 +223,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -314,7 +314,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -337,7 +337,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -361,7 +361,7 @@ const AppState = props => {
         .catch(err => {
             console.log(err.response.data.msg);
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -384,7 +384,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -407,7 +407,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -430,7 +430,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -535,7 +535,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -560,7 +560,7 @@ const AppState = props => {
         .catch(err => {
             if(!err.response){
                 console.log(err);
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -585,7 +585,7 @@ const AppState = props => {
         .catch(err => {
             console.log(err);
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -608,7 +608,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -631,7 +631,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -680,7 +680,7 @@ const AppState = props => {
         .catch(err => {
             console.log(err);
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -704,7 +704,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -727,7 +727,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -797,7 +797,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -820,7 +820,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -843,7 +843,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -890,7 +890,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -913,7 +913,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -936,7 +936,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -971,7 +971,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -994,7 +994,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -1017,7 +1017,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -1092,12 +1092,12 @@ const AppState = props => {
                 dispatch({
                     payload: ot
                 });
-                // Swal('Operación completa', resOk.data.msg);
-                // history.push('/ot-pendientes');
+                Swal('Operación completa', resOk.data.msg);
+                history.push('/ot-pendientes');
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -1119,7 +1119,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -1143,7 +1143,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -1166,7 +1166,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
@@ -1188,7 +1188,7 @@ const AppState = props => {
         })
         .catch(err => {
             if(!err.response){
-                Toast('Error de conexión', 'error');
+                Toast('Error de conexión con el servidor', 'error');
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');

@@ -9,7 +9,7 @@ import { DatePicker } from '@material-ui/pickers';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import DataTable from 'react-data-table-component';
 
-const CaratulaOT = () => {
+const CaratulaOt = () => {
     const appContext = useContext(AppContext);
     const { tareas, abonado, abonados, municipios, barrios, usuarios, traerBarriosPorMunicipio, traerMunicipios,
     traerTareas, traerAbonados, traerAbonado, traerUsuariosPorRol, traerTareasOt, traerTecnicosOt, tecnicosOrdenDeTrabajo, tareasOrdenDeTrabajo,
@@ -35,7 +35,12 @@ const CaratulaOT = () => {
 
     useEffect(()=>{
         if(location.state){
+            console.log(location.state);
             setOtInfo(location.state);
+            setMunicipioId(location.state.MunicipioId);
+            setBarrio(location.state);
+            setOtRetiraCable(location.state.OtRetiraCable);
+            setOtRetiraOnu(location.state.OtRetiraOnu);
             traerTareasOt(location.state.OtId);
             traerTecnicosOt(location.state.OtId);
             setTareasOt(tareasOrdenDeTrabajo);
@@ -54,7 +59,7 @@ const CaratulaOT = () => {
         updatedBy: null
     })
     const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
-    const {OtId, DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision } = OtInfo;
+    const {OtId, DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision, createdBy, updatedAt, updatedBy } = OtInfo;
 
     const onInputChange = (e) => {
         setOtInfo({
@@ -107,8 +112,8 @@ const CaratulaOT = () => {
             setOtInfo({
                 ...OtInfo,
                 OtId: location.state.OtId,
-                updatedBy: usuarioLogueado.User.UserId,
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                updatedBy: usuarioLogueado.User.UserId
             });
             modificarOrdenDeTrabajo({
                 OtInfo,
@@ -157,9 +162,9 @@ const CaratulaOT = () => {
         <form onSubmit={onSubmitOT}>
         <Tabs>
             <TabList>
-                <Tab><i onClick={handleChangeTabOt} style={{color: 'teal'}} className="bx bx-task"></i> Datos de la OT</Tab>
-                <Tab><i onClick={handleChangeTabTecnicos} style={{color: 'teal'}} className='bx bxs-wrench'></i> Técnicos</Tab>
-                <Tab><i onClick={handleChangeTabTareas} style={{color: 'teal'}} className='bx bx-list-ol'></i> Tareas</Tab>
+                <Tab onClick={handleChangeTabOt}><i style={{color: 'teal'}} className="bx bx-task"></i> Datos de la OT</Tab>
+                <Tab onClick={handleChangeTabTecnicos}><i style={{color: 'teal'}} className='bx bxs-wrench'></i> Técnicos</Tab>
+                <Tab onClick={handleChangeTabTareas}><i style={{color: 'teal'}} className='bx bx-list-ol'></i> Tareas</Tab>
             </TabList>
         <TabPanel>
             <Card>
@@ -407,4 +412,4 @@ const CaratulaOT = () => {
         );
 }
  
-export default CaratulaOT;
+export default CaratulaOt;

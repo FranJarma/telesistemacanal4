@@ -19,11 +19,10 @@ import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
 import PrivateRoute from './routes/PrivateRoute';
-import ListaMisTareas from './views/components/tecnicos/ListaMisTareas';
+import ListaMisOt from './views/components/tecnicos/ListaMisOt';
 import ListaTareas from './views/components/tecnicos/ListaTareas';
 import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
 import ListaOtFinalizadas from './views/components/tecnicos/ListaOtFinalizadas';
-import ErrorBoundary from './views/components/errorBoundary/ErrorBoundary';
 
 //revisamos si tenemos un token
 const token = localStorage.getItem('token');
@@ -32,7 +31,7 @@ if (token) {
 }
 
 const Login = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+  return new Promise(resolve => setTimeout(resolve, 4000)).then(
     () => import('./views/components/auth/Login')
   );
 });
@@ -44,38 +43,38 @@ const Home = lazy(() => {
 });
 
 const CaratulaAbonado = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+  return new Promise(resolve => setTimeout(resolve, 4000)).then(
     () => import('./views/components/abonados/CaratulaAbonado')
   );
 });
 
 const CaratulaUser = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+  return new Promise(resolve => setTimeout(resolve, 4000)).then(
     () => import('./views/components/users/CaratulaUser')
   );
 });
 
 const PerfilUser = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+  return new Promise(resolve => setTimeout(resolve, 4000)).then(
     () => import('./views/components/users/PerfilUser')
   );
 });
 
 const CaratulaRole = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(
+  return new Promise(resolve => setTimeout(resolve, 4000)).then(
     () => import('./views/components/roles/CaratulaRole')
   );
 });
 
 const CambioTitularidad = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 2 * 1000)).then(
+  return new Promise(resolve => setTimeout(resolve, 4000)).then(
     () => import('./views/components/abonados/CambioTitularidad')
   );
 });
 
-const CaratulaOT = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(
-    () => import('./views/components/tecnicos/CaratulaOT')
+const CaratulaOt = lazy(() => {
+  return new Promise(resolve => setTimeout(resolve, 4000)).then(
+    () => import('./views/components/tecnicos/CaratulaOt')
   );
 });
 
@@ -168,13 +167,13 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute exact path="/onus-modelosOnus" component={OnusModelosOnus}>
                   </PrivateRoute>
-                  <PrivateRoute path="/caratula-ot" component={CaratulaOT}>
+                  <PrivateRoute path="/caratula-ot" component={CaratulaOt}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/ot-pendientes" component={ListaOtPendientes}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/ot-finalizadas" component={ListaOtFinalizadas}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/mis-ot" component={ListaMisTareas}>
+                  <PrivateRoute exact path="/mis-ot" component={ListaMisOt}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/tareas" component={ListaTareas}>
                   </PrivateRoute>

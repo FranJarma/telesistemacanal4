@@ -16,10 +16,11 @@ exports.OtGet = async(req, res) => {
     try {
         const ot = await knex
         .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
-        'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion',
+        'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.OtRetiraCable', 'ot.OtRetiraOnu',
+        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion',
         'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
-        'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre'
+        'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre'
         )
         .sum('t.TareaPrecioUnitario as Monto')
         .from('ot as ot')
@@ -61,8 +62,9 @@ exports.OtCreate = async(req, res) => {
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = req.body.abonado.UserId;
             ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.OtObservacionesResponsableEmision = req.body.OtInfo.OtObservacionesResponsableEmision;
             ot.createdBy = req.body.OtInfo.createdBy; //registrada
-            //await ot.save({transaction: t});
+            await ot.save({transaction: t});
             console.log(req.body);
             for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
                 let obj = {
@@ -71,7 +73,7 @@ exports.OtCreate = async(req, res) => {
                     createdBy: req.body.OtInfo.createdBy
                 }
                 const otTecnico = new OtTecnico(obj);
-                //await otTecnico.save({transaction: t});
+                await otTecnico.save({transaction: t});
             }
         
             for (let i=0; i<= req.body.tareasOt.length-1; i++){
@@ -81,7 +83,7 @@ exports.OtCreate = async(req, res) => {
                     createdBy: req.body.OtInfo.createdBy
                 }
                 const otTarea = new OtTarea(obj);
-                //await otTarea.save({transaction: t});
+                await otTarea.save({transaction: t});
             }
             return res.status(200).send({ msg: 'La Orden de Trabajo ha sido registrada correctamente'});
         })
@@ -94,47 +96,54 @@ exports.OtCreate = async(req, res) => {
 exports.OtUpdate = async (req, res) => {
     try {
         await db.transaction(async (t)=> {
+            const ot = await Ot.findByPk(req.body.OtInfo.OtId, {transaction: t});
             console.log(req.body);
-            const ot = await Ot.findByPk(req.body.OtId, {transaction: t});
-            await ot.update(req.body, {transaction: t});
+            // await ot.update({
+            //     OtObservacionesResponsableEmision: req.body.OtInfo.OtObservacionesResponsableEmision,
+            //     OtFechaPrevistaVisita: req.body.OtFechaPrevistaVisita,
+            //     OtRetiraCable: req.body.OtRetiraCable,
+            //     OtRetiraOnu: req.body.OtRetiraOnu,
+            //     OtUpdatedAt: req.body.OtInfo.updatedAt,
+            //     OtUpdatedBy: req.body.OtInfo.updatedBy
+            // }, {transaction: t});
 
-            if(req.body.tareasOt && req.body.tareasOt.length !== 0){
-                //eliminamos las tareas que tiene la OT
-                await OtTarea.destroy({where: {
-                    OtId: req.body.OtInfo.OtId
-                }}, {transaction: t});
-                //creamos las nuevas tareas
-                for (let i=0; i<= req.body.tareasOt.length-1; i++){
-                    let obj = {
-                        OtId: req.body.OtInfo.OtId,
-                        TareaId: req.body.tareasOt[i].TareaId,
-                        createdAt: req.body.OtInfo.createdAt,
-                        createdBy: req.body.OtInfo.createdBy
-                    }
-                    const nuevaTareaOt = new OtTarea(obj);
-                    await nuevaTareaOt.save({transaction: t});
-                }
-            }
+            // if(req.body.tareasOt && req.body.tareasOt.length !== 0){
+            //     //eliminamos las tareas que tiene la OT
+            //     await OtTarea.destroy({where: {
+            //         OtId: req.body.OtInfo.OtId
+            //     }}, {transaction: t});
+            //     //creamos las nuevas tareas
+            //     for (let i=0; i<= req.body.tareasOt.length-1; i++){
+            //         let obj = {
+            //             OtId: req.body.OtInfo.OtId,
+            //             TareaId: req.body.tareasOt[i].TareaId,
+            //             createdAt: req.body.OtInfo.createdAt,
+            //             createdBy: req.body.OtInfo.createdBy
+            //         }
+            //         const nuevaTareaOt = new OtTarea(obj);
+            //         await nuevaTareaOt.save({transaction: t});
+            //     }
+            // }
 
-            if(req.body.tecnicosOt && req.body.tecnicosOt.length !== 0){
-                //eliminamos los técnicos que tiene la OT
-                await OtTecnico.destroy({where: {
-                    OtId: req.body.OtInfo.OtId
-                }}, {transaction: t});
-                //creamos las nuevas tareas
-                for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
-                    let obj = {
-                        OtId: req.body.OtInfo.OtId,
-                        TecnicoId: req.body.tecnicosOt[i].TecnicoId,
-                        updatedAt: req.body.OtInfo.updatedAt,
-                        updatedBy: req.body.OtInfo.updatedBy
-                    }
-                    const nuevoTecnicoOt = new OtTecnico(obj);
-                    await nuevoTecnicoOt.save({transaction: t});
-                }
-            }
+            // if(req.body.tecnicosOt && req.body.tecnicosOt.length !== 0){
+            //     //eliminamos los técnicos que tiene la OT
+            //     await OtTecnico.destroy({where: {
+            //         OtId: req.body.OtInfo.OtId
+            //     }}, {transaction: t});
+            //     //creamos las nuevas tareas
+            //     for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
+            //         let obj = {
+            //             OtId: req.body.OtInfo.OtId,
+            //             TecnicoId: req.body.tecnicosOt[i].UserId,
+            //             updatedAt: req.body.OtInfo.updatedAt,
+            //             updatedBy: req.body.OtInfo.updatedBy
+            //         }
+            //         const nuevoTecnicoOt = new OtTecnico(obj);
+            //         await nuevoTecnicoOt.save({transaction: t});
+            //     }
+            // }
 
-            return res.status(200).json({msg: 'La orden de trabajo ha sido modificada correctamente'})
+            //return res.status(200).json({msg: 'La orden de trabajo ha sido modificada correctamente'})
         })
     } catch (error) {
         console.log(error);
