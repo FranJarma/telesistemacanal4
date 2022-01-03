@@ -18,7 +18,6 @@ router.post('/create', ValidarJWT, [
 router.put('/update', ValidarJWT, [
     check('OtFechaPrevistaVisita', 'La fecha prevista de visita es obligatoria').notEmpty(),
     check('tecnicosOt', 'Seleccione el o los técnicos encargados').notEmpty(),
-    check('abonado', 'El abonado es obligatorio').notEmpty(),
     check('tareasOt', 'Seleccione el o las tareas a realizar').notEmpty()
 ], OtController.OtUpdate);
 

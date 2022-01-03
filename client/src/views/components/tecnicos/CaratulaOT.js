@@ -25,6 +25,16 @@ const CaratulaOt = () => {
     const [MunicipioId, setMunicipioId] = useState(0);
     const [OtRetiraOnu, setOtRetiraOnu]= useState(0);
     const [OtRetiraCable, setOtRetiraCable]= useState(0);
+    const [OtInfo, setOtInfo] = useState({
+        OtId: null,
+        DomicilioCalle: "",
+        DomicilioNumero: "",
+        DomicilioPiso: null,
+        OtObservacionesResponsableEmision: null,
+        createdBy: null,
+        updatedBy: null
+    })
+    const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
 
     useEffect(()=>{
         traerTareas();
@@ -35,7 +45,6 @@ const CaratulaOt = () => {
 
     useEffect(()=>{
         if(location.state){
-            console.log(location.state);
             setOtInfo(location.state);
             setMunicipioId(location.state.MunicipioId);
             setBarrio(location.state);
@@ -48,18 +57,7 @@ const CaratulaOt = () => {
         }
     },[])
 
-    const [OtInfo, setOtInfo] = useState({
-        OtId: null,
-        DomicilioCalle: "",
-        DomicilioNumero: "",
-        DomicilioPiso: null,
-        OtObservacionesResponsableEmision: null,
-        createdBy: null,
-        updatedAt : null,
-        updatedBy: null
-    })
-    const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
-    const {OtId, DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision, createdBy, updatedAt, updatedBy } = OtInfo;
+    const {OtId, DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision, createdBy, updatedBy} = OtInfo;
 
     const onInputChange = (e) => {
         setOtInfo({
@@ -93,37 +91,29 @@ const CaratulaOt = () => {
     const onSubmitOT = (e) => {
         e.preventDefault();
         if(!location.state) {
-            setOtInfo({
-                ...OtInfo,
-                createdBy: usuarioLogueado.User.UserId
-            });
             crearOrdenDeTrabajo({
-                OtInfo,
+                DomicilioCalle, DomicilioNumero, DomicilioPiso,
+                OtObservacionesResponsableEmision,
                 OtFechaPrevistaVisita,
+                OtRetiraCable,
+                OtRetiraOnu,
+                createdBy: usuarioLogueado.User.UserId,
                 abonado,
                 tecnicosOt,
                 tareasOt,
-                barrio,
-                OtRetiraCable,
-                OtRetiraOnu
+                barrio
             });
         }
         else {
-            setOtInfo({
-                ...OtInfo,
-                OtId: location.state.OtId,
-                updatedAt: new Date(),
-                updatedBy: usuarioLogueado.User.UserId
-            });
             modificarOrdenDeTrabajo({
-                OtInfo,
+                OtId, DomicilioCalle, DomicilioNumero, DomicilioPiso,
+                OtObservacionesResponsableEmision,
                 OtFechaPrevistaVisita,
-                abonado,
-                tecnicosOt,
-                tareasOt,
-                barrio,
                 OtRetiraCable,
-                OtRetiraOnu
+                OtRetiraOnu,
+                updatedBy: usuarioLogueado.User.UserId,
+                tecnicosOt,
+                tareasOt
             });
         }
     }

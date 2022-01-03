@@ -1161,8 +1161,8 @@ const AppState = props => {
                 dispatch({
                     payload: ot
                 });
-                // Swal('Operación completa', resOk.data.msg);
-                // history.push('/ot-pendientes')
+                Swal('Operación completa', resOk.data.msg);
+                history.push('/ot-pendientes')
         })
         .catch(err => {
             if(!err.response){
