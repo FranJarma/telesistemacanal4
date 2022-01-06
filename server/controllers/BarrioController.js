@@ -55,7 +55,7 @@ exports.BarrioDelete = async(req, res) => {
     try {
         await db.transaction(async(t)=>{
             const barrio = await Barrio.findByPk(req.body.BarrioId, {transaction: t});
-            barrio.deletedAt = new Date().toString();
+            barrio.deletedAt = new Date();
             barrio.deletedBy = req.body.usuarioLogueado.User.UserId;
             await barrio.save({transaction: t});
             return res.status(200).json({msg: 'El Barrio ha sido eliminado correctamente'})

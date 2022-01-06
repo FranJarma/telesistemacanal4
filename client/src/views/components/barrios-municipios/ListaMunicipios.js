@@ -60,7 +60,7 @@ const ListaMunicipios = () => {
         if(data !== '') {
             setProvinciaIdVieja(data.ProvinciaId);
             setEditMode(true);
-            setMunicipioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
+            setMunicipioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
             setProvinciaIdModal(data.ProvinciaId); //para que cargue JUJUY por defecto
             setProvinciaNombreModal(data.ProvinciaNombre);
         }
@@ -73,7 +73,7 @@ const ListaMunicipios = () => {
     const handleChangeModalEliminarMunicipio = (data = '') => {
         setModalEliminarMunicipio(!ModalEliminarMunicipio);
         setModalMunicipio(false);
-        setMunicipioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
+        setMunicipioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
     }
 
     const columnasMunicipios = [

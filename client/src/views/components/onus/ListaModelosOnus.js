@@ -40,7 +40,7 @@ const ListaModelosOnus = ({location}) => {
         setModalEliminarModeloOnu(false);
         if(data !== '') {
             setEditMode(true);
-            setModeloOnuInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
+            setModeloOnuInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
         }
         else {
             setEditMode(false);
@@ -51,7 +51,7 @@ const ListaModelosOnus = ({location}) => {
     const handleChangeModalEliminarModeloOnu = (data = '') => {
         setModalEliminarModeloOnu(!ModalEliminarModeloOnu);
         setModalModeloOnu(false);
-        setModeloOnuInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
+        setModeloOnuInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
     }
 
     const columnasModelosONUS = [

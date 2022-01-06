@@ -10,7 +10,7 @@ import tokenAuthHeaders from '../config/token';
 
 const AppState = props => {
     const initialState = {
-        token: localStorage.getItem('token'),
+        token: sessionStorage.getItem('token'),
         usuarioLogueado: null,
         usuarioAutenticado: false,
         push: false,
@@ -38,6 +38,7 @@ const AppState = props => {
         detallesPago: [],
         tareas: [],
         ordenesDeTrabajo: [],
+        ordenesDeTrabajoAsignadas: [],
         tecnicosOrdenDeTrabajo: [],
         tareasOrdenDeTrabajo: []
     }
@@ -47,7 +48,7 @@ const AppState = props => {
     //retorna el usuario autenticado, nos servirá tanto al momento del registro como del logueo
     const obtenerUsuarioAutenticado = async ()=>{
         //leemos en el local storage si hay un token
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (token) {
             // funcion para enviar el token por headers
             tokenAuthHeaders(token);
@@ -1051,12 +1052,92 @@ const AppState = props => {
             console.log(error);
         }
     }
+    const crearTarea = async(tarea, cerrarModal) => {
+        clienteAxios.post('/api/tareas/create', tarea)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_TAREA,
+                    payload: tarea
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const modificarTarea = async(tarea, cerrarModal) => {
+        clienteAxios.put('/api/tareas/update', tarea)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.EDITAR_TAREA,
+                    payload: tarea
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarTarea = async(tarea, cerrarModal) => {
+        clienteAxios.put('/api/tareas/delete', tarea)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_TAREA,
+                    payload: tarea
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     //OT
     const traerOrdenesDeTrabajo = async (estadoId) => {
         try {
             const resultado = await clienteAxios.get(`/api/ot/estado=${estadoId}`);
             dispatch({
                 type: TYPES.LISTA_OT,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerOrdenesDeTrabajoAsignadas = async (tecnicoId, estadoId) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/ot/tecnico=${tecnicoId}&estado=${estadoId}`);
+            dispatch({
+                type: TYPES.LISTA_OT_ASIGNADAS,
                 payload: resultado.data
             })
         } catch (error) {
@@ -1231,6 +1312,7 @@ const AppState = props => {
             detallesPago: state.detallesPago,
             tareas: state.tareas,
             ordenesDeTrabajo: state.ordenesDeTrabajo,
+            ordenesDeTrabajoAsignadas: state.ordenesDeTrabajoAsignadas,
             tecnicosOrdenDeTrabajo: state.tecnicosOrdenDeTrabajo,
             tareasOrdenDeTrabajo: state.tareasOrdenDeTrabajo,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
@@ -1248,8 +1330,8 @@ const AppState = props => {
             traerMediosPago,
             traerPagosPorAbonado, traerPago, crearPago,
             traerDetallesPago, eliminarDetallePago,
-            traerTareas,
-            traerOrdenesDeTrabajo, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,
+            traerTareas, crearTarea, modificarTarea, eliminarTarea,
+            traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,
             finalizarOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo
         }}>{props.children}
         </AppContext.Provider>

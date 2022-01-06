@@ -50,12 +50,14 @@ const Roles = () => {
     {
         "name": "Nombre",
         "selector": row =>row["RoleName"],
-        "wrap": true
+        "wrap": true,
+        "sortable": true
     },
     {
         "name": "Descripción",
         "selector": row =>row["RoleDescription"],
-        "wrap": true
+        "wrap": true,
+        "sortable": true
     },
     {
         cell: (data) =>

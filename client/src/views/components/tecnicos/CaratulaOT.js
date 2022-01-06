@@ -11,9 +11,9 @@ import DataTable from 'react-data-table-component';
 
 const CaratulaOt = () => {
     const appContext = useContext(AppContext);
-    const { tareas, abonado, abonados, municipios, barrios, usuarios, traerBarriosPorMunicipio, traerMunicipios,
+    const { usuarioLogueado, tareas, abonado, abonados, municipios, barrios, usuarios, traerBarriosPorMunicipio, traerMunicipios,
     traerTareas, traerAbonados, traerAbonado, traerUsuariosPorRol, traerTareasOt, traerTecnicosOt, tecnicosOrdenDeTrabajo, tareasOrdenDeTrabajo,
-    crearOrdenDeTrabajo, modificarOrdenDeTrabajo, usuarioLogueado } = appContext;
+    crearOrdenDeTrabajo, modificarOrdenDeTrabajo } = appContext;
 
     const location = useLocation();
 
@@ -34,6 +34,7 @@ const CaratulaOt = () => {
         createdBy: null,
         updatedBy: null
     })
+
     const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
 
     useEffect(()=>{
@@ -166,7 +167,7 @@ const CaratulaOt = () => {
                         <Grid item xs={12} md={3} lg={3} xl={3}>
                             <TextField
                             variant="outlined"
-                            value={localStorage.getItem('usr')}
+                            value={sessionStorage.getItem('usr')}
                             fullWidth
                             label="Responsable de emisión de OT">
                             </TextField>

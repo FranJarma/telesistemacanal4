@@ -65,8 +65,7 @@ const ListaAbonadosInactivos = () => {
         {
             "name": "id",
             "omit": true,
-            "selector": row =>row["UserId"],
-            "sortable": true,
+            "selector": row =>row["UserId"]
         },
         {
             "name": "Nombre",
@@ -82,6 +81,7 @@ const ListaAbonadosInactivos = () => {
             "name": "Nombre Completo",
             "selector": row => row["Apellido"] + ', ' + row["Nombre"],
             "wrap": true,
+            "sortable": true
         },
         {
             "name": "DNI",
@@ -109,11 +109,11 @@ const ListaAbonadosInactivos = () => {
             "name": "Domicilio",
             "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
             "wrap": true,
+            "sortable": true
         },
         {
             cell: (data) =>
             <>
-            <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><Tooltip title="Historial de bajas"><i className='bx bx-task-x'></i></Tooltip></Typography>
             <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><Tooltip title="Dar de alta"><i className='bx bxs-user-check bx-xs'></i></Tooltip></Typography>
             </>,
         }

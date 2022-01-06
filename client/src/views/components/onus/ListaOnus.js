@@ -53,7 +53,7 @@ const ListaOnus = ({location}) => {
         setModalEliminarOnu(false);
         if(data !== '') {
             setEditMode(true);
-            setOnuInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
+            setOnuInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
             setModeloOnuId(data.ModeloOnuId);
         }
         else {
@@ -65,7 +65,7 @@ const ListaOnus = ({location}) => {
     const handleChangeModalEliminarOnu = (data = '') => {
         setModalEliminarOnu(!ModalEliminarOnu);
         setModalOnu(false);
-        setOnuInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
+        setOnuInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
     }
 
     const handleChangeModalAsignarAbonado = (data = '') => {

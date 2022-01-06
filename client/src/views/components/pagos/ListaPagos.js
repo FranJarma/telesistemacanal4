@@ -79,7 +79,7 @@ const ListaPagos = () => {
         setModalDetallesPago(!ModalDetallesPago);
     }
     const handleChangeModalEliminarDetallePago = (data) => {
-        setPagoInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
+        setPagoInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
         setModalEliminarDetallePago(!ModalEliminarDetallePago);
     }
     

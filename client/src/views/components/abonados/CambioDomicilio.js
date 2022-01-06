@@ -3,7 +3,7 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { Autocomplete } from '@material-ui/lab';
@@ -103,18 +103,21 @@ const CambioDomicilio = () => {
         {
             "name": "Dirección",
             "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"],
-            "wrap": true
+            "wrap": true,
+            "sortable": true
         },
         {
             "name": "Barrio",
             "selector": row =>row["BarrioNombre"],
             "hide": "sm",
-            "wrap": true
+            "wrap": true,
+            "sortable": true
         },
         {
             "name": "Municipio",
             "selector": row =>row["MunicipioNombre"],
-            "wrap": true
+            "wrap": true,
+            "sortable": true
         },
         // {
         //     "name": "Fecha",

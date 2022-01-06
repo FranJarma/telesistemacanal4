@@ -1,95 +1,111 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid, List, ListItem, ListItemIcon, TextField, Tooltip, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
+import { Link } from 'react-router-dom';
+import CaratulaVerOt from './CaratulaVerOt';
+import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
+
 import { Alert } from '@material-ui/lab';
 
-const ListaMisTareas = () => {
+const ListaMisOt = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, servicios, traerServicios, crearServicio, modificarServicio, eliminarServicio } = appContext;
-    useEffect(()=>{
-        traerServicios();
-    },[])
-    const [ModalServicio, setModalServicio] = useState(false);
-    const [ModalEliminarServicio, setModalEliminarServicio] = useState(false);
-    const [EditMode, setEditMode] = useState(false);
-    const [ServicioInfo, setServicioInfo] = useState({
-        ServicioNombre: '',
-        ServicioPrecioUnitario: '',
-        ServicioRecargo: '',
-        ServicioDescripcion: '',
-        createdBy: null,
-        updatedAt: null,
-        updatedBy: null,
-        deletedBy: null,
-        deletedAt: null
-    })
-    const { ServicioNombre, ServicioPrecioUnitario, ServicioRecargo, ServicioDescripcion } = ServicioInfo;
+    const { usuarioLogueado, ordenesDeTrabajoAsignadas, traerOrdenesDeTrabajoAsignadas, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
 
-    const onInputChange= (e) =>{
-        setServicioInfo({
-            ...ServicioInfo,
-            [e.target.name] : e.target.value
-        });
+    useEffect(()=>{
+        traerOrdenesDeTrabajoAsignadas(sessionStorage.getItem('identity'), 5);
+    },[]);
+
+    const [ModalVerOt, setModalVerOt] = useState(false);
+    const [ModalRegistrarVisitaOt, setModalRegistrarVisitaOt] = useState(false);
+    const [ModalFinalizarOt, setModalFinalizarOt] = useState(false);
+
+    const [OtInfo, setOtInfo] = useState({})
+
+    const [OtObservacionesResponsableEjecucion, setOtObservacionesResponsableEjecucion] = useState("");
+    const [FechaVisita, setFechaVisita] = useState(new Date());
+    const [OtFechaInicio, setOtFechaInicio] = useState(new Date());
+    const [OtFechaFinalizacion, setOtFechaFinalizacion] = useState(new Date());
+
+    const onInputChange = (e) => {
+        setOtObservacionesResponsableEjecucion(e.target.value);
     }
 
-    const handleChangeModalServicio = (data = '') => {
-        setModalServicio(!ModalServicio);
-        setModalEliminarServicio(false);
-        if(data !== '') {
-            setEditMode(true);
-            setServicioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
+    const handleChangeModalVerOt = (data = '') => {
+        if(!ModalVerOt) {
+            setOtInfo(data);
+            setModalVerOt(true);
         }
         else {
-            setEditMode(false);
-            setServicioInfo({...data, createdBy: usuarioLogueado.User.UserId});
+            setOtInfo('');
+            setModalVerOt(false);
+        }
+    }
+    const handleChangeModalRegistrarVisitaOt = (data = '') => {
+        if(!ModalRegistrarVisitaOt) {
+            setOtInfo({...data, 
+            OtPrimeraVisita: data.OtPrimeraVisita ? data.OtPrimeraVisita.split('T')[0].split('-').reverse().join('/') : "",
+            OtSegundaVisita: data.OtSegundaVisita ? data.OtSegundaVisita.split('T')[0].split('-').reverse().join('/') : "",
+            OtTerceraVisita: data.OtTerceraVisita ? data.OtTerceraVisita.split('T')[0].split('-').reverse().join('/') : "",
+            OtCuartaVisita: data.OtCuartaVisita ? data.OtCuartaVisita.split('T')[0].split('-').reverse().join('/') : ""
+        });
+            setModalRegistrarVisitaOt(true);
+        }
+        else {
+            setOtInfo('');
+            setModalRegistrarVisitaOt(false);
+        }
+    }
+    const handleChangeModalFinalizarOt = (data = '') => {
+        if(!ModalFinalizarOt) {
+            setOtInfo(data);
+            setModalFinalizarOt(true);
+        }
+        else {
+            setOtInfo('');
+            setModalFinalizarOt(false);
         }
     }
 
-    const handleChangeModalEliminarServicio = (data = '') => {
-        setModalEliminarServicio(!ModalEliminarServicio);
-        setModalServicio(false);
-        setServicioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
-    }
-
-    const columnasServicios = [
+    const columnasMisOt = [
         {
             "name": "id",
-            "selector": row => row["ServicioId"],
+            "selector": row => row["OtId"],
             "omit": true
         },
         {
-            "name": "Nombre",
-            "selector": row => row["ServicioNombre"],
+            "name": "Abonado",
             "wrap": true,
-            "sortable": true
+            "sortable": true,
+            "selector": row => row["ApellidoAbonado"] + ", " + row["NombreAbonado"]
         },
         {
-            "name": "Precio",
-            "selector": row => "$ " + row["ServicioPrecioUnitario"],
+            "name": "Domicilio",
             "wrap": true,
-            "sortable": true
+            "sortable": true,
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
         },
         {
-            "name": "Recargo",
-            "selector": row => "$ " + row["ServicioRecargo"],
+            "name": "Monto",
             "wrap": true,
-            "sortable": true
+            "sortable": true,
+            "selector": row => "$ " + row["Monto"]
         },
         {
-            "name": "Descripción",
-            "selector": row => row["ServicioDescripcion"],
+            "name": "Observaciones",
             "wrap": true,
-            "sortable": true
-        },
+            "sortable": true,
+            "selector": row => row["OtObservacionesResponsableEmision"] ? row["OtObservacionesResponsableEmision"] : "-",
+        },        
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeModalServicio(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalEliminarServicio(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalVerOt(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Ver OT"><i className="bx bx-show-alt bx-xs"></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Registrar visita"><i className='bx bxs-calendar bx-xs' ></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalFinalizarOt(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Finalizar OT"><i className='bx bx-calendar-check bx-xs' ></i></Tooltip></Typography>
             </>,
         }
     ]
@@ -98,100 +114,121 @@ const ListaMisTareas = () => {
         <div className="container">
         <Aside/>
         <main>
+        <br/>
         <Card>
             <CardContent>
-                <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalServicio()}} >+ Nuevo servicio</Button>}>
-                </CardHeader>
-                <Typography variant="h1">Listado de Servicios</Typography>
+                <Typography variant="h1">Mis órdenes de Trabajo</Typography>
                 <Datatable
                     loader={true}
-                    datos={servicios}
-                    columnas={columnasServicios}
+                    datos={ordenesDeTrabajoAsignadas}
+                    columnas={columnasMisOt}
                     paginacion={true}
                     buscar={true}
                 />
             </CardContent>
         </Card>
-        <Modal
-        abrirModal={ModalServicio}
-        funcionCerrar={handleChangeModalServicio}
-        titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Servicio" : "Nuevo Servicio"}</Typography>}
-        formulario={
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={12} sm={12} xl={12}>
-                    <TextField
-                    color="primary"
-                    autoFocus
-                    variant="outlined"
-                    label="Nombre del Servicio"
-                    fullWidth
-                    onChange={onInputChange}
-                    value={ServicioNombre}
-                    name="ServicioNombre"
-                    ></TextField>
+            <Modal
+            abrirModal={ModalVerOt}
+            funcionCerrar={handleChangeModalVerOt}
+            titulo ={<Typography variant="h2"><i className="bx bx-clipboard"></i> Datos de OT N°: {OtInfo.OtId}</Typography>}
+            formulario={<CaratulaVerOt datos={OtInfo}/>}
+            ></Modal>
+            <Modal
+            abrirModal={ModalRegistrarVisitaOt}
+            funcionCerrar={handleChangeModalRegistrarVisitaOt}
+            titulo ={<Typography variant="h2"><i className="bx bxs-calendar"></i> Registrar Visita OT</Typography>}
+            botones={<><Button variant='contained' color="primary" onClick={() =>
+                registrarVisitaOrdenDeTrabajo({...OtInfo, FechaVisita}, handleChangeModalRegistrarVisitaOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalRegistrarVisitaOt}>Cerrar</Button></>}
+            formulario={
+            <>
+            <Grid container spacing ={3}>
+            <Grid item xs={12} md={12} lg={12} xl={12}>
+                <DatePicker
+                inputVariant="outlined"
+                value={OtInfo.OtFechaPrevistaVisita}
+                disabled
+                format="dd/MM/yyyy"
+                fullWidth
+                label="Fecha prevista de visita pactada"
+                ></DatePicker>
                 </Grid>
-                <Grid item xs={6} md={6} sm={6} xl={6}>
-                    <TextField
-                    color="primary"
-                    type="number"
-                    variant="outlined"
-                    label="Precio Unitario"
+                <Grid item xs={12} md={12} lg={12} xl={12}>
+                    <DatePicker
+                    inputVariant="outlined"
+                    value={FechaVisita}
+                    onChange={(fecha)=>setFechaVisita(fecha)}
+                    format="dd/MM/yyyy"
                     fullWidth
-                    onChange={onInputChange}
-                    value={ServicioPrecioUnitario}
-                    name="ServicioPrecioUnitario"
-                    ></TextField>
-                </Grid>
-                <Grid item xs={6} md={6} sm={6} xl={6}>
-                    <TextField
-                    color="primary"
-                    type="number"
-                    variant="outlined"
-                    label="Recargo"
-                    fullWidth
-                    onChange={onInputChange}
-                    value={ServicioRecargo}
-                    name="ServicioRecargo"
-                    ></TextField>
-                </Grid>
-                <Grid item xs={12} md={12} sm={12} xl={12}>
-                    <TextField
-                    color="primary"
-                    multiline
-                    minRows={3}
-                    variant="outlined"
-                    label="Descripción del Servicio"
-                    fullWidth
-                    inputProps={{
-                        maxLength: 100
-                    }}
-                    onChange={onInputChange}
-                    value={ServicioDescripcion}
-                    name="ServicioDescripcion"
-                    ></TextField>
+                    label="Fecha de Visita"
+                    ></DatePicker>
                 </Grid>
             </Grid>
-        }
-        botones={
-            <>
-            <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarServicio(ServicioInfo, handleChangeModalServicio)
-            : crearServicio(ServicioInfo, handleChangeModalServicio)}}>{EditMode ? "Editar" : "Agregar"}</Button>
-            <Button variant="text" color="inherit" >Cerrar</Button>
-            </>
-        }
-        />
-        <Modal
-        abrirModal={ModalEliminarServicio}
-        funcionCerrar={handleChangeModalEliminarServicio}
-        titulo={<Alert severity="error">¿Está seguro que quiere eliminar el servicio?</Alert>}
-        botones={
-            <>
-            <Button variant="contained" color="secondary" onClick={()=>{eliminarServicio(ServicioInfo, handleChangeModalEliminarServicio)}}>Eliminar</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarServicio}>Cerrar</Button>
-            </>
-        }
-        />
+            { OtInfo.OtPrimeraVisita ? <>
+                <Typography variant="h2">Visitas anteriores:</Typography>
+                <List>
+                    <ListItem><ListItemIcon>1</ListItemIcon>{OtInfo.OtPrimeraVisita}</ListItem>
+                    <ListItem><ListItemIcon>2</ListItemIcon>{OtInfo.OtSegundaVisita}</ListItem>
+                    <ListItem><ListItemIcon>3</ListItemIcon>{OtInfo.OtTerceraVisita}</ListItem>
+                    <ListItem><ListItemIcon>4</ListItemIcon>{OtInfo.OtCuartaVisita}</ListItem>
+                </List>
+                {OtInfo.OtTerceraVisita ? <Alert severity="info">La OT ya tiene 3 visitas realizadas por el técnico, se tiene que cobrar un monto adicional que se actualizará al monto de la OT</Alert> : ""}
+                </>
+            : ""}
+            </>}
+            ></Modal>
+            <Modal
+            abrirModal={ModalFinalizarOt}
+            funcionCerrar={handleChangeModalFinalizarOt}
+            titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
+            botones={<><Button variant='contained' color="primary"
+            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: usuarioLogueado.User.UserId},
+            handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cerrar</Button></>}
+            formulario={
+                <>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                        <KeyboardDateTimePicker
+                        disableToolbar
+                        inputVariant="outlined"
+                        value={OtFechaInicio}
+                        format="dd/MM/yyyy HH:mm"
+                        invalidDateMessage="Seleccione una fecha y hora válido"
+                        onChange={(fecha)=>setOtFechaInicio(fecha)}
+                        fullWidth
+                        label="Fecha y hora de inicio"
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                        <KeyboardDateTimePicker
+                        disableToolbar
+                        inputVariant="outlined"
+                        value={OtFechaFinalizacion}
+                        format="dd/MM/yyyy HH:mm"
+                        invalidDateMessage="Seleccione una fecha y hora válido"
+                        onChange={(fecha)=>setOtFechaFinalizacion(fecha)}
+                        fullWidth
+                        label="Fecha y hora de finalización"
+                        ></KeyboardDateTimePicker>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                        <TextField
+                        variant = "outlined"
+                        multiline
+                        minRows={3}
+                        value={OtObservacionesResponsableEjecucion}
+                        name="OtObservacionesResponsableEjecucion"
+                        inputProps={{
+                            maxLength: 1000
+                        }}
+                        onChange={onInputChange}
+                        fullWidth
+                        label="Observaciones">
+                        </TextField>
+                    </Grid>
+                </Grid>
+                </>}
+            >
+            </Modal>
         </main>
         <Footer/>
         </div>
@@ -199,4 +236,4 @@ const ListaMisTareas = () => {
     );
 }
  
-export default ListaMisTareas;
+export default ListaMisOt;

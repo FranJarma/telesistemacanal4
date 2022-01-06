@@ -3,14 +3,15 @@ import * as TYPES from '../types';
 export default (state, action) => {
     switch (action.type) {
         case TYPES.LOGIN_EXITOSO:
-            localStorage.setItem('token',action.payload.token);
+            sessionStorage.setItem('token',action.payload.token);
             return {
                 ...state,
-                token: localStorage.getItem('token'),
+                token: sessionStorage.getItem('token'),
                 usuarioAutenticado: true
         }
         case TYPES.OBTENER_INFO_USUARIO:
-            localStorage.setItem('usr', action.payload.User.Apellido + ", "+ action.payload.User.Nombre);
+            sessionStorage.setItem('usr', action.payload.User.Apellido + ", "+ action.payload.User.Nombre);
+            sessionStorage.setItem('identity', action.payload.User.UserId);
             return {
                 ...state,
                 usuarioLogueado: action.payload,
@@ -18,8 +19,9 @@ export default (state, action) => {
                 push: true
         }
         case TYPES.CERRAR_SESION:
-            localStorage.removeItem('token');
-            localStorage.removeItem('usr');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('usr');
+            sessionStorage.removeItem('identity');
             return {
                 ...state,
                 usuarioAutenticado: false,
@@ -258,15 +260,31 @@ export default (state, action) => {
                 ...state,
                 tareas: action.payload,
         }
-        case TYPES.LISTA_TIPOS_TAREAS:
+        case TYPES.CREAR_TAREA:
             return {
                 ...state,
-                tiposTareas: action.payload,
+                tareas: [action.payload, ...state.tareas],
         }
+        case TYPES.EDITAR_TAREA:
+            return {
+                ...state,
+                tareas: state.tareas.map(tarea => tarea.TareaId === action.payload.TareaId ? action.payload : tarea),
+        } 
+        case TYPES.ELIMINAR_TAREA:
+            return {
+                ...state,
+                tareas: state.tareas.filter(tarea => tarea.TareaId !== action.payload.TareaId),
+        } 
         case TYPES.LISTA_OT: {
             return {
                 ...state,
                 ordenesDeTrabajo: action.payload
+            }
+        }
+        case TYPES.LISTA_OT_ASIGNADAS: {
+            return {
+                ...state,
+                ordenesDeTrabajoAsignadas: action.payload
             }
         }
         case TYPES.LISTA_TECNICOS_OT: {

@@ -42,7 +42,7 @@ const ListaBarrios = () => {
         setModalEliminarBarrio(false);
         if(data !== '') {
             setEditMode(true);
-            setBarrioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
+            setBarrioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
             setMunicipioIdModal(data.MunicipioId);
             setMunicipioNombre(data.MunicipioNombre);
         }
@@ -55,7 +55,7 @@ const ListaBarrios = () => {
     const handleChangeModalEliminarBarrio = (data = '') => {
         setModalEliminarBarrio(!ModalEliminarBarrio);
         setModalBarrio(false);
-        setBarrioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
+        setBarrioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
     }
 
     const handleChangeMunicipioSeleccionado = (e) => {

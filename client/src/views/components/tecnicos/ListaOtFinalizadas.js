@@ -5,7 +5,6 @@ import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
-import { Link } from 'react-router-dom';
 import CaratulaImpresionOt from './CaratulaImpresionOt';
 
 const ListaOtFinalizadas = () => {
@@ -40,26 +39,31 @@ const ListaOtFinalizadas = () => {
         {
             "name": "Abonado",
             "wrap": true,
+            "sortable": true,
             "selector": row => row["ApellidoAbonado"] + ", " + row["NombreAbonado"]
         },
         {
             "name": "Domicilio",
             "wrap": true,
-            "selector": row => row["DomicilioCalle"] + " " + row["DomicilioNumero"]
+            "sortable": true,
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
         },
         {
             "name": "Monto",
             "wrap": true,
+            "sortable": true,
             "selector": row => "$ " + row["Monto"]
         },
         {
             "name": "Fecha y hora de inicio",
             "wrap": true,
+            "sortable": true,
             "selector": row => row["OtFechaInicio"].split('T')[0].split('-').reverse().join('/') + "-" + row["OtFechaInicio"].split('T')[1].split('.')[0]
         },
         {
             "name": "Fecha y hora de finalización",
             "wrap": true,
+            "sortable": true,
             "selector": row => row["OtFechaFinalizacion"].split('T')[0].split('-').reverse().join('/') + "-" + row["OtFechaFinalizacion"].split('T')[1].split('.')[0]
         },
         {

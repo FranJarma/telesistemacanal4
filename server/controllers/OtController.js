@@ -44,6 +44,40 @@ exports.OtGet = async(req, res) => {
     }
 }
 
+exports.OtGetByTecnico = async(req, res) => {
+    try {
+        const ot = await knex
+        .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
+        'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.OtRetiraCable', 'ot.OtRetiraOnu',
+        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion',
+        'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
+        'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
+        'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre'
+        )
+        .sum('t.TareaPrecioUnitario as Monto')
+        .from('ot as ot')
+        .innerJoin('_user as u', 'u.UserId', '=', 'ot.AbonadoId')
+        .innerJoin('_user as u1', 'u1.UserId', '=', 'ot.createdBy')
+        .innerJoin('domicilio as d', 'u.DomicilioId', '=', 'd.DomicilioId')
+        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
+        .innerJoin('ottarea as ott', 'ott.OtId', '=' ,'ot.OtId')
+        .innerJoin('ottecnico as otte', 'otte.OtId', '=', 'ot.OtId')
+        .innerJoin('tarea as t', 'ott.TareaId', '=' ,'t.TareaId')
+        .where(
+            {'ot.deletedAt': null,
+            'otte.TecnicoId': req.params.tecnicoId,
+            'ot.EstadoId': req.params.estadoId
+            })
+        .groupBy('ot.OtId')
+        .orderBy('ot.createdAt', 'desc');
+        res.json(ot);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ msg: 'Hubo un error al encontrar las órdenes de trabajo'});
+    }
+}
+
 exports.OtCreate = async(req, res) => {
     try {
         const errors = validationResult(req);

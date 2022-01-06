@@ -3,7 +3,7 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { Link, useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { DatePicker } from '@material-ui/pickers';
@@ -90,17 +90,20 @@ const CambioServicio = () => {
         {
             "name": "Servicio",
             "selector": row =>row["OnuMac"] ? row["ServicioNombre"] + ' | ' + "MAC Onu:" + ' ' + row["OnuMac"] : row["ServicioNombre"],
-            "wrap": true
+            "wrap": true,
+            "sortable": true
         },
         {
             "name": "Fecha de Cambio",
             "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('/'),
+            "sortable": true
         },
         {
             "name": "Observaciones",
             "selector": row =>row["CambioServicioObservaciones"],
             "hide": "sm",
-            "wrap": true
+            "wrap": true,
+            "sortable": true
         },
     ]
     const ExpandedComponent = ({ data }) =>

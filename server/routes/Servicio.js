@@ -4,7 +4,7 @@ const router = express.Router();
 const ServicioController = require('../controllers/ServicioController');
 const ValidarJWT = require('../middlewares/ValidarJWT');
 
-router.get('/', ValidarJWT, ServicioController.ServiciosListar);
+router.get('/', ValidarJWT, ServicioController.ServiciosGet);
 router.post('/create', ValidarJWT, [
     check('ServicioNombre', 'El nombre del servicio es obligatorio').notEmpty(),
     check('ServicioPrecioUnitario', 'El precio unitario es obligatorio').notEmpty(),

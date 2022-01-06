@@ -5,6 +5,7 @@ const OtController = require('../controllers/OtController');
 const ValidarJWT = require('../middlewares/ValidarJWT');
 
 router.get('/estado=:estadoId', ValidarJWT, OtController.OtGet);
+router.get('/tecnico=:tecnicoId&estado=:estadoId', ValidarJWT, OtController.OtGetByTecnico);
 router.get('/tecnicos/:OtId', ValidarJWT, OtController.OtObtenerTecnicos);
 router.get('/tareas/:OtId', ValidarJWT, OtController.OtObtenerTareas);
 

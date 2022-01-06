@@ -12,7 +12,7 @@ const ListaServicios = () => {
     const { usuarioLogueado, servicios, traerServicios, crearServicio, modificarServicio, eliminarServicio } = appContext;
     useEffect(()=>{
         traerServicios();
-    },[])
+    },[]);
     const [ModalServicio, setModalServicio] = useState(false);
     const [ModalEliminarServicio, setModalEliminarServicio] = useState(false);
     const [EditMode, setEditMode] = useState(false);
@@ -41,7 +41,7 @@ const ListaServicios = () => {
         setModalEliminarServicio(false);
         if(data !== '') {
             setEditMode(true);
-            setServicioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date().toString() });
+            setServicioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
         }
         else {
             setEditMode(false);
@@ -52,7 +52,7 @@ const ListaServicios = () => {
     const handleChangeModalEliminarServicio = (data = '') => {
         setModalEliminarServicio(!ModalEliminarServicio);
         setModalServicio(false);
-        setServicioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date().toString() });
+        setServicioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
     }
 
     const columnasServicios = [

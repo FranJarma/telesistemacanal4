@@ -100,6 +100,7 @@ const ListaAbonadosInscriptos = () => {
         "name": "Nombre Completo",
         "selector": row => row["Apellido"] + ', ' + row["Nombre"],
         "wrap": true,
+        "sortable": true
     },
     {
         "name": "BarrioId",
@@ -130,6 +131,7 @@ const ListaAbonadosInscriptos = () => {
         "name": "Domicilio",
         "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
         "wrap": true,
+        "sortable": true
     },
     {
         "name": "N° teléfono",
@@ -160,38 +162,18 @@ const ListaAbonadosInscriptos = () => {
     },
     {
         "name": "Fecha de Bajada",
-        "selector": row =>row["FechaBajada"].split('T')[0].split('-').reverse().join('/')
+        "selector": row =>row["FechaBajada"].split('T')[0].split('-').reverse().join('/'),
+        "sortable": true
     },
     {
         cell: (data) =>
         <>
         <Link to={{
-            pathname: `/caratula-abonado/edit/UserId=${data.UserId}`,
+            pathname: `/caratula-abonado/edit/${data.Apellido + data.Nombre}`,
             state: data
         }}
         style={{textDecoration: 'none', color: "teal"}}>
         <Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip>
-        </Link>
-        <Link to={{
-            pathname: `/cambio-domicilio/UserId=${data.UserId}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "navy"}}>
-        <Tooltip title="Cambio de Domicilio"><i className="bx bxs-home bx-xs"></i></Tooltip>
-        </Link>
-        <Link to={{
-            pathname: `/cambio-servicio/UserId=${data.UserId}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "indigo"}}>
-        <Tooltip title="Cambio de Servicio"><i className="bx bx-plug bx-xs"></i></Tooltip>
-        </Link>
-        <Link to={{
-            pathname: `/cambio-titularidad/UserId=${data.UserId}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "teal"}}>
-        <Tooltip title="Cambio de Titularidad"><i className="bx bxs-notepad bx-xs"></i></Tooltip>
         </Link>
         <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Typography>
         </>,

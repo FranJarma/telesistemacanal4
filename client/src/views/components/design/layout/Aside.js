@@ -4,7 +4,7 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import { Link } from 'react-router-dom';
 import logo2 from './../../../images/logo2.png';
 import AppContext from '../../../../context/appContext';
-import { Backdrop, Button, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
+import { Button, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
@@ -71,7 +71,7 @@ const Aside = () => {
     <img alt="" src={logo2}/>
       <Menu iconShape="square">
         <SidebarHeader style={{marginLeft: '1rem'}}>
-          <Typography variant="h6">{localStorage.getItem('usr')}</Typography>
+          <Typography variant="h6">{sessionStorage.getItem('usr')}</Typography>
         </SidebarHeader>
         <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
         {
@@ -85,19 +85,23 @@ const Aside = () => {
               <MenuItem icon={<i className='bx bx-user-check' ></i>}>Activos<Link to="/abonados-activos"></Link></MenuItem>
               <MenuItem icon={<i className='bx bx-user-x' ></i>}>Inactivos<Link to="/abonados-inactivos"></Link></MenuItem>
             </SubMenu>
+            <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Órdenes de Trabajo" icon={<i className="bx bx-wrench"></i>}>
+              <MenuItem icon={<i className='bx bx-clipboard'></i>}>OT Pendientes<Link to="/ot-pendientes"></Link></MenuItem>
+              <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
+            </SubMenu>
             <MenuItem icon={<i className="bx bx-calculator"></i>}>Cierre de caja<Link to="/cierre-de-caja"></Link></MenuItem>
           </>
           : rol.RoleName === "Jefe" || rol.RoleName === "Admin" ?
           <>
-          <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Órdenes de Trabajo" icon={<i className="bx bx-wrench"></i>}>
-            <MenuItem icon={<i className='bx bx-clipboard'></i>}>OT Pendientes<Link to="/ot-pendientes"></Link></MenuItem>
-            <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
-            <MenuItem icon={<i className='bx bx-user-pin'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
-          </SubMenu>
           <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
             <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
             <MenuItem icon={<i className='bx bx-user-check' ></i>}>Activos<Link to="/abonados-activos"></Link></MenuItem>
             <MenuItem icon={<i className='bx bx-user-x' ></i>}>Inactivos<Link to="/abonados-inactivos"></Link></MenuItem>
+          </SubMenu>
+          <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Órdenes de Trabajo" icon={<i className="bx bx-wrench"></i>}>
+            <MenuItem icon={<i className='bx bx-clipboard'></i>}>OT Pendientes<Link to="/ot-pendientes"></Link></MenuItem>
+            <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
+            <MenuItem icon={<i className='bx bx-user-pin'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
           </SubMenu>
           <MenuItem icon={<i className="bx bx-calculator"></i>}>Cierre de caja<Link to="/cierre-de-caja"></Link></MenuItem>
           <SubMenu onClick={onClickMenuUsuarios} open={SubMenuUsuarios} title="Usuarios" icon={<i className="bx bx-group"></i>}>
@@ -118,7 +122,7 @@ const Aside = () => {
     </ProSidebar>
     <div className="header">
         <i onClick={onClickWidth} className="bx bx-menu"/>
-        <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{localStorage.getItem('usr')}</Button>
+        <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{sessionStorage.getItem('usr')}</Button>
         <Popover 
           id={id}
           open={open}
@@ -133,12 +137,19 @@ const Aside = () => {
             horizontal: 'left',
           }}
         >
-          <List style={{cursor: 'pointer'}}>
+          <List style={{ cursor: 'pointer'}}>
             <Link style={{textDecoration: 'none', color: '#000'}} to={{
-              pathname: `/perfil-user/UserId=${usuarioLogueado.User.UserId}`,
+              pathname: '/perfil-user',
               state: usuarioLogueado
             }
-            }><ListItem ><ListItemIcon><i className="bx bx-user"></i></ListItemIcon>Perfil del Usuario</ListItem></Link>
+            }>
+            <ListItem>
+            <ListItemIcon>
+            <i className="bx bx-user"></i>
+            </ListItemIcon>
+            Perfil del Usuario
+            </ListItem>
+            </Link>
             <hr style={{margin: '0 15px 0 15px'}}/>
             <ListItem  onClick={() => cerrarSesion()}><ListItemIcon><i className="bx bx-log-out-circle"></i></ListItemIcon>Salir</ListItem>
           </List>

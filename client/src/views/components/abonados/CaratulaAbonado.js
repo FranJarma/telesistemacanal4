@@ -95,7 +95,7 @@ const CaratulaAbonado = () => {
                 DomicilioCalle: location.state.DomicilioCalle,
                 DomicilioNumero: location.state.DomicilioNumero,
                 DomicilioPiso: location.state.DomicilioPiso,
-                updatedAt: new Date().toString(),
+                updatedAt: new Date(),
                 updatedBy: usuarioLogueado.User.UserId
             });
             setServicioId(location.state.ServicioId);

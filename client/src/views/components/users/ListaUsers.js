@@ -63,26 +63,31 @@ const Users = () => {
         "name": "Nombre Completo",
         "selector": row => row["Apellido"] + ', ' + row["Nombre"],
         "wrap": true,
+        "sortable": true
     },
     {
         "name": "DNI",
         "selector": row => row["Documento"],
         "wrap": true,
+        "sortable": true
     },
     {
         "name": "Nombre de Usuario",
         "selector": row => row["NombreUsuario"],
         "wrap": true,
+        "sortable": true
     },
     {
         "name": "Email",
         "selector": row =>row["Email"],
-        "wrap": true
+        "wrap": true,
+        "sortable": true
     },
     {
         "name": "Estado",
         "selector": row =>row["EstadoNombre"],
-        "wrap": true
+        "wrap": true,
+        "sortable": true
     },
     {
         cell: (data) =>

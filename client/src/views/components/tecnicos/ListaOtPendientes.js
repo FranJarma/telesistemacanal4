@@ -90,21 +90,25 @@ const ListaOtPendientes = () => {
         {
             "name": "Abonado",
             "wrap": true,
+            "sortable": true,
             "selector": row => row["ApellidoAbonado"] + ", " + row["NombreAbonado"]
         },
         {
             "name": "Domicilio",
             "wrap": true,
-            "selector": row => row["DomicilioCalle"] + " " + row["DomicilioNumero"]
+            "sortable": true,
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
         },
         {
             "name": "Monto",
             "wrap": true,
+            "sortable": true,
             "selector": row => "$ " + row["Monto"]
         },
         {
             "name": "Observaciones",
             "wrap": true,
+            "sortable": true,
             "selector": row => row["OtObservacionesResponsableEmision"] ? row["OtObservacionesResponsableEmision"] : "-",
         },        
         {
@@ -120,7 +124,6 @@ const ListaOtPendientes = () => {
             <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Registrar visita"><i className='bx bxs-calendar bx-xs' ></i></Tooltip></Typography>
             <Typography onClick={()=>{handleChangeModalFinalizarOt(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Finalizar OT"><i className='bx bx-calendar-check bx-xs' ></i></Tooltip></Typography>
             <Typography onClick={()=>{handleChangeModalImprimirOt(data)}} style={{color: "orange", cursor: 'pointer'}}><Tooltip title="Imprimir"><i className="bx bx-printer bx-xs"></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalEliminarOt(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
             </>,
         }
     ]
@@ -129,6 +132,36 @@ const ListaOtPendientes = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Card>
+            <CardContent>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={3} lg={3}>
+                        <DatePicker
+                            inputVariant="outlined"
+                            format="dd/MM/yyyy"
+                            fullWidth
+                            label="Desde"
+                        ></DatePicker>
+                    </Grid>
+                    <Grid item xs={12} md={3} lg={3}>
+                        <DatePicker
+                            inputVariant="outlined"
+                            format="dd/MM/yyyy"
+                            fullWidth
+                            label="Hasta"
+                        ></DatePicker>
+                    </Grid>
+                    <Grid item xs={12} md={3} lg={3}>
+                        <Button
+                        style={{marginTop: '10px'}}
+                        variant="contained"
+                        color="secondary">Buscar</Button>
+                    </Grid>
+
+                </Grid>
+            </CardContent>
+        </Card>
+        <br/>
         <Card>
             <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" color="primary">+ Nueva OT</Button></Link>}></CardHeader>
             <CardContent>
