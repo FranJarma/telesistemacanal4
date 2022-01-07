@@ -30,29 +30,23 @@ const Home = () => {
                         <Card className={styles.cartaHome}>
                             <CardContent>
                                 <Typography variant="h1">Ingresos del día</Typography>
-                                <XYPlot height={200} width={200}>
-                                    <VerticalBarSeries data={data} />
-                                </XYPlot>
+                                <Typography className={styles.cantidad}>$2550</Typography>
                             </CardContent>
                         </Card>
                     </Grid>
                     <Grid item lg={4} md={4} xs={12}>
                         <Card className={styles.cartaHome}>
                             <CardContent>
-                                <Typography variant="h1">Cortes a realizar</Typography>
-                                <XYPlot height={200} width={200}>
-                                    <VerticalBarSeries data={data} />
-                                </XYPlot>
+                                <Typography variant="h1">Ordenes de trabajo pendientes</Typography>
+                                <Typography className={styles.cantidad}>120</Typography>
                             </CardContent>
                         </Card>
                     </Grid>
                     <Grid item lg={4} md={4} xs={12}>
                         <Card className={styles.cartaHome}>
                             <CardContent>
-                                <Typography variant="h1">Instalaciones a realizar</Typography>
-                                <XYPlot height={200} width={200}>
-                                    <VerticalBarSeries data={data} />
-                                </XYPlot>
+                                <Typography variant="h1">Abonados activos</Typography>
+                                <Typography className={styles.cantidad}>3200</Typography>
                             </CardContent>
                         </Card>
                     </Grid>

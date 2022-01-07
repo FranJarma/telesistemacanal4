@@ -16,8 +16,16 @@ const useStyles = makeStyles(theme =>({
         borderLeft: '3px solid teal'
     },
     cartaHome: {
+        background: 'linear-gradient(90deg, rgba(0,128,128,1) 25%, rgba(0,68,68,1) 75%, rgba(0,60,60,1) 100%)',
+        color: "white",
         marginTop: '3rem',
-        borderLeft: '3px solid teal'
+        borderLeft: '3px solid #000',
+        margin: "30px"
+    },
+    cantidad: {
+        fontSize: "64px",
+        float: "right",
+        fontFamily: 'Poppins, sans-serif'
     },
     cartaLogin: {
         backgroundColor: 'rgba(255,255,255,0.9)',
