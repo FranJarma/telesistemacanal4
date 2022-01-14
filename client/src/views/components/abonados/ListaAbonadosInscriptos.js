@@ -9,6 +9,7 @@ import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import { Link } from 'react-router-dom';
 import useStyles from '../Styles';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
@@ -167,16 +168,22 @@ const ListaAbonadosInscriptos = () => {
     },
     {
         cell: (data) =>
-        <>
-        <Link to={{
-            pathname: `/caratula-abonado/edit/${data.Apellido + data.Nombre}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "teal"}}>
-        <Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip>
-        </Link>
-        <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Typography>
-        </>,
+        <BotonesDatatable botones={
+            <>
+            <MenuItem>
+                <Typography style={{color: 'teal'}}>
+                <Link to={{
+                pathname: `/caratula-abonado/edit/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "teal"}}>
+                <i className='bx bxs-pencil bx-xs'></i>
+                </Link> EDITAR</Typography>
+            </MenuItem>
+            <MenuItem>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> DAR DE BAJA</Typography>
+            </MenuItem>
+            </>
+        }/>
     }
 ]
     const ExpandedComponent = ({ data }) =>

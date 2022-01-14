@@ -1,4 +1,4 @@
-import { IconButton, Menu, MenuItem } from '@material-ui/core';
+import { IconButton, Menu } from '@material-ui/core';
 import React, { useState } from 'react';
 
 const BotonesDatatable = ({botones}) => {
@@ -23,7 +23,7 @@ const BotonesDatatable = ({botones}) => {
         <i className='bx bx-dots-vertical'></i>
     </IconButton>
         <Menu
-        style={{boxShadow: 'none'}}
+        style={{boxShadow: 'none', zIndex: 0}}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}>

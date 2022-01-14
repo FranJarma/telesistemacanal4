@@ -5,6 +5,7 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
 import { Autocomplete } from '@material-ui/lab';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaOnus = ({location}) => {
     const appContext = useContext(AppContext);
@@ -105,9 +106,19 @@ const ListaOnus = ({location}) => {
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeModalOnu(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalAsignarAbonado(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Asignar abonado"><i className='bx bxs-user bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalEliminarOnu(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalOnu(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> EDITAR</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalAsignarAbonado(data)}} style={{color: "navy", cursor: 'pointer'}}><i className='bx bxs-user bx-xs' ></i> ASIGNAR ABONADO</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalEliminarOnu(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                </MenuItem>
+                </>
+            }/>
             </>,
         }
     ]

@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaModelosOnus = ({location}) => {
     const appContext = useContext(AppContext);
@@ -75,8 +76,16 @@ const ListaModelosOnus = ({location}) => {
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeModalModeloOnu(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalEliminarModeloOnu(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalModeloOnu(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> EDITAR</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalEliminarModeloOnu(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                </MenuItem>
+                </>
+            }/>
             </>,
         }
     ]

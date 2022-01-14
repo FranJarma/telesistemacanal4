@@ -4,6 +4,7 @@ import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaBarrios = () => {
     const appContext = useContext(AppContext);
@@ -91,10 +92,16 @@ const ListaBarrios = () => {
         },
         {
             cell: (data) => 
-            <>
-            <Typography onClick={()=>{handleChangeModalBarrio(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalEliminarBarrio(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
-            </>,
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalBarrio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> EDITAR</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalEliminarBarrio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                </MenuItem>
+                </>
+            }/>
         }
     ]
     return (

@@ -75,7 +75,7 @@ const ListaTiposTareas = () => {
             "name": "Descripcion",
             "selector": row => row["TareaDescripcion"],
             "wrap": true,
-            "sortable": true
+            "sortable": true,
         },
         {
             "name": "Precio Unitario",

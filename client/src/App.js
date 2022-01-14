@@ -19,6 +19,7 @@ import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
 import PrivateRoute from './routes/PrivateRoute';
+import LoginRoute from './routes/LoginRoute';
 import ListaMisOt from './views/components/tecnicos/ListaMisOt';
 import ListaTareas from './views/components/tecnicos/ListaTareas';
 import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
@@ -130,9 +131,9 @@ function App() {
           <AppState>
             <Switch>
                 <Suspense fallback={<Cargando/>}>
-                  <Route exact path="/">
+                  <LoginRoute exact path="/">
                     <Login/>
-                  </Route>
+                  </LoginRoute>
                   <PrivateRoute exact path="/home" component={Home}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/users" component={ListaUsers}>

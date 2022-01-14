@@ -9,6 +9,7 @@ import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import { Link } from 'react-router-dom';
 import useStyles from '../Styles';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
@@ -149,44 +150,58 @@ const ListaAbonadosActivos = () => {
     },
     {
         cell: (data) =>
-        <>
-        <Link to={{
-            pathname: `/caratula-abonado/edit/${data.Apellido + data.Nombre}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "teal"}}>
-        <Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip>
-        </Link>
-        <Link to={{
-            pathname: `/cambio-domicilio/${data.Apellido + data.Nombre}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "navy"}}>
-        <Tooltip title="Historial de domicilios"><i className="bx bxs-home bx-xs"></i></Tooltip>
-        </Link>
-        <Link to={{
-            pathname: `/cambio-servicio/${data.Apellido + data.Nombre}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "indigo"}}>
-        <Tooltip title="Historial de servicios"><i className="bx bx-plug bx-xs"></i></Tooltip>
-        </Link>
-        <Link to={{
-            pathname: `/historial-de-pagos/${data.Apellido + data.Nombre}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "navy"}}>
-        <Tooltip title="Pagos"><i className="bx bx-money bx-xs"></i></Tooltip>
-        </Link>
-        <Link to={{
-            pathname: `/cambio-titularidad/${data.Apellido + data.Nombre}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "teal"}}>
-        <Tooltip title="Cambio de Titularidad"><i className="bx bxs-notepad bx-xs"></i></Tooltip>
-        </Link>
-        <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Typography>
-        </>,
+        <BotonesDatatable botones={
+            <>
+            <MenuItem>
+                <Link to={{
+                pathname: `/caratula-abonado/edit/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "teal"}}>
+                <Typography style={{color: 'teal'}}>
+                <i className='bx bxs-pencil bx-xs'></i> EDITAR</Typography>
+                </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Link to={{
+                pathname: `/cambio-domicilio/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "teal"}}>
+                <Typography style={{color: 'teal'}}>
+                <i className='bx bxs-home bx-xs'></i> CAMBIOS DE DOMICILIO</Typography>
+                </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Link to={{
+                pathname: `/cambio-servicio/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "palevioletred"}}>
+                <Typography style={{color: 'palevioletred'}}>
+                <i className='bx bx-plug bx-xs'></i> CAMBIOS DE SERVICIO</Typography>
+                </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Link to={{
+                pathname: `/historial-de-pagos/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "navy"}}>
+                <Typography style={{color: 'navy'}}>
+                <i className='bx bx-money bx-xs'></i> HISTORIAL DE PAGOS</Typography>
+                </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Link to={{
+                pathname: `/cambio-titularidad/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "yellowgreen"}}>
+                <Typography style={{color: 'yellowgreen'}}>
+                <i className='bx bxs-notepad bx-xs'></i> CAMBIAR TITULARIDAD</Typography>
+                </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> DAR DE BAJA</Typography>
+            </MenuItem>
+            </>
+        }/>
     }
 ]
     const ExpandedComponent = ({ data }) =>

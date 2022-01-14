@@ -15,12 +15,32 @@ const useStyles = makeStyles(theme =>({
     cartaSecundaria: {
         borderLeft: '3px solid teal'
     },
-    cartaHome: {
+    cartaIngresos: {
+        background: 'linear-gradient(90deg, rgba(0,128,28,1) 25%, rgba(0,92,20,1) 75%, rgba(0,82,18,1) 100%)',
+        color: "white",
+        marginTop: '3rem',
+        margin: "30px",
+        '&:hover': {
+            boxShadow: '1px 9px 49px 5px rgba(0,0,0,0.59)'
+        }
+    },
+    cartaOtPendientes: {
+        background: 'linear-gradient(90deg, rgba(0,101,128,1) 25%, rgba(0,79,101,1) 75%, rgba(0,67,85,1) 100%)',
+        color: "white",
+        marginTop: '3rem',
+        margin: "30px",
+        '&:hover': {
+            boxShadow: '1px 9px 49px 5px rgba(0,0,0,0.59)'
+        }
+    },
+    cartaAbonadosActivos: {
         background: 'linear-gradient(90deg, rgba(0,128,128,1) 25%, rgba(0,68,68,1) 75%, rgba(0,60,60,1) 100%)',
         color: "white",
         marginTop: '3rem',
-        borderLeft: '3px solid #000',
-        margin: "30px"
+        margin: "30px",
+        '&:hover': {
+            boxShadow: '1px 9px 49px 5px rgba(0,0,0,0.3)'
+        }
     },
     cantidad: {
         fontSize: "64px",

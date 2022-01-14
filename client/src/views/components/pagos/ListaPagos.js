@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid,  MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
@@ -8,7 +8,7 @@ import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import { DatePicker } from '@material-ui/pickers';
 import AppContext from '../../../context/appContext';
-import { Link } from "react-router-dom";
+import  BotonesDatatable  from './../design/components/BotonesDatatable';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
@@ -22,6 +22,8 @@ const ListaPagos = () => {
     })
 
     const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
+    const [PagoAño, setPagoAño] = useState(new Date());
+
     const [PagoInfo, setPagoInfo] = useState({
         UserId: location.state.UserId,
         DetallePagoId: '',
@@ -51,9 +53,8 @@ const ListaPagos = () => {
     const [ModalEliminarDetallePago, setModalEliminarDetallePago] = useState(false);
 
     useEffect(()=>{
-        traerPago(location.state.UserId, PagoPeriodo.toJSON().split('T')[0].split('-')[1] + '-' +PagoPeriodo.toJSON().split('T')[0].split('-')[0]);
         traerMediosPago();
-        traerPagosPorAbonado(location.state.UserId);
+        traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear());
     },[]);
 
     const onInputChange = (e) => {
@@ -91,13 +92,19 @@ const ListaPagos = () => {
         },
         {
             "name": "Periodo",
-            "selector": row => row["PagoPeriodo"],
+            "selector": row => row["PagoMes"] + "/" + row["PagoAño"],
             "sortable": true,
             "wrap": true
         },
         {
             "name": "Total",
             "selector": row => "$ " + row["PagoTotal"],
+            "sortable": true,
+            "wrap": true
+        },
+        {
+            "name": "Recargo",
+            "selector": row => "$ " + row["PagoRecargo"],
             "sortable": true,
             "wrap": true
         },
@@ -109,11 +116,16 @@ const ListaPagos = () => {
         {
             cell: (data) =>
             <>
-            <Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><Tooltip title="Detalles de pago del período"><i className='bx bx-list-ol bx-sm'></i></Tooltip></Typography>
-            <Link to={{
-                pathname: `/caratula-abonado/abonadoId=${data.id}`,
-                state: data
-            }} style={{textDecoration: 'none', color: "teal"}}><Tooltip title="Generar factura"><i className="bx bxs-file-pdf bx-sm"></i></Tooltip></Link>
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                    <Typography onClick={()=>handleChangeModalNuevoPago(data)} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><i className='bx bxs-pencil bx-xs'></i> EDITAR</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i> DETALLES DEL MES</Typography>
+                </MenuItem>
+                </>
+            }/>
             </>,
         }
     ]
@@ -158,12 +170,33 @@ const ListaPagos = () => {
         <div className="container">
         <Aside/>
         <main>
+        <br/>
         <Card>
             <CardContent>
                 <CardHeader
                     action={<Button variant="contained" color="primary" onClick={handleChangeModalNuevoPago}>+ Asentar pago</Button>}>
                 </CardHeader>
                 <Typography variant="h1">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
+                <br/>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={2} lg={2}>
+                        <DatePicker
+                            color="primary"
+                            inputVariant="outlined"
+                            format="yyyy"
+                            views={["year"]}
+                            fullWidth
+                            disableFuture
+                            disableToolbar
+                            label="Año"
+                            onChange={nuevoAño => {
+                                setPagoAño(nuevoAño);
+                                traerPagosPorAbonado(location.state.UserId, nuevoAño.getFullYear());
+                            }}
+                            value={PagoAño}
+                        ></DatePicker>
+                    </Grid>
+                </Grid>
                 <Datatable
                     loader={true}
                     columnas={columnasPagos}
@@ -190,11 +223,11 @@ const ListaPagos = () => {
                 <>
                 <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>
                 <Alert severity="info">
-                    {(FechaActual.diaActual >= 21 && FechaActual.mesActual === PagoPeriodo.getMonth()+1)
-                    || (FechaActual.mesActual > PagoPeriodo.getMonth()+1) ? 
-                    <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario} + <b>Recargo: </b> $ {location.state.ServicioRecargo} = ${location.state.ServicioPrecioUnitario + location.state.ServicioRecargo}</Typography>
-                    : <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario}</Typography>
-                }
+                    <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario}</Typography>
+                </Alert>
+                <br/>
+                <Alert severity="warning">
+                    <Typography variant="h6"><b>Recargo por pago fuera de término:</b> ${location.state.ServicioRecargo}</Typography>
                 </Alert>
                 <br/>
                 <Grid container spacing={3}>
@@ -204,7 +237,6 @@ const ListaPagos = () => {
                         value={PagoPeriodo}
                         onChange={(periodo)=>{
                             setPagoPeriodo(periodo)
-                            traerPago(location.state.UserId, periodo.toJSON().split('T')[0].split('-')[1] + '-' +periodo.toJSON().split('T')[0].split('-')[0]);
                         }}
                         fullWidth
                         views={["year", "month"]}
@@ -212,7 +244,6 @@ const ListaPagos = () => {
                         disableFuture
                         >
                         </DatePicker>
-                        {pago && pago.PagoSaldo !== 0 ? <FormHelperText style={{color: 'teal'}}>Saldo del mes seleccionado: ${pago.PagoSaldo}</FormHelperText>: pago && pago.PagoSaldo === 0 ? <FormHelperText style={{color: 'teal'}}>Saldado!</FormHelperText>:""}
                 </Grid>
                     <Grid item xs={6} md={6} sm={6} lg={6}>
                         <TextField

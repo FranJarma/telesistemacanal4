@@ -7,6 +7,7 @@ import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, T
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaAbonadosInactivos = () => {
     const appContext = useContext(AppContext);
@@ -113,9 +114,13 @@ const ListaAbonadosInactivos = () => {
         },
         {
             cell: (data) =>
-            <>
-            <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><Tooltip title="Dar de alta"><i className='bx bxs-user-check bx-xs'></i></Tooltip></Typography>
-            </>,
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                    <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><i className='bx bxs-user-check bx-xs'></i> DAR DE ALTA</Typography>
+                </MenuItem>
+                </>
+            }/>
         }
 ]
 const ExpandedComponent = ({ data }) =>

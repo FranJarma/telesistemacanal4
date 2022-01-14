@@ -4,6 +4,7 @@ import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaMunicipios = () => {
     const appContext = useContext(AppContext);
@@ -26,7 +27,6 @@ const ListaMunicipios = () => {
     })
     const [ProvinciaIdVieja, setProvinciaIdVieja] = useState('');
     const [ProvinciaId, setProvinciaId] = useState(10);
-    const [ProvinciaNombre, setProvinciaNombre] = useState('Jujuy');
     const [ProvinciaIdModal, setProvinciaIdModal] = useState(10);
     const [ProvinciaNombreModal, setProvinciaNombreModal] = useState('Jujuy');
     const [ModalMunicipio, setModalMunicipio] = useState(false);
@@ -109,9 +109,17 @@ const ListaMunicipios = () => {
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeModalMunicipio(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalEliminarMunicipio(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
-            </>,
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalMunicipio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> EDITAR</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalEliminarMunicipio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                </MenuItem>
+                </>
+            }/>
+            </>
         }
     ]
     return (

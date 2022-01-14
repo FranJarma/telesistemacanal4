@@ -10,8 +10,11 @@ require('dotenv').config({path: 'variables.env'});
 exports.PagosListarPorUsuario = async(req,res) => {
     try {
         const pagos = await knex.select('*').from('pago as p')
-        .where('p.UserId','=', req.params.UserId)
-        .orderBy('p.PagoPeriodo', 'desc');
+        .where(
+            {'p.UserId': req.params.UserId,
+            'p.PagoAño': req.params.Periodo
+        })
+        .orderBy([{ column: 'PagoAño', order: 'desc' }, { column: 'PagoMes', order: 'desc' }])
         res.json(pagos);
     } catch (error) {
         console.log(error);
@@ -23,7 +26,8 @@ exports.PagoGet = async(req,res) => {
         const pago = await knex.select('*').from('pago as p')
         .where({
             'p.UserId': req.query.UserId,
-            'p.PagoPeriodo': req.query.PagoPeriodo
+            'p.PagoAño': req.query.PagoPeriodo.split('-')[0],
+            'p.PagoMes': req.query.PagoPeriodo.split('-')[1]
         })
         .first();
         res.json(pago);
@@ -38,7 +42,6 @@ exports.PagoCreate = async(req,res) => {
         return res.status(400).json({errors: errors.array()})
     }
     if(req.body.DetallePagoMonto <= 0) return res.status(400).json({msg: 'El monto tiene que ser mayor a 0'});
-    let periodo = req.body.PagoPeriodo.split('T')[0].split('-')[1] + '-' + req.body.PagoPeriodo.split('T')[0].split('-')[0];
     try {
         await db.transaction(async(t)=>{
             let ultimoDetallePagoId = 0;
@@ -51,7 +54,8 @@ exports.PagoCreate = async(req,res) => {
             const pagoBuscar = await Pago.findOne({
                 where: {
                     UserId: req.body.UserId,
-                    PagoPeriodo: periodo
+                    PagoAño: req.body.PagoPeriodo.split('-')[0],
+                    PagoMes: req.body.PagoPeriodo.split('-')[1]
                 }
             })
             //si encuentra el pago, NO se lo registra de nuevo, sino que solo se registra un nuevo detalle de pago y se actualiza el saldo
@@ -75,7 +79,8 @@ exports.PagoCreate = async(req,res) => {
                 const pago = new Pago(req.body, {transaction: t});
                 pago.PagoId = ultimoPagoId + 1;
                 pago.PagoSaldo = req.body.PagoTotal - req.body.DetallePagoMonto;
-                pago.PagoPeriodo = periodo;
+                pago.PagoAño = req.body.PagoPeriodo.split('-')[0];
+                pago.PagoMes = req.body.PagoPeriodo.split('-')[1];
                 const detallePago = new DetallePago(req.body, {transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
                 detallePago.PagoId = ultimoPagoId + 1;

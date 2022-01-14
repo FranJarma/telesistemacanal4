@@ -34,7 +34,6 @@ const AppState = props => {
         historialServicios: [],
         mediosPago: [],
         pagos: [],
-        pago: {},
         detallesPago: [],
         tareas: [],
         ordenesDeTrabajo: [],
@@ -485,27 +484,11 @@ const AppState = props => {
             console.log(error);
         }
     };
-    const traerPagosPorAbonado = async (UserId) => {
+    const traerPagosPorAbonado = async (UserId, Periodo) => {
         try {
-            const resultado = await clienteAxios.get(`/api/pagos/${UserId}`);
+            const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Periodo=${Periodo}`);
             dispatch({
                 type: TYPES.LISTA_PAGOS_ABONADO,
-                payload: resultado.data
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    const traerPago = async (UserId, PagoPeriodo) => {
-        try {
-            const resultado = await clienteAxios.get('/api/pagos',{
-                params: {
-                    UserId,
-                    PagoPeriodo,
-                }
-            });
-            dispatch({
-                type: TYPES.TRAER_PAGO,
                 payload: resultado.data
             })
         } catch (error) {
@@ -1308,7 +1291,6 @@ const AppState = props => {
             historialServicios: state.historialServicios,
             mediosPago: state.mediosPago,
             pagos: state.pagos,
-            pago: state.pago,
             detallesPago: state.detallesPago,
             tareas: state.tareas,
             ordenesDeTrabajo: state.ordenesDeTrabajo,
@@ -1328,7 +1310,7 @@ const AppState = props => {
             traerONUS, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago,
-            traerPagosPorAbonado, traerPago, crearPago,
+            traerPagosPorAbonado, crearPago,
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,

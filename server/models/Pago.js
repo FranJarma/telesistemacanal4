@@ -18,8 +18,12 @@ const Pago = db.define('pago', {
         type: FLOAT,
         allowNull: false
     },
-    PagoPeriodo: {
-        type: STRING,
+    PagoAño: {
+        type: INTEGER,
+        allowNull: false
+    },
+    PagoMes: {
+        type: INTEGER,
         allowNull: false
     },
     createdAt: {

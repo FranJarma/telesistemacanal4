@@ -15,7 +15,7 @@ const Aside = () => {
     const [SubMenuAbonados, setSubMenuAbonados] = useState(false);
     const [SubMenuTecnicos, setSubMenuTecnicos] = useState(false);
     const [SubMenuUsuarios, setSubMenuUsuarios] = useState(false);
-    const [SubMenuAdministracion, setSubMenuAdministracion] = useState(false);
+    const [subMenuConfiguracion, setsubMenuConfiguracion] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = (event) => {
@@ -41,22 +41,22 @@ const Aside = () => {
       setSubMenuAbonados(!SubMenuAbonados);
       setSubMenuTecnicos(false);
       setSubMenuUsuarios(false);
-      setSubMenuAdministracion(false);
+      setsubMenuConfiguracion(false);
     }
     const onClickMenuTecnicos = () => {
       setSubMenuTecnicos(!SubMenuTecnicos);
       setSubMenuAbonados(false);
       setSubMenuUsuarios(false);
-      setSubMenuAdministracion(false);
+      setsubMenuConfiguracion(false);
     }
     const onClickMenuUsuarios = () => {
       setSubMenuUsuarios(!SubMenuUsuarios);
       setSubMenuAbonados(false);
       setSubMenuTecnicos(false);
-      setSubMenuAdministracion(false);
+      setsubMenuConfiguracion(false);
     }
-    const onClickMenuAdministracion = () => {
-      setSubMenuAdministracion(!SubMenuAdministracion);
+    const onClickMenuConfiguracion = () => {
+      setsubMenuConfiguracion(!subMenuConfiguracion);
       setSubMenuAbonados(false);
       setSubMenuTecnicos(false);
       setSubMenuUsuarios(false);
@@ -108,7 +108,7 @@ const Aside = () => {
             <MenuItem icon={<i className='bx bxs-user'></i>}>Usuarios<Link to="/users"></Link></MenuItem>
             <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
           </SubMenu>
-          <SubMenu onClick={onClickMenuAdministracion} open={SubMenuAdministracion} title="Administración" icon={<i className="bx bxs-brightness"></i>}>
+          <SubMenu onClick={onClickMenuConfiguracion} open={subMenuConfiguracion} title="Configuración" icon={<i className="bx bxs-brightness"></i>}>
             <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
             <MenuItem icon={<i className="bx bx-map"></i>}>Barrios y Municipios<Link to="/barrios-municipios"></Link></MenuItem>
             <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus y Modelos ONUS<Link to="/onus-modelosOnus"></Link></MenuItem>
