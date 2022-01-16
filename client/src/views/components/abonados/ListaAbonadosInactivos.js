@@ -114,13 +114,7 @@ const ListaAbonadosInactivos = () => {
         },
         {
             cell: (data) =>
-            <BotonesDatatable botones={
-                <>
-                <MenuItem>
-                    <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><i className='bx bxs-user-check bx-xs'></i> DAR DE ALTA</Typography>
-                </MenuItem>
-                </>
-            }/>
+            <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><Tooltip title="Dar de alta"><i className='bx bxs-user-check bx-xs'></i></Tooltip> </Typography>
         }
 ]
 const ExpandedComponent = ({ data }) =>

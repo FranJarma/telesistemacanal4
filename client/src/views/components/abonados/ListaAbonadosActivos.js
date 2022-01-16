@@ -13,7 +13,7 @@ import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    const { abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
 
     useEffect(() => {
         traerAbonados(2);
@@ -158,7 +158,7 @@ const ListaAbonadosActivos = () => {
                 state: data
                 }} style={{textDecoration: 'none', color: "teal"}}>
                 <Typography style={{color: 'teal'}}>
-                <i className='bx bxs-pencil bx-xs'></i> EDITAR</Typography>
+                <i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
@@ -167,7 +167,7 @@ const ListaAbonadosActivos = () => {
                 state: data
                 }} style={{textDecoration: 'none', color: "teal"}}>
                 <Typography style={{color: 'teal'}}>
-                <i className='bx bxs-home bx-xs'></i> CAMBIOS DE DOMICILIO</Typography>
+                <i className='bx bxs-home bx-xs'></i> Cambios de domicilio</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
@@ -176,7 +176,7 @@ const ListaAbonadosActivos = () => {
                 state: data
                 }} style={{textDecoration: 'none', color: "palevioletred"}}>
                 <Typography style={{color: 'palevioletred'}}>
-                <i className='bx bx-plug bx-xs'></i> CAMBIOS DE SERVICIO</Typography>
+                <i className='bx bx-plug bx-xs'></i> Cambios de servicio</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
@@ -185,7 +185,7 @@ const ListaAbonadosActivos = () => {
                 state: data
                 }} style={{textDecoration: 'none', color: "navy"}}>
                 <Typography style={{color: 'navy'}}>
-                <i className='bx bx-money bx-xs'></i> HISTORIAL DE PAGOS</Typography>
+                <i className='bx bx-money bx-xs'></i> Pagos</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
@@ -194,11 +194,11 @@ const ListaAbonadosActivos = () => {
                 state: data
                 }} style={{textDecoration: 'none', color: "yellowgreen"}}>
                 <Typography style={{color: 'yellowgreen'}}>
-                <i className='bx bxs-notepad bx-xs'></i> CAMBIAR TITULARIDAD</Typography>
+                <i className='bx bxs-notepad bx-xs'></i> Cambio de titularidad</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> DAR DE BAJA</Typography>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> Dar de baja</Typography>
             </MenuItem>
             </>
         }/>

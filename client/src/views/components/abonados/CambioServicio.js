@@ -3,15 +3,16 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
-import { Link, useLocation } from 'react-router-dom';
+import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { DatePicker } from '@material-ui/pickers';
 import useStyles from './../Styles';
+import { Autocomplete } from '@material-ui/lab';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, historialServicios, servicios, onus, onu, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId, cambioServicioAbonado } = appContext;
+    const { usuarioLogueado, historialServicios, servicios, onus, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId, cambioServicioAbonado } = appContext;
 
     const location = useLocation();
     const styles = useStyles();
@@ -46,17 +47,13 @@ const CambioServicio = () => {
     const handleFocusServicioSeleccionado = (e) => {
         setServicioNombre(e.target.innerHTML);
     }
-    const handleChangeOnuSeleccionada = (e) => {
-        setOnuId(e.target.value);
-        traerONUPorId(e.target.value);
-    }
 
     const handleChangeModalNuevoServicio = () => {
         setModalNuevoServicio(!ModalNuevoServicio);
         if(!ModalNuevoServicio){
             setServicioInfo({
                 UserId: location.state.UserId,
-                createdBy: usuarioLogueado.User.UserId
+                createdBy: sessionStorage.getItem('identity')
             })
         }
         else {
@@ -116,9 +113,9 @@ const CambioServicio = () => {
     <Aside/>
     <main>
     <Card>
-        {/* <CardHeader
+        <CardHeader
             action={<Button onClick={setModalNuevoServicio} variant="contained" color="primary">+ Nuevo servicio</Button>}>
-        </CardHeader> */}
+        </CardHeader>
         <CardContent>
             <Typography variant="h1">Historial de cambios de servicio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
             <br/>
@@ -215,24 +212,17 @@ const CambioServicio = () => {
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
-                <TextField
-                    variant = "outlined"
-                    value={OnuId}
-                    onChange={handleChangeOnuSeleccionada}
-                    label="MAC ONU a asignar"
-                    fullWidth
-                    select
-                    >
-                    <Link style={{textDecoration: 'none'}} to={{
-                        pathname: 'onus-modelosONUs',
-                        state: true
-                    }}>
-                    <Button variant="text" fullWidth color="primary"> + Nueva ONU</Button></Link>
-                    {onus.length > 0 ? onus.map((onu)=>(
-                        <MenuItem key={onu.OnuId} value={onu.OnuId}>{onu.OnuMac}</MenuItem>
-                        )): <MenuItem disabled>No se encontraron ONUS disponibles para asignar</MenuItem>}
-                    </TextField>
-                    {onu ? <FormHelperText style={{color: 'teal'}}><b>Modelo: </b>{onu.ModeloOnuNombre}</FormHelperText>: ''}
+                <Autocomplete
+                disableClearable
+                value={OnuId}
+                onChange={(_event, newOnuId) => {
+                    setOnuId(newOnuId);
+                }}
+                options={onus}
+                noOptionsText="No se encontraron ONUS disponibles"
+                getOptionLabel={(option) => option.OnuMac}
+                renderInput={(params) => <TextField {...params} variant = "outlined" fullWidth label="MAC ONU"/>}
+                />
                 </Grid>
             </Grid>
             </>

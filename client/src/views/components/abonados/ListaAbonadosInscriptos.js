@@ -177,10 +177,28 @@ const ListaAbonadosInscriptos = () => {
                 state: data
                 }} style={{textDecoration: 'none', color: "teal"}}>
                 <i className='bx bxs-pencil bx-xs'></i>
-                </Link> EDITAR</Typography>
+                </Link> Editar</Typography>
             </MenuItem>
             <MenuItem>
-                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> DAR DE BAJA</Typography>
+                <Link to={{
+                pathname: `/cambio-domicilio/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "teal"}}>
+                <Typography style={{color: 'teal'}}>
+                <i className='bx bxs-home bx-xs'></i> Cambios de domicilio</Typography>
+                </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Link to={{
+                pathname: `/cambio-servicio/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "palevioletred"}}>
+                <Typography style={{color: 'palevioletred'}}>
+                <i className='bx bx-plug bx-xs'></i> Cambios de servicio</Typography>
+                </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> Dar de baja</Typography>
             </MenuItem>
             </>
         }/>

@@ -3,7 +3,7 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { Autocomplete } from '@material-ui/lab';
@@ -72,7 +72,7 @@ const CambioDomicilio = () => {
         setDomicilioInfo({
             ...DomicilioInfo,
             UserId: location.state.UserId,
-            createdBy: usuarioLogueado.User.UserId
+            createdBy: sessionStorage.getItem('identity')
         })
     }
 
@@ -146,9 +146,9 @@ const CambioDomicilio = () => {
     <Aside/>
     <main>
     <Card>
-        {/* <CardHeader
+        <CardHeader
             action={<Button onClick={setModalNuevoDomicilio} variant="contained" color="primary">+ Nuevo Domicilio</Button>}>
-        </CardHeader> */}
+        </CardHeader>
         <CardContent>
             <Typography variant="h1">Historial de cambios de domicilio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
             <br/>

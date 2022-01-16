@@ -88,10 +88,10 @@ const ListaTiposTareas = () => {
             <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Typography onClick={()=>{handleChangeModalTarea(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> EDITAR</Typography>
+                <Typography onClick={()=>{handleChangeModalTarea(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
             </MenuItem>
             <MenuItem>
-                <Typography onClick={()=>{handleChangeModalEliminarTarea(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                <Typography onClick={()=>{handleChangeModalEliminarTarea(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>
             </MenuItem>
             </>
             }/>
@@ -168,9 +168,9 @@ const ListaTiposTareas = () => {
         botones={
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarTarea({...TareaInfo, updatedAt: new Date(),
-            updatedBy: usuarioLogueado.User.UserId}, handleChangeModalTarea)
+            updatedBy: sessionStorage.getItem('identity')}, handleChangeModalTarea)
             : crearTarea({...TareaInfo,
-            createdBy: usuarioLogueado.User.UserId}, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Agregar"}</Button>
+            createdBy: sessionStorage.getItem('identity')}, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Agregar"}</Button>
             <Button variant="text" color="inherit" >Cerrar</Button>
             </>
         }
@@ -182,7 +182,7 @@ const ListaTiposTareas = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarTarea({...TareaInfo, deletedAt: new Date(),
-            deletedBy: usuarioLogueado.User.UserId}, handleChangeModalEliminarTarea)}}>Eliminar</Button>
+            deletedBy: sessionStorage.getItem('identity')}, handleChangeModalEliminarTarea)}}>Eliminar</Button>
             <Button variant="text" color="inherit" onClick={handleChangeModalEliminarTarea}>Cerrar</Button>
             </>
         }

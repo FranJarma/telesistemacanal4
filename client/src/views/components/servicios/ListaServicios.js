@@ -42,18 +42,18 @@ const ListaServicios = () => {
         setModalEliminarServicio(false);
         if(data !== '') {
             setEditMode(true);
-            setServicioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
+            setServicioInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setServicioInfo({...data, createdBy: usuarioLogueado.User.UserId});
+            setServicioInfo({...data, createdBy: sessionStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarServicio = (data = '') => {
         setModalEliminarServicio(!ModalEliminarServicio);
         setModalServicio(false);
-        setServicioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
+        setServicioInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasServicios = [
@@ -92,10 +92,10 @@ const ListaServicios = () => {
             <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Typography onClick={()=>{handleChangeModalServicio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs'></i> EDITAR</Typography>
+                <Typography onClick={()=>{handleChangeModalServicio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
             </MenuItem>
             <MenuItem>
-                <Typography onClick={()=>{handleChangeModalEliminarServicio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                <Typography onClick={()=>{handleChangeModalEliminarServicio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>
             </MenuItem>
             </>
             }/>

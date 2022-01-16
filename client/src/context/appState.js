@@ -381,6 +381,7 @@ const AppState = props => {
                 })
                 Swal('Operación completa', resOk.data.msg);
                 setModalNuevoDomicilio(false);
+                window.location.reload();
         })
         .catch(err => {
             if(!err.response){
@@ -404,6 +405,7 @@ const AppState = props => {
                 })
                 Swal('Operación completa', resOk.data.msg);
                 setModalNuevoServicio(false);
+                window.location.reload();
         })
         .catch(err => {
             if(!err.response){

@@ -2,15 +2,16 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, Checkbox, FormControlLabel, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 import { Autocomplete } from '@material-ui/lab';
+import InputMask from 'react-input-mask';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, barrios, condicionesIva, municipios, servicios, provincias, onus, onu, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
+    const { barrios, condicionesIva, municipios, servicios, provincias, onus, onu, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
     traerProvincias, traerONUS, traerONUPorId, crearAbonado, modificarAbonado } = appContext;
     
     const location = useLocation();
@@ -26,7 +27,7 @@ const CaratulaAbonado = () => {
         DomicilioCalle: null,
         DomicilioNumero: null,
         DomicilioPiso: null,
-        createdBy: usuarioLogueado.User.UserId,
+        createdBy: sessionStorage.getItem('identity'),
         updatedAt: null,
         updatedBy: null
     })
@@ -55,6 +56,7 @@ const CaratulaAbonado = () => {
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [FechaBajada, setFechaBajada] = useState(new Date());
+    const [SieteDigitos, setSieteDigitos] = useState(false);
 
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
@@ -96,7 +98,7 @@ const CaratulaAbonado = () => {
                 DomicilioNumero: location.state.DomicilioNumero,
                 DomicilioPiso: location.state.DomicilioPiso,
                 updatedAt: new Date(),
-                updatedBy: usuarioLogueado.User.UserId
+                updatedBy: sessionStorage.getItem('identity')
             });
             setServicioId(location.state.ServicioId);
             setCondicionIvaId(location.state.CondicionIvaId);
@@ -184,27 +186,49 @@ const CaratulaAbonado = () => {
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <TextField
-                    variant="outlined"
-                    value={Documento}
-                    name="Documento"
+                    <InputMask
+                    mask={SieteDigitos ? "9.999.999" : "99.999.999"}
                     onChange={onInputChange}
-                    fullWidth
-                    label="DNI"
-                    type="number">
-                    </TextField>
+                    value={Documento}
+                    >
+                    {()=> 
+                       <TextField
+                       variant="outlined"
+                       name="Documento"
+                       fullWidth
+                       label="DNI">
+                       </TextField>
+                    }</InputMask>
+                <FormControlLabel label="Es de siete dígitos"
+                    control={<Checkbox
+                    onChange={e => {
+                        setSieteDigitos(e.target.checked);
+                        setAbonadoInfo({
+                            ...abonadoInfo,
+                            Documento: ''
+                        })
+                    }
+                    }
+                    checked={SieteDigitos}>
+                    </Checkbox>}>
+                    </FormControlLabel>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                    variant="outlined"
-                    value={Cuit}
-                    name="Cuit"
+                <InputMask
+                    mask={SieteDigitos ? "99.9999999.99" : "99.99999999.99"}
                     onChange={onInputChange}
-                    fullWidth
-                    label="CUIT"
-                    type="number"
+                    value={Cuit}
                     >
-                    </TextField>
+                    {()=> 
+                        <TextField
+                        variant="outlined"
+                        name="Cuit"
+                        fullWidth
+                        label="CUIT"
+                        >
+                        </TextField>
+                    }</InputMask>
+
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField

@@ -43,20 +43,20 @@ const ListaBarrios = () => {
         setModalEliminarBarrio(false);
         if(data !== '') {
             setEditMode(true);
-            setBarrioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
+            setBarrioInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
             setMunicipioIdModal(data.MunicipioId);
             setMunicipioNombre(data.MunicipioNombre);
         }
         else {
             setEditMode(false);
-            setBarrioInfo({...data, createdBy: usuarioLogueado.User.UserId});
+            setBarrioInfo({...data, createdBy: sessionStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarBarrio = (data = '') => {
         setModalEliminarBarrio(!ModalEliminarBarrio);
         setModalBarrio(false);
-        setBarrioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
+        setBarrioInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const handleChangeMunicipioSeleccionado = (e) => {
@@ -95,10 +95,10 @@ const ListaBarrios = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalBarrio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> EDITAR</Typography>
+                    <Typography onClick={()=>{handleChangeModalBarrio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
                 </MenuItem>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalEliminarBarrio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                    <Typography onClick={()=>{handleChangeModalEliminarBarrio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>
                 </MenuItem>
                 </>
             }/>

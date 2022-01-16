@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, List, ListItem, ListItemIcon, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid, List, ListItem, ListItemIcon, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
@@ -10,6 +10,7 @@ import CaratulaImpresionOt from './CaratulaImpresionOt';
 import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
 
 import { Alert } from '@material-ui/lab';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
@@ -114,16 +115,29 @@ const ListaOtPendientes = () => {
         {
             cell: (data) => 
             <>
-            <Link to={{
-                pathname: `/caratula-ot/edit/OtId=${data.OtId}`,
-                state: data
-            }}
-            style={{textDecoration: 'none', color: "teal"}}>
-            <Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip>
-            </Link>
-            <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Registrar visita"><i className='bx bxs-calendar bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalFinalizarOt(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Finalizar OT"><i className='bx bx-calendar-check bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalImprimirOt(data)}} style={{color: "orange", cursor: 'pointer'}}><Tooltip title="Imprimir"><i className="bx bx-printer bx-xs"></i></Tooltip></Typography>
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                    <Link to={{
+                    pathname: `/caratula-ot/edit/OtId=${data.OtId}`,
+                    state: data
+                    }}
+                    style={{textDecoration: 'none', color: "teal"}}>
+                    <Typography><i className='bx bxs-pencil bx-xs' ></i>  Editar</Typography>
+                    
+                    </Link>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "palevioletred", cursor: 'pointer'}}><i className='bx bxs-calendar bx-xs'> </i> Registrar visita</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalFinalizarOt(data)}} style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-calendar-check bx-xs' ></i> Finalizar OT</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalImprimirOt(data)}} style={{color: "orange", cursor: 'pointer'}}><i className="bx bx-printer bx-xs"></i> Imprimir</Typography>
+                </MenuItem>
+                </>
+            }/>
             </>,
         }
     ]
@@ -228,7 +242,7 @@ const ListaOtPendientes = () => {
             funcionCerrar={handleChangeModalFinalizarOt}
             titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
             botones={<><Button variant='contained' color="primary"
-            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: usuarioLogueado.User.UserId},
+            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: sessionStorage.getItem('identity')},
             handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cerrar</Button></>}
             formulario={
                 <>

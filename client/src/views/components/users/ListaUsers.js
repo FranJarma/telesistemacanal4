@@ -3,11 +3,12 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import './../design/layout/styles/styles.css';
-import { Button, Card, CardContent, CardHeader, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, MenuItem, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import { Link } from 'react-router-dom';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const Users = () => {
     const appContext = useContext(AppContext);
@@ -92,14 +93,22 @@ const Users = () => {
     {
         cell: (data) =>
         <>
-        <Link to={{
-            pathname: `/caratula-user/edit/UserId=${data.UserId}`,
-            state: data
-        }}
-        style={{textDecoration: 'none', color: "teal"}}>
-        <Tooltip title="Editar"><i className='bx bxs-pencil bx-xs' ></i></Tooltip>
-        </Link>
-        <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><Tooltip title="Dar de baja"><i className='bx bxs-user-x bx-xs'></i></Tooltip></Typography>
+        <BotonesDatatable botones={
+            <>
+            <MenuItem>
+                <Link to={{
+                pathname: `/caratula-user/edit/UserId=${data.UserId}`,
+                state: data
+                }}
+                style={{textDecoration: 'none', color: "teal"}}>
+                <Typography ><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
+                </Link>
+            </MenuItem>
+            <MenuItem>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bx-trash bx-xs'></i> Eliminar</Typography>
+            </MenuItem>
+            </>
+        }/>
         </>,
     }
 ]

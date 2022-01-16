@@ -12,13 +12,14 @@ import  BotonesDatatable  from './../design/components/BotonesDatatable';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, pago, pagos, detallesPago, mediosPago, crearPago, eliminarDetallePago, traerPagosPorAbonado, traerPago, traerDetallesPago, traerMediosPago } = appContext;
+    const { usuarioLogueado, pagos, detallesPago, mediosPago, crearPago, eliminarDetallePago, traerPagosPorAbonado, traerPago, traerDetallesPago, traerMediosPago } = appContext;
 
     const location = useLocation();
 
     const [FechaActual, setFechaActual] = useState({
         diaActual: new Date().getDate(),
-        mesActual: new Date().getMonth() + 1 //+1 debido que getMonth comienza en 0
+        mesActual: new Date().getMonth() + 1,
+        añoActual: new Date().getFullYear() //+1 debido que getMonth comienza en 0
     })
 
     const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
@@ -46,11 +47,13 @@ const ListaPagos = () => {
         deletedAt: null
     });
 
-    const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
+    const { DetallePagoMonto, DetallePagoObservaciones, PagoRecargo } = PagoInfo;
 
+    const [ModalRecargo, setModalRecargo] = useState(false);
     const [ModalNuevoPago, setModalNuevoPago] = useState(false);
     const [ModalDetallesPago, setModalDetallesPago] = useState(false);
     const [ModalEliminarDetallePago, setModalEliminarDetallePago] = useState(false);
+    const [HabilitarPeriodoPago, setHabilitarPeriodoPago] = useState(true);
 
     useEffect(()=>{
         traerMediosPago();
@@ -68,19 +71,29 @@ const ListaPagos = () => {
             ...PagoInfo,
             MedioPagoId: e.target.value});
     }
-    const handleChangeModalNuevoPago = (data) => {
-        setPagoInfo({
-            ...PagoInfo,
-            createdBy: usuarioLogueado.User.UserId
-        })
+    const handleChangeModalNuevoPago = (data, edit = false) => {
+        if(!edit) {
+            setPagoInfo({
+                ...PagoInfo,
+                createdBy: sessionStorage.getItem('identity')
+            });
+            setHabilitarPeriodoPago(true);
+        }
+        else {
+            setPagoInfo(data);
+            setHabilitarPeriodoPago(false);
+        }
         setModalNuevoPago(!ModalNuevoPago);
+    }
+    const handleChangeModalRecargoPago = (data) => {
+        setModalRecargo(!ModalRecargo);
     }
     const handleChangeModalDetallesPago = (data) => {
         traerDetallesPago(data.PagoId);
         setModalDetallesPago(!ModalDetallesPago);
     }
     const handleChangeModalEliminarDetallePago = (data) => {
-        setPagoInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
+        setPagoInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
         setModalEliminarDetallePago(!ModalEliminarDetallePago);
     }
     
@@ -119,10 +132,10 @@ const ListaPagos = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Typography onClick={()=>handleChangeModalNuevoPago(data)} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><i className='bx bxs-pencil bx-xs'></i> EDITAR</Typography>
+                    <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "palevioletred", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Agregar recargo</Typography>
                 </MenuItem>
                 <MenuItem>
-                    <Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i> DETALLES DEL MES</Typography>
+                    <Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i> Detalles</Typography>
                 </MenuItem>
                 </>
             }/>
@@ -143,24 +156,27 @@ const ListaPagos = () => {
             "wrap": true
         },
         {
-            "name": "Fecha ",
-            "selector": row =>row["DetallePagoFecha"].split('T')[0].split('-').reverse().join('-'),
+            "name": "Fecha de registro ",
+            "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('-'),
             "wrap": true,
-            "width": "10rem",
+            "sortable": true,
+        },
+        {
+            "name": "Registrado por ",
+            "selector": row =>row["Nombre"] + ', ' + row["Apellido"],
+            "wrap": true,
             "sortable": true,
         },
         {
             "name": "Forma de pago",
             "selector": row => row["MedioPagoNombre"],
             "wrap": true,
-            "width": "10rem",
             "sortable": true,
         },
         {
             cell: (data) => 
             <>
-            {/* <Typography style={{color: "slategrey", cursor: 'pointer'}}><Tooltip title="Generar recibo"><i className="bx bxs-receipt bx-xs"></i></Tooltip></Typography> */}
-            <Typography onClick={()=>{handleChangeModalEliminarDetallePago(data)}} style={{color: "red", cursor: 'pointer'}}><Tooltip title="Eliminar"><i className="bx bx-trash bx-xs"></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalNuevoPago(data, true)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-pencil bx-xs"></i></Tooltip></Typography>
             </>,
         }
     ]
@@ -226,9 +242,6 @@ const ListaPagos = () => {
                     <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario}</Typography>
                 </Alert>
                 <br/>
-                <Alert severity="warning">
-                    <Typography variant="h6"><b>Recargo por pago fuera de término:</b> ${location.state.ServicioRecargo}</Typography>
-                </Alert>
                 <br/>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} sm={12} lg={12}>
@@ -242,6 +255,7 @@ const ListaPagos = () => {
                         views={["year", "month"]}
                         label="Período de Pago"
                         disableFuture
+                        disabled ={!HabilitarPeriodoPago ? true : false}
                         >
                         </DatePicker>
                 </Grid>
@@ -295,6 +309,39 @@ const ListaPagos = () => {
                 >
                 </Modal>
                 <Modal
+                abrirModal={ModalRecargo}
+                funcionCerrar={handleChangeModalRecargoPago}
+                botones={
+                <>
+                <Button onClick={()=>
+                    {
+                    crearPago(
+                        {...PagoInfo,
+                        PagoPeriodo
+                    }, handleChangeModalNuevoPago)}}
+                    variant="contained"
+                    color="primary">
+                    Aceptar</Button>
+                <Button onClick={handleChangeModalRecargoPago}>Cerrar</Button></>}
+                formulario={
+                <>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={12} sm={12} lg={12}>
+                        <Alert severity='info'>
+                            <b>Aviso:</b>
+                            <Typography>Agregar recargo sólamente si el abonado viene a pagar después del <b>21/{FechaActual.mesActual}/{FechaActual.añoActual} </b>
+                            ó si viene a pagar un mes anterior al actual.</Typography>
+                        </Alert>
+                        <br/>
+                        <Typography variant="h1">Recargo por pago fuera de término de {location.state.ServicioDescripcion}: ${location.state.ServicioRecargo}</Typography>
+                    </Grid>
+                </Grid>
+                <br/>
+                <br/>
+                </>}
+                >
+                </Modal>
+                <Modal
                 abrirModal={ModalDetallesPago}
                 funcionCerrar={handleChangeModalDetallesPago}
                 botones={
@@ -309,6 +356,9 @@ const ListaPagos = () => {
                         columnas={columnasDetallesPagos}
                         datos={detallesPago}
                         buscar={true}/>
+                        <br/>
+                        <hr/>
+                        <Typography variant="h2">Total pagado en el mes: ${ detallesPago.map(item => item.DetallePagoMonto).reduce((prev, curr) => prev + curr, 0)}</Typography>
                     </Grid>
                 </Grid>
                 <br/>

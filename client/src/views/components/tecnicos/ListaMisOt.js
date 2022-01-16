@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, List, ListItem, ListItemIcon, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid, List, ListItem, ListItemIcon, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
@@ -10,6 +10,7 @@ import CaratulaVerOt from './CaratulaVerOt';
 import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
 
 import { Alert } from '@material-ui/lab';
+import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaMisOt = () => {
     const appContext = useContext(AppContext);
@@ -103,9 +104,19 @@ const ListaMisOt = () => {
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeModalVerOt(data)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Ver OT"><i className="bx bx-show-alt bx-xs"></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Registrar visita"><i className='bx bxs-calendar bx-xs' ></i></Tooltip></Typography>
-            <Typography onClick={()=>{handleChangeModalFinalizarOt(data)}} style={{color: "navy", cursor: 'pointer'}}><Tooltip title="Finalizar OT"><i className='bx bx-calendar-check bx-xs' ></i></Tooltip></Typography>
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                <Typography onClick={()=>{handleChangeModalVerOt(data)}} style={{color: "teal", cursor: 'pointer'}}><i className="bx bx-show-alt bx-xs"></i> Ver OT</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "palevioletred", cursor: 'pointer'}}><i className='bx bxs-calendar bx-xs'> </i> Registrar visita</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>{handleChangeModalFinalizarOt(data)}} style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-calendar-check bx-xs' ></i> Finalizar OT</Typography>
+                </MenuItem>
+                </>
+            }/>
             </>,
         }
     ]
@@ -181,7 +192,7 @@ const ListaMisOt = () => {
             funcionCerrar={handleChangeModalFinalizarOt}
             titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
             botones={<><Button variant='contained' color="primary"
-            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: usuarioLogueado.User.UserId},
+            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: sessionStorage.getItem('identity')},
             handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cerrar</Button></>}
             formulario={
                 <>

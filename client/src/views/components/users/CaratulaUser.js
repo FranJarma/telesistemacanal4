@@ -12,7 +12,7 @@ const CaratulaUser = () => {
     const { usuarioLogueado, roles, rolesUser, traerRoles, traerRolesPorUsuario, crearUsuario, modificarUsuario } = appContext;
     const location = useLocation();
     const [UserInfo, setUserInfo] = useState({
-        UserIdLogueado: usuarioLogueado.User.UserId,
+        UserIdLogueado: sessionStorage.getItem('identity'),
         UserId: null,
         Nombre: null,
         Apellido: null,

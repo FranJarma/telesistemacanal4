@@ -41,18 +41,18 @@ const ListaModelosOnus = ({location}) => {
         setModalEliminarModeloOnu(false);
         if(data !== '') {
             setEditMode(true);
-            setModeloOnuInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
+            setModeloOnuInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setModeloOnuInfo({...data, createdBy: usuarioLogueado.User.UserId});
+            setModeloOnuInfo({...data, createdBy: sessionStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarModeloOnu = (data = '') => {
         setModalEliminarModeloOnu(!ModalEliminarModeloOnu);
         setModalModeloOnu(false);
-        setModeloOnuInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
+        setModeloOnuInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasModelosONUS = [
@@ -79,10 +79,10 @@ const ListaModelosOnus = ({location}) => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalModeloOnu(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> EDITAR</Typography>
+                    <Typography onClick={()=>{handleChangeModalModeloOnu(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
                 </MenuItem>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalEliminarModeloOnu(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                    <Typography onClick={()=>{handleChangeModalEliminarModeloOnu(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>
                 </MenuItem>
                 </>
             }/>

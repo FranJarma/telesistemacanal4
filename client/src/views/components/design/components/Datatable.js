@@ -17,7 +17,9 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     //state para buscador
     const [textoFiltrado, setTextoFiltrado] = useState('');
     const itemsFiltrados = datos.filter(item =>
-    (item.Nombre && item.Nombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    (item.createdAt && item.createdAt.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.createdBy && item.createdBy.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.Nombre && item.Nombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.Apellido && item.Apellido.toString().includes(textoFiltrado.toLowerCase()))
     || (item.NombreUsuario && item.NombreUsuario.toString().includes(textoFiltrado.toLowerCase()))
     || (item.Email && item.Email.toString().includes(textoFiltrado.toLowerCase()))
@@ -36,7 +38,6 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     || (item.PagoRecargo && item.PagoRecargo.toString().includes(textoFiltrado.toLowerCase()))
     || (item.PagoTotal && item.PagoTotal.toString().includes(textoFiltrado.toLowerCase()))
     || (item.DetallePagoMonto && item.DetallePagoMonto.toString().includes(textoFiltrado.toLowerCase()))
-    || (item.DetallePagoFecha && item.DetallePagoFecha.toString().includes(textoFiltrado.toLowerCase()))
     || (item.RoleName && item.RoleName.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.RoleDescription && item.RoleDescription.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.TareaNombre && item.TareaNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))

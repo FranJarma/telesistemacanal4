@@ -10,6 +10,7 @@ exports.DetallesPagoListar = async(req,res) => {
     try {
         const detallesPagos = await knex.select('*').from('detallepago as dp')
         .innerJoin('mediopago as mp','dp.MedioPagoId', '=', 'mp.MedioPagoId')
+        .innerJoin('_user as u', 'u.UserId', '=', 'dp.createdBy')
         .where({
             'dp.PagoId': req.params.id,
             'dp.deletedAt': null

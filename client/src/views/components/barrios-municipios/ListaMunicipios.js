@@ -60,20 +60,20 @@ const ListaMunicipios = () => {
         if(data !== '') {
             setProvinciaIdVieja(data.ProvinciaId);
             setEditMode(true);
-            setMunicipioInfo({...data, updatedBy: usuarioLogueado.User.UserId, updatedAt: new Date() });
+            setMunicipioInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
             setProvinciaIdModal(data.ProvinciaId); //para que cargue JUJUY por defecto
             setProvinciaNombreModal(data.ProvinciaNombre);
         }
         else {
             setEditMode(false);
-            setMunicipioInfo({...data, createdBy: usuarioLogueado.User.UserId});
+            setMunicipioInfo({...data, createdBy: sessionStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarMunicipio = (data = '') => {
         setModalEliminarMunicipio(!ModalEliminarMunicipio);
         setModalMunicipio(false);
-        setMunicipioInfo({...data, deletedBy: usuarioLogueado.User.UserId, deletedAt: new Date() });
+        setMunicipioInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasMunicipios = [
@@ -112,10 +112,10 @@ const ListaMunicipios = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalMunicipio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> EDITAR</Typography>
+                    <Typography onClick={()=>{handleChangeModalMunicipio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
                 </MenuItem>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalEliminarMunicipio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> ELIMINAR</Typography>
+                    <Typography onClick={()=>{handleChangeModalEliminarMunicipio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>
                 </MenuItem>
                 </>
             }/>

@@ -98,7 +98,7 @@ const CaratulaOt = () => {
                 OtFechaPrevistaVisita,
                 OtRetiraCable,
                 OtRetiraOnu,
-                createdBy: usuarioLogueado.User.UserId,
+                createdBy: sessionStorage.getItem('identity'),
                 abonado,
                 tecnicosOt,
                 tareasOt,
@@ -112,7 +112,7 @@ const CaratulaOt = () => {
                 OtFechaPrevistaVisita,
                 OtRetiraCable,
                 OtRetiraOnu,
-                updatedBy: usuarioLogueado.User.UserId,
+                updatedBy: sessionStorage.getItem('identity'),
                 tecnicosOt,
                 tareasOt
             });
