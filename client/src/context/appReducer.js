@@ -1,6 +1,7 @@
 import * as TYPES from '../types';
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
+    let pago = null;
     switch (action.type) {
         case TYPES.LOGIN_EXITOSO:
             sessionStorage.setItem('token',action.payload.token);
@@ -241,13 +242,29 @@ export default (state, action) => {
                 ...state,
                 pago: action.payload
         }
+        case TYPES.AGREGAR_RECARGO:
+            pago = state.pagos.find(pago => pago.PagoId === action.payload.PagoId);
+            pago.PagoRecargo = pago.PagoRecargo + parseInt(action.payload.PagoRecargo);
+            pago.PagoSaldo = pago.PagoSaldo + parseInt(action.payload.PagoRecargo);
+            return {
+                ...state,
+                pagos: [...state.pagos]
+        }
+        case TYPES.ELIMINAR_RECARGO:
+            pago = state.pagos.find(pago => pago.PagoId === action.payload.PagoId);
+            pago.PagoSaldo = pago.PagoSaldo - pago.PagoRecargo;
+            pago.PagoRecargo = 0;
+            return {
+                ...state,
+                pagos: [...state.pagos]
+        }
         case TYPES.LISTA_DETALLES_PAGO_ABONADO:
             return {
                 ...state,
                 detallesPago: action.payload
         }
         case TYPES.ELIMINAR_DETALLE_PAGO:
-            const pago = state.pagos.find(pago => pago.PagoId === action.payload.PagoId);
+            pago = state.pagos.find(pago => pago.PagoId === action.payload.PagoId);
             pago.PagoSaldo = pago.PagoSaldo + action.payload.DetallePagoMonto;
             return {
                 ...state,

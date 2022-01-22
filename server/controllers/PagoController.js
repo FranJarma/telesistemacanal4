@@ -95,3 +95,62 @@ exports.PagoCreate = async(req,res) => {
         res.status(400).json({msg: 'Hubo un error al registrar el pago'});
     }
 }
+
+exports.PagoAñadirRecargo = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        await db.transaction(async(t)=>{
+            const { PagoId, PagoRecargo, updatedBy } = req.body;
+            const pago = await Pago.findByPk(PagoId, {transaction: t});
+            const diaActual = new Date().getDate();
+            const mesActual = new Date().getMonth() + 1;
+            const añoActual = new Date().getFullYear();
+            if(PagoRecargo <= 0) return res.status(400).json({msg: 'El recargo no puede ser menor o igual a 0'});
+            //validar números congruentes
+            if(PagoRecargo >= 2000) return res.status(400).json({msg: 'Ingrese un monto menor'});
+            //validar que el pago no esté completo
+            if(pago.PagoSaldo === 0) return res.status(400).json({msg: 'El mes está saldado. No es posible añadir recargo'});
+            //validar que el recargo se haga en la fecha correcta
+            if((diaActual < 21 && mesActual === pago.PagoMes && añoActual === pago.PagoAño)) return res.status(400).json({msg: 'No corresponde añadir recargo al mes actual'});
+            if((mesActual > pago.PagoMes && añoActual === pago.PagoAño)) return res.status(400).json({msg: 'No es posible añadir recargo a un mes posterior al actual'});
+            
+            pago.PagoRecargo = pago.PagoRecargo + parseInt(PagoRecargo);
+            pago.PagoSaldo = pago.PagoSaldo + parseInt(PagoRecargo);
+            pago.updatedAt = new Date();
+            pago.updatedBy = updatedBy;
+            await pago.save({transaction: t});
+            return res.status(200).json({msg: 'El Recargo del pago ha sido registrado correctamente'})
+
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({msg: 'Hubo un error al añadir el recargo'});
+    }
+}
+
+exports.PagoEliminarRecargo = async(req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        await db.transaction(async(t)=>{
+            const { PagoId, updatedBy } = req.body;
+            const pago = await Pago.findByPk(PagoId, {transaction: t});
+            if(pago.PagoSaldo === 0) return res.status(400).json({msg: 'El mes está saldado.'});
+            if(pago.PagoRecargo === 0) return res.status(400).json({msg: 'El mes no tiene recargo asociado.'});
+            pago.PagoSaldo = pago.PagoSaldo - pago.PagoRecargo;
+            pago.PagoRecargo = 0;
+            pago.updatedAt = new Date();
+            pago.updatedBy = updatedBy;
+            await pago.save({transaction: t});
+            return res.status(200).json({msg: 'El Recargo del pago ha sido eliminado correctamente'})
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({msg: 'Hubo un error al eliminar el recargo'});
+    }
+}

@@ -8,38 +8,29 @@ import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import { DatePicker } from '@material-ui/pickers';
 import AppContext from '../../../context/appContext';
-import  BotonesDatatable  from './../design/components/BotonesDatatable';
+import BotonesDatatable  from './../design/components/BotonesDatatable';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, pagos, detallesPago, mediosPago, crearPago, eliminarDetallePago, traerPagosPorAbonado, traerPago, traerDetallesPago, traerMediosPago } = appContext;
+    const { pagos, detallesPago, mediosPago, crearPago, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago } = appContext;
 
     const location = useLocation();
-
-    const [FechaActual, setFechaActual] = useState({
-        diaActual: new Date().getDate(),
-        mesActual: new Date().getMonth() + 1,
-        añoActual: new Date().getFullYear() //+1 debido que getMonth comienza en 0
-    })
 
     const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
     const [PagoAño, setPagoAño] = useState(new Date());
 
     const [PagoInfo, setPagoInfo] = useState({
+        PagoId: null,
+        PagoMes: null,
+        PagoAño: null,
         UserId: location.state.UserId,
+        MedioPagoId: 1,
+        PagoRecargo: null,
+        PagoTotal: location.state.ServicioPrecioUnitario,
         DetallePagoId: '',
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         DetallePagoObservaciones: '',
-        MedioPagoId: 1,
-        /*Sólo se cobrara recargo si el abonado paga después del 21 del mismo mes O si paga despues del mes seleccionado.
-        POR EJ: hoy 3 de Noviembre, si quiero pagar OCTUBRE, me recargan¨*/
-        PagoRecargo: (FechaActual.diaActual >= 21 && FechaActual.mesActual === PagoPeriodo.getMonth()+1)
-        || (FechaActual.mesActual > PagoPeriodo.getMonth()+1)
-        ? location.state.ServicioRecargo : 0,
-        PagoTotal: (FechaActual.diaActual >= 21 && FechaActual.mesActual === PagoPeriodo.getMonth()+1)
-        || (FechaActual.mesActual > PagoPeriodo.getMonth()+1)
-        ? location.state.ServicioPrecioUnitario + location.state.ServicioRecargo : location.state.ServicioPrecioUnitario,
         createdBy: null,
         updatedAt: null,
         updatedBy: null,
@@ -47,7 +38,7 @@ const ListaPagos = () => {
         deletedAt: null
     });
 
-    const { DetallePagoMonto, DetallePagoObservaciones, PagoRecargo } = PagoInfo;
+    const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
     const [ModalRecargo, setModalRecargo] = useState(false);
     const [ModalNuevoPago, setModalNuevoPago] = useState(false);
@@ -80,13 +71,15 @@ const ListaPagos = () => {
             setHabilitarPeriodoPago(true);
         }
         else {
-            setPagoInfo(data);
+            //setPagoInfo(data);
             setHabilitarPeriodoPago(false);
         }
         setModalNuevoPago(!ModalNuevoPago);
     }
     const handleChangeModalRecargoPago = (data) => {
+        setPagoInfo({...data, updatedBy: sessionStorage.getItem('identity')});
         setModalRecargo(!ModalRecargo);
+
     }
     const handleChangeModalDetallesPago = (data) => {
         traerDetallesPago(data.PagoId);
@@ -117,7 +110,7 @@ const ListaPagos = () => {
         },
         {
             "name": "Recargo",
-            "selector": row => "$ " + row["PagoRecargo"],
+            "selector": row => row["PagoRecargo"] > 0 ? <> <Typography style={{color: 'red'}}>$ {row["PagoRecargo"]} </Typography></> : "-",
             "sortable": true,
             "wrap": true
         },
@@ -132,7 +125,10 @@ const ListaPagos = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "palevioletred", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Agregar recargo</Typography>
+                    <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-trash bx-xs'></i> Eliminar recargo</Typography>
                 </MenuItem>
                 <MenuItem>
                     <Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i> Detalles</Typography>
@@ -180,7 +176,6 @@ const ListaPagos = () => {
             </>,
         }
     ]
-
     return (
         <>
         <div className="container">
@@ -207,6 +202,7 @@ const ListaPagos = () => {
                             label="Año"
                             onChange={nuevoAño => {
                                 setPagoAño(nuevoAño);
+                                setPagoPeriodo(nuevoAño);
                                 traerPagosPorAbonado(location.state.UserId, nuevoAño.getFullYear());
                             }}
                             value={PagoAño}
@@ -315,10 +311,7 @@ const ListaPagos = () => {
                 <>
                 <Button onClick={()=>
                     {
-                    crearPago(
-                        {...PagoInfo,
-                        PagoPeriodo
-                    }, handleChangeModalNuevoPago)}}
+                    agregarRecargo(PagoInfo, handleChangeModalRecargoPago)}}
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
@@ -328,12 +321,21 @@ const ListaPagos = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} sm={12} lg={12}>
                         <Alert severity='info'>
-                            <b>Aviso:</b>
-                            <Typography>Agregar recargo sólamente si el abonado viene a pagar después del <b>21/{FechaActual.mesActual}/{FechaActual.añoActual} </b>
+                            <b>Avisos:</b>
+                            <Typography>Agregar recargo sólamente si el abonado viene a pagar después del <b>21/{new Date().getMonth()+1}/{new Date().getFullYear()} </b>
                             ó si viene a pagar un mes anterior al actual.</Typography>
+                            <Typography>El recargo es <b>acumulativo</b>, por lo tanto, cada registro irá acumulando el recargo ya existente.</Typography>
                         </Alert>
                         <br/>
-                        <Typography variant="h1">Recargo por pago fuera de término de {location.state.ServicioDescripcion}: ${location.state.ServicioRecargo}</Typography>
+                        <TextField
+                            type="number"
+                            name="PagoRecargo"
+                            fullWidth
+                            variant="outlined"
+                            label="Recargo por pago fuera de término ($)"
+                            value={PagoInfo.PagoRecargo}
+                            onChange={onInputChange}
+                        ></TextField>
                     </Grid>
                 </Grid>
                 <br/>

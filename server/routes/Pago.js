@@ -11,4 +11,9 @@ router.post('/create', ValidarJWT,
     check('MedioPagoId', 'El medio de pago es obligatorio').not().contains(0),
     check('DetallePagoMonto', 'El monto es obligatorio').notEmpty(),
 ], PagoController.PagoCreate);
+router.put('/recargo', ValidarJWT,
+[
+    check('PagoRecargo', 'El monto del recargo no puede ser $ 0').notEmpty()
+], PagoController.PagoAñadirRecargo)
+router.put('/recargo/delete', ValidarJWT, PagoController.PagoEliminarRecargo)
 module.exports = router;

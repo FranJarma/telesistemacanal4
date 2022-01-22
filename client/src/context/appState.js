@@ -532,7 +532,7 @@ const AppState = props => {
         })
     }
     //PAGOS
-    const crearPago = async(pago, modalPago) => {
+    const crearPago = async(pago) => {
         clienteAxios.post('/api/pagos/create', pago)
         .then(resOk => {
             if (resOk.data)
@@ -542,6 +542,53 @@ const AppState = props => {
                 });
                 Swal('Operación completa', resOk.data.msg);
                 window.location.reload();
+        })
+        .catch(err => {
+            if(!err.response){
+                console.log(err);
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const agregarRecargo = async(pago, setModalRecargo) => {
+        clienteAxios.put('/api/pagos/recargo', pago)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.AGREGAR_RECARGO,
+                    payload: pago
+                });
+                Swal('Operación completa', resOk.data.msg);
+                setModalRecargo(false);
+        })
+        .catch(err => {
+            if(!err.response){
+                console.log(err);
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarRecargo = async(pago) => {
+        clienteAxios.put('/api/pagos/recargo/delete', pago)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_RECARGO,
+                    payload: pago
+                });
+                Swal('Operación completa', resOk.data.msg);
         })
         .catch(err => {
             if(!err.response){
@@ -1312,7 +1359,7 @@ const AppState = props => {
             traerONUS, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago,
-            traerPagosPorAbonado, crearPago,
+            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo,
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,
