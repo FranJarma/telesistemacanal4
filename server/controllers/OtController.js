@@ -241,7 +241,10 @@ exports.OtFinalizar = async (req, res) => {
             ot.EstadoId = process.env.ESTADO_ID_OT_FINALIZADA;
             ot.updatedAt = new Date();
             ot.updatedBy = updatedBy;
+            const abonado = await User.findByPk(ot.AbonadoId);
+            abonado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
             await ot.save({transaction: t});
+            await abonado.save({transaction: t});
             await movimiento.save({transaction: t});
             const tareasOt = await OtTarea.findAll({
                 where: {
