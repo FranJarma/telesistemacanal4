@@ -1,30 +1,42 @@
-const { STRING, INTEGER, FLOAT, DATE, UUIDV4 } = require('sequelize');
+const { INTEGER, FLOAT, DATE, UUIDV4, STRING } = require('sequelize');
 const db = require('../config/connection');
 
-const Pago = db.define('pago', {
-    PagoId: {
+const Movimiento = db.define('movimiento', {
+    MovimientoId: {
         type: INTEGER,
         primaryKey: true
     },
-    PagoSaldo: {
-        type: FLOAT,
-        allowNull: true
-    },
-    PagoRecargo: {
-        type: FLOAT,
-        allowNull: true
-    },
-    PagoTotal: {
+    MovimientoCantidad: {
         type: FLOAT,
         allowNull: false
     },
-    PagoAño: {
+    MovimientoDia: {
+        type: INTEGER,
+        allowNull: true
+    },
+    MovimientoMes: {
+        type: INTEGER,
+        allowNull: true
+    },
+    MovimientoAño: {
+        type: INTEGER,
+        allowNull: true
+    },
+    MovimientoConceptoId: {
         type: INTEGER,
         allowNull: false
     },
-    PagoMes: {
+    // CajaId: {
+    //     type: INTEGER,
+    //     allowNull: false
+    // },
+    PagoId: {
         type: INTEGER,
-        allowNull: false
+        allowNull: true
+    },
+    OtId: {
+        type: INTEGER,
+        allowNull: true
     },
     createdAt: {
         type: DATE,
@@ -49,12 +61,7 @@ const Pago = db.define('pago', {
     deletedBy: {
         type: UUIDV4,
         allowNull: true
-    },
-    //fk
-    UserId: {
-        type: STRING(38),
-        allowNull: false
-    },
+    }
 });
 
-module.exports = db.model('pago', Pago);
+module.exports = Movimiento;

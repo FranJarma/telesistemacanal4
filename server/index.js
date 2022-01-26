@@ -47,7 +47,10 @@ app.use('/api/mediosPago', require('./routes/MedioPago.js'));
 app.use('/api/tareas', require('./routes/Tarea.js'));
 //OT
 app.use('/api/ot', require('./routes/Ot.js'));
-
+//MOVIMIENTOS
+app.use('/api/movimientos', require('./routes/Movimiento.js'));
+//CONCEPTOS
+app.use('/api/conceptos', require('./routes/MovimientoConcepto.js'));
 //pág principal
 app.get('/', (req, res)=>{
     res.send(`Conectado a: ${process.env.DB_NAME} en puerto: ${PORT}`)

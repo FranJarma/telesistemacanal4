@@ -272,7 +272,10 @@ const CambioTitularidad = () => {
                     value={Telefono}
                     name="Telefono"
                     onChange={onInputChange}
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     fullWidth
                     label="N° Teléfono">
                     </TextField>
@@ -346,7 +349,10 @@ const CambioTitularidad = () => {
                     value={DomicilioNumero}
                     name="DomicilioNumero"
                     onChange={onInputChange}
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     fullWidth
                     label="Número">
                     </TextField>
@@ -358,7 +364,10 @@ const CambioTitularidad = () => {
                     value={DomicilioPiso}
                     name="DomicilioPiso"
                     onChange={onInputChange}
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     fullWidth
                     label="Piso">
                     </TextField>

@@ -14,7 +14,7 @@ import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, ordenesDeTrabajo, traerOrdenesDeTrabajo, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
+    const { ordenesDeTrabajo, traerOrdenesDeTrabajo, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
 
     useEffect(()=>{
         traerOrdenesDeTrabajo(5);
@@ -287,6 +287,7 @@ const ListaOtPendientes = () => {
                         </TextField>
                     </Grid>
                 </Grid>
+                <Typography variant="h2">Total: ${OtInfo.Monto}</Typography>
                 </>}
             >
             </Modal>

@@ -24,6 +24,7 @@ import ListaMisOt from './views/components/tecnicos/ListaMisOt';
 import ListaTareas from './views/components/tecnicos/ListaTareas';
 import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
 import ListaOtFinalizadas from './views/components/tecnicos/ListaOtFinalizadas';
+import ListaMovimientos from './views/components/caja/ListaMovimientos';
 
 //revisamos si tenemos un token
 const token = sessionStorage.getItem('token');
@@ -177,6 +178,8 @@ function App() {
                   <PrivateRoute exact path="/mis-ot" component={ListaMisOt}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/tareas" component={ListaTareas}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/cierre-de-caja" component={ListaMovimientos}>
                   </PrivateRoute>
                 </Suspense>
             </Switch>

@@ -4,6 +4,7 @@ const knex = require('knex')(options);
 const { validationResult } = require('express-validator');
 const Pago = require('./../models/Pago');
 const DetallePago = require('./../models/DetallePago');
+const Movimiento = require('../models/Movimiento');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -44,6 +45,13 @@ exports.PagoCreate = async(req,res) => {
     if(req.body.DetallePagoMonto <= 0) return res.status(400).json({msg: 'El monto tiene que ser mayor a 0'});
     try {
         await db.transaction(async(t)=>{
+            //buscamos el ultimo Movimiento
+            let ultimoMovimientoId = 0;
+            const ultimoMovimiento = await Movimiento.findOne({
+                order: [['MovimientoId', 'DESC']]
+            }); 
+            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
+
             let ultimoDetallePagoId = 0;
             //Buscamos el último DetallePago
             const ultimoDetallePago = await DetallePago.findOne({
@@ -58,6 +66,15 @@ exports.PagoCreate = async(req,res) => {
                     PagoMes: req.body.PagoPeriodo.split('-')[1]
                 }
             })
+            //instanciamos un nuevo movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = req.body.DetallePagoMonto;
+            movimiento.createdBy = req.body.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 1;
             //si encuentra el pago, NO se lo registra de nuevo, sino que solo se registra un nuevo detalle de pago y se actualiza el saldo
             if(pagoBuscar) {
                 //verificamos que el monto ingresado no supere el saldo restante
@@ -66,8 +83,11 @@ exports.PagoCreate = async(req,res) => {
                 const detallePago = new DetallePago(req.body, {transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
                 detallePago.PagoId = pagoBuscar.PagoId;
+                //registramos el id del pago al movimiento
+                movimiento.PagoId = pagoBuscar.PagoId;
                 await pagoBuscar.save({transaction: t});
                 await detallePago.save({transaction: t});
+                await movimiento.save({transaction: t});
             }
             else {
             //si no encuentra el pago, se lo registra desde 0, con un nuevo detalle de pago
@@ -84,8 +104,11 @@ exports.PagoCreate = async(req,res) => {
                 const detallePago = new DetallePago(req.body, {transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
                 detallePago.PagoId = ultimoPagoId + 1;
+                //registramos el pago id del movimiento
+                movimiento.PagoId = pago.PagoId;
                 await pago.save({transaction: t});
                 await detallePago.save({transaction: t});
+                await movimiento.save({transaction: t});
             }
             return res.status(200).json({msg: 'El Pago ha sido registrado correctamente'})
         })

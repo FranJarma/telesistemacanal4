@@ -20,7 +20,6 @@ const ListaServicios = () => {
     const [ServicioInfo, setServicioInfo] = useState({
         ServicioNombre: '',
         ServicioPrecioUnitario: '',
-        ServicioRecargo: '',
         ServicioDescripcion: '',
         createdBy: null,
         updatedAt: null,
@@ -28,7 +27,7 @@ const ListaServicios = () => {
         deletedBy: null,
         deletedAt: null
     })
-    const { ServicioNombre, ServicioPrecioUnitario, ServicioRecargo, ServicioDescripcion } = ServicioInfo;
+    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion } = ServicioInfo;
 
     const onInputChange= (e) =>{
         setServicioInfo({
@@ -71,12 +70,6 @@ const ListaServicios = () => {
         {
             "name": "Precio",
             "selector": row => "$ " + row["ServicioPrecioUnitario"],
-            "wrap": true,
-            "sortable": true
-        },
-        {
-            "name": "Recargo",
-            "selector": row => "$ " + row["ServicioRecargo"],
             "wrap": true,
             "sortable": true
         },
@@ -128,7 +121,7 @@ const ListaServicios = () => {
         titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Servicio" : "Nuevo Servicio"}</Typography>}
         formulario={
             <Grid container spacing={3}>
-                <Grid item xs={12} md={12} sm={12} xl={12}>
+                <Grid item xs={12} md={6} sm={6} xl={6}>
                     <TextField
                     color="primary"
                     autoFocus
@@ -140,28 +133,19 @@ const ListaServicios = () => {
                     name="ServicioNombre"
                     ></TextField>
                 </Grid>
-                <Grid item xs={6} md={6} sm={6} xl={6}>
+                <Grid item xs={12} md={6} sm={6} xl={6}>
                     <TextField
                     color="primary"
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     variant="outlined"
                     label="Precio Unitario"
                     fullWidth
                     onChange={onInputChange}
                     value={ServicioPrecioUnitario}
                     name="ServicioPrecioUnitario"
-                    ></TextField>
-                </Grid>
-                <Grid item xs={6} md={6} sm={6} xl={6}>
-                    <TextField
-                    color="primary"
-                    type="number"
-                    variant="outlined"
-                    label="Recargo"
-                    fullWidth
-                    onChange={onInputChange}
-                    value={ServicioRecargo}
-                    name="ServicioRecargo"
                     ></TextField>
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>

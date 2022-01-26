@@ -1,22 +1,17 @@
-const { STRING, INTEGER, FLOAT, DATE, UUIDV4 } = require('sequelize');
+const { INTEGER, FLOAT, DATE, UUIDV4, CHAR } = require('sequelize');
 const db = require('../config/connection');
 
-const Servicio = db.define('servicio', {
-    ServicioId: {
+const MovimientoConcepto = db.define('movimientoconcepto', {
+    MovimientoConceptoId: {
         type: INTEGER,
         primaryKey: true
     },
-    ServicioNombre: {
-        type: STRING(256),
-        unique: true,
-        allowNull: true,
-    },
-    ServicioPrecioUnitario: {
+    MovimientoConceptoNombre: {
         type: FLOAT,
         allowNull: false
     },
-    ServicioDescripcion: {
-        type: STRING(256),
+    MovimientoConceptoTipo: {
+        type: CHAR,
         allowNull: false
     },
     createdAt: {
@@ -45,4 +40,4 @@ const Servicio = db.define('servicio', {
     }
 });
 
-module.exports = Servicio;
+module.exports = MovimientoConcepto;

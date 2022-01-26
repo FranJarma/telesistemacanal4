@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, Checkbox, FormControlLabel, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, Checkbox, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
@@ -11,11 +11,10 @@ import InputMask from 'react-input-mask';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
-    const { barrios, condicionesIva, municipios, servicios, provincias, onus, onu, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
+    const { barrios, condicionesIva, municipios, servicios, provincias, onus, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
     traerProvincias, traerONUS, traerONUPorId, crearAbonado, modificarAbonado } = appContext;
     
     const location = useLocation();
-
     const [abonadoInfo, setAbonadoInfo] = useState({
         UserId: null,
         Nombre: null,
@@ -52,7 +51,7 @@ const CaratulaAbonado = () => {
     const [Barrio, setBarrio] = useState(null);
     const [ServicioId, setServicioId] = useState(0);
     const [CondicionIvaId, setCondicionIvaId] = useState(0);
-    const [OnuId, setOnuId] = useState(0);
+    const [Onu, setOnu] = useState(0);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [FechaBajada, setFechaBajada] = useState(new Date());
@@ -130,7 +129,7 @@ const CaratulaAbonado = () => {
                 MunicipioId,
                 Barrio,
                 ServicioId,
-                OnuId,
+                Onu,
                 createdBy
             });
         }
@@ -187,7 +186,7 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
                     <InputMask
-                    mask={SieteDigitos ? "9.999.999" : "99.999.999"}
+                    mask={SieteDigitos ? "9999.999" : "99999999"}
                     onChange={onInputChange}
                     value={Documento}
                     >
@@ -215,7 +214,7 @@ const CaratulaAbonado = () => {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                 <InputMask
-                    mask={SieteDigitos ? "99.9999999.99" : "99.99999999.99"}
+                    mask={SieteDigitos ? "9999999999" : "99999999999"}
                     onChange={onInputChange}
                     value={Cuit}
                     >
@@ -274,7 +273,10 @@ const CaratulaAbonado = () => {
                     value={Telefono}
                     name="Telefono"
                     onChange={onInputChange}
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     fullWidth
                     label="N° Teléfono">
                     </TextField>
@@ -353,7 +355,10 @@ const CaratulaAbonado = () => {
                     value={DomicilioNumero}
                     name="DomicilioNumero"
                     onChange={onInputChange}
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     fullWidth
                     label="Número">
                     </TextField>
@@ -365,7 +370,10 @@ const CaratulaAbonado = () => {
                     value={DomicilioPiso}
                     name="DomicilioPiso"
                     onChange={onInputChange}
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     fullWidth
                     label="Piso">
                     </TextField>
@@ -434,9 +442,9 @@ const CaratulaAbonado = () => {
                 <Grid item xs={12} md={3} lg={3} xl={3}>
                 <Autocomplete
                 disabled={location.state ? true : false}
-                value={location.state ? location.state.OnuMac : OnuId}
-                onChange={(_event, newOnuId) => {
-                    setOnuId(newOnuId);
+                value={location.state ? location.state.OnuId : Onu}
+                onChange={(_event, newOnu) => {
+                    setOnu(newOnu);
                 }}
                 options={onus}
                 getOptionLabel={(option) => option.OnuMac + " - " + option.ModeloOnuNombre}

@@ -11,7 +11,6 @@ exports.ServicioCreate = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     if(req.body.ServicioPrecioUnitario <= 0) return res.status(400).json({msg: 'El precio unitario tiene que ser mayor a 0'});
-    if(req.body.ServicioRecargo < 0) return res.status(400).json({msg: 'El recargo tiene que ser mayor o igual a 0'}); 
     try {
         await db.transaction(async(t)=>{
             const ultimoServicio = await Servicio.findOne({
@@ -34,7 +33,6 @@ exports.ServicioUpdate = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     if(req.body.ServicioPrecioUnitario <= 0) return res.status(400).json({msg: 'El precio unitario tiene que ser mayor a 0'});
-    if(req.body.ServicioRecargo < 0) return res.status(400).json({msg: 'El recargo tiene que ser mayor o igual a 0'});
     try {
         await db.transaction(async(t)=>{
             const servicio = await Servicio.findByPk(req.body.ServicioId, {transaction: t});

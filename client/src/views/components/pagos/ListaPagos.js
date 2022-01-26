@@ -184,9 +184,11 @@ const ListaPagos = () => {
         <br/>
         <Card>
             <CardContent>
+                {location.pathname.split('/')[2] !== 'view' ?
                 <CardHeader
                     action={<Button variant="contained" color="primary" onClick={handleChangeModalNuevoPago}>+ Asentar pago</Button>}>
                 </CardHeader>
+                :""}
                 <Typography variant="h1">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
                 <br/>
                 <Grid container spacing={3}>
@@ -259,7 +261,10 @@ const ListaPagos = () => {
                         <TextField
                             variant="outlined"
                             label="Recibido"
-                            type="number"
+                            onKeyPress={(e) => {
+                            if (!/^[,0-9]+$/.test(e.key)) {
+                                e.preventDefault();
+                            }}}
                             value={DetallePagoMonto}
                             name="DetallePagoMonto"
                             fullWidth
@@ -328,7 +333,10 @@ const ListaPagos = () => {
                         </Alert>
                         <br/>
                         <TextField
-                            type="number"
+                            onKeyPress={(e) => {
+                            if (!/^[,0-9]+$/.test(e.key)) {
+                                e.preventDefault();
+                            }}}
                             name="PagoRecargo"
                             fullWidth
                             variant="outlined"

@@ -8,11 +8,12 @@ import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import { Link } from 'react-router-dom';
 
 const ListaAbonadosInactivos = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
-
+    const { abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    
     useEffect(() => {
         traerAbonados(3);
         //10 para que traiga los de jujuy
@@ -114,7 +115,22 @@ const ListaAbonadosInactivos = () => {
         },
         {
             cell: (data) =>
-            <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "blue", cursor: "pointer"}}><Tooltip title="Dar de alta"><i className='bx bxs-user-check bx-xs'></i></Tooltip> </Typography>
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                    <Link to={{
+                    pathname: `/historial-de-pagos/view/${data.Nombre + "-" +  data.Apellido}`,
+                    state: data
+                    }} style={{textDecoration: 'none', color: "navy"}}>
+                    <Typography style={{color: 'navy'}}>
+                    <i className='bx bx-money bx-xs'></i> Pagos</Typography>
+                    </Link> 
+                </MenuItem>
+                <MenuItem>
+                    <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "darkgreen", cursor: "pointer"}}><i className='bx bxs-user-check bx-xs'></i> Dar de alta</Typography>
+                </MenuItem>
+                </>
+            }/>
         }
 ]
 const ExpandedComponent = ({ data }) =>

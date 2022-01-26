@@ -168,7 +168,10 @@ const CaratulaUser = () => {
                     onChange={onInputChange}
                     fullWidth
                     label="DNI"
-                    type="number">
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}>
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4} xl={4}>
@@ -188,7 +191,10 @@ const CaratulaUser = () => {
                     value={Telefono}
                     name="Telefono"
                     onChange={onInputChange}
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     fullWidth
                     label="N° Teléfono">
                     </TextField>

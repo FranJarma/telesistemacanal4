@@ -355,7 +355,10 @@ const CaratulaOt = () => {
                                 value={DomicilioNumero}
                                 name="DomicilioNumero"
                                 onChange={onInputChange}
-                                type="number"
+                                onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                                 fullWidth
                                 label="Número nuevo domicilio">
                                 </TextField>
@@ -366,7 +369,10 @@ const CaratulaOt = () => {
                                 value={DomicilioPiso}
                                 name="DomicilioPiso"
                                 onChange={onInputChange}
-                                type="number"
+                                onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                                 fullWidth
                                 label="Piso nuevo domicilio">
                                 </TextField>

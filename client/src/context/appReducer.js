@@ -322,6 +322,18 @@ export default (state, action) => {
                 ordenesDeTrabajo: state.ordenesDeTrabajo.filter(ordenDeTrabajo => ordenDeTrabajo.OtId !== action.payload.OtId)
             }
         }
+        case TYPES.LISTA_MOVIMIENTOS: {
+            return {
+                ...state,
+                movimientos: action.payload
+            }
+        }
+        case TYPES.LISTA_CONCEPTOS: {
+            return {
+                ...state,
+                conceptos: action.payload
+            }
+        }
         default:
             return state;
     }

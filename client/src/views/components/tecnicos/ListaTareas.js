@@ -138,7 +138,10 @@ const ListaTiposTareas = () => {
                 <Grid item xs={12} md={12} sm={12} xl={12}>
                     <TextField
                     color="primary"
-                    type="number"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
                     variant="outlined"
                     label="Precio Unitario"
                     fullWidth

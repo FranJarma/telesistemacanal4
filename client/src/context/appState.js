@@ -39,7 +39,9 @@ const AppState = props => {
         ordenesDeTrabajo: [],
         ordenesDeTrabajoAsignadas: [],
         tecnicosOrdenDeTrabajo: [],
-        tareasOrdenDeTrabajo: []
+        tareasOrdenDeTrabajo: [],
+        movimientos: [],
+        conceptos: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -1311,7 +1313,30 @@ const AppState = props => {
             }
         })
     }
-
+    //movimientos
+    const traerMovimientosPorFecha = async (Fecha) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/movimientos/Dia=${Fecha.getDate()}&Mes=${Fecha.getMonth()+1}&Anio=${Fecha.getFullYear()}`);
+            dispatch({
+                type: TYPES.LISTA_MOVIMIENTOS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    //conceptos de movimientos
+    const traerConceptos = async () => {
+        try {
+            const resultado = await clienteAxios.get('/api/conceptos');
+            dispatch({
+                type: TYPES.LISTA_CONCEPTOS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return(
         <AppContext.Provider
         value={{
@@ -1346,6 +1371,8 @@ const AppState = props => {
             ordenesDeTrabajoAsignadas: state.ordenesDeTrabajoAsignadas,
             tecnicosOrdenDeTrabajo: state.tecnicosOrdenDeTrabajo,
             tareasOrdenDeTrabajo: state.tareasOrdenDeTrabajo,
+            movimientos: state.movimientos,
+            conceptos: state.conceptos,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
@@ -1363,7 +1390,9 @@ const AppState = props => {
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,
-            finalizarOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo
+            finalizarOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo,
+            traerMovimientosPorFecha,
+            traerConceptos
         }}>{props.children}
         </AppContext.Provider>
     )

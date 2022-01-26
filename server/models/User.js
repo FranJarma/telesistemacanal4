@@ -24,7 +24,7 @@ const User = db.define('_user', {
         allowNull: true,
     },
     Documento: {
-        type: INTEGER,
+        type: BIGINT,
         allowNull: false
     },
     Cuit: {

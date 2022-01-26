@@ -9,6 +9,7 @@ const UserServicio = require('./../models/UserServicio');
 const User = require('./../models/User');
 const OtTecnico = require('../models/OtTecnico');
 const OtTarea = require('../models/OtTarea');
+const Movimiento = require('../models/Movimiento');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -214,9 +215,25 @@ exports.OtRegistrarVisita = async (req, res) => {
 
 exports.OtFinalizar = async (req, res) => {
     try {
-        const { OtId, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy } = req.body;
+        const { OtId, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, Monto, updatedBy } = req.body;
         await db.transaction(async (t)=> {
-            if( OtFechaInicio > OtFechaFinalizacion ) return res.status(400).send({msg: 'La hora de Inicio no puede ser mayor a la de finalización'});
+            if( OtFechaInicio >= OtFechaFinalizacion ) return res.status(400).send({msg: 'La hora de Inicio no puede ser mayor o igual a la de finalización'});
+            //buscamos el ultimo Movimiento
+            let ultimoMovimientoId = 0;
+            const ultimoMovimiento = await Movimiento.findOne({
+                order: [['MovimientoId', 'DESC']]
+            }); 
+            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
+            //instanciamos un nuevo movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = Monto;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 2;
+            movimiento.createdBy = updatedBy;
+            movimiento.OtId = OtId;
             const ot = await Ot.findByPk(OtId);
             ot.OtFechaInicio = OtFechaInicio;
             ot.OtFechaFinalizacion = OtFechaFinalizacion;
@@ -225,6 +242,7 @@ exports.OtFinalizar = async (req, res) => {
             ot.updatedAt = new Date();
             ot.updatedBy = updatedBy;
             await ot.save({transaction: t});
+            await movimiento.save({transaction: t});
             const tareasOt = await OtTarea.findAll({
                 where: {
                     OtId: OtId

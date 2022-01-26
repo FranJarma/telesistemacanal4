@@ -242,22 +242,28 @@ const CambioDomicilio = () => {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
+                    onKeyPress={(event) => {
+                        if (!/[0-9]/.test(event.key)) {
+                        event.preventDefault();
+                    }}}
                     variant = "outlined"
                     value={DomicilioNumero}
                     name="DomicilioNumero"
                     onChange={onInputChange}
-                    type="number"
                     fullWidth
                     label="Número">
                     </TextField>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
+                    onKeyPress={(event) => {
+                        if (!/[0-9]/.test(event.key)) {
+                        event.preventDefault();
+                    }}}
                     variant = "outlined"
                     value={DomicilioPiso}
                     name="DomicilioPiso"
                     onChange={onInputChange}
-                    type="number"
                     fullWidth
                     label="Piso">
                     </TextField>

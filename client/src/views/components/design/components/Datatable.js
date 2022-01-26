@@ -42,6 +42,7 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     || (item.RoleDescription && item.RoleDescription.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.TareaNombre && item.TareaNombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.OtFechaPrevistaVisita && item.OtFechaPrevistaVisita.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.MovimientoCantidad && item.MovimientoCantidad.toString().includes(textoFiltrado.toLowerCase()))
 
     );
     const paginacionOpciones = {

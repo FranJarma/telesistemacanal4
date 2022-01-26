@@ -316,8 +316,8 @@ exports.AbonadoCreate = async(req, res) => {
             abonadoEstado.CambioEstadoFecha = new Date();
             abonadoEstado.CambioEstadoObservaciones = 'Dado de alta';
             //traemos la ONU por id y actualizamos su estado para que pase a ASIGNADA
-            if(req.body.OnuId !== 0) {
-                const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
+            if(req.body.Onu.OnuId !== 0) {
+                const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
                 onu.EstadoId = 4;
                 await onu.save({transaction: t});
             }
