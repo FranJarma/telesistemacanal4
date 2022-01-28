@@ -13,6 +13,7 @@ const UserServicio = require('./../models/UserServicio');
 const UserRole = require('./../models/UserRole');
 const Onu = require('../models/Onu');
 const Tarea = require('../models/Tarea');
+const Movimiento = require('../models/Movimiento');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -282,39 +283,69 @@ exports.AbonadoCreate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-        //traemos el id del ultimo domicilio registrado
+        //verificamos que no exista un domicilio con esos datos
+        const domicilioBuscar = await knex.select('*').from('domicilio as d')
+        .innerJoin('barrio as b', 'd.BarrioId', '=', 'b.BarrioId')
+        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
+        .where({
+            'd.DomicilioCalle': req.body.DomicilioCalle,
+            'd.DomicilioNumero': req.body.DomicilioNumero,
+            'd.BarrioId': req.body.Barrio.BarrioId,
+            'm.MunicipioId': req.body.MunicipioId
+        });
+
+        if(domicilioBuscar) {
+            return res.status(400).json({msg: 'Ya existe un domicilio registrado en ese barrio y ese municipio'})
+        }
+        else {
+            //traemos el id del ultimo domicilio registrado
             let ultimoDomicilioId = 0;
             const ultimoDomicilio = await Domicilio.findOne({
                 order: [['DomicilioId', 'DESC']]
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
+            //buscamos el ultimo Movimiento
+            let ultimoMovimientoId = 0;
+            const ultimoMovimiento = await Movimiento.findOne({
+                order: [['MovimientoId', 'DESC']]
+            }); 
+            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
             // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
-            const abonado = new User(req.body);
+            const abonado = new User(req.body, {transaction: t});
             abonado.UserId = uuidv4().toUpperCase();
             abonado.DomicilioId = ultimoDomicilioId + 1;
             abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
             abonado.EsUsuarioDeSistema = 0;
-            const domicilio = new Domicilio(req.body);
+            const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
-            const abonadoRole = new UserRole();
+            const abonadoRole = new UserRole({transaction: t});
             abonadoRole.UserId = abonado.UserId;
             abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
-            const abonadoDomicilio = new UserDomicilio(req.body);
+            const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
             abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
             abonadoDomicilio.UserId = abonado.UserId;
             abonadoDomicilio.CambioDomicilioFecha = new Date();
-            abonadoDomicilio.CambioDomicilioObservaciones = 'Primer Domicilio';
-            const abonadoServicio = new UserServicio();
+            abonadoDomicilio.CambioDomicilioObservaciones = 'Primer Domicilio registrado';
+            const abonadoServicio = new UserServicio({transaction: t});
             abonadoServicio.ServicioId = req.body.ServicioId;
             abonadoServicio.UserId = abonado.UserId;
             abonadoServicio.CambioServicioFecha = new Date();
             abonadoServicio.CambioServicioObservaciones = 'Primer Servicio contratado';
-            const abonadoEstado = new UserEstado();
+            const abonadoEstado = new UserEstado({transaction: t});
             abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
             abonadoEstado.UserId = abonado.UserId;
             abonadoEstado.CambioEstadoFecha = new Date();
             abonadoEstado.CambioEstadoObservaciones = 'Dado de alta';
+            //instanciamos un nuevo movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = req.body.DetallePagoMonto;
+            movimiento.createdBy = req.body.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 3;
             //traemos la ONU por id y actualizamos su estado para que pase a ASIGNADA
             if(req.body.Onu.OnuId !== 0) {
                 const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
@@ -327,9 +358,10 @@ exports.AbonadoCreate = async(req, res) => {
             await abonadoDomicilio.save({transaction: t});
             await abonadoServicio.save({transaction: t});
             await abonadoEstado.save({transaction: t});
-            return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'})
-        })
-        }   
+            return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'});
+            }
+        }
+    )}   
     catch (error) {
         console.log(error)
         res.status(400).json({msg: 'Hubo un error al registrar el abonado'});

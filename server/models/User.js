@@ -1,4 +1,4 @@
-const { UUIDV4, DATE, STRING, INTEGER, BIGINT, BOOLEAN  } = require('sequelize');
+const { UUIDV4, DATE, STRING, INTEGER, BIGINT, BOOLEAN, FLOAT  } = require('sequelize');
 const db = require('../config/connection');
 
 const User = db.define('_user', {
@@ -64,6 +64,10 @@ const User = db.define('_user', {
     },
     UltimoInicioDeSesion: {
         type: DATE,
+        allowNull: true
+    },
+    SaldoInscripcion: {
+        type: FLOAT,
         allowNull: true
     },
     createdAt: {

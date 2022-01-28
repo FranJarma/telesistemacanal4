@@ -10,7 +10,7 @@ import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaServicios = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, servicios, traerServicios, crearServicio, modificarServicio, eliminarServicio } = appContext;
+    const { servicios, traerServicios, crearServicio, modificarServicio, eliminarServicio } = appContext;
     useEffect(()=>{
         traerServicios();
     },[]);
@@ -21,13 +21,14 @@ const ListaServicios = () => {
         ServicioNombre: '',
         ServicioPrecioUnitario: '',
         ServicioDescripcion: '',
+        ServicioInscripcion: '',
         createdBy: null,
         updatedAt: null,
         updatedBy: null,
         deletedBy: null,
         deletedAt: null
     })
-    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion } = ServicioInfo;
+    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion, ServicioInscripcion } = ServicioInfo;
 
     const onInputChange= (e) =>{
         setServicioInfo({
@@ -70,6 +71,12 @@ const ListaServicios = () => {
         {
             "name": "Precio",
             "selector": row => "$ " + row["ServicioPrecioUnitario"],
+            "wrap": true,
+            "sortable": true
+        },
+        {
+            "name": "Costo de Inscripción",
+            "selector": row => "$ " + row["ServicioInscripcion"],
             "wrap": true,
             "sortable": true
         },
@@ -121,7 +128,7 @@ const ListaServicios = () => {
         titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Servicio" : "Nuevo Servicio"}</Typography>}
         formulario={
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6} sm={6} xl={6}>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
                     <TextField
                     color="primary"
                     autoFocus
@@ -133,7 +140,7 @@ const ListaServicios = () => {
                     name="ServicioNombre"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={6} sm={6} xl={6}>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
@@ -146,6 +153,21 @@ const ListaServicios = () => {
                     onChange={onInputChange}
                     value={ServicioPrecioUnitario}
                     name="ServicioPrecioUnitario"
+                    ></TextField>
+                </Grid>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
+                    <TextField
+                    color="primary"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
+                    variant="outlined"
+                    label="Costo de Inscripción"
+                    fullWidth
+                    onChange={onInputChange}
+                    value={ServicioInscripcion}
+                    name="ServicioInscripcion"
                     ></TextField>
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>
@@ -170,7 +192,7 @@ const ListaServicios = () => {
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarServicio(ServicioInfo, handleChangeModalServicio)
             : crearServicio(ServicioInfo, handleChangeModalServicio)}}>{EditMode ? "Editar" : "Agregar"}</Button>
-            <Button variant="text" color="inherit" >Cerrar</Button>
+            <Button onClick={handleChangeModalServicio} variant="text" color="inherit" >Cerrar</Button>
             </>
         }
         />

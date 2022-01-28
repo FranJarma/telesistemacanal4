@@ -70,16 +70,6 @@ const ListaAbonadosInactivos = () => {
             "selector": row =>row["UserId"]
         },
         {
-            "name": "Nombre",
-            "selector": row =>row["Nombre"],
-            "omit": true
-        },
-        {
-            "name": "Apellido",
-            "selector": row =>row["Apellido"],
-            "omit": true
-        },
-        {
             "name": "Nombre Completo",
             "selector": row => row["Apellido"] + ', ' + row["Nombre"],
             "wrap": true,
@@ -92,24 +82,20 @@ const ListaAbonadosInactivos = () => {
             "hide": "sm"
         },
         {
-            "name": "N° teléfono",
-            "selector": row =>row["Phone"],
-            "sortable": true,
-            "omit": true,
-        },
-        {
-            "name": "Domicilio Calle",
-            "selector": row => row["DomicilioCalle"],
-            "omit": true
-        },
-        {
-            "name": "Domicilio Numero",
-            "selector": row => row["DomicilioNumero"],
-            "omit": true
-        },
-        {
             "name": "Domicilio",
             "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+            "wrap": true,
+            "sortable": true
+        },
+        {
+            "name": "Usuario de baja",
+            "selector": row => row["deletedBy"],
+            "wrap": true,
+            "sortable": true
+        },
+        {
+            "name": "Fecha y hora de baja",
+            "selector": row => row["deletedAt"],
             "wrap": true,
             "sortable": true
         },

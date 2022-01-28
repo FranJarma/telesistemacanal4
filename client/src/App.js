@@ -14,7 +14,7 @@ import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosIna
 import Cargando from './views/components/design/components/Cargando';
 import ListaAbonadosInscriptos from './views/components/abonados/ListaAbonadosInscriptos';
 import BarriosMunicipios from './views/components/barrios-municipios/BarriosMunicipios';
-import OnusModelosOnus from './views/components/onus/OnusModelosOnus';
+import ListaOnus from './views/components/onus/ListaOnus';
 import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
@@ -25,6 +25,7 @@ import ListaTareas from './views/components/tecnicos/ListaTareas';
 import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
 import ListaOtFinalizadas from './views/components/tecnicos/ListaOtFinalizadas';
 import ListaMovimientos from './views/components/caja/ListaMovimientos';
+import ListaMediosPago from './views/components/mediosPago/ListaMediosPago';
 
 //revisamos si tenemos un token
 const token = sessionStorage.getItem('token');
@@ -167,7 +168,9 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute exact path="/barrios-municipios" component={BarriosMunicipios}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/onus-modelosOnus" component={OnusModelosOnus}>
+                  <PrivateRoute exact path="/onus" component={ListaOnus}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/medios-de-pago" component={ListaMediosPago}>
                   </PrivateRoute>
                   <PrivateRoute path="/caratula-ot" component={CaratulaOt}>
                   </PrivateRoute>

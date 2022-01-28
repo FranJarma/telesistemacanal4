@@ -167,6 +167,11 @@ const ListaAbonadosInscriptos = () => {
         "sortable": true
     },
     {
+        "name": "Saldo de Inscripción",
+        "selector": row =>row["SaldoInscripción"],
+        "sortable": true
+    },
+    {
         cell: (data) =>
         <BotonesDatatable botones={
             <>

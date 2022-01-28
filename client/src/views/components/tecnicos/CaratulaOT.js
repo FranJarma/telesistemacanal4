@@ -11,7 +11,7 @@ import DataTable from 'react-data-table-component';
 
 const CaratulaOt = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, tareas, abonado, abonados, municipios, barrios, usuarios, traerBarriosPorMunicipio, traerMunicipios,
+    const { tareas, abonado, abonados, municipios, barrios, usuarios, traerBarriosPorMunicipio, traerMunicipios,
     traerTareas, traerAbonados, traerAbonado, traerUsuariosPorRol, traerTareasOt, traerTecnicosOt, tecnicosOrdenDeTrabajo, tareasOrdenDeTrabajo,
     crearOrdenDeTrabajo, modificarOrdenDeTrabajo } = appContext;
 

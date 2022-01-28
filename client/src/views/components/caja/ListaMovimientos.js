@@ -1,8 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid,  MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid,  MenuItem, TextField, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
-import { useLocation } from 'react-router-dom';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import { DatePicker } from '@material-ui/pickers';
@@ -36,7 +35,7 @@ const ListaMovimientos = () => {
         },
         {
             "name": "Cantidad",
-            "selector": row =>row["MovimientoCantidad"] > 0 ? <><i style={{color: 'green'}} className='bx bx-up-arrow-alt'></i><span style={{color: 'green'}}> ${row["MovimientoCantidad"]} </span></> : <><i style={{color: 'red'}} className='bx bx-down-arrow-alt'></i><span style={{color: 'red'}}> ${row["MovimientoCantidad"]}</span></>,
+            "selector": row =>row["MovimientoCantidad"] > 0 ? <><i style={{color: 'green', fontWeight: 'bold'}} className='bx bx-up-arrow-alt'></i><span style={{color: 'green'}}> ${row["MovimientoCantidad"]} </span></> : <><i style={{color: 'red'}} className='bx bx-down-arrow-alt'></i><span style={{color: 'red'}}> ${row["MovimientoCantidad"]}</span></>,
             "wrap": true
         },
         {
@@ -51,7 +50,7 @@ const ListaMovimientos = () => {
         },
         {
             "name": "Concepto",
-            "selector": row => row["Concepto"],
+            "selector": row =>row["MovimientoCantidad"] > 0 ? <><span style={{color: 'green', fontWeight: 'bold'}}>{row["Tipo"] +": "}</span>{row["Concepto"]}</>  : <><span style={{color: 'red', fontWeight: 'bold'}}>{row["Tipo"] +": "}</span>{row["Concepto"]}</>,
             "wrap": true
         }
     ]
@@ -94,7 +93,7 @@ const ListaMovimientos = () => {
                     buscar={true}
                 />
             <div style={{display: 'flex'}}>
-            <Typography variant="h2">Total de ventas : ${movimientos.map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
+            <Typography variant="h2">Total de Ingresos : ${movimientos.map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
             <Typography style={{'margin-left': '25px'}} color='secondary' variant="h2">Total de gastos : ${movimientos.map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
             </div>
        
@@ -107,6 +106,7 @@ const ListaMovimientos = () => {
         botones={
             <>
             <Button
+            onClick={crearMovimiento}
             variant="contained"
             color="primary">Registrar</Button>
             <Button onClick={handleChangeModalMovimiento}>Cerrar</Button>

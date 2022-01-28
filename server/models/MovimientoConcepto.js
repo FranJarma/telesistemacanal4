@@ -1,4 +1,4 @@
-const { INTEGER, FLOAT, DATE, UUIDV4, CHAR } = require('sequelize');
+const { INTEGER, FLOAT, DATE, UUIDV4, STRING } = require('sequelize');
 const db = require('../config/connection');
 
 const MovimientoConcepto = db.define('movimientoconcepto', {
@@ -11,7 +11,7 @@ const MovimientoConcepto = db.define('movimientoconcepto', {
         allowNull: false
     },
     MovimientoConceptoTipo: {
-        type: CHAR,
+        type: STRING,
         allowNull: false
     },
     createdAt: {
