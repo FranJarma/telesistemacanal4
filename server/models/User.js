@@ -66,10 +66,6 @@ const User = db.define('_user', {
         type: DATE,
         allowNull: true
     },
-    SaldoInscripcion: {
-        type: FLOAT,
-        allowNull: true
-    },
     createdAt: {
         type: DATE,
         allowNull: true,

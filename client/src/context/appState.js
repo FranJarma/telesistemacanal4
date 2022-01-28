@@ -1074,6 +1074,75 @@ const AppState = props => {
             console.log(error);
         }
     }
+    const crearMedioPago = async(medioPago, cerrarModal) => {
+        clienteAxios.post('/api/mediosPago/create', medioPago)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_MEDIO_DE_PAGO,
+                    payload: medioPago
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const modificarMedioPago = async(medioPago, cerrarModal) => {
+        clienteAxios.put('/api/mediosPago/update', medioPago)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.EDITAR_MEDIO_DE_PAGO,
+                    payload: medioPago
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const eliminarMedioPago = async(medioPago, cerrarModal) => {
+        clienteAxios.put('/api/mediosPago/delete', medioPago)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.ELIMINAR_MEDIO_DE_PAGO,
+                    payload: medioPago
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     //TAREAS
     const traerTareas = async () => {
         try {
@@ -1385,7 +1454,7 @@ const AppState = props => {
             traerServicios, crearServicio, modificarServicio, eliminarServicio,
             traerONUS, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
-            traerMediosPago,
+            traerMediosPago, crearMedioPago, modificarMedioPago, eliminarMedioPago,
             traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo,
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,

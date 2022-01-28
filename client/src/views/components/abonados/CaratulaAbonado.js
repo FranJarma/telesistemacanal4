@@ -99,6 +99,7 @@ const CaratulaAbonado = () => {
     useEffect(() => {
         if(location.state)
         {
+            console.log(location.state);
             setAbonadoInfo({
                 UserId: location.state.UserId,
                 Nombre: location.state.Nombre,
@@ -113,7 +114,12 @@ const CaratulaAbonado = () => {
                 updatedAt: new Date(),
                 updatedBy: sessionStorage.getItem('identity')
             });
-            setServicio(location.state.Servicio);
+            setServicio({
+                ServicioId: location.state.ServicioId,
+                ServicioNombre: location.state.ServicioNombre,
+                ServicioPrecioUnitario: location.state.ServicioPrecioUnitario,
+                ServicioInscripcion: location.state.ServicioInscripcion,
+            });
             setCondicionIvaId(location.state.CondicionIvaId);
             setFechaNacimiento(location.state.FechaNacimiento);
             setFechaBajada(location.state.FechaBajada);
@@ -289,14 +295,14 @@ const CaratulaAbonado = () => {
                         </Grid>
                     </Grid>
             </CardContent>
-            <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
+        </Card>
+        <br/>
+        <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
             <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
             variant="contained" color="primary">
             {location.state ? "Modificar" : "Registrar"}
             </Button>
-            </div>
-            <br/>
-        </Card>
+        </div>
     </TabPanel>
     <TabPanel>
         <Card>
@@ -408,7 +414,7 @@ const CaratulaAbonado = () => {
             <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Agregar abonado"}</Typography>
             <br/>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
                         <TextField
                         variant = {location.state ? "filled" : "outlined"}
                         disabled = {location.state ? true : false}
@@ -418,9 +424,9 @@ const CaratulaAbonado = () => {
                         fullWidth
                         select = {location.state ? false : true}
                         >
-                        {!location.state ? servicios.map((servicio)=>(
+                        {servicios.map((servicio)=>(
                             <MenuItem key={servicio.ServicioId} value={servicio}>{servicio.ServicioNombre} | Precio: ${servicio.ServicioPrecioUnitario} + Inscripción: ${servicio.ServicioInscripcion}</MenuItem>
-                        )): ""}
+                        ))}
                         </TextField>
                         { Servicio.ServicioId === 2 || Servicio.ServicioId === 3 ?
                         <>
@@ -442,7 +448,7 @@ const CaratulaAbonado = () => {
                         </>
                         :""}
                     </Grid>
-                    <Grid item xs={12} sm={4} md={4} lg={4}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                         variant = {location.state ? "filled" : "outlined"}
                         disabled = {location.state ? true : false}
@@ -455,9 +461,9 @@ const CaratulaAbonado = () => {
                         {!location.state ? mediosPago.map((mp)=>(
                             <MenuItem key={mp.mpId} value={mp.MedioPagoNombre}>{mp.MedioPagoNombre}</MenuItem>
                         )): ""}
-                        </TextField>
+                    </TextField>
                     </Grid>
-                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                    <Grid item xs={6} md={4} lg={4} xl={4}>
                         <DatePicker 
                         disabled = {location.state ? true : false}
                         inputVariant={location.state ? "filled" : "outlined"}
@@ -469,7 +475,7 @@ const CaratulaAbonado = () => {
                         >
                         </DatePicker >
                     </Grid>
-                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                    <Grid item xs={6} md={4} lg={4} xl={4}>
                         <DatePicker 
                         disabled = {location.state ? true : false}
                         inputVariant={location.state ? "filled" : "outlined"}
@@ -481,39 +487,22 @@ const CaratulaAbonado = () => {
                         >
                         </DatePicker >
                     </Grid>
-                </Grid>
-                {Servicio !== 1 ?
+                    {Servicio.ServicioId !== 1 ?
                 <>
-                <Typography variant="h2"><i className='bx bx-broadcast'></i> Datos de ONU</Typography>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={3} lg={3}>
-                        <TextField
-                        variant="outlined"
-                        value={Servicio}
-                        label="Tipo de ONU"
-                        fullWidth
-                        select
-                        disabled
-                        >
-                        {servicios.map((servicio)=>(
-                            <MenuItem key={servicio.Servicio} value={servicio.Servicio}>{servicio.ServicioNombre}</MenuItem>
-                        ))}
-                        </TextField>
+                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                        <Autocomplete
+                        disabled={location.state ? true : false}
+                        value={location.state ? location.state.OnuId : Onu}
+                        onChange={(_event, newOnu) => {
+                            setOnu(newOnu);
+                        }}
+                        options={onus}
+                        getOptionLabel={(option) => option.OnuMac + " - " + option.ModeloOnuNombre}
+                        renderInput={(params) => <TextField {...params} variant="outlined" fullWidth label="Onus disponibles"/>}
+                        />
                     </Grid>
-                    <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <Autocomplete
-                    disabled={location.state ? true : false}
-                    value={location.state ? location.state.OnuId : Onu}
-                    onChange={(_event, newOnu) => {
-                        setOnu(newOnu);
-                    }}
-                    options={onus}
-                    getOptionLabel={(option) => option.OnuMac + " - " + option.ModeloOnuNombre}
-                    renderInput={(params) => <TextField {...params} variant="outlined" fullWidth label="Onus disponibles"/>}
-                    />
-                    </Grid>
-                </Grid>
                 </> : ""}
+                </Grid>
             <br/>
             {location.state ? <Alert severity="info">Para modificar todos los datos del domicilio y del servicio contratado se tiene que realizar desde las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
             </CardContent>

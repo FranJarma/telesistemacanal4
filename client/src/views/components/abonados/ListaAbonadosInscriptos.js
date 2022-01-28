@@ -167,11 +167,6 @@ const ListaAbonadosInscriptos = () => {
         "sortable": true
     },
     {
-        "name": "Saldo de Inscripción",
-        "selector": row =>row["SaldoInscripción"],
-        "sortable": true
-    },
-    {
         cell: (data) =>
         <BotonesDatatable botones={
             <>
@@ -201,6 +196,9 @@ const ListaAbonadosInscriptos = () => {
                 <Typography style={{color: 'palevioletred'}}>
                 <i className='bx bx-plug bx-xs'></i> Cambios de servicio</Typography>
                 </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-money bx-xs'></i> Datos de pago de inscripción</Typography>
             </MenuItem>
             <MenuItem>
                 <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> Dar de baja</Typography>

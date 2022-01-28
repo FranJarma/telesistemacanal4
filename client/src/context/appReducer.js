@@ -232,6 +232,21 @@ export default (state, action) => {
                 ...state,
                 mediosPago: action.payload
         }
+        case TYPES.CREAR_MEDIO_DE_PAGO:
+            return {
+                ...state,
+                mediosPago: [action.payload, ...state.mediosPago],
+        }
+        case TYPES.EDITAR_MEDIO_DE_PAGO:
+            return {
+                ...state,
+                mediosPago: state.mediosPago.map(medioPago => medioPago.MedioPagoId === action.payload.MedioPagoId ? action.payload : medioPago),
+        } 
+        case TYPES.ELIMINAR_MEDIO_DE_PAGO:
+            return {
+                ...state,
+                mediosPago: state.mediosPago.filter(medioPago => medioPago.MedioPagoId !== action.payload.MedioPagoId),
+        } 
         case TYPES.LISTA_PAGOS_ABONADO:
             return {
                 ...state,

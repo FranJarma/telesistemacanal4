@@ -10,50 +10,49 @@ import BotonesDatatable from '../design/components/BotonesDatatable';
 
 const ListaMediosPago = () => {
     const appContext = useContext(AppContext);
-    const { mediosPago, traerMediosPago, crearServicio, modificarServicio, eliminarServicio } = appContext;
+    const { mediosPago, traerMediosPago, crearMedioPago, modificarMedioPago, eliminarMedioPago } = appContext;
     useEffect(()=>{
         traerMediosPago();
     },[]);
-    const [ModalServicio, setModalServicio] = useState(false);
-    const [ModalEliminarServicio, setModalEliminarServicio] = useState(false);
+    const [ModalMedioPago, setModalMedioPago] = useState(false);
+    const [ModalEliminarMedioPago, setModalEliminarMedioPago] = useState(false);
     const [EditMode, setEditMode] = useState(false);
-    const [ServicioInfo, setServicioInfo] = useState({
-        ServicioNombre: '',
-        ServicioPrecioUnitario: '',
-        ServicioDescripcion: '',
-        ServicioInscripcion: '',
+    const [MedioPagoInfo, setMedioPagoInfo] = useState({
+        MedioPagoNombre: '',
+        MedioPagoDescripcion: '',
+        MedioPagoInteres: 0,
         createdBy: null,
         updatedAt: null,
         updatedBy: null,
         deletedBy: null,
         deletedAt: null
     })
-    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion, ServicioInscripcion } = ServicioInfo;
+    const { MedioPagoNombre, MedioPagoDescripcion, MedioPagoInteres } = MedioPagoInfo;
 
     const onInputChange= (e) =>{
-        setServicioInfo({
-            ...ServicioInfo,
+        setMedioPagoInfo({
+            ...MedioPagoInfo,
             [e.target.name] : e.target.value
         });
     }
 
-    const handleChangeModalServicio = (data = '') => {
-        setModalServicio(!ModalServicio);
-        setModalEliminarServicio(false);
+    const handleChangeModalMedioPago = (data = '') => {
+        setModalMedioPago(!ModalMedioPago);
+        setModalEliminarMedioPago(false);
         if(data !== '') {
             setEditMode(true);
-            setServicioInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
+            setMedioPagoInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setServicioInfo({...data, createdBy: sessionStorage.getItem('identity')});
+            setMedioPagoInfo({...data, createdBy: sessionStorage.getItem('identity')});
         }
     }
 
-    const handleChangeModalEliminarServicio = (data = '') => {
-        setModalEliminarServicio(!ModalEliminarServicio);
-        setModalServicio(false);
-        setServicioInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
+    const handleChangeModalEliminarMedioPago = (data = '') => {
+        setModalEliminarMedioPago(!ModalEliminarMedioPago);
+        setModalMedioPago(false);
+        setMedioPagoInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasMedioPago = [
@@ -76,7 +75,7 @@ const ListaMediosPago = () => {
         },
         {
             "name": "Interés",
-            "selector": row => row["MedioPagoInteres"],
+            "selector": row => row["MedioPagoInteres"] ? row["MedioPagoInteres"] +"%" : "No tiene",
             "wrap": true,
             "sortable": true
         },
@@ -86,10 +85,10 @@ const ListaMediosPago = () => {
             <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Typography onClick={()=>{handleChangeModalServicio(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
+                <Typography onClick={()=>{handleChangeModalMedioPago(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
             </MenuItem>
             <MenuItem>
-                <Typography onClick={()=>{handleChangeModalEliminarServicio(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>
+                <Typography onClick={()=>{handleChangeModalEliminarMedioPago(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>
             </MenuItem>
             </>
             }/>
@@ -104,7 +103,7 @@ const ListaMediosPago = () => {
         <Card>
             <CardContent>
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalServicio()}} >+ Nuevo medio de pago</Button>}>
+                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalMedioPago()}} >+ Nuevo medio de pago</Button>}>
                 </CardHeader>
                 <Typography variant="h1">Listado de Medios de Pago</Typography>
                 <Datatable
@@ -117,51 +116,36 @@ const ListaMediosPago = () => {
             </CardContent>
         </Card>
         <Modal
-        abrirModal={ModalServicio}
-        funcionCerrar={handleChangeModalServicio}
-        titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Servicio" : "Nuevo Servicio"}</Typography>}
+        abrirModal={ModalMedioPago}
+        funcionCerrar={handleChangeModalMedioPago}
+        titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Medio de Pago" : "Nuevo Medio de Pago"}</Typography>}
         formulario={
             <Grid container spacing={3}>
-                <Grid item xs={12} md={4} sm={4} xl={4}>
+                <Grid item xs={12} md={6} sm={6} xl={6}>
                     <TextField
                     color="primary"
                     autoFocus
                     variant="outlined"
-                    label="Nombre del Servicio"
+                    label="Nombre del Medio de Pago"
                     fullWidth
                     onChange={onInputChange}
-                    value={ServicioNombre}
-                    name="ServicioNombre"
+                    value={MedioPagoNombre}
+                    name="MedioPagoNombre"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={4} sm={4} xl={4}>
+                <Grid item xs={12} md={6} sm={6} xl={6}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault();
-                    }}}
+                        if (!/^[.0-9]+$/.test(e.key)) {
+                            e.preventDefault();
+                        }}}
                     variant="outlined"
-                    label="Precio Unitario"
+                    label="Interés del Medio de Pago"
                     fullWidth
                     onChange={onInputChange}
-                    value={ServicioPrecioUnitario}
-                    name="ServicioPrecioUnitario"
-                    ></TextField>
-                </Grid>
-                <Grid item xs={12} md={4} sm={4} xl={4}>
-                    <TextField
-                    color="primary"
-                    onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault();
-                    }}}
-                    variant="outlined"
-                    label="Costo de Inscripción"
-                    fullWidth
-                    onChange={onInputChange}
-                    value={ServicioInscripcion}
-                    name="ServicioInscripcion"
+                    value={MedioPagoInteres}
+                    name="MedioPagoInteres"
                     ></TextField>
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>
@@ -170,34 +154,34 @@ const ListaMediosPago = () => {
                     multiline
                     minRows={3}
                     variant="outlined"
-                    label="Descripción del Servicio"
+                    label="Descripción del Medio de Pago"
                     fullWidth
                     inputProps={{
                         maxLength: 100
                     }}
                     onChange={onInputChange}
-                    value={ServicioDescripcion}
-                    name="ServicioDescripcion"
+                    value={MedioPagoDescripcion}
+                    name="MedioPagoDescripcion"
                     ></TextField>
                 </Grid>
             </Grid>
         }
         botones={
             <>
-            <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarServicio(ServicioInfo, handleChangeModalServicio)
-            : crearServicio(ServicioInfo, handleChangeModalServicio)}}>{EditMode ? "Editar" : "Agregar"}</Button>
-            <Button onClick={handleChangeModalServicio} variant="text" color="inherit" >Cerrar</Button>
+            <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarMedioPago(MedioPagoInfo, handleChangeModalMedioPago)
+            : crearMedioPago(MedioPagoInfo, handleChangeModalMedioPago)}}>{EditMode ? "Editar" : "Agregar"}</Button>
+            <Button onClick={handleChangeModalMedioPago} variant="text" color="inherit" >Cerrar</Button>
             </>
         }
         />
         <Modal
-        abrirModal={ModalEliminarServicio}
-        funcionCerrar={handleChangeModalEliminarServicio}
-        titulo={<Alert severity="error">¿Está seguro que quiere eliminar el servicio?</Alert>}
+        abrirModal={ModalEliminarMedioPago}
+        funcionCerrar={handleChangeModalEliminarMedioPago}
+        titulo={<Alert severity="error">¿Está seguro que quiere eliminar el medio de pago?</Alert>}
         botones={
             <>
-            <Button variant="contained" color="secondary" onClick={()=>{eliminarServicio(ServicioInfo, handleChangeModalEliminarServicio)}}>Eliminar</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarServicio}>Cerrar</Button>
+            <Button variant="contained" color="secondary" onClick={()=>{eliminarMedioPago(MedioPagoInfo, handleChangeModalEliminarMedioPago)}}>Eliminar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarMedioPago}>Cerrar</Button>
             </>
         }
         />

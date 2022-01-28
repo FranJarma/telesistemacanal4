@@ -262,7 +262,7 @@ const ListaPagos = () => {
                             variant="outlined"
                             label="Recibido"
                             onKeyPress={(e) => {
-                            if (!/^[,0-9]+$/.test(e.key)) {
+                            if (!/^[.0-9]+$/.test(e.key)) {
                                 e.preventDefault();
                             }}}
                             value={DetallePagoMonto}
