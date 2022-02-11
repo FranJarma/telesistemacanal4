@@ -14,7 +14,7 @@ import ListaAbonadosInactivos from './views/components/abonados/ListaAbonadosIna
 import Cargando from './views/components/design/components/Cargando';
 import ListaAbonadosInscriptos from './views/components/abonados/ListaAbonadosInscriptos';
 import BarriosMunicipios from './views/components/barrios-municipios/BarriosMunicipios';
-import ListaOnus from './views/components/onus/ListaOnus';
+import OnusModelosOnus from './views/components/onus/OnusModelosOnus';
 import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
@@ -168,7 +168,7 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute exact path="/barrios-municipios" component={BarriosMunicipios}>
                   </PrivateRoute>
-                  <PrivateRoute exact path="/onus" component={ListaOnus}>
+                  <PrivateRoute exact path="/onus" component={OnusModelosOnus}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/medios-de-pago" component={ListaMediosPago}>
                   </PrivateRoute>

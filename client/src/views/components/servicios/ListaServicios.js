@@ -110,7 +110,7 @@ const ListaServicios = () => {
         <Card>
             <CardContent>
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalServicio()}} >+ Nuevo servicio</Button>}>
+                    action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalServicio()}} > Nuevo servicio</Button>}>
                 </CardHeader>
                 <Typography variant="h1">Listado de Servicios</Typography>
                 <Datatable

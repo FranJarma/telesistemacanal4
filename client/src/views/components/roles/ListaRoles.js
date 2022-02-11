@@ -89,7 +89,7 @@ const Roles = () => {
         <main>
         <Card>
             <CardHeader
-            action={<Link style={{textDecoration: 'none'}} to="/caratula-role"><Button variant="contained" color="primary">+ Nuevo rol</Button></Link>}>
+            action={<Link style={{textDecoration: 'none'}} to="/caratula-role"><Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary"> Nuevo rol</Button></Link>}>
             </CardHeader>
             <CardContent>
                 <Typography variant="h1">Listado de roles del sistema</Typography>

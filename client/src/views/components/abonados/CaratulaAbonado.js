@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, Checkbox, FormControlLabel, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, Checkbox, Chip, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
@@ -59,31 +59,51 @@ const CaratulaAbonado = () => {
         ServicioInscripcion: null
     });
     const [CondicionIvaId, setCondicionIvaId] = useState(0);
-    const [MedioPagoId, setMedioPagoId] = useState(0);
+    const [MedioPago, setMedioPago] = useState({
+        MedioPagoId: null,
+        MedioPagoNombre: null,
+        MedioPagoCantidadCuotas: null,
+        MedioPagoInteres: null
+    });
     const [Onu, setOnu] = useState(null);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [FechaBajada, setFechaBajada] = useState(new Date());
     const [DosCuotas, setDosCuotas] = useState(false);
-    const [MovimientoCantidad, setMovimientoCantidad] = useState(null);
-
+    const [PagoInfo, setPagoInfo] = useState({
+        Interes: null,
+        Total: null,
+        Inscripcion: null
+    });
+    
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipio(e.target.value);
         setBarrio(null);
-        traerBarriosPorMunicipio(e.target.value);
+        traerBarriosPorMunicipio(e.target.value.MunicipioId);
     }
     const handleChangeBarrioSeleccionado = (e) => {
         setBarrio(e.target.value);
     }
     const handleChangeServicioSeleccionado = (e) => {
         setServicio(e.target.value);
-        setMovimientoCantidad(e.target.value.ServicioPrecioUnitario + e.target.value.ServicioInscripcion);
+        setMedioPago({
+            MedioPagoId: null,
+            MedioPagoNombre: null,
+            MedioPagoCantidadCuotas: null,
+            MedioPagoInteres: null
+        });   
     }
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIvaId(e.target.value);
     }
     const handleChangeMedioPagoSeleccionado = (e) => {
-        setMedioPagoId(e.target.value);
+        setMedioPago(e.target.value);
+        setPagoInfo({
+            ...PagoInfo,
+            Interes: e.target.value.MedioPagoInteres / 100,
+            Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2),
+            Inscripcion: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas).toFixed(2),
+        })
     }
 
     useEffect(() => {
@@ -99,7 +119,6 @@ const CaratulaAbonado = () => {
     useEffect(() => {
         if(location.state)
         {
-            console.log(location.state);
             setAbonadoInfo({
                 UserId: location.state.UserId,
                 Nombre: location.state.Nombre,
@@ -150,7 +169,9 @@ const CaratulaAbonado = () => {
                 Barrio,
                 Servicio,
                 Onu,
-                createdBy
+                createdBy,
+                PagoInfo,
+                MedioPago
             });
         }
         else {
@@ -182,7 +203,7 @@ const CaratulaAbonado = () => {
         <TabList>
             <Tab><i style={{color: 'teal'}} className="bx bxs-user"></i> Datos del abonado</Tab>
             <Tab><i style={{color: 'teal'}} className='bx bxs-home'></i> Datos del domicilio</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Datos del servicio</Tab>
+            <Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Datos del servicio e inscripción</Tab>
         </TabList>
     <TabPanel>
         <Card>
@@ -307,7 +328,6 @@ const CaratulaAbonado = () => {
     <TabPanel>
         <Card>
             <CardContent>
-                <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Agregar abonado"}</Typography>
                 <br/>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={4} lg={4} xl={4}>
@@ -411,10 +431,9 @@ const CaratulaAbonado = () => {
     <TabPanel>
         <Card>
             <CardContent>
-            <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Agregar abonado"}</Typography>
             <br/>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
                         <TextField
                         variant = {location.state ? "filled" : "outlined"}
                         disabled = {location.state ? true : false}
@@ -425,20 +444,27 @@ const CaratulaAbonado = () => {
                         select = {location.state ? false : true}
                         >
                         {servicios.map((servicio)=>(
-                            <MenuItem key={servicio.ServicioId} value={servicio}>{servicio.ServicioNombre} | Precio: ${servicio.ServicioPrecioUnitario} + Inscripción: ${servicio.ServicioInscripcion}</MenuItem>
+                            <MenuItem key={servicio.ServicioId} value={servicio}>{servicio.ServicioNombre} - Inscripción: ${servicio.ServicioInscripcion}</MenuItem>
                         ))}
                         </TextField>
-                        { Servicio.ServicioId === 2 || Servicio.ServicioId === 3 ?
+                        {/* SOLO EFECTIVO Y SI EL SERVICIO ES FIBRA O COMBO */}
+                        { (MedioPago.MedioPagoId === 1 && Servicio.ServicioId === 2) || (MedioPago.MedioPagoId === 1 && Servicio.ServicioId === 3) ?
                         <>
                         <FormControlLabel label="Paga en dos cuotas"
                         control={<Checkbox
                         onChange={e => {
                             setDosCuotas(e.target.checked);
                             if(!DosCuotas) {
-                                setMovimientoCantidad(MovimientoCantidad * 0.5);
+                                setPagoInfo({
+                                    ...PagoInfo,
+                                    Inscripcion: (PagoInfo.Inscripcion * 0.5).toFixed(2)
+                                });
                             }
                             else {
-                                setMovimientoCantidad(Servicio.ServicioPrecioUnitario + Servicio.ServicioInscripcion);
+                                setPagoInfo({
+                                    ...PagoInfo,
+                                    Inscripcion:(PagoInfo.Inscripcion / 0.5).toFixed(2)
+                                });
                             }
                         }
                         }
@@ -448,22 +474,41 @@ const CaratulaAbonado = () => {
                         </>
                         :""}
                     </Grid>
+                    {Servicio.ServicioId !== null
+                    ?
+                    <>
                     <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                         variant = {location.state ? "filled" : "outlined"}
                         disabled = {location.state ? true : false}
-                        value={location.state ? location.state.MedioPagoId : MedioPagoId}
+                        value={MedioPago}
                         onChange={handleChangeMedioPagoSeleccionado}
-                        label="Medio de Pago"
+                        label="Medio de Pago de Inscripción"
                         fullWidth
                         select
                         >
                         {!location.state ? mediosPago.map((mp)=>(
-                            <MenuItem key={mp.mpId} value={mp.MedioPagoNombre}>{mp.MedioPagoNombre}</MenuItem>
+                            <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
                         )): ""}
                     </TextField>
                     </Grid>
-                    <Grid item xs={6} md={4} lg={4} xl={4}>
+                    </>
+                    : "" }
+                    { Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null
+                    ?
+                    <>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <TextField
+                        variant="outlined"
+                        value={PagoInfo.Interes * Servicio.ServicioInscripcion}
+                        label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
+                        fullWidth
+                        >
+                    </TextField>
+                    </Grid>
+                    </>
+                    :""}
+                    <Grid item xs={6} md={6} lg={6} xl={6}>
                         <DatePicker 
                         disabled = {location.state ? true : false}
                         inputVariant={location.state ? "filled" : "outlined"}
@@ -475,7 +520,7 @@ const CaratulaAbonado = () => {
                         >
                         </DatePicker >
                     </Grid>
-                    <Grid item xs={6} md={4} lg={4} xl={4}>
+                    <Grid item xs={6} md={6} lg={6} xl={6}>
                         <DatePicker 
                         disabled = {location.state ? true : false}
                         inputVariant={location.state ? "filled" : "outlined"}
@@ -487,22 +532,38 @@ const CaratulaAbonado = () => {
                         >
                         </DatePicker >
                     </Grid>
-                    {Servicio.ServicioId !== 1 ?
-                <>
-                    <Grid item xs={12} md={4} lg={4} xl={4}>
-                        <Autocomplete
-                        disabled={location.state ? true : false}
-                        value={location.state ? location.state.OnuId : Onu}
-                        onChange={(_event, newOnu) => {
-                            setOnu(newOnu);
-                        }}
-                        options={onus}
-                        getOptionLabel={(option) => option.OnuMac + " - " + option.ModeloOnuNombre}
-                        renderInput={(params) => <TextField {...params} variant="outlined" fullWidth label="Onus disponibles"/>}
-                        />
-                    </Grid>
-                </> : ""}
+                    {/* {Servicio.ServicioId !== 1 && Servicio.ServicioId !== null ?
+                    <>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                            <Autocomplete
+                            disabled={location.state ? true : false}
+                            value={location.state ? location.state.OnuId : Onu}
+                            onChange={(_event, newOnu) => {
+                                setOnu(newOnu);
+                            }}
+                            options={onus}
+                            getOptionLabel={(option) => option.OnuMac + " - " + option.ModeloOnuNombre}
+                            renderInput={(params) => <TextField {...params} variant="outlined" fullWidth label="Onus disponibles"/>}
+                            />
+                        </Grid>
+                    </> : ""} */}
                 </Grid>
+                <br/>
+                {Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null ?
+                <>
+                <Typography variant="h1">Precios finales</Typography>
+                <Grid item xs={12} md={12} sm={12}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
+                                <Typography variant="h2"><b>Cantidad de cuotas: </b>{DosCuotas ? 2 : MedioPago.MedioPagoCantidadCuotas}</Typography>
+                                <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
+                                <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Total - PagoInfo.Inscripcion}</Typography>
+                            </CardContent>
+                        </Card>
+                </Grid>
+                </>
+                : "" }
             <br/>
             {location.state ? <Alert severity="info">Para modificar todos los datos del domicilio y del servicio contratado se tiene que realizar desde las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
             </CardContent>

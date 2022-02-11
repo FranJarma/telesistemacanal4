@@ -30,14 +30,14 @@ const Movimiento = db.define('movimiento', {
     //     type: INTEGER,
     //     allowNull: false
     // },
-    PagoId: {
-        type: INTEGER,
-        allowNull: true
-    },
-    OtId: {
-        type: INTEGER,
-        allowNull: true
-    },
+    // PagoId: {
+    //     type: INTEGER,
+    //     allowNull: true
+    // },
+    // OtId: {
+    //     type: INTEGER,
+    //     allowNull: true
+    // },
     createdAt: {
         type: DATE,
         allowNull: true,

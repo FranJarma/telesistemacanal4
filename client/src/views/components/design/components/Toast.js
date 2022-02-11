@@ -5,8 +5,9 @@ const Toast = (mensaje, categoria) => {
       swal.fire({
         toast: true,
         position: 'top-end',
-        showConfirmButton: false,
-        timer: 4000,
+        showCloseButton: true,
+        closeButtonHtml: '&times',
+        timer: 5000,
         icon: `${categoria}`,
         title: `<a style="font-family: Poppins">${mensaje}</a>`
       })

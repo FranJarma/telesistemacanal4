@@ -114,7 +114,7 @@ const CambioServicio = () => {
     <main>
     <Card>
         <CardHeader
-            action={<Button onClick={setModalNuevoServicio} variant="contained" color="primary">+ Nuevo servicio</Button>}>
+            action={<Button onClick={setModalNuevoServicio} startIcon={<i className="bx bx-plus"></i>} variant="contained" color="primary">Nuevo servicio</Button>}>
         </CardHeader>
         <CardContent>
             <Typography variant="h1">Historial de cambios de servicio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>

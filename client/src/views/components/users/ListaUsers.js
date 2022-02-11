@@ -119,7 +119,7 @@ const Users = () => {
         <main>
         <Card>
             <CardHeader
-            action={<Link style={{textDecoration: 'none'}} to="/caratula-user"><Button variant="contained" color="primary">+ Nuevo usuario</Button></Link>}>
+            action={<Link style={{textDecoration: 'none'}} to="/caratula-user"><Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary"> Nuevo usuario</Button></Link>}>
             </CardHeader>
             <CardContent>
                 <Typography variant="h1">Listado de usuarios del sistema</Typography>

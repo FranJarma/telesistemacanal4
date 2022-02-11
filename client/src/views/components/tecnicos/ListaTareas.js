@@ -105,7 +105,7 @@ const ListaTiposTareas = () => {
         <Card>
             <CardContent>
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalTarea()}} >+ Nueva tarea</Button>}>
+                    action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalTarea()}} > Nueva tarea</Button>}>
                 </CardHeader>
                 <Typography variant="h1">Listado de Tareas</Typography>
                 <Datatable

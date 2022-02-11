@@ -177,7 +177,7 @@ const ListaOtPendientes = () => {
         </Card>
         <br/>
         <Card>
-            <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" color="primary">+ Nueva OT</Button></Link>}></CardHeader>
+            <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary"> Nueva OT</Button></Link>}></CardHeader>
             <CardContent>
                 <Typography variant="h1">Listado de Órdenes de Trabajo sin finalizar</Typography>
                 <Datatable

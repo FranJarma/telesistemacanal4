@@ -89,7 +89,6 @@ const Aside = () => {
               <MenuItem icon={<i className='bx bx-clipboard'></i>}>OT Pendientes<Link to="/ot-pendientes"></Link></MenuItem>
               <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
             </SubMenu>
-            <MenuItem icon={<i className="bx bx-calculator"></i>}>Cierre de caja<Link to="/cierre-de-caja"></Link></MenuItem>
           </>
           : rol.RoleName === "Jefe" || rol.RoleName === "Admin" ?
           <>
@@ -112,7 +111,7 @@ const Aside = () => {
             <MenuItem icon={<i className="bx bx-money"></i>}>Medios de Pago<Link to="/medios-de-pago"></Link></MenuItem>
             <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
             <MenuItem icon={<i className="bx bx-map"></i>}>Barrios y Municipios<Link to="/barrios-municipios"></Link></MenuItem>
-            <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus y Modelos ONUS<Link to="/onus"></Link></MenuItem>
+            <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus<Link to="/onus"></Link></MenuItem>
             <MenuItem icon={<i className='bx bx-clipboard'></i>}>Tareas<Link to="/tareas"></Link></MenuItem>
           </SubMenu>
           </>

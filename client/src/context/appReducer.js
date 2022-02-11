@@ -313,6 +313,17 @@ export default (state, action) => {
                 ordenesDeTrabajo: action.payload
             }
         }
+        case TYPES.REGISTRAR_VISITA_OT:
+            return {
+                ...state,
+                ordenesDeTrabajo: state.ordenesDeTrabajo.map(ordenDeTrabajo => ordenDeTrabajo.OtId === action.payload.OtId ? action.payload : ordenDeTrabajo),
+        } 
+        case TYPES.FINALIZAR_OT: {
+            return {
+                ...state,
+                ordenesDeTrabajo: state.ordenesDeTrabajo.filter(ordenDeTrabajo => ordenDeTrabajo.OtId !== action.payload.OtId)
+            }
+        }
         case TYPES.LISTA_OT_ASIGNADAS: {
             return {
                 ...state,
@@ -329,12 +340,6 @@ export default (state, action) => {
             return {
                 ...state,
                 tareasOrdenDeTrabajo: action.payload
-            }
-        }
-        case TYPES.FINALIZAR_OT: {
-            return {
-                ...state,
-                ordenesDeTrabajo: state.ordenesDeTrabajo.filter(ordenDeTrabajo => ordenDeTrabajo.OtId !== action.payload.OtId)
             }
         }
         case TYPES.LISTA_MOVIMIENTOS: {

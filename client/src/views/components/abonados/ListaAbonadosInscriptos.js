@@ -220,7 +220,7 @@ const ListaAbonadosInscriptos = () => {
         <main>
         <Card>
             <CardHeader
-            action={<Link style={{textDecoration: 'none'}} to="/caratula-abonado"><Button variant="contained" color="primary">+ Inscribir abonado</Button></Link>}>
+            action={<Link style={{textDecoration: 'none'}} to="/caratula-abonado"><Button startIcon={<i className="bx bx-plus"></i>} variant="contained" color="primary"> Inscribir abonado</Button></Link>}>
             </CardHeader>
             <CardContent>
                 <Typography variant="h1">Abonados Inscriptos <Tooltip arrow title="Los abonados inscriptos son aquellos que fueron dados de alta pero no se les realizó la instalación correspondiente">

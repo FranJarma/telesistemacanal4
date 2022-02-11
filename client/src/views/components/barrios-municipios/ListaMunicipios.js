@@ -127,7 +127,7 @@ const ListaMunicipios = () => {
         <Card>
             <CardContent>
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalMunicipio()}} >+ Nuevo municipio</Button>}>
+                    action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalMunicipio()}} > Nuevo municipio</Button>}>
                 </CardHeader>
                 <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>

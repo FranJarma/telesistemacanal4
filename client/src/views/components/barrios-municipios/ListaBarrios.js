@@ -109,7 +109,7 @@ const ListaBarrios = () => {
         <Card>
             <CardContent>
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalBarrio()}} >+ Nuevo barrio</Button>}>
+                    action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalBarrio()}} > Nuevo barrio</Button>}>
                 </CardHeader>
                 <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>

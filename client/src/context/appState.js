@@ -1296,10 +1296,12 @@ const AppState = props => {
         .then(resOk => {
             if (resOk.data)
                 dispatch({
-                    payload: ot
+                    payload: ot,
+                    type: TYPES.REGISTRAR_VISITA_OT
                 });
                 Swal('Operación completa', resOk.data.msg);
-                cerrarModal(true);
+                // cerrarModal(true);
+                // window.location.reload();
         })
         .catch(err => {
             if(!err.response){

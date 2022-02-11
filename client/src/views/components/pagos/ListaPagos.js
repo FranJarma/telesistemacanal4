@@ -103,6 +103,12 @@ const ListaPagos = () => {
             "wrap": true
         },
         {
+            "name": "Tipo de pago",
+            "selector": row => row["PagoTipo"],
+            "sortable": true,
+            "wrap": true
+        },
+        {
             "name": "Total",
             "selector": row => "$ " + row["PagoTotal"],
             "sortable": true,
@@ -170,6 +176,12 @@ const ListaPagos = () => {
             "sortable": true,
         },
         {
+            "name": "Motivo de pago",
+            "selector": row => row["DetallePagoMotivo"],
+            "wrap": true,
+            "sortable": true,
+        },
+        {
             cell: (data) => 
             <>
             <Typography onClick={()=>{handleChangeModalNuevoPago(data, true)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-pencil bx-xs"></i></Tooltip></Typography>
@@ -186,7 +198,7 @@ const ListaPagos = () => {
             <CardContent>
                 {location.pathname.split('/')[2] !== 'view' ?
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={handleChangeModalNuevoPago}>+ Asentar pago</Button>}>
+                    action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={handleChangeModalNuevoPago}> Asentar pago</Button>}>
                 </CardHeader>
                 :""}
                 <Typography variant="h1">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
@@ -327,7 +339,7 @@ const ListaPagos = () => {
                     <Grid item xs={12} md={12} sm={12} lg={12}>
                         <Alert severity='info'>
                             <b>Avisos:</b>
-                            <Typography>Agregar recargo sólamente si el abonado viene a pagar después del <b>21/{new Date().getMonth()+1}/{new Date().getFullYear()} </b>
+                            <Typography>Agregar recargo sólamente si el abonado viene a pagar después del <b>20/{new Date().getMonth()+1}/{new Date().getFullYear()} </b>
                             ó si viene a pagar un mes anterior al actual.</Typography>
                             <Typography>El recargo es <b>acumulativo</b>, por lo tanto, cada registro irá acumulando el recargo ya existente.</Typography>
                         </Alert>

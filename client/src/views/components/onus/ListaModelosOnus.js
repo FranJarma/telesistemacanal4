@@ -94,7 +94,7 @@ const ListaModelosOnus = ({location}) => {
         <Card>
             <CardContent>
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalModeloOnu()}} > + Nuevo modelo de ONU</Button>}>
+                    action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalModeloOnu()}} >  Nuevo modelo de ONU</Button>}>
                 </CardHeader>
                 <Typography variant="h1">Listado de Modelos de ONUS</Typography>
                 <Datatable

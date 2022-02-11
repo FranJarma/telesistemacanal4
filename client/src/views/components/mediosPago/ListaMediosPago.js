@@ -21,13 +21,14 @@ const ListaMediosPago = () => {
         MedioPagoNombre: '',
         MedioPagoDescripcion: '',
         MedioPagoInteres: 0,
+        MedioPagoCantidadCuotas: 1,
         createdBy: null,
         updatedAt: null,
         updatedBy: null,
         deletedBy: null,
         deletedAt: null
     })
-    const { MedioPagoNombre, MedioPagoDescripcion, MedioPagoInteres } = MedioPagoInfo;
+    const { MedioPagoNombre, MedioPagoDescripcion, MedioPagoCantidadCuotas, MedioPagoInteres } = MedioPagoInfo;
 
     const onInputChange= (e) =>{
         setMedioPagoInfo({
@@ -74,6 +75,12 @@ const ListaMediosPago = () => {
             "sortable": true
         },
         {
+            "name": "Cantidad de cuotas",
+            "selector": row => row["MedioPagoCantidadCuotas"],
+            "wrap": true,
+            "sortable": true
+        },
+        {
             "name": "Interés",
             "selector": row => row["MedioPagoInteres"] ? row["MedioPagoInteres"] +"%" : "No tiene",
             "wrap": true,
@@ -103,7 +110,7 @@ const ListaMediosPago = () => {
         <Card>
             <CardContent>
                 <CardHeader
-                    action={<Button variant="contained" color="primary" onClick={()=>{handleChangeModalMedioPago()}} >+ Nuevo medio de pago</Button>}>
+                    action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalMedioPago()}} > Nuevo medio de pago</Button>}>
                 </CardHeader>
                 <Typography variant="h1">Listado de Medios de Pago</Typography>
                 <Datatable
@@ -118,10 +125,10 @@ const ListaMediosPago = () => {
         <Modal
         abrirModal={ModalMedioPago}
         funcionCerrar={handleChangeModalMedioPago}
-        titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Medio de Pago" : "Nuevo Medio de Pago"}</Typography>}
+        titulo={<Typography variant="h2"><i className="bx bx-money"></i>{EditMode ? "Editar Medio de Pago" : "Nuevo Medio de Pago"}</Typography>}
         formulario={
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6} sm={6} xl={6}>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
                     <TextField
                     color="primary"
                     autoFocus
@@ -133,7 +140,22 @@ const ListaMediosPago = () => {
                     name="MedioPagoNombre"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={6} sm={6} xl={6}>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
+                    <TextField
+                    color="primary"
+                    onKeyPress={(e) => {
+                        if (!/^[.0-9]+$/.test(e.key)) {
+                            e.preventDefault();
+                        }}}
+                    variant="outlined"
+                    label="Cantidad de cuotas"
+                    fullWidth
+                    onChange={onInputChange}
+                    value={MedioPagoCantidadCuotas}
+                    name="MedioPagoCantidadCuotas"
+                    ></TextField>
+                </Grid>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
