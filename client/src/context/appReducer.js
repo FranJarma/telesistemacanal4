@@ -273,6 +273,11 @@ export default (state, action) => {
                 ...state,
                 pagos: [...state.pagos]
         }
+        case TYPES.DATOS_INSCRIPCION:
+            return {
+                ...state,
+                inscripcion: action.payload
+        }
         case TYPES.LISTA_DETALLES_PAGO_ABONADO:
             return {
                 ...state,

@@ -203,7 +203,7 @@ const CaratulaAbonado = () => {
         <TabList>
             <Tab><i style={{color: 'teal'}} className="bx bxs-user"></i> Datos del abonado</Tab>
             <Tab><i style={{color: 'teal'}} className='bx bxs-home'></i> Datos del domicilio</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Datos del servicio e inscripción</Tab>
+            <Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Datos de inscripción</Tab>
         </TabList>
     <TabPanel>
         <Card>
@@ -552,6 +552,7 @@ const CaratulaAbonado = () => {
                 {Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null ?
                 <>
                 <Typography variant="h1">Precios finales</Typography>
+                <br/>
                 <Grid item xs={12} md={12} sm={12}>
                         <Card>
                             <CardContent>

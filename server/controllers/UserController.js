@@ -6,13 +6,13 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const User = require('./../models/User');
 const Pago = require('./../models/Pago');
+const DetallePago = require('./../models/DetallePago');
 const Domicilio = require('./../models/Domicilio');
 const UserDomicilio = require('./../models/UserDomicilio');
 const UserEstado = require('./../models/UserEstado');
 const UserServicio = require('./../models/UserServicio');
 const UserRole = require('./../models/UserRole');
 const Onu = require('../models/Onu');
-const Tarea = require('../models/Tarea');
 const Movimiento = require('../models/Movimiento');
 
 require('dotenv').config({path: 'variables.env'});
@@ -278,136 +278,110 @@ exports.AbonadoListarServicios = async(req, res) => {
 
 exports.AbonadoCreate = async(req, res) => {
     const errors = validationResult(req);
-    // if(!errors.isEmpty()){
-    //     return res.status(400).json({errors: errors.array()})
-    // }
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
     try {
+        await db.transaction(async(t)=>{
+        //verificamos que no exista un domicilio con esos datos
+        const domicilioBuscar = await knex.select('*').from('domicilio as d')
+        .innerJoin('barrio as b', 'd.BarrioId', '=', 'b.BarrioId')
+        .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
+        .where({
+            'd.DomicilioCalle': req.body.DomicilioCalle,
+            'd.DomicilioNumero': req.body.DomicilioNumero,
+            'd.BarrioId': req.body.Barrio.BarrioId,
+            'm.MunicipioId': req.body.Municipio.MunicipioId
+        });
 
-        // await db.transaction(async(t)=>{
-        // //verificamos que no exista un domicilio con esos datos
-        // const domicilioBuscar = await knex.select('*').from('domicilio as d')
-        // .innerJoin('barrio as b', 'd.BarrioId', '=', 'b.BarrioId')
-        // .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
-        // .where({
-        //     'd.DomicilioCalle': req.body.DomicilioCalle,
-        //     'd.DomicilioNumero': req.body.DomicilioNumero,
-        //     'd.BarrioId': req.body.Barrio.BarrioId,
-        //     'm.MunicipioId': req.body.MunicipioId
-        // });
-
-        // if(domicilioBuscar) {
-        //     return res.status(400).json({msg: 'Ya existe un domicilio registrado en ese barrio y ese municipio'})
-        // }
-        // else {
-        //     //traemos el id del ultimo domicilio registrado
-        //     let ultimoDomicilioId = 0;
-        //     const ultimoDomicilio = await Domicilio.findOne({
-        //         order: [['DomicilioId', 'DESC']]
-        //     });
-        //     if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
-        //     //buscamos el ultimo Movimiento
-        //     let ultimoMovimientoId = 0;
-        //     const ultimoMovimiento = await Movimiento.findOne({
-        //         order: [['MovimientoId', 'DESC']]
-        //     }); 
-        //     if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
-                //buscamos el ultimo pago
-        //     let ultimoPagoId = 0;
-        //     const ultimoPago = await Pago.findOne({
-        //         order: [['PagoId', 'DESC']]
-        //     }); 
-        //     if (ultimoPago) ultimoPagoId = ultimoPagoId.PagoId;
-        //     // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
-        //     const abonado = new User(req.body, {transaction: t});
-        //     abonado.UserId = uuidv4().toUpperCase();
-        //     abonado.DomicilioId = ultimoDomicilioId + 1;
-        //     abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
-        //     abonado.EsUsuarioDeSistema = 0;
-        //     const domicilio = new Domicilio(req.body, {transaction: t});
-        //     domicilio.DomicilioId = ultimoDomicilioId + 1;
-        //     domicilio.BarrioId = req.body.Barrio.BarrioId;
-        //     const abonadoRole = new UserRole({transaction: t});
-        //     abonadoRole.UserId = abonado.UserId;
-        //     abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
-        //     const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
-        //     abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
-        //     abonadoDomicilio.UserId = abonado.UserId;
-        //     abonadoDomicilio.CambioDomicilioFecha = new Date();
-        //     abonadoDomicilio.CambioDomicilioObservaciones = 'Primer Domicilio registrado';
-        //     const abonadoServicio = new UserServicio({transaction: t});
-        //     abonadoServicio.ServicioId = req.body.ServicioId;
-        //     abonadoServicio.UserId = abonado.UserId;
-        //     abonadoServicio.CambioServicioFecha = new Date();
-        //     abonadoServicio.CambioServicioObservaciones = 'Primer Servicio contratado';
-        //     const abonadoEstado = new UserEstado({transaction: t});
-        //     abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
-        //     abonadoEstado.UserId = abonado.UserId;
-        //     abonadoEstado.CambioEstadoFecha = new Date();
-        //     abonadoEstado.CambioEstadoObservaciones = 'Dado de alta';
-        //     //instanciamos un nuevo movimiento
-        //     const movimiento = new Movimiento({transaction: t});
-        //     movimiento.MovimientoId = ultimoMovimientoId + 1;
-        //     movimiento.MovimientoCantidad = req.body.DetallePagoMonto;
-        //     movimiento.createdBy = req.body.createdBy;
-        //     movimiento.MovimientoDia = new Date().getDate();
-        //     movimiento.MovimientoMes = new Date().getMonth()+1;
-        //     movimiento.MovimientoAño = new Date().getFullYear();
-        //     movimiento.MovimientoConceptoId = 3;
-        //     movimiento.MovimientoMunicipio = req.body.Municipio.MunicipioId;
-        //     //traemos la ONU por id y actualizamos su estado para que pase a ASIGNADA
-        //     if(req.body.Onu.OnuId !== 0) {
-        //         const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
-        //         onu.EstadoId = 4;
-        //         await onu.save({transaction: t});
-        //     }
-        // generamos 2 años de pagos si el abonado contrato internet o combo, 1 año si es cable
-        const año = new Date().getFullYear();
-        const mes = new Date().getMonth() + 1;
-        const hoy = new Date().getDate();
-        const ultimoDiaDelMes = new Date(año, mes, 0).getDate();
-         //sacamos la diferencia de dias que hay entre hoy y el ultimo dia del mes, independientemente del servicio contratado
-        const diferencia = ultimoDiaDelMes - hoy;
-        const precioInicial = diferencia * 33;
-        console.log(req.body.PagoInfo);
-        //del primer mes, registramos dos detalles, uno de inscripcion y otro de pago de mes
-        //     const pago = new Pago({transaction: t});
-        //     pago.PagoId = ultimoPagoId + 1;
-        //     pago.PagoAño = new Date().getFullYear();
-        //     pago.PagoMes = mes;
-        //     pago.PagoTotal = req.body.PagoInfo.Total
-        //     pago.createdAt = new Date();
-        //     pago.createdBy = req.body.createdBy;
-        //     const detallePago = new DetallePago()
-        // if(req.body.Servicio.ServicioId === 1) {
-
-        //     pago.PagoTotal = req.body.Servicio.ServicioPrecioUnitario;
-        //     pago.PagoSaldo = req.body.Servicio.ServicioPrecioUnitario;
-        //     pago.createdAt = new Date();
-        //     pago.createdBy = req.body.createdBy;;
-        //     ultimoPagoId = ultimoPagoId + 1;
-
-        //     for(let i=mes+1; i<=12; i++) {
-        //         const pago = new Pago({transaction: t});
-        //         pago.PagoId = ultimoPagoId + 1;
-        //         pago.PagoAño = new Date().getFullYear();
-        //         pago.PagoMes = i;
-        //         pago.PagoTotal = req.body.Servicio.ServicioPrecioUnitario;
-        //         pago.PagoSaldo = req.body.Servicio.ServicioPrecioUnitario;
-        //         pago.createdAt = new Date();
-        //         pago.createdBy = req.body.createdBy;;
-        //         ultimoPagoId = ultimoPagoId + 1;
-        //     }
-        // }
-        //     await domicilio.save({transaction: t});
-        //     await abonado.save({transaction: t});
-        //     await abonadoRole.save({transaction: t});
-        //     await abonadoDomicilio.save({transaction: t});
-        //     await abonadoServicio.save({transaction: t});
-        //     await abonadoEstado.save({transaction: t});
-        //     return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'});
-        // }
-        // }
-    // )
+        if(domicilioBuscar.length > 0) {
+            console.log(domicilioBuscar);
+            return res.status(400).json({msg: 'Ya existe un domicilio registrado en ese barrio y ese municipio'})
+        }
+        else {
+            //traemos el id del ultimo domicilio registrado
+            let ultimoDomicilioId = 0;
+            const ultimoDomicilio = await Domicilio.findOne({
+                order: [['DomicilioId', 'DESC']]
+            });
+            if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
+            //buscamos el ultimo Movimiento
+            let ultimoMovimientoId = 0;
+            const ultimoMovimiento = await Movimiento.findOne({
+                order: [['MovimientoId', 'DESC']]
+            }); 
+            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
+            //buscamos el ultimo pago
+            let ultimoPagoId = 0;
+            const ultimoPago = await Pago.findOne({
+                order: [['PagoId', 'DESC']]
+            }); 
+            if (ultimoPago) ultimoPagoId = ultimoPago.PagoId;
+            //buscamos el ultimo detalle de pago
+            let ultimoDetallePagoId = 0;
+            const ultimoDetallePago = await DetallePago.findOne({
+                order: [['DetallePagoId', 'DESC']]
+            }); 
+            if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
+            const UserId = uuidv4().toUpperCase()
+            // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
+            const abonado = new User(req.body, {transaction: t});
+            abonado.UserId = UserId;
+            abonado.DomicilioId = ultimoDomicilioId + 1;
+            abonado.ServicioId = req.body.Servicio.ServicioId;
+            abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
+            abonado.EsUsuarioDeSistema = 0;
+            const domicilio = new Domicilio(req.body, {transaction: t});
+            domicilio.DomicilioId = ultimoDomicilioId + 1;
+            domicilio.BarrioId = req.body.Barrio.BarrioId;
+            const abonadoRole = new UserRole({transaction: t});
+            abonadoRole.UserId = abonado.UserId;
+            abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
+            const abonadoEstado = new UserEstado({transaction: t});
+            abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
+            abonadoEstado.UserId = abonado.UserId;
+            abonadoEstado.CambioEstadoFecha = new Date();
+            abonadoEstado.CambioEstadoObservaciones = 'Dado de alta';
+            //instanciamos un nuevo movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = req.body.PagoInfo.Inscripcion;
+            movimiento.createdBy = req.body.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 2; //inscripción
+            movimiento.MunicipioId = req.body.Municipio.MunicipioId;
+            //registramos un nuevo pago
+            const pago = new Pago({transaction: t});
+            pago.PagoId = ultimoPagoId + 1;
+            pago.UserId = UserId;
+            pago.PagoAño = new Date().getFullYear();
+            pago.PagoMes = new Date().getMonth() + 1;
+            pago.PagoTotal = req.body.PagoInfo.Total;
+            pago.PagoRecargo = 0;
+            pago.PagoSaldo = req.body.PagoInfo.Total - req.body.PagoInfo.Inscripcion;
+            pago.createdAt = new Date();
+            pago.createdBy = req.body.createdBy;
+            const detallePago = new DetallePago({transaction: t})
+            detallePago.DetallePagoId = ultimoDetallePagoId + 1;
+            detallePago.PagoId = ultimoPagoId + 1;
+            detallePago.MedioPagoId = req.body.MedioPago.MedioPagoId;
+            detallePago.createdAt = new Date();
+            detallePago.createdBy = req.body.createdBy;
+            detallePago.DetallePagoMonto = req.body.PagoInfo.Inscripcion;
+            detallePago.DetallePagoMotivo = 'Inscripción';
+            await domicilio.save({transaction: t});
+            await abonado.save({transaction: t});
+            await abonadoRole.save({transaction: t});
+            await abonadoEstado.save({transaction: t});
+            await pago.save({transaction: t});
+            await detallePago.save({transaction: t});
+            await movimiento.save({transaction: t});
+            return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'});
+        }
+        }
+    )
 }   
     catch (error) {
         console.log(error)

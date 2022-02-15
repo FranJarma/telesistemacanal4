@@ -10,10 +10,11 @@ import Modal from '../design/components/Modal';
 import { Link } from 'react-router-dom';
 import useStyles from '../Styles';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    const { abonados, municipios, inscripcion, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado, traerDatosInscripcion } = appContext;
 
     useEffect(() => {
         traerAbonados(1);
@@ -22,6 +23,7 @@ const ListaAbonadosInscriptos = () => {
     },[]);
 
     const [MunicipioId, setMunicipioId] = useState(0);
+    const [modalDatosInscripcion, setModalDatosInscripcion] = useState(false);
     const [modalDarDeBaja, setModalDarDeBaja] = useState(false);
     const [modalConfirmarInstalacion, setModalConfirmarInstalacion] = useState(false);
 
@@ -69,6 +71,22 @@ const ListaAbonadosInscriptos = () => {
         }
     }
 
+    const handleChangeModalDatosInscripcion = (data) => {
+        setModalDatosInscripcion(!modalDatosInscripcion)
+        if(!modalDarDeBaja){
+            traerDatosInscripcion(data.UserId);
+            setAbonadoInfo({
+                EstadoId: 3,
+                UserId: data.UserId
+            })
+        }
+        else {
+            setAbonadoInfo({
+                UserId: null
+            })
+        }
+    }
+
     const onChangeInputEstadoObservaciones = (e) => {
         setAbonadoInfo({
             ...AbonadoInfo,
@@ -81,6 +99,7 @@ const ListaAbonadosInscriptos = () => {
     }
 
     const styles = useStyles();
+
     const columnasAbonadosInscriptos = [
     {
         "name": "id",
@@ -88,56 +107,16 @@ const ListaAbonadosInscriptos = () => {
         "omit": true,
     },
     {
-        "name": "Nombre",
-        "selector": row =>row["Nombre"],
-        "omit": true
-    },
-    {
-        "name": "Apellido",
-        "selector": row =>row["Apellido"],
-        "omit": true
-    },
-    {
-        "name": "Nombre Completo",
+        "name": <TooltipForTable name="Nombre Completo" />,
         "selector": row => row["Apellido"] + ', ' + row["Nombre"],
         "wrap": true,
-        "sortable": true
+        "sortable": true,
     },
     {
-        "name": "BarrioId",
-        "selector": row => row["BarrioId"],
-        "omit": true
-    },
-    {
-        "name": "MunicipioId",
-        "selector": row => row["MunicipioId"],
-        "omit": true
-    },
-    {
-        "name": "DomicilioId",
-        "selector": row => row["DomicilioId"],
-        "omit": true
-    },
-    {
-        "name": "Domicilio Calle",
-        "selector": row => row["DomicilioCalle"],
-        "omit": true
-    },
-    {
-        "name": "Domicilio Numero",
-        "selector": row => row["DomicilioNumero"],
-        "omit": true
-    },
-    {
-        "name": "Domicilio",
+        "name": <TooltipForTable name="Domicilio Completo" />,
         "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
         "wrap": true,
         "sortable": true
-    },
-    {
-        "name": "N° teléfono",
-        "selector": row =>row["Telefono"],
-        "omit": true,
     },
     {
         "name": "DNI",
@@ -146,23 +125,13 @@ const ListaAbonadosInscriptos = () => {
         "hide": "sm"
     },
     {
-        "name": "ServicioId",
-        "selector": row =>row["ServicioId"],
-        "omit": true
-    },
-    {
         "name": "Servicio",
         "selector": row =>row["ServicioNombre"],
         "sortable": true,
         "hide": "sm",
     },
     {
-        "name": "Fecha de Contrato",
-        "selector": row =>row["FechaContrato"].split('T')[0],
-        "omit": true
-    },
-    {
-        "name": "Fecha de Bajada",
+        "name": <TooltipForTable name="Fecha de Bajada" />,
         "selector": row =>row["FechaBajada"].split('T')[0].split('-').reverse().join('/'),
         "sortable": true
     },
@@ -198,7 +167,7 @@ const ListaAbonadosInscriptos = () => {
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-money bx-xs'></i> Datos de pago de inscripción</Typography>
+                <Typography onClick={()=>handleChangeModalDatosInscripcion(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-money bx-xs'></i> Datos de pago de inscripción</Typography>
             </MenuItem>
             <MenuItem>
                 <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> Dar de baja</Typography>
@@ -297,6 +266,20 @@ const ListaAbonadosInscriptos = () => {
                 >
                 </TextField>
                 <FormHelperText>Observaciones</FormHelperText>
+                </>}
+                >
+                </Modal>
+                <Modal
+                abrirModal={modalDatosInscripcion}
+                funcionCerrar={handleChangeModalDatosInscripcion}
+                titulo={<Alert severity="info" icon={<i className="bx bxs-user-check bx-sm"></i>}>Datos de la inscripción</Alert>}
+                formulario={
+                <>
+                <Typography>Total: {inscripcion.PagoTotal}</Typography>
+                <Typography>Pagado: {inscripcion.DetallePagoMonto}</Typography>
+                <Typography>Saldo: {inscripcion.PagoSaldo}</Typography>
+                <Typography>Creado por: {inscripcion.Nombre}, {inscripcion.Apellido}</Typography>
+                <Typography>Fecha de creación: {inscripcion.createdAt}</Typography>
                 </>}
                 >
                 </Modal>

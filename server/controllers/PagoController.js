@@ -177,3 +177,22 @@ exports.PagoEliminarRecargo = async(req, res) => {
         res.status(400).json({msg: 'Hubo un error al eliminar el recargo'});
     }
 }
+
+exports.PagosTraerInscripcion = async(req,res) => {
+    try {
+        const inscripcion = await knex.select('p.PagoTotal', 'p.PagoSaldo', 'dp.DetallePagoMonto',
+        'dp.createdAt', 'u.Nombre', 'u.Apellido').from('pago as p')
+        .innerJoin('detallepago as dp', 'p.PagoId', '=', 'dp.PagoId')
+        .innerJoin('_user as u', 'u.UserId', '=', 'dp.createdBy')
+        .where(
+            {
+                'p.UserId': req.params.UserId,
+                'dp.DetallePagoMotivo': 'Inscripción'
+            })
+        .first();
+        res.json(inscripcion);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
+    }
+}

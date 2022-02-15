@@ -34,6 +34,7 @@ const AppState = props => {
         historialServicios: [],
         mediosPago: [],
         pagos: [],
+        inscripcion: {},
         detallesPago: [],
         tareas: [],
         ordenesDeTrabajo: [],
@@ -604,6 +605,17 @@ const AppState = props => {
                 Toast(err.response.data.errors[0].msg, 'warning');
             }
         })
+    }
+    const traerDatosInscripcion = async(UserId) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Inscripcion=${true}`);
+            dispatch({
+                type: TYPES.DATOS_INSCRIPCION,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
     //BARRIOS
     const crearBarrio = async(barrio, cerrarModal) => {
@@ -1436,6 +1448,7 @@ const AppState = props => {
             historialServicios: state.historialServicios,
             mediosPago: state.mediosPago,
             pagos: state.pagos,
+            inscripcion: state.inscripcion,
             detallesPago: state.detallesPago,
             tareas: state.tareas,
             ordenesDeTrabajo: state.ordenesDeTrabajo,
@@ -1457,7 +1470,7 @@ const AppState = props => {
             traerONUS, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago, crearMedioPago, modificarMedioPago, eliminarMedioPago,
-            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo,
+            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion,
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,
