@@ -1,3 +1,4 @@
+import compararFechas from "./CompararFechas";
 import convertirAFecha from "./ConvertirAFecha";
 
 const SpanVencimientoContrato = (timestamp) => {
@@ -9,7 +10,9 @@ const SpanVencimientoContrato = (timestamp) => {
 
     const fecha = convertirAFecha(timestamp.timestamp);
 
-    if(fecha > hoyLocal) {
+    const vencido = compararFechas(fecha, hoyLocal);
+
+    if(vencido) {
         return <span title="Contrato vencido"><i style={{color: 'red'}} class='bx bxs-circle'></i> {fecha}</span>
     }
     else {

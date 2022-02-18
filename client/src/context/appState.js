@@ -359,7 +359,6 @@ const AppState = props => {
                     payload: abonado
                 })
                 Swal('Operación completa', resOk.data.msg);
-                abonado.EstadoId === 1 ? history.push('/abonados-inscriptos') : abonado.EstadoId === 2 ? history.push('/abonados-activos') : history.push('/abonados-inactivos');
         })
         .catch(err => {
             console.log(err.response.data.msg);

@@ -503,21 +503,6 @@ const CaratulaAbonado = () => {
                         >
                         </DatePicker >
                     </Grid>
-                    {/* {Servicio.ServicioId !== 1 && Servicio.ServicioId !== null ?
-                    <>
-                        <Grid item xs={12} md={6} lg={6} xl={6}>
-                            <Autocomplete
-                            disabled={location.state ? true : false}
-                            value={location.state ? location.state.OnuId : Onu}
-                            onChange={(_event, newOnu) => {
-                                setOnu(newOnu);
-                            }}
-                            options={onus}
-                            getOptionLabel={(option) => option.OnuMac + " - " + option.ModeloOnuNombre}
-                            renderInput={(params) => <TextField {...params} variant="outlined" fullWidth label="Onus disponibles"/>}
-                            />
-                        </Grid>
-                    </> : ""} */}
                 </Grid>
                 <br/>
                 {Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null ?
@@ -525,14 +510,14 @@ const CaratulaAbonado = () => {
                 <Typography variant="h1">Precios finales</Typography>
                 <br/>
                 <Grid item xs={12} md={12} sm={12}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
-                                <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
-                                <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
-                                <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Total - PagoInfo.Inscripcion}</Typography>
-                            </CardContent>
-                        </Card>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
+                            <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
+                            <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
+                            <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Total - PagoInfo.Inscripcion}</Typography>
+                        </CardContent>
+                    </Card>
                 </Grid>
                 </>
                 : "" }

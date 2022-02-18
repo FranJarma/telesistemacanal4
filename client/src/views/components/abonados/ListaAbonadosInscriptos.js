@@ -321,7 +321,8 @@ const columnasInscripcion = [
                 <Typography variant="h2"><b>Precio total de inscripción:</b> ${inscripcion[0].PagoTotal}</Typography>
                 <Typography variant="h2"><b>Saldo restante:</b> ${inscripcion[0].PagoSaldo}</Typography>
                 <Typography variant="h2"><b>Cuotas restantes:</b> {inscripcion[0].MedioPagoCantidadCuotas - inscripcion.length}</Typography>
-                <Button variant="contained" color="primary">Agregar cuota</Button>
+                {inscripcion[0].MedioPagoCantidadCuotas - inscripcion.length > 0 ?
+                <Button variant="contained" color="primary">Agregar cuota</Button> : ""}
                 </>
                 : "" }
                 </>}
