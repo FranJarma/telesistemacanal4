@@ -180,16 +180,16 @@ exports.PagoEliminarRecargo = async(req, res) => {
 
 exports.PagosTraerInscripcion = async(req,res) => {
     try {
-        const inscripcion = await knex.select('p.PagoTotal', 'p.PagoSaldo', 'dp.DetallePagoMonto',
-        'dp.createdAt', 'u.Nombre', 'u.Apellido').from('pago as p')
+        const inscripcion = await knex.select('p.PagoTotal', 'p.PagoSaldo', 'p.PagoCuotasPendientes', 'dp.DetallePagoMonto',
+        'dp.createdAt', 'u.Nombre', 'u.Apellido', 'dp.MedioPagoId', 'mp.MedioPagoNombre', 'mp.MedioPagoCantidadCuotas').from('pago as p')
         .innerJoin('detallepago as dp', 'p.PagoId', '=', 'dp.PagoId')
         .innerJoin('_user as u', 'u.UserId', '=', 'dp.createdBy')
+        .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'dp.MedioPagoId')
         .where(
             {
                 'p.UserId': req.params.UserId,
                 'dp.DetallePagoMotivo': 'Inscripción'
             })
-        .first();
         res.json(inscripcion);
     } catch (error) {
         console.log(error);

@@ -9,6 +9,7 @@ import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import { Link } from 'react-router-dom';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
 
 const ListaAbonadosInactivos = () => {
     const appContext = useContext(AppContext);
@@ -95,7 +96,7 @@ const ListaAbonadosInactivos = () => {
         },
         {
             "name": "Fecha y hora de baja",
-            "selector": row => row["deletedAt"],
+            "selector": row => convertirAFecha(row["deletedAt"]),
             "wrap": true,
             "sortable": true
         },

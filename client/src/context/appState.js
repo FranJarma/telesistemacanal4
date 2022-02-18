@@ -34,7 +34,7 @@ const AppState = props => {
         historialServicios: [],
         mediosPago: [],
         pagos: [],
-        inscripcion: {},
+        inscripcion: [],
         detallesPago: [],
         tareas: [],
         ordenesDeTrabajo: [],

@@ -295,7 +295,6 @@ exports.AbonadoCreate = async(req, res) => {
         });
 
         if(domicilioBuscar.length > 0) {
-            console.log(domicilioBuscar);
             return res.status(400).json({msg: 'Ya existe un domicilio registrado en ese barrio y ese municipio'})
         }
         else {
@@ -331,6 +330,12 @@ exports.AbonadoCreate = async(req, res) => {
             abonado.ServicioId = req.body.Servicio.ServicioId;
             abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
             abonado.EsUsuarioDeSistema = 0;
+            if(req.body.ServicioId === 1) {
+                abonado.FechaVencimientoContrato = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+            }
+            else {
+                abonado.FechaVencimientoContrato = new Date(new Date().setFullYear(new Date().getFullYear() + 2));
+            }
             const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;

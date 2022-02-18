@@ -9,6 +9,7 @@ import Datatable from '../design/components/Datatable';
 import { DatePicker } from '@material-ui/pickers';
 import useStyles from './../Styles';
 import { Autocomplete } from '@material-ui/lab';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
@@ -92,7 +93,7 @@ const CambioServicio = () => {
         },
         {
             "name": "Fecha de Cambio",
-            "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('/'),
+            "selector": row =>convertirAFecha(row["createdAt"]),
             "sortable": true
         },
         {

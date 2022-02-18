@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom';
 import useStyles from '../Styles';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import TooltipForTable from '../../../helpers/TooltipForTable';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import SpanVencimientoContrato from '../../../helpers/SpanVencimientoContrato';
 
 const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
@@ -132,7 +134,12 @@ const ListaAbonadosInscriptos = () => {
     },
     {
         "name": <TooltipForTable name="Fecha de Bajada" />,
-        "selector": row =>row["FechaBajada"].split('T')[0].split('-').reverse().join('/'),
+        "selector": row => convertirAFecha(row["FechaBajada"]),
+        "sortable": true
+    },
+    {
+        "name": <TooltipForTable name="Vencimiento de Contrato" />,
+        "selector": row => <SpanVencimientoContrato timestamp={row["FechaVencimientoContrato"]}></SpanVencimientoContrato>,
         "sortable": true
     },
     {
@@ -174,6 +181,37 @@ const ListaAbonadosInscriptos = () => {
             </MenuItem>
             </>
         }/>
+    }
+]
+const columnasInscripcion = [
+    {
+        "name": "N°",
+        "selector": row =>row["DetallePagoId"],
+        "omit": true
+    },
+    {
+        "name": "Dinero recibido",
+        "selector": row =>"$" + row["DetallePagoMonto"],
+        "sortable": true,
+        "wrap": true
+    },
+    {
+        "name": "Fecha de registro ",
+        "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('-'),
+        "wrap": true,
+        "sortable": true,
+    },
+    {
+        "name": "Registrado por ",
+        "selector": row =>row["Nombre"] + ', ' + row["Apellido"],
+        "wrap": true,
+        "sortable": true,
+    },
+    {
+        "name": "Forma de pago",
+        "selector": row => row["MedioPagoNombre"],
+        "wrap": true,
+        "sortable": true,
     }
 ]
     const ExpandedComponent = ({ data }) =>
@@ -272,17 +310,26 @@ const ListaAbonadosInscriptos = () => {
                 <Modal
                 abrirModal={modalDatosInscripcion}
                 funcionCerrar={handleChangeModalDatosInscripcion}
-                titulo={<Alert severity="info" icon={<i className="bx bxs-user-check bx-sm"></i>}>Datos de la inscripción</Alert>}
+                titulo={<Alert severity="success" icon={<i className="bx bx-money bx-sm"></i>}>Datos de la inscripción</Alert>}
                 formulario={
                 <>
-                <Typography>Total: {inscripcion.PagoTotal}</Typography>
-                <Typography>Pagado: {inscripcion.DetallePagoMonto}</Typography>
-                <Typography>Saldo: {inscripcion.PagoSaldo}</Typography>
-                <Typography>Creado por: {inscripcion.Nombre}, {inscripcion.Apellido}</Typography>
-                <Typography>Fecha de creación: {inscripcion.createdAt}</Typography>
+                <Datatable
+                datos={inscripcion}
+                columnas={columnasInscripcion}></Datatable>
+                { inscripcion.length > 0 ?
+                <>
+                <Typography variant="h2"><b>Precio total de inscripción:</b> ${inscripcion[0].PagoTotal}</Typography>
+                <Typography variant="h2"><b>Saldo restante:</b> ${inscripcion[0].PagoSaldo}</Typography>
+                <Typography variant="h2"><b>Cuotas restantes:</b> {inscripcion[0].MedioPagoCantidadCuotas - inscripcion.length}</Typography>
+                <Button variant="contained" color="primary">Agregar cuota</Button>
+                </>
+                : "" }
                 </>}
                 >
                 </Modal>
+                <br/>
+                <span><i style={{color: 'red'}} class='bx bxs-circle'></i>Contrato Vencido </span>
+                <span><i style={{color: 'green'}} class='bx bxs-circle'></i>Contrato Vigente</span>
                 <Datatable
                     loader={true}
                     columnas={columnasAbonadosInscriptos}

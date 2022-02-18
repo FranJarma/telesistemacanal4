@@ -10,6 +10,9 @@ import Modal from '../design/components/Modal';
 import { Link } from 'react-router-dom';
 import useStyles from '../Styles';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import TooltipForTable from '../../../helpers/TooltipForTable';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import SpanVencimientoContrato from '../../../helpers/SpanVencimientoContrato';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
@@ -71,47 +74,12 @@ const ListaAbonadosActivos = () => {
         "omit": true,
     },
     {
-        "name": "Nombre",
-        "selector": row =>row["Nombre"],
-        "omit": true
-    },
-    {
-        "name": "Apellido",
-        "selector": row =>row["Apellido"],
-        "omit": true
-    },
-    {
-        "name": "Nombre Completo",
+        "name": <TooltipForTable name="Nombre Completo" />,
         "selector": row => row["Apellido"] + ', ' + row["Nombre"],
         "wrap": true,
     },
     {
-        "name": "BarrioId",
-        "selector": row => row["BarrioId"],
-        "omit": true
-    },
-    {
-        "name": "MunicipioId",
-        "selector": row => row["MunicipioId"],
-        "omit": true
-    },
-    {
-        "name": "DomicilioId",
-        "selector": row => row["DomicilioId"],
-        "omit": true
-    },
-    {
-        "name": "Domicilio Calle",
-        "selector": row => row["DomicilioCalle"],
-        "omit": true
-    },
-    {
-        "name": "Domicilio Numero",
-        "selector": row => row["DomicilioNumero"],
-        "omit": true
-    },
-    {
-        "name": "Domicilio",
+        "name": <TooltipForTable name="Domicilio" />,
         "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
         "wrap": true,
         "sortable": true
@@ -128,24 +96,19 @@ const ListaAbonadosActivos = () => {
         "hide": "sm"
     },
     {
-        "name": "ServicioId",
-        "selector": row =>row["ServicioId"],
-        "omit": true
-    },
-    {
-        "name": "Servicio",
+        "name": <TooltipForTable name="Servicio" />,
         "selector": row =>row["ServicioNombre"],
         "sortable": true,
         "hide": "sm",
     },
     {
-        "name": "Fecha de Contrato",
-        "selector": row =>row["FechaContrato"].split('T')[0],
-        "omit": true
+        "name": <TooltipForTable name="Vencimiento de Contrato" />,
+        "selector": row => <SpanVencimientoContrato timestamp={row["FechaVencimientoContrato"]}></SpanVencimientoContrato>,
+        "sortable": true
     },
     {
-        "name": "Fecha de Bajada",
-        "selector": row =>row["FechaBajada"].split('T')[0],
+        "name": <TooltipForTable name="Fecha de Bajada" />,
+        "selector": row => convertirAFecha(row["Fecha de Bajada"]),
         "omit": true,
     },
     {
@@ -265,6 +228,9 @@ const ListaAbonadosActivos = () => {
                 </>}
                 >
                 </Modal>
+                <br/>
+                <span><i style={{color: 'red'}} class='bx bxs-circle'></i>Contrato Vencido </span>
+                <span><i style={{color: 'green'}} class='bx bxs-circle'></i>Contrato Vigente</span>
                 <Datatable
                     loader={true}
                     columnas={columnasAbonadosActivos}

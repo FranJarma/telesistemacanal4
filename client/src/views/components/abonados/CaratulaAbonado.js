@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, Checkbox, Chip, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, Chip, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
@@ -11,7 +11,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
-    const { barrios, condicionesIva, municipios, servicios, provincias, onus, mediosPago, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
+    const { barrios, condicionesIva, municipios, servicios, provincias, mediosPago, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
     traerProvincias, traerONUS, traerONUPorId, crearAbonado, modificarAbonado, traerMediosPago } = appContext;
     
     const location = useLocation();
@@ -65,11 +65,9 @@ const CaratulaAbonado = () => {
         MedioPagoCantidadCuotas: null,
         MedioPagoInteres: null
     });
-    const [Onu, setOnu] = useState(null);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [FechaBajada, setFechaBajada] = useState(new Date());
-    const [DosCuotas, setDosCuotas] = useState(false);
     const [PagoInfo, setPagoInfo] = useState({
         Interes: null,
         Total: null,
@@ -168,7 +166,6 @@ const CaratulaAbonado = () => {
                 Municipio,
                 Barrio,
                 Servicio,
-                Onu,
                 createdBy,
                 PagoInfo,
                 MedioPago
@@ -447,32 +444,6 @@ const CaratulaAbonado = () => {
                             <MenuItem key={servicio.ServicioId} value={servicio}>{servicio.ServicioNombre} - Inscripción: ${servicio.ServicioInscripcion}</MenuItem>
                         ))}
                         </TextField>
-                        {/* SOLO EFECTIVO Y SI EL SERVICIO ES FIBRA O COMBO */}
-                        { (MedioPago.MedioPagoId === 1 && Servicio.ServicioId === 2) || (MedioPago.MedioPagoId === 1 && Servicio.ServicioId === 3) ?
-                        <>
-                        <FormControlLabel label="Paga en dos cuotas"
-                        control={<Checkbox
-                        onChange={e => {
-                            setDosCuotas(e.target.checked);
-                            if(!DosCuotas) {
-                                setPagoInfo({
-                                    ...PagoInfo,
-                                    Inscripcion: (PagoInfo.Inscripcion * 0.5).toFixed(2)
-                                });
-                            }
-                            else {
-                                setPagoInfo({
-                                    ...PagoInfo,
-                                    Inscripcion:(PagoInfo.Inscripcion / 0.5).toFixed(2)
-                                });
-                            }
-                        }
-                        }
-                        checked={DosCuotas}>
-                        </Checkbox>}>
-                        </FormControlLabel>
-                        </>
-                        :""}
                     </Grid>
                     {Servicio.ServicioId !== null
                     ?
@@ -557,7 +528,7 @@ const CaratulaAbonado = () => {
                         <Card>
                             <CardContent>
                                 <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
-                                <Typography variant="h2"><b>Cantidad de cuotas: </b>{DosCuotas ? 2 : MedioPago.MedioPagoCantidadCuotas}</Typography>
+                                <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
                                 <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
                                 <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Total - PagoInfo.Inscripcion}</Typography>
                             </CardContent>

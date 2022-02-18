@@ -11,12 +11,11 @@ const MedioPago = db.define('mediopago', {
         type: STRING(256),
         allowNull: false
     },
+    MedioPagoCantidadCuotas: {
+        type: INTEGER
+    },
     MedioPagoDescripcion: {
         type: STRING(256),
-        allowNull: true
-    },
-    MedioPagoCantidadCuotas: {
-        type: INTEGER,
         allowNull: true
     },
     MedioPagoInteres: {

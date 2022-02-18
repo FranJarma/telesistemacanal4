@@ -48,6 +48,10 @@ const User = db.define('_user', {
         type: DATE,
         allowNull: true
     },
+    FechaVencimientoContrato: {
+        type: DATE,
+        allowNull: true
+    },
     Telefono: {
         type: BIGINT,
         allowNull: true

@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { Autocomplete } from '@material-ui/lab';
 import { DatePicker } from '@material-ui/pickers';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
@@ -119,12 +120,12 @@ const CambioDomicilio = () => {
             "wrap": true,
             "sortable": true
         },
-        // {
-        //     "name": "Fecha",
-        //     "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('/'),
-        //     "hide": "sm",
-        //     "wrap": true
-        // },
+        {
+            "name": "Fecha de Cambio",
+            "selector": row =>convertirAFecha(row["createdAt"]),
+            "hide": "sm",
+            "wrap": true
+        },
         {
             "name": "Observaciones",
             "selector": row =>row["CambioDomicilioObservaciones"],
