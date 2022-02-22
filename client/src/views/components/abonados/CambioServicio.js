@@ -13,12 +13,13 @@ import convertirAFecha from '../../../helpers/ConvertirAFecha';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, historialServicios, servicios, onus, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId, cambioServicioAbonado } = appContext;
+    const { historialServicios, servicios, onus, tareas, traerTareas, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId, cambioServicioAbonado } = appContext;
 
     const location = useLocation();
     const styles = useStyles();
     //Observables
     useEffect(() => {
+        traerTareas();
         traerServicios();
         traerONUS(5);
         traerServiciosAbonado(location.state.UserId);
@@ -244,6 +245,8 @@ const CambioServicio = () => {
                     label="Observaciones">
                     </TextField>
                     <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
+                    {location.state.ServicioId === 1 ? tareas.filter((tarea) => tarea.TareaId === 4).map((tarea) => <Typography>{tarea.TareaNombre}</Typography>)
+                    : tareas.filter((tarea) => tarea.TareaId === 4).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)}
                 </Grid>
             </Grid>
             </>

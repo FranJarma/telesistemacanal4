@@ -8,11 +8,14 @@ import { useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 import { Autocomplete } from '@material-ui/lab';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import Datatable from '../design/components/Datatable';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
-    const { barrios, condicionesIva, municipios, servicios, provincias, mediosPago, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
-    traerProvincias, traerONUS, traerONUPorId, crearAbonado, modificarAbonado, traerMediosPago } = appContext;
+    const { barrios, condicionesIva, municipios, servicios, provincias, usuarios, mediosPago, ordenesDeTrabajoAsignadas, traerBarriosPorMunicipio, traerCondicionesIva, traerMunicipiosPorProvincia, traerServicios,
+    traerProvincias, crearAbonado, modificarAbonado, traerMediosPago, traerOrdenesDeTrabajoAsignadas, traerUsuariosPorRol } = appContext;
     
     const location = useLocation();
     const [abonadoInfo, setAbonadoInfo] = useState({
@@ -66,22 +69,21 @@ const CaratulaAbonado = () => {
         MedioPagoInteres: null
     });
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
-    const [FechaContrato, setFechaContrato] = useState(new Date());
-    const [FechaBajada, setFechaBajada] = useState(new Date());
+    const [FechaContrato, setFechaContrato] = useState(new Date().toLocaleDateString());
+    const [FechaBajada, setFechaBajada] = useState(null);
     const [PagoInfo, setPagoInfo] = useState({
         Interes: null,
         Total: null,
         Inscripcion: null
     });
-    
+    const [OtInfo, setOtInfo] = useState(null)
+
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipio(e.target.value);
         setBarrio(null);
         traerBarriosPorMunicipio(e.target.value.MunicipioId);
     }
-    const handleChangeBarrioSeleccionado = (e) => {
-        setBarrio(e.target.value);
-    }
+
     const handleChangeServicioSeleccionado = (e) => {
         setServicio(e.target.value);
         setMedioPago({
@@ -111,7 +113,7 @@ const CaratulaAbonado = () => {
         traerMediosPago();
         traerServicios();
         traerCondicionesIva();
-        traerONUS(5); //hay que traer ONUS no asignadas a ningún abonado
+        traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
     }, [])
     
     useEffect(() => {
@@ -141,7 +143,6 @@ const CaratulaAbonado = () => {
             setFechaNacimiento(location.state.FechaNacimiento);
             setFechaBajada(location.state.FechaBajada);
             setFechaContrato(location.state.FechaContrato);
-            traerONUPorId(location.state.OnuId);
         }
     }, [location.state])
 
@@ -168,7 +169,8 @@ const CaratulaAbonado = () => {
                 Servicio,
                 createdBy,
                 PagoInfo,
-                MedioPago
+                MedioPago,
+                OtInfo
             });
         }
         else {
@@ -190,6 +192,25 @@ const CaratulaAbonado = () => {
             });
         }
     }
+    const columnasOt = [
+        {
+            "name": "id",
+            "selector": row => row["OtId"],
+            "omit": true
+        },
+        {
+            "name": <TooltipForTable name="Fecha prevista de visita" />,
+            "wrap": true,
+            "sortable": true,
+            "selector": row => convertirAFecha(row["OtFechaPrevistaVisita"]),
+        }  ,  
+        {
+            "name": "Domicilio",
+            "wrap": true,
+            "sortable": true,
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+        }    
+    ]
     return ( 
     <>
     <div className="container">
@@ -198,11 +219,10 @@ const CaratulaAbonado = () => {
     <form onSubmit={onSubmitAbonado}>
     <Tabs>
         <TabList>
-            <Tab><i style={{color: 'teal'}} className="bx bxs-user"></i> Datos del abonado</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bxs-home'></i> Datos del domicilio</Tab>
-            {!location.state ?
-            <Tab><i style={{color: 'teal'}} className='bx bxs-money'></i> Datos de inscripción</Tab>
-            :<Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Datos de servicio</Tab>}
+            <Tab><i style={{color: 'teal'}} className="bx bxs-user"></i> Abonado</Tab>
+            <Tab><i style={{color: 'teal'}} className='bx bxs-home'></i> Domicilio</Tab>
+            <Tab><i style={{color: 'teal'}} className='bx bx-money'></i> Servicio</Tab>
+            <Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Instalación y OT</Tab>
         </TabList>
     <TabPanel>
         <Card>
@@ -447,30 +467,6 @@ const CaratulaAbonado = () => {
                         ))}
                         </TextField>
                     </Grid>
-                    <Grid item xs={6} md={6} lg={6} xl={6}>
-                        <DatePicker 
-                        disabled = {location.state ? true : false}
-                        inputVariant={location.state ? "filled" : "outlined"}
-                        value={FechaContrato}
-                        onChange={(fecha)=>setFechaContrato(fecha)}
-                        format="dd/MM/yyyy"
-                        fullWidth
-                        label="Fecha de Contrato"
-                        >
-                        </DatePicker >
-                    </Grid>
-                    <Grid item xs={6} md={6} lg={6} xl={6}>
-                        <DatePicker 
-                        disabled = {location.state ? true : false}
-                        inputVariant={location.state ? "filled" : "outlined"}
-                        value={FechaBajada}
-                        onChange={(fecha)=>setFechaBajada(fecha)}
-                        format="dd/MM/yyyy"
-                        fullWidth
-                        label="Fecha de Bajada"
-                        >
-                        </DatePicker >
-                    </Grid>
                     {Servicio.ServicioId !== null && !location.state
                     ?
                     <>
@@ -525,6 +521,104 @@ const CaratulaAbonado = () => {
                 : "" }
             <br/>
             {location.state ? <Alert severity="info">Para modificar todos los datos del domicilio y del servicio contratado se tiene que realizar desde las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
+            </CardContent>
+        </Card>
+    </TabPanel>
+    <TabPanel>
+        <Card>
+            <CardContent>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                        <TextField
+                        variant="outlined"
+                        disabled = {location.state ? true : false}
+                        inputVariant={location.state ? "filled" : "outlined"}
+                        value={FechaContrato}
+                        fullWidth
+                        label="Fecha de Contrato"
+                        >
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                        <Autocomplete
+                        value={OtInfo}
+                        onChange={(_event, newTecnico) => {
+                            setOtInfo(newTecnico)
+                            traerOrdenesDeTrabajoAsignadas(newTecnico.UserId, 5);
+                        }}
+                        options={usuarios}
+                        noOptionsText="No se encontraron técnicos"
+                        getOptionLabel={(option) => option.Nombre +", "+ option.Apellido}
+                        renderInput={(params) => <TextField {...params} variant ="outlined" fullWidth label="Técnico encargado de ejecución"/>}
+                        />
+                    </Grid>
+                    { OtInfo !== null ?
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                        <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {OtInfo.Nombre}, {OtInfo.Apellido}</Typography>
+                        <br/>
+                        <Card>
+                            <CardContent>
+                            <Datatable
+                                datos={ordenesDeTrabajoAsignadas}
+                                columnas={columnasOt}>
+                                </Datatable>
+                            </CardContent>
+                        </Card>
+
+                    </Grid>
+                    : ""}
+                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                        <DatePicker 
+                        disabled = {location.state ? true : false}
+                        inputVariant={location.state ? "filled" : "outlined"}
+                        value={FechaBajada}
+                        onChange={(fecha)=>setFechaBajada(fecha)}
+                        format="dd/MM/yyyy"
+                        placeholder='dia/mes/año'
+                        fullWidth
+                        label="Fecha prevista de visita"
+                        >
+                        </DatePicker >
+                    </Grid>
+                    <Grid item xs={12} md={3} lg={3} xl={3}>
+                            <TextField
+                            variant="outlined"
+                            value={sessionStorage.getItem('usr')}
+                            fullWidth
+                            label="Responsable de emisión de OT">
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={6} md={3} lg={3} xl={3}>
+                            <TextField
+                                value={new Date().toLocaleDateString()}
+                                variant="outlined"
+                                fullWidth
+                                label="Fecha de emisión de OT"
+                            ></TextField>
+                        </Grid>
+                        <Grid item xs={6} md={2} lg={2} xl={2}>
+                            <TextField
+                                value={new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})}
+                                variant="outlined"
+                                fullWidth
+                                label="Hora de emisión de OT"
+                            ></TextField>
+                        </Grid>
+                        <Grid item xs={12} md={12} lg={12} xl={12}>
+                            <TextField
+                            variant = "outlined"
+                            multiline
+                            minRows={3}
+                            name="OtObservacionesResponsableEmision"
+                            inputProps={{
+                                maxLength: 1000
+                            }}
+                            onChange={onInputChange}
+                            fullWidth
+                            label="Observaciones registro de OT">
+                            </TextField>
+                        </Grid>
+                </Grid>
             </CardContent>
         </Card>
     </TabPanel>

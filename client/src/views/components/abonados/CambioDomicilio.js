@@ -63,14 +63,7 @@ const CambioDomicilio = () => {
     const handleFocusMunicipioSeleccionado = (e) => {
         setMunicipioNombre(e.target.innerHTML)
     }
-    // const handleFocusBarrioSeleccionado = (e) => {
-    //     setBarrioNombre(e.target.innerHTML)
-    // }
-    // const handleChangeBarrioSeleccionado = (e) => {
-    //     setBarrioId(e.target.value);
-    // }
     const handleChangeModalNuevoDomicilio = () => {
-
         setModalNuevoDomicilio(!ModalNuevoDomicilio);
         setDomicilioInfo({
             ...DomicilioInfo,
@@ -144,7 +137,6 @@ const CambioDomicilio = () => {
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.createdAt.split('T')[0].split('-').reverse().join('/')}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-clipboard"></i> Observaciones: {data.CambioDomicilioObservaciones}</Typography>
     </>;
-    console.log(location.state);
     return ( 
     <>
     <div className="container">

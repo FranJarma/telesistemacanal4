@@ -12,7 +12,7 @@ import useStyles from '../Styles';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
-import SpanVencimientoContrato from '../../../helpers/SpanVencimientoContrato';
+import generarRecibo from '../../../helpers/GenerarRecibo';
 
 const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
@@ -138,8 +138,8 @@ const ListaAbonadosInscriptos = () => {
         "sortable": true
     },
     {
-        "name": <TooltipForTable name="Vencimiento de Contrato" />,
-        "selector": row => <SpanVencimientoContrato timestamp={row["FechaVencimientoContrato"]}></SpanVencimientoContrato>,
+        "name": <TooltipForTable name="Fecha de Contrato" />,
+        "selector": row => convertirAFecha(row["FechaContrato"]),
         "sortable": true
     },
     {
@@ -156,28 +156,10 @@ const ListaAbonadosInscriptos = () => {
                 </Link>
             </MenuItem>
             <MenuItem>
-                <Link to={{
-                pathname: `/cambio-domicilio/${data.Nombre + "-" +  data.Apellido}`,
-                state: data
-                }} style={{textDecoration: 'none', color: "teal"}}>
-                <Typography style={{color: 'teal'}}>
-                <i className='bx bxs-home bx-xs'></i> Cambios de domicilio</Typography>
-                </Link> 
+                <Typography onClick={()=>handleChangeModalDatosInscripcion(data)} style={{textDecoration: 'none', color: 'navy', cursor: "pointer"}}><i className='bx bx-money bx-xs'></i> Inscripción</Typography>
             </MenuItem>
             <MenuItem>
-                <Link to={{
-                pathname: `/cambio-servicio/${data.Nombre + "-" +  data.Apellido}`,
-                state: data
-                }} style={{textDecoration: 'none', color: "palevioletred"}}>
-                <Typography style={{color: 'palevioletred'}}>
-                <i className='bx bx-plug bx-xs'></i> Cambios de servicio</Typography>
-                </Link> 
-            </MenuItem>
-            <MenuItem>
-                <Typography onClick={()=>handleChangeModalDatosInscripcion(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-money bx-xs'></i> Datos de pago de inscripción</Typography>
-            </MenuItem>
-            <MenuItem>
-                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> Dar de baja</Typography>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: 'red', cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> Dar de baja</Typography>
             </MenuItem>
             </>
         }/>
@@ -212,6 +194,14 @@ const columnasInscripcion = [
         "selector": row => row["MedioPagoNombre"],
         "wrap": true,
         "sortable": true,
+    },
+    {
+        cell: (data) =>
+        <Tooltip title="Generar Recibo">
+        <Typography onClick={() => generarRecibo(data)} style={{color: 'grey'}}>
+        <i className='bx bxs-file bx-xs'></i>
+        </Typography>
+        </Tooltip>
     }
 ]
     const ExpandedComponent = ({ data }) =>
@@ -328,9 +318,6 @@ const columnasInscripcion = [
                 </>}
                 >
                 </Modal>
-                <br/>
-                <span><i style={{color: 'red'}} class='bx bxs-circle'></i> Contrato Vencido </span>
-                <span><i style={{color: 'green'}} class='bx bxs-circle'></i> Contrato Vigente</span>
                 <Datatable
                     loader={true}
                     columnas={columnasAbonadosInscriptos}
