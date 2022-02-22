@@ -200,7 +200,9 @@ const CaratulaAbonado = () => {
         <TabList>
             <Tab><i style={{color: 'teal'}} className="bx bxs-user"></i> Datos del abonado</Tab>
             <Tab><i style={{color: 'teal'}} className='bx bxs-home'></i> Datos del domicilio</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Datos de inscripción</Tab>
+            {!location.state ?
+            <Tab><i style={{color: 'teal'}} className='bx bxs-money'></i> Datos de inscripción</Tab>
+            :<Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Datos de servicio</Tab>}
         </TabList>
     <TabPanel>
         <Card>
@@ -445,40 +447,6 @@ const CaratulaAbonado = () => {
                         ))}
                         </TextField>
                     </Grid>
-                    {Servicio.ServicioId !== null
-                    ?
-                    <>
-                    <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                        variant = {location.state ? "filled" : "outlined"}
-                        disabled = {location.state ? true : false}
-                        value={MedioPago}
-                        onChange={handleChangeMedioPagoSeleccionado}
-                        label="Medio de Pago de Inscripción"
-                        fullWidth
-                        select
-                        >
-                        {!location.state ? mediosPago.map((mp)=>(
-                            <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
-                        )): ""}
-                    </TextField>
-                    </Grid>
-                    </>
-                    : "" }
-                    { Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null
-                    ?
-                    <>
-                    <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                        variant="outlined"
-                        value={PagoInfo.Interes * Servicio.ServicioInscripcion}
-                        label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
-                        fullWidth
-                        >
-                    </TextField>
-                    </Grid>
-                    </>
-                    :""}
                     <Grid item xs={6} md={6} lg={6} xl={6}>
                         <DatePicker 
                         disabled = {location.state ? true : false}
@@ -503,9 +471,43 @@ const CaratulaAbonado = () => {
                         >
                         </DatePicker >
                     </Grid>
+                    {Servicio.ServicioId !== null && !location.state
+                    ?
+                    <>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <TextField
+                        variant = {location.state ? "filled" : "outlined"}
+                        disabled = {location.state ? true : false}
+                        value={MedioPago}
+                        onChange={handleChangeMedioPagoSeleccionado}
+                        label="Medio de Pago de Inscripción"
+                        fullWidth
+                        select
+                        >
+                        {!location.state ? mediosPago.map((mp)=>(
+                            <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
+                        )): ""}
+                    </TextField>
+                    </Grid>
+                    </>
+                    : "" }
+                    { Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null && !location.state
+                    ?
+                    <>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <TextField
+                        variant="outlined"
+                        value={PagoInfo.Interes * Servicio.ServicioInscripcion}
+                        label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
+                        fullWidth
+                        >
+                    </TextField>
+                    </Grid>
+                    </>
+                    :""}
                 </Grid>
                 <br/>
-                {Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null ?
+                {Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null && !location.state?
                 <>
                 <Typography variant="h1">Precios finales</Typography>
                 <br/>

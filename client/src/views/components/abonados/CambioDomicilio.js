@@ -12,11 +12,12 @@ import convertirAFecha from '../../../helpers/ConvertirAFecha';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, barrios, historialDomicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
-    traerProvincias, cambioDomicilioAbonado } = appContext;
+    const { tareas, barrios, historialDomicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
+    traerProvincias, cambioDomicilioAbonado, traerTareas } = appContext;
     const location = useLocation();
     //Observables
     useEffect(() => {
+        traerTareas();
         traerProvincias();
         traerMunicipiosPorProvincia(ProvinciaId);
         traerDomiciliosAbonado(location.state.UserId);
@@ -24,6 +25,7 @@ const CambioDomicilio = () => {
     //States
     const [DomicilioInfo, setDomicilioInfo] = useState({
         UserId: location.state.UserId,
+        ServicioId: location.state.ServicioId,
         DomicilioCalle: null,
         DomicilioNumero: null,
         DomicilioPiso: null,
@@ -36,7 +38,7 @@ const CambioDomicilio = () => {
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, DomicilioCalle, DomicilioNumero, DomicilioPiso, createdBy, CambioDomicilioObservaciones} = DomicilioInfo;
+    const { UserId, ServicioId, DomicilioCalle, DomicilioNumero, DomicilioPiso, createdBy, CambioDomicilioObservaciones} = DomicilioInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
     //para más adelante cuando vayan a otras provincias
@@ -82,6 +84,7 @@ const CambioDomicilio = () => {
         if(location.state) {
             cambioDomicilioAbonado({
                 UserId,
+                ServicioId,
                 //ProvinciaId
                 Barrio,
                 MunicipioId,
@@ -141,6 +144,7 @@ const CambioDomicilio = () => {
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Cambio: {data.createdAt.split('T')[0].split('-').reverse().join('/')}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-clipboard"></i> Observaciones: {data.CambioDomicilioObservaciones}</Typography>
     </>;
+    console.log(location.state);
     return ( 
     <>
     <div className="container">
@@ -284,6 +288,8 @@ const CambioDomicilio = () => {
                     label="Observaciones">
                     </TextField>
                     <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
+                    {location.state.ServicioId === 1 ? tareas.filter((tarea) => tarea.TareaId === 14).map((tarea) => <Typography>{tarea.TareaNombre}</Typography>)
+                    : tareas.filter((tarea) => tarea.TareaId === 15).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)}
                 </Grid>
             </Grid>
             </>

@@ -10,7 +10,7 @@ const SpanVencimientoContrato = (timestamp) => {
 
     const fecha = convertirAFecha(timestamp.timestamp);
 
-    const vencido = compararFechas(fecha, hoyLocal);
+    const vencido = compararFechas(hoyLocal, fecha);
 
     if(vencido) {
         return <span title="Contrato vencido"><i style={{color: 'red'}} class='bx bxs-circle'></i> {fecha}</span>

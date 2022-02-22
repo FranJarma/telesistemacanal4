@@ -8,6 +8,7 @@ import { DatePicker } from '@material-ui/pickers';
 import AppContext from '../../../context/appContext';
 import { Autocomplete } from '@material-ui/lab';
 import { useLocation } from 'react-router-dom';
+import convertirAHora from '../../../helpers/ConvertirAHora';
 
 const ListaMovimientos = () => {
     const appContext = useContext(AppContext);
@@ -58,7 +59,7 @@ const ListaMovimientos = () => {
         },
         {
             "name": "Hora de movimiento",
-            "selector": row =>row["createdAt"].split('T')[1].split(':')[0] - 3 + ':' + row["createdAt"].split(':')[1],
+            "selector": row => convertirAHora(row["createdAt"]),
             "wrap": true
         },
         {

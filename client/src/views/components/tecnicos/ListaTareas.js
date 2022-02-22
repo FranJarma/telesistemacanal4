@@ -24,6 +24,7 @@ const ListaTiposTareas = () => {
         TareaNombre: '',
         TareaPrecioUnitario: '',
         TareaDescripcion: '',
+        TareaPrecioOt: '',
         EstadoId: '',
         createdBy: null,
         updatedAt: null,
@@ -31,7 +32,7 @@ const ListaTiposTareas = () => {
         deletedBy: null,
         deletedAt: null
     })
-    const { TareaNombre, TareaPrecioUnitario, TareaDescripcion } = TareaInfo;
+    const { TareaNombre, TareaPrecioUnitario, TareaDescripcion, TareaPrecioOt } = TareaInfo;
 
     const onInputChange= (e) =>{
         setTareaInfo({
@@ -80,6 +81,12 @@ const ListaTiposTareas = () => {
         {
             "name": "Precio Unitario",
             "selector": row => "$ " + row["TareaPrecioUnitario"],
+            "wrap": true,
+            "sortable": true
+        },
+        {
+            "name": "Precio OT",
+            "selector": row => "$ " + row["TareaPrecioOt"],
             "wrap": true,
             "sortable": true
         },
@@ -135,7 +142,7 @@ const ListaTiposTareas = () => {
                     name="TareaNombre"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={12} sm={12} xl={12}>
+                <Grid item xs={6} md={6} sm={6} xl={6}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
@@ -148,6 +155,21 @@ const ListaTiposTareas = () => {
                     onChange={onInputChange}
                     value={TareaPrecioUnitario}
                     name="TareaPrecioUnitario"
+                    ></TextField>
+                </Grid>
+                <Grid item xs={6} md={6} sm={6} xl={6}>
+                    <TextField
+                    color="primary"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
+                    variant="outlined"
+                    label="Precio OT"
+                    fullWidth
+                    onChange={onInputChange}
+                    value={TareaPrecioOt}
+                    name="TareaPrecioOt"
                     ></TextField>
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>

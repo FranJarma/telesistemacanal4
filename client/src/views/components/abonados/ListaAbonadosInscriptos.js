@@ -147,13 +147,13 @@ const ListaAbonadosInscriptos = () => {
         <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Typography style={{color: 'teal'}}>
                 <Link to={{
                 pathname: `/caratula-abonado/edit/${data.Nombre + "-" +  data.Apellido}`,
                 state: data
                 }} style={{textDecoration: 'none', color: "teal"}}>
-                <i className='bx bxs-pencil bx-xs'></i>
-                </Link> Editar</Typography>
+                <Typography style={{color: 'teal'}}>
+                <i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
+                </Link>
             </MenuItem>
             <MenuItem>
                 <Link to={{
@@ -197,7 +197,7 @@ const columnasInscripcion = [
     },
     {
         "name": "Fecha de registro ",
-        "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('-'),
+        "selector": row => convertirAFecha(row["createdAt"]),
         "wrap": true,
         "sortable": true,
     },
@@ -329,8 +329,8 @@ const columnasInscripcion = [
                 >
                 </Modal>
                 <br/>
-                <span><i style={{color: 'red'}} class='bx bxs-circle'></i>Contrato Vencido </span>
-                <span><i style={{color: 'green'}} class='bx bxs-circle'></i>Contrato Vigente</span>
+                <span><i style={{color: 'red'}} class='bx bxs-circle'></i> Contrato Vencido </span>
+                <span><i style={{color: 'green'}} class='bx bxs-circle'></i> Contrato Vigente</span>
                 <Datatable
                     loader={true}
                     columnas={columnasAbonadosInscriptos}

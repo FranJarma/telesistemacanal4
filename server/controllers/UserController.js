@@ -14,6 +14,7 @@ const UserServicio = require('./../models/UserServicio');
 const UserRole = require('./../models/UserRole');
 const Onu = require('../models/Onu');
 const Movimiento = require('../models/Movimiento');
+const Tarea = require('../models/Tarea');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -447,12 +448,18 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            //traemos el id del ultimo domicilio registrado
+            // traemos el id del ultimo domicilio registrado
             let ultimoDomicilioId = 0;
             const ultimoDomicilio = await Domicilio.findOne({
                 order: [['DomicilioId', 'DESC']],
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
+            // buscamos el ultimo Movimiento
+            let ultimoMovimientoId = 0;
+            const ultimoMovimiento = await Movimiento.findOne({
+                order: [['MovimientoId', 'DESC']]
+            }); 
+            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
             const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
@@ -468,9 +475,26 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
             abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
             abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
+            // traemos el precio de la tarea de cambio de domicilio
+            const tarea = await Tarea.findOne({
+                where: {
+                    TareaId: req.body.ServicioId === 1 ? 14 : 15
+                }
+            })
+            // instanciamos un movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = tarea.TareaPrecioUnitario;
+            movimiento.createdBy = req.body.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = req.body.ServicioId === 1 ? 5 : 6; //cambio de domicilio
+            movimiento.MunicipioId = req.body.MunicipioId;
             await domicilio.save({transaction: t}),
             await abonado.save({transaction: t});
             await abonadoDomicilio.save({transaction: t});
+            await movimiento.save({transaction: t});
             return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})
         })
 

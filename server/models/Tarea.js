@@ -16,6 +16,9 @@ const Tarea = db.define('tarea', {
     TareaPrecioUnitario: {
         type: FLOAT,
     },
+    TareaPrecioOt: {
+        type: FLOAT,
+    },
     createdAt: {
         type: DATE,
         allowNull: true,
