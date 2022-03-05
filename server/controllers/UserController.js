@@ -15,6 +15,9 @@ const UserRole = require('./../models/UserRole');
 const Onu = require('../models/Onu');
 const Movimiento = require('../models/Movimiento');
 const Tarea = require('../models/Tarea');
+const Ot = require('../models/Ot');
+const OtTecnico = require('../models/OtTecnico');
+const OtTarea = require('../models/OtTarea');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -278,6 +281,7 @@ exports.AbonadoListarServicios = async(req, res) => {
 }
 
 exports.AbonadoCreate = async(req, res) => {
+    console.log(req.body);
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
@@ -305,6 +309,12 @@ exports.AbonadoCreate = async(req, res) => {
                 order: [['DomicilioId', 'DESC']]
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
+            let ultimaOtRegistradaId = 0;
+            //Buscamos la ultima OT registrada
+            let ultimaOtRegistrada = await Ot.findOne({
+                order: [['OtId', 'DESC']]
+            });
+            if(ultimaOtRegistrada) ultimaOtRegistradaId = ultimaOtRegistrada.OtId;
             //buscamos el ultimo Movimiento
             let ultimoMovimientoId = 0;
             const ultimoMovimiento = await Movimiento.findOne({
@@ -326,17 +336,12 @@ exports.AbonadoCreate = async(req, res) => {
             const UserId = uuidv4().toUpperCase()
             // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
             const abonado = new User(req.body, {transaction: t});
+            abonado.FechaBajada = req.body.OtFechaPrevistaVisita;
             abonado.UserId = UserId;
             abonado.DomicilioId = ultimoDomicilioId + 1;
             abonado.ServicioId = req.body.Servicio.ServicioId;
             abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
             abonado.EsUsuarioDeSistema = 0;
-            if(req.body.ServicioId === 1) {
-                abonado.FechaVencimientoContrato = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-            }
-            else {
-                abonado.FechaVencimientoContrato = new Date(new Date().setFullYear(new Date().getFullYear() + 2));
-            }
             const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
@@ -366,7 +371,7 @@ exports.AbonadoCreate = async(req, res) => {
             pago.PagoMes = new Date().getMonth() + 1;
             pago.PagoTotal = req.body.PagoInfo.Total;
             pago.PagoRecargo = 0;
-            pago.PagoSaldo = req.body.PagoInfo.Total - req.body.PagoInfo.Inscripcion;
+            pago.PagoSaldo = req.body.PagoInfo.Saldo;
             pago.createdAt = new Date();
             pago.createdBy = req.body.createdBy;
             const detallePago = new DetallePago({transaction: t})
@@ -384,6 +389,53 @@ exports.AbonadoCreate = async(req, res) => {
             await pago.save({transaction: t});
             await detallePago.save({transaction: t});
             await movimiento.save({transaction: t});
+            const ot = new Ot(req.body);
+            ot.OtId = ultimaOtRegistradaId + 1;
+            ot.AbonadoId = UserId;
+            ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.OtFechaPrevistaVisita = req.body.OtFechaPrevistaVisita;
+            ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
+            ot.createdBy = req.body.createdBy; 
+            await ot.save({transaction: t});
+            for (let i=0; i<= req.body.Tecnico.length-1; i++){
+                let obj = {
+                    TecnicoId: req.body.Tecnico[i].UserId,
+                    OtId: ot.OtId,
+                    createdBy: req.body.createdBy
+                }
+                const otTecnico = new OtTecnico(obj);
+                await otTecnico.save({transaction: t});
+            }
+            //Si es cable o internet es una sola tarea
+            let objTarea1 = null;
+            let objTarea2 = null;
+            if(req.body.Servicio.ServicioId === 1 || req.body.Servicio.ServicioId === 2)
+            {
+                objTarea1 ={
+                    OtId: ot.OtId,
+                    TareaId: req.body.Servicio.ServicioId === 1 ? 1 : 5, //Bajada cable o bajada internet
+                    createdBy: req.body.createdBy
+                };
+            }
+            //si es combo, son dos tareas:
+            else {
+                objTarea1 = {
+                    OtId: ot.OtId,
+                    TareaId: 1, //Bajada cable
+                    createdBy: req.body.createdBy
+                };
+                objTarea2 = {
+                    OtId: ot.OtId,
+                    TareaId: 5, //Bajada internet
+                    createdBy: req.body.createdBy
+                };
+            }
+            const otTarea1 = new OtTarea(objTarea1);
+            await otTarea1.save({transaction: t});
+            if(objTarea2 !== null){
+                const otTarea2 = new OtTarea(objTarea2);
+                await otTarea2.save({transaction: t});
+            }
             return res.status(200).json({msg: 'El Abonado ha sido registrado correctamente'});
         }
         }

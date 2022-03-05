@@ -3,6 +3,8 @@ import React, { useContext, useEffect } from 'react';
 import AppContext from '../../../context/appContext';
 import olinet from '../../images/olinet.PNG';
 import logo3 from '../../images/logo3.PNG';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import convertirAHora from '../../../helpers/ConvertirAHora';
 
 const CaratulaImpresionOt = ({datos}) => {
     const appContext = useContext(AppContext);
@@ -28,8 +30,8 @@ const CaratulaImpresionOt = ({datos}) => {
             <hr/>
             <br/>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant="h6"><b>Fecha de emisión OT:</b> {datos.createdAt.split('T')[0]}</Typography>
-                <Typography variant="h6"><b>Hora: </b>{datos.createdAt.split('T')[1].split('.')[0]}</Typography>
+                <Typography variant="h6"><b>Fecha de emisión OT:</b> {convertirAFecha(datos.createdAt)}</Typography>
+                <Typography variant="h6"><b>Hora: </b>{convertirAHora(datos.createdAt)}</Typography>
             </div>
             <hr/>
             <br/>

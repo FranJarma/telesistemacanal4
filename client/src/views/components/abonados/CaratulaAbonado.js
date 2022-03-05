@@ -39,6 +39,7 @@ const CaratulaAbonado = () => {
             [e.target.name] : e.target.value
         });
     }
+
     const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, createdBy, updatedAt, updatedBy} = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
@@ -50,33 +51,26 @@ const CaratulaAbonado = () => {
         setBarrio(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [Municipio, setMunicipio] = useState({
-        Municipio: null,
-        MunicipioNombre: null
-    });
+    const [Municipio, setMunicipio] = useState(null);
     const [Barrio, setBarrio] = useState(null);
-    const [Servicio, setServicio] = useState({
-        ServicioId: null,
-        ServicioNombre: null,
-        ServicioPrecioUnitario: null,
-        ServicioInscripcion: null
-    });
-    const [CondicionIvaId, setCondicionIvaId] = useState(0);
-    const [MedioPago, setMedioPago] = useState({
-        MedioPagoId: null,
-        MedioPagoNombre: null,
-        MedioPagoCantidadCuotas: null,
-        MedioPagoInteres: null
-    });
+    const [Servicio, setServicio] = useState(null);
+    const [CondicionIvaId, setCondicionIvaId] = useState(null);
+    const [MedioPago, setMedioPago] = useState(null);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date().toLocaleDateString());
-    const [FechaBajada, setFechaBajada] = useState(null);
     const [PagoInfo, setPagoInfo] = useState({
         Interes: null,
         Total: null,
-        Inscripcion: null
+        Inscripcion: null,
+        Saldo: null
     });
-    const [OtInfo, setOtInfo] = useState(null)
+    const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(null);
+    const [Tecnico, setTecnico] = useState(null);
+    const [OtObservacionesResponsableEmision, setOtObservacionesResponsableEmision] = useState(null);
+
+    const onInputChangeObservacionesOt = (e) => {
+        setOtObservacionesResponsableEmision(e.target.value);
+    }
 
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipio(e.target.value);
@@ -86,12 +80,7 @@ const CaratulaAbonado = () => {
 
     const handleChangeServicioSeleccionado = (e) => {
         setServicio(e.target.value);
-        setMedioPago({
-            MedioPagoId: null,
-            MedioPagoNombre: null,
-            MedioPagoCantidadCuotas: null,
-            MedioPagoInteres: null
-        });   
+        setMedioPago(null);   
     }
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIvaId(e.target.value);
@@ -103,6 +92,7 @@ const CaratulaAbonado = () => {
             Interes: e.target.value.MedioPagoInteres / 100,
             Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2),
             Inscripcion: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas).toFixed(2),
+            Saldo: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)) - ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas)).toFixed(2)
         })
     }
 
@@ -141,7 +131,7 @@ const CaratulaAbonado = () => {
             });
             setCondicionIvaId(location.state.CondicionIvaId);
             setFechaNacimiento(location.state.FechaNacimiento);
-            setFechaBajada(location.state.FechaBajada);
+            setOtFechaPrevistaVisita(location.state.OtFechaPrevistaVisita);
             setFechaContrato(location.state.FechaContrato);
         }
     }, [location.state])
@@ -161,7 +151,7 @@ const CaratulaAbonado = () => {
                 DomicilioPiso,
                 FechaNacimiento,
                 FechaContrato,
-                FechaBajada,
+                OtFechaPrevistaVisita,
                 CondicionIvaId,
                 ProvinciaId,
                 Municipio,
@@ -170,7 +160,8 @@ const CaratulaAbonado = () => {
                 createdBy,
                 PagoInfo,
                 MedioPago,
-                OtInfo
+                Tecnico,
+                OtObservacionesResponsableEmision
             });
         }
         else {
@@ -184,7 +175,7 @@ const CaratulaAbonado = () => {
                 Telefono,
                 FechaNacimiento,
                 FechaContrato,
-                FechaBajada,
+                OtFechaPrevistaVisita,
                 CondicionIvaId,
                 Servicio,
                 updatedAt,
@@ -456,7 +447,7 @@ const CaratulaAbonado = () => {
                         <TextField
                         variant = {location.state ? "filled" : "outlined"}
                         disabled = {location.state ? true : false}
-                        value={location.state ? location.state.ServicioNombre : Servicio}
+                        value={location.state ? location.state.ServicioNombre : Servicio !== null ? Servicio : ""}
                         onChange={handleChangeServicioSeleccionado}
                         label="Tipo de servicio"
                         fullWidth
@@ -467,7 +458,7 @@ const CaratulaAbonado = () => {
                         ))}
                         </TextField>
                     </Grid>
-                    {Servicio.ServicioId !== null && !location.state
+                    {Servicio !== null && !location.state
                     ?
                     <>
                     <Grid item xs={12} md={6} lg={6} xl={6}>
@@ -487,7 +478,7 @@ const CaratulaAbonado = () => {
                     </Grid>
                     </>
                     : "" }
-                    { Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null && !location.state
+                    { Servicio !== null && MedioPago !== null && !location.state
                     ?
                     <>
                     <Grid item xs={12} md={6} lg={6} xl={6}>
@@ -503,7 +494,7 @@ const CaratulaAbonado = () => {
                     :""}
                 </Grid>
                 <br/>
-                {Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null && !location.state?
+                {Servicio !== null && MedioPago !== null ?
                 <>
                 <Typography variant="h1">Precios finales</Typography>
                 <br/>
@@ -513,7 +504,7 @@ const CaratulaAbonado = () => {
                             <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
                             <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
                             <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
-                            <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Total - PagoInfo.Inscripcion}</Typography>
+                            <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -541,10 +532,10 @@ const CaratulaAbonado = () => {
                     </Grid>
                     <Grid item xs={12} md={6} lg={6} xl={6}>
                         <Autocomplete
-                        value={OtInfo}
+                        value={Tecnico}
                         onChange={(_event, newTecnico) => {
-                            setOtInfo(newTecnico)
                             traerOrdenesDeTrabajoAsignadas(newTecnico.UserId, 5);
+                            setTecnico(newTecnico);
                         }}
                         options={usuarios}
                         noOptionsText="No se encontraron técnicos"
@@ -552,9 +543,9 @@ const CaratulaAbonado = () => {
                         renderInput={(params) => <TextField {...params} variant ="outlined" fullWidth label="Técnico encargado de ejecución"/>}
                         />
                     </Grid>
-                    { OtInfo !== null ?
+                    { Tecnico !== null ?
                     <Grid item xs={12} md={12} lg={12} xl={12}>
-                        <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {OtInfo.Nombre}, {OtInfo.Apellido}</Typography>
+                        <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {Tecnico.Nombre}, {Tecnico.Apellido}</Typography>
                         <br/>
                         <Card>
                             <CardContent>
@@ -571,8 +562,10 @@ const CaratulaAbonado = () => {
                         <DatePicker 
                         disabled = {location.state ? true : false}
                         inputVariant={location.state ? "filled" : "outlined"}
-                        value={FechaBajada}
-                        onChange={(fecha)=>setFechaBajada(fecha)}
+                        value={OtFechaPrevistaVisita}
+                        onChange={(OtFechaPrevistaVisita)=> {
+                            setOtFechaPrevistaVisita(OtFechaPrevistaVisita)
+                        }}
                         format="dd/MM/yyyy"
                         placeholder='dia/mes/año'
                         fullWidth
@@ -609,11 +602,12 @@ const CaratulaAbonado = () => {
                             variant = "outlined"
                             multiline
                             minRows={3}
+                            value={OtObservacionesResponsableEmision}
                             name="OtObservacionesResponsableEmision"
                             inputProps={{
                                 maxLength: 1000
                             }}
-                            onChange={onInputChange}
+                            onChange={onInputChangeObservacionesOt}
                             fullWidth
                             label="Observaciones registro de OT">
                             </TextField>

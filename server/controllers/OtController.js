@@ -100,7 +100,6 @@ exports.OtCreate = async(req, res) => {
             ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
             ot.createdBy = req.body.createdBy; //registrada
             await ot.save({transaction: t});
-            console.log(req.body);
             for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
                 let obj = {
                     TecnicoId: req.body.tecnicosOt[i].UserId,

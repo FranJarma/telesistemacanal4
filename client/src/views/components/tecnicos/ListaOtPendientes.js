@@ -11,6 +11,7 @@ import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
 
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
@@ -84,9 +85,10 @@ const ListaOtPendientes = () => {
 
     const columnasOt = [
         {
-            "name": "id",
+            "name": "N°",
             "selector": row => row["OtId"],
-            "omit": true
+            "wrap": true,
+            "sortable": true,
         },
         {
             "name": "Abonado",
@@ -99,6 +101,12 @@ const ListaOtPendientes = () => {
             "wrap": true,
             "sortable": true,
             "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+        },
+        {
+            "name": "Fecha de Emisión",
+            "wrap": true,
+            "sortable": true,
+            "selector": row => convertirAFecha(row["createdAt"])
         },
         {
             "name": "Monto",
