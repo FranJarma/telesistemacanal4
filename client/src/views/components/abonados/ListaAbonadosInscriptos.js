@@ -133,7 +133,7 @@ const ListaAbonadosInscriptos = () => {
         "hide": "sm",
     },
     {
-        "name": <TooltipForTable name="Fecha de Bajada" />,
+        "name": <TooltipForTable name="Posible Fecha de Bajada" />,
         "selector": row => convertirAFecha(row["FechaBajada"]),
         "sortable": true
     },

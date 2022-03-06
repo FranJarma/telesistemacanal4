@@ -395,6 +395,7 @@ exports.AbonadoCreate = async(req, res) => {
             ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
             ot.OtFechaPrevistaVisita = req.body.OtFechaPrevistaVisita;
             ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
+            ot.OtResponsableEjecucion = req.body.Tecnico.UserId;
             ot.createdBy = req.body.createdBy; 
             await ot.save({transaction: t});
             for (let i=0; i<= req.body.Tecnico.length-1; i++){
