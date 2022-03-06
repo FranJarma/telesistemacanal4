@@ -30,7 +30,7 @@ const CambioDomicilio = () => {
         DomicilioNumero: null,
         DomicilioPiso: null,
         CambioDomicilioObservaciones: null,
-        createdBy: null
+        createdBy: sessionStorage.getItem('identity')
     })
     const onInputChange = (e) => {
         setDomicilioInfo({
@@ -67,8 +67,7 @@ const CambioDomicilio = () => {
         setModalNuevoDomicilio(!ModalNuevoDomicilio);
         setDomicilioInfo({
             ...DomicilioInfo,
-            UserId: location.state.UserId,
-            createdBy: sessionStorage.getItem('identity')
+            UserId: location.state.UserId
         })
     }
 

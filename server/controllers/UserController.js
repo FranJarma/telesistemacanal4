@@ -531,8 +531,8 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             //buscamos el user para actualizarle el domicilio y el estado
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
             abonado.DomicilioId = ultimoDomicilioId + 1;
-            abonado.EstadoId = 1;
-            abonado.FechaBajada = req.body.FechaBajada;
+            // abonado.EstadoId = 1;
+            // abonado.FechaBajada = req.body.FechaBajada;
             //await abonado.update(req.body.DomicilioId);
             let ultimoUserDomicilio = await UserDomicilio.findOne({
                 order: [["UserDomicilioId", "DESC"]]

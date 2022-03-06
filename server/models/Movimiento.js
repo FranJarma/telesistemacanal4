@@ -38,6 +38,10 @@ const Movimiento = db.define('movimiento', {
     //     type: INTEGER,
     //     allowNull: true
     // },
+    MunicipioId: {
+        type: INTEGER,
+        allowNull: false
+    },
     createdAt: {
         type: DATE,
         allowNull: true,
