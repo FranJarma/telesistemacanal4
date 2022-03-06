@@ -40,6 +40,10 @@ const Ot = db.define('ot', {
     OtCuartaVisita: {
         type: DATE
     },
+    OtResponsableEjecucion: {
+        type: UUIDV4,
+        allowNull: false
+    },
     createdAt: {
         type: DATE,
         allowNull: true,

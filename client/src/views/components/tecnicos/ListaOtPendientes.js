@@ -11,6 +11,8 @@ import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
 
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
@@ -84,9 +86,10 @@ const ListaOtPendientes = () => {
 
     const columnasOt = [
         {
-            "name": "id",
+            "name": "N°",
             "selector": row => row["OtId"],
-            "omit": true
+            "wrap": true,
+            "sortable": true,
         },
         {
             "name": "Abonado",
@@ -101,13 +104,25 @@ const ListaOtPendientes = () => {
             "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
         },
         {
+            "name": <TooltipForTable name="Fecha de Emisión"/>,
+            "wrap": true,
+            "sortable": true,
+            "selector": row => convertirAFecha(row["createdAt"])
+        },
+        {
             "name": "Monto",
             "wrap": true,
             "sortable": true,
             "selector": row => "$ " + row["Monto"]
         },
         {
-            "name": "Observaciones",
+            "name": <TooltipForTable name="Responsable de Ejecución"/>,
+            "wrap": true,
+            "sortable": true,
+            "selector": row => row["ApellidoResponsableEjecucion"] + ", " + row["NombreResponsableEjecucion"]
+        },
+        {
+            "name": <TooltipForTable name="Observaciones"/>,
             "wrap": true,
             "sortable": true,
             "selector": row => row["OtObservacionesResponsableEmision"] ? row["OtObservacionesResponsableEmision"] : "-",

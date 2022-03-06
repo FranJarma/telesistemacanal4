@@ -21,12 +21,14 @@ exports.OtGet = async(req, res) => {
         'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion',
         'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
+        'u2.Nombre as NombreResponsableEjecucion', 'u2.Apellido as ApellidoResponsableEjecucion',
         'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre'
         )
         .sum('t.TareaPrecioUnitario as Monto')
         .from('ot as ot')
         .innerJoin('_user as u', 'u.UserId', '=', 'ot.AbonadoId')
         .innerJoin('_user as u1', 'u1.UserId', '=', 'ot.createdBy')
+        .innerJoin('_user as u2', 'u2.UserId', '=', 'ot.OtResponsableEjecucion')
         .innerJoin('domicilio as d', 'u.DomicilioId', '=', 'd.DomicilioId')
         .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
         .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
@@ -63,11 +65,10 @@ exports.OtGetByTecnico = async(req, res) => {
         .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
         .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
         .innerJoin('ottarea as ott', 'ott.OtId', '=' ,'ot.OtId')
-        .innerJoin('ottecnico as otte', 'otte.OtId', '=', 'ot.OtId')
         .innerJoin('tarea as t', 'ott.TareaId', '=' ,'t.TareaId')
         .where(
             {'ot.deletedAt': null,
-            'otte.TecnicoId': req.params.tecnicoId,
+            'ot.OtResponsableEjecucion': req.params.tecnicoId,
             'ot.EstadoId': req.params.estadoId
             })
         .groupBy('ot.OtId')
@@ -100,7 +101,6 @@ exports.OtCreate = async(req, res) => {
             ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
             ot.createdBy = req.body.createdBy; //registrada
             await ot.save({transaction: t});
-            console.log(req.body);
             for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
                 let obj = {
                     TecnicoId: req.body.tecnicosOt[i].UserId,

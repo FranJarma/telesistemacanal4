@@ -3,9 +3,8 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import { Button, Card, CardContent, Chip, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
-import { DatePicker } from '@material-ui/pickers';
+import { DatePicker, TimePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
-import { Alert } from '@material-ui/lab';
 import { Autocomplete } from '@material-ui/lab';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Datatable from '../design/components/Datatable';
@@ -39,6 +38,7 @@ const CaratulaAbonado = () => {
             [e.target.name] : e.target.value
         });
     }
+
     const { UserId, Nombre, Apellido, Documento, Cuit, Email, Telefono, DomicilioCalle, DomicilioNumero, DomicilioPiso, createdBy, updatedAt, updatedBy} = abonadoInfo;
     //seteamos en 10 para que traiga jujuy directamente
     const [ProvinciaId, setProvinciaId] = useState(10);
@@ -50,48 +50,42 @@ const CaratulaAbonado = () => {
         setBarrio(0);
         traerMunicipiosPorProvincia(e.target.value);
     }*/
-    const [Municipio, setMunicipio] = useState({
-        Municipio: null,
-        MunicipioNombre: null
+    const [MunicipioId, setMunicipioId] = useState(null);
+    const [Barrio, setBarrio] = useState({
+        BarrioId: null,
+        BarrioNombre: null
     });
-    const [Barrio, setBarrio] = useState(null);
-    const [Servicio, setServicio] = useState({
-        ServicioId: null,
-        ServicioNombre: null,
-        ServicioPrecioUnitario: null,
-        ServicioInscripcion: null
-    });
-    const [CondicionIvaId, setCondicionIvaId] = useState(0);
-    const [MedioPago, setMedioPago] = useState({
-        MedioPagoId: null,
-        MedioPagoNombre: null,
-        MedioPagoCantidadCuotas: null,
-        MedioPagoInteres: null
-    });
+    const [Servicio, setServicio] = useState(null);
+    const [CondicionIvaId, setCondicionIvaId] = useState(null);
+    const [MedioPago, setMedioPago] = useState(null);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
-    const [FechaContrato, setFechaContrato] = useState(new Date().toLocaleDateString());
-    const [FechaBajada, setFechaBajada] = useState(null);
+    const [FechaContrato, setFechaContrato] = useState(new Date());
     const [PagoInfo, setPagoInfo] = useState({
         Interes: null,
         Total: null,
-        Inscripcion: null
+        Inscripcion: null,
+        Saldo: null
     });
-    const [OtInfo, setOtInfo] = useState(null)
+    const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(null);
+    const [Tecnico, setTecnico] = useState(null);
+    const [OtObservacionesResponsableEmision, setOtObservacionesResponsableEmision] = useState(null);
+
+    const onInputChangeObservacionesOt = (e) => {
+        setOtObservacionesResponsableEmision(e.target.value);
+    }
 
     const handleChangeMunicipioSeleccionado = (e) => {
-        setMunicipio(e.target.value);
-        setBarrio(null);
-        traerBarriosPorMunicipio(e.target.value.MunicipioId);
+        setMunicipioId(e.target.value);
+        setBarrio({
+            BarrioId: null,
+            BarrioNombre: null
+        });
+        traerBarriosPorMunicipio(e.target.value);
     }
 
     const handleChangeServicioSeleccionado = (e) => {
         setServicio(e.target.value);
-        setMedioPago({
-            MedioPagoId: null,
-            MedioPagoNombre: null,
-            MedioPagoCantidadCuotas: null,
-            MedioPagoInteres: null
-        });   
+        setMedioPago(null);   
     }
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIvaId(e.target.value);
@@ -103,9 +97,9 @@ const CaratulaAbonado = () => {
             Interes: e.target.value.MedioPagoInteres / 100,
             Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2),
             Inscripcion: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas).toFixed(2),
+            Saldo: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)) - ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas)).toFixed(2)
         })
     }
-
     useEffect(() => {
         traerProvincias();
         traerMunicipiosPorProvincia(ProvinciaId);
@@ -133,6 +127,12 @@ const CaratulaAbonado = () => {
                 updatedAt: new Date(),
                 updatedBy: sessionStorage.getItem('identity')
             });
+            setMunicipioId(location.state.MunicipioId);
+            traerBarriosPorMunicipio(location.state.MunicipioId);
+            setBarrio({
+                BarrioId: location.state.BarrioId,
+                BarrioNombre: location.state.BarrioNombre
+            });
             setServicio({
                 ServicioId: location.state.ServicioId,
                 ServicioNombre: location.state.ServicioNombre,
@@ -141,7 +141,7 @@ const CaratulaAbonado = () => {
             });
             setCondicionIvaId(location.state.CondicionIvaId);
             setFechaNacimiento(location.state.FechaNacimiento);
-            setFechaBajada(location.state.FechaBajada);
+            setOtFechaPrevistaVisita(location.state.OtFechaPrevistaVisita);
             setFechaContrato(location.state.FechaContrato);
         }
     }, [location.state])
@@ -161,16 +161,17 @@ const CaratulaAbonado = () => {
                 DomicilioPiso,
                 FechaNacimiento,
                 FechaContrato,
-                FechaBajada,
+                OtFechaPrevistaVisita,
                 CondicionIvaId,
                 ProvinciaId,
-                Municipio,
+                MunicipioId,
                 Barrio,
                 Servicio,
                 createdBy,
                 PagoInfo,
                 MedioPago,
-                OtInfo
+                Tecnico,
+                OtObservacionesResponsableEmision
             });
         }
         else {
@@ -184,8 +185,13 @@ const CaratulaAbonado = () => {
                 Telefono,
                 FechaNacimiento,
                 FechaContrato,
-                FechaBajada,
+                OtFechaPrevistaVisita,
                 CondicionIvaId,
+                MunicipioId,
+                Barrio,
+                DomicilioCalle,
+                DomicilioNumero,
+                DomicilioPiso,
                 Servicio,
                 updatedAt,
                 updatedBy
@@ -365,47 +371,34 @@ const CaratulaAbonado = () => {
                     </Grid>
                     <Grid item xs={12} md={4} lg={4} xl={4}>
                         <TextField
-                        variant = {location.state ? "filled" : "outlined"}
-                        disabled = {location.state ? true : false}
+                        variant = "outlined"
                         onChange={handleChangeMunicipioSeleccionado}
-                        value={location.state ? location.state.MunicipioNombre : Municipio}
+                        value={MunicipioId}
                         label="Municipio"
                         fullWidth
-                        select = {location.state ? false : true}
+                        select
                         >
-                        {!location.state ? municipios.length > 0 ? municipios.map((municipio)=>(
-                            <MenuItem key={municipio.MunicipioId} value={municipio}>{municipio.MunicipioNombre}</MenuItem>
-                        )): <MenuItem disabled>No se encontraron municipios</MenuItem> : ""}
+                        {municipios.length > 0 ? municipios.map((municipio)=>(
+                            <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
+                        )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
                         </TextField>
                     </Grid>
                     <Grid item xs={12} md={4} lg={4} xl={4}>
-                    {location.state ? 
-                    <TextField
-                        variant = "filled"
-                        disabled
-                        value={location.state.BarrioNombre}
-                        fullWidth
-                        label="Barrio">
-                    </TextField>
-                    :
                     <Autocomplete
-                    disableClearable
-                    disabled={location.state ? true : false}
-                    value={location.state ? location.state.BarrioNombre : Barrio}
-                    onChange={(_event, newBarrioId) => {
-                        setBarrio(newBarrioId);
-                    }}
-                    options={barrios}
-                    noOptionsText="No se encontraron barrios"
-                    getOptionLabel={(option) => option.BarrioNombre}
-                    renderInput={(params) => <TextField {...params} variant = {location.state ? "filled" : "outlined"} fullWidth label="Barrios"/>}
+                        disableClearable
+                        value={Barrio}
+                        onChange={(_event, newBarrioId) => {
+                            setBarrio(newBarrioId);
+                        }}
+                        options={barrios}
+                        noOptionsText="No se encontraron barrios"
+                        getOptionLabel={(option) => option.BarrioNombre}
+                        renderInput={(params) => <TextField {...params} value={Barrio.BarrioId} variant = "outlined" fullWidth label="Barrios"/>}
                     />
-                    }
                     </Grid>
                     <Grid item xs={12} md={4} lg={4} xl={4}>
                         <TextField
-                        variant = {location.state ? "filled" : "outlined"}
-                        disabled = {location.state ? true : false}
+                        variant = "outlined"
                         value={DomicilioCalle}
                         name="DomicilioCalle"
                         onChange={onInputChange}
@@ -415,8 +408,7 @@ const CaratulaAbonado = () => {
                     </Grid>
                     <Grid item xs={12} md={4} lg={4} xl={4}>
                         <TextField
-                        variant = {location.state ? "filled" : "outlined"}
-                        disabled = {location.state ? true : false}
+                        variant = "outlined"
                         value={DomicilioNumero}
                         name="DomicilioNumero"
                         onChange={onInputChange}
@@ -430,8 +422,7 @@ const CaratulaAbonado = () => {
                     </Grid>
                     <Grid item xs={12} md={4} lg={4} xl={4}>
                         <TextField
-                        variant = {location.state ? "filled" : "outlined"}
-                        disabled = {location.state ? true : false}
+                        variant = "outlined"
                         value={DomicilioPiso}
                         name="DomicilioPiso"
                         onChange={onInputChange}
@@ -456,7 +447,7 @@ const CaratulaAbonado = () => {
                         <TextField
                         variant = {location.state ? "filled" : "outlined"}
                         disabled = {location.state ? true : false}
-                        value={location.state ? location.state.ServicioNombre : Servicio}
+                        value={location.state ? location.state.ServicioNombre : Servicio !== null ? Servicio : ""}
                         onChange={handleChangeServicioSeleccionado}
                         label="Tipo de servicio"
                         fullWidth
@@ -467,13 +458,12 @@ const CaratulaAbonado = () => {
                         ))}
                         </TextField>
                     </Grid>
-                    {Servicio.ServicioId !== null && !location.state
+                    {Servicio !== null && !location.state
                     ?
                     <>
                     <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
-                        variant = {location.state ? "filled" : "outlined"}
-                        disabled = {location.state ? true : false}
+                        variant = "outlined"
                         value={MedioPago}
                         onChange={handleChangeMedioPagoSeleccionado}
                         label="Medio de Pago de Inscripción"
@@ -487,7 +477,7 @@ const CaratulaAbonado = () => {
                     </Grid>
                     </>
                     : "" }
-                    { Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null && !location.state
+                    { Servicio !== null && MedioPago !== null && !location.state
                     ?
                     <>
                     <Grid item xs={12} md={6} lg={6} xl={6}>
@@ -503,7 +493,7 @@ const CaratulaAbonado = () => {
                     :""}
                 </Grid>
                 <br/>
-                {Servicio.ServicioId !== null && MedioPago.MedioPagoId !== null && !location.state?
+                {Servicio !== null && MedioPago !== null ?
                 <>
                 <Typography variant="h1">Precios finales</Typography>
                 <br/>
@@ -513,14 +503,12 @@ const CaratulaAbonado = () => {
                             <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
                             <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
                             <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
-                            <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Total - PagoInfo.Inscripcion}</Typography>
+                            <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
                 </>
                 : "" }
-            <br/>
-            {location.state ? <Alert severity="info">Para modificar todos los datos del domicilio y del servicio contratado se tiene que realizar desde las opciones <b>Cambio de Domicilio y Cambio de Servicio</b> respectivamente.</Alert> :""}
             </CardContent>
         </Card>
     </TabPanel>
@@ -529,22 +517,23 @@ const CaratulaAbonado = () => {
             <CardContent>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={6} lg={6} xl={6}>
-                        <TextField
-                        variant="outlined"
-                        disabled = {location.state ? true : false}
-                        inputVariant={location.state ? "filled" : "outlined"}
+                        <DatePicker
+                        disabled
+                        inputVariant="filled"
                         value={FechaContrato}
+                        format="dd/MM/yyyy"
                         fullWidth
                         label="Fecha de Contrato"
                         >
-                        </TextField>
+                        </DatePicker>
                     </Grid>
+                    { !location.state ?
                     <Grid item xs={12} md={6} lg={6} xl={6}>
                         <Autocomplete
-                        value={OtInfo}
+                        value={Tecnico}
                         onChange={(_event, newTecnico) => {
-                            setOtInfo(newTecnico)
                             traerOrdenesDeTrabajoAsignadas(newTecnico.UserId, 5);
+                            setTecnico(newTecnico);
                         }}
                         options={usuarios}
                         noOptionsText="No se encontraron técnicos"
@@ -552,9 +541,10 @@ const CaratulaAbonado = () => {
                         renderInput={(params) => <TextField {...params} variant ="outlined" fullWidth label="Técnico encargado de ejecución"/>}
                         />
                     </Grid>
-                    { OtInfo !== null ?
+                    : ""}
+                    { Tecnico !== null && !location.state ?
                     <Grid item xs={12} md={12} lg={12} xl={12}>
-                        <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {OtInfo.Nombre}, {OtInfo.Apellido}</Typography>
+                        <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {Tecnico.Nombre}, {Tecnico.Apellido}</Typography>
                         <br/>
                         <Card>
                             <CardContent>
@@ -567,57 +557,68 @@ const CaratulaAbonado = () => {
 
                     </Grid>
                     : ""}
+                    {!location.state ?
+                    <>
                     <Grid item xs={12} md={4} lg={4} xl={4}>
                         <DatePicker 
                         disabled = {location.state ? true : false}
                         inputVariant={location.state ? "filled" : "outlined"}
-                        value={FechaBajada}
-                        onChange={(fecha)=>setFechaBajada(fecha)}
+                        value={OtFechaPrevistaVisita}
+                        onChange={(OtFechaPrevistaVisita)=> {
+                            setOtFechaPrevistaVisita(OtFechaPrevistaVisita)
+                        }}
                         format="dd/MM/yyyy"
                         placeholder='dia/mes/año'
                         fullWidth
                         label="Fecha prevista de visita"
                         >
-                        </DatePicker >
+                        </DatePicker>
                     </Grid>
                     <Grid item xs={12} md={3} lg={3} xl={3}>
                             <TextField
-                            variant="outlined"
+                            disabled
+                            variant="filled"
                             value={sessionStorage.getItem('usr')}
                             fullWidth
                             label="Responsable de emisión de OT">
                             </TextField>
                         </Grid>
                         <Grid item xs={6} md={3} lg={3} xl={3}>
-                            <TextField
-                                value={new Date().toLocaleDateString()}
-                                variant="outlined"
+                            <DatePicker
+                                disabled
+                                value={new Date()}
+                                format="dd/MM/yyyy"
+                                inputVariant="filled"
                                 fullWidth
                                 label="Fecha de emisión de OT"
-                            ></TextField>
+                            ></DatePicker>
                         </Grid>
                         <Grid item xs={6} md={2} lg={2} xl={2}>
-                            <TextField
-                                value={new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})}
-                                variant="outlined"
+                            <TimePicker
+                                value={new Date()}
+                                disabled
+                                inputVariant="filled"
                                 fullWidth
                                 label="Hora de emisión de OT"
-                            ></TextField>
+                            ></TimePicker>
                         </Grid>
                         <Grid item xs={12} md={12} lg={12} xl={12}>
                             <TextField
                             variant = "outlined"
                             multiline
                             minRows={3}
+                            value={OtObservacionesResponsableEmision}
                             name="OtObservacionesResponsableEmision"
                             inputProps={{
                                 maxLength: 1000
                             }}
-                            onChange={onInputChange}
+                            onChange={onInputChangeObservacionesOt}
                             fullWidth
                             label="Observaciones registro de OT">
                             </TextField>
                         </Grid>
+                        </>
+                        : ""}
                 </Grid>
             </CardContent>
         </Card>

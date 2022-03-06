@@ -99,14 +99,6 @@ const User = db.define('_user', {
         type: INTEGER,
         allowNull: true
     },
-    MedioPagoIdInscripcion: {
-        type: INTEGER,
-        allowNull: true
-    },
-    SaldoInscripcion: {
-        type: INTEGER,
-        allowNull: true
-    },
     OnuId: {
         type: INTEGER,
         allowNull: true

@@ -96,7 +96,13 @@ const ListaAbonadosInactivos = () => {
         },
         {
             "name": "Fecha y hora de baja",
-            "selector": row => convertirAFecha(row["deletedAt"]),
+            "selector": row => row["deletedAt"] ? convertirAFecha(row["deletedAt"]) : "",
+            "wrap": true,
+            "sortable": true
+        },
+        {
+            "name": "Motivo de baja",
+            "selector": row => row["CambioEstadoObservaciones"],
             "wrap": true,
             "sortable": true
         },
