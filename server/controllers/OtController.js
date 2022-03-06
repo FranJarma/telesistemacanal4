@@ -217,7 +217,7 @@ exports.OtFinalizar = async (req, res) => {
     try {
         const { OtId, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, Monto, updatedBy } = req.body;
         const añoFechaFinalizacion = parseInt(OtFechaFinalizacion.split('-')[0]);
-        let fechaVencimientoBajada = "";
+        let FechaVencimientoServicio = "";
 
         await db.transaction(async (t)=> {
             if( OtFechaInicio >= OtFechaFinalizacion ) return res.status(400).send({msg: 'La hora de Inicio no puede ser mayor o igual a la de finalización'});
@@ -233,12 +233,12 @@ exports.OtFinalizar = async (req, res) => {
                 abonado.FechaBajada = OtFechaFinalizacion;
                 abonado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
                 if(abonado.ServicioId === 1) {
-                    fechaVencimientoBajada = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 1);
+                    FechaVencimientoServicio = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 1);
                 }
                 else {
-                    fechaVencimientoBajada = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 2);
+                    FechaVencimientoServicio = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 2);
                 }
-                abonado.FechaVencimientoBajada = fechaVencimientoBajada;
+                abonado.FechaVencimientoServicio = FechaVencimientoServicio;
                 await abonado.save({transaction: t});
             }
             await ot.save({transaction: t});

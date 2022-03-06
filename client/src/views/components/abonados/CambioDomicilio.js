@@ -280,7 +280,7 @@ const CambioDomicilio = () => {
                     label="Observaciones">
                     </TextField>
                     <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
-                    {location.state.ServicioId === 1 ? tareas.filter((tarea) => tarea.TareaId === 14).map((tarea) => <Typography>{tarea.TareaNombre}</Typography>)
+                    {location.state.ServicioId === 1 ? tareas.filter((tarea) => tarea.TareaId === 14).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)
                     : tareas.filter((tarea) => tarea.TareaId === 15).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)}
                 </Grid>
             </Grid>

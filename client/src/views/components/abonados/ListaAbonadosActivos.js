@@ -11,8 +11,7 @@ import { Link } from 'react-router-dom';
 import useStyles from '../Styles';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import TooltipForTable from '../../../helpers/TooltipForTable';
-import convertirAFecha from '../../../helpers/ConvertirAFecha';
-import SpanVencimientoContrato from '../../../helpers/SpanVencimientoContrato';
+import SpanVencimientoServicio from '../../../helpers/SpanVencimientoServicio';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
@@ -102,8 +101,8 @@ const ListaAbonadosActivos = () => {
         "hide": "sm",
     },
     {
-        "name": <TooltipForTable name="Vencimiento" />,
-        "selector": row => row["FechaVencimientoBajada"] ? <SpanVencimientoContrato timestamp={row["FechaVencimientoBajada"]}></SpanVencimientoContrato> : "",
+        "name": <TooltipForTable name="Vencimiento de Servicio" />,
+        "selector": row => row["FechaVencimientoServicio"] ? <SpanVencimientoServicio timestamp={row["FechaVencimientoServicio"]}></SpanVencimientoServicio> : "",
         "sortable": true
     },
     {
@@ -224,8 +223,8 @@ const ListaAbonadosActivos = () => {
                 >
                 </Modal>
                 <br/>
-                <span><i style={{color: 'red'}} class='bx bxs-circle'></i>Contrato Vencido </span>
-                <span><i style={{color: 'green'}} class='bx bxs-circle'></i>Contrato Vigente</span>
+                <span><i style={{color: 'red'}} class='bx bxs-circle'></i>Servicio Vencido </span>
+                <span><i style={{color: 'green'}} class='bx bxs-circle'></i>Servicio Vigente</span>
                 <Datatable
                     loader={true}
                     columnas={columnasAbonadosActivos}
