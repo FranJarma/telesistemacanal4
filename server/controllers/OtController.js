@@ -18,7 +18,7 @@ exports.OtGet = async(req, res) => {
         const ot = await knex
         .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
         'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.OtRetiraCable', 'ot.OtRetiraOnu',
-        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion',
+        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion', 'ot.OtEsPrimeraBajada',
         'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
         'u2.Nombre as NombreResponsableEjecucion', 'u2.Apellido as ApellidoResponsableEjecucion',
@@ -216,24 +216,11 @@ exports.OtRegistrarVisita = async (req, res) => {
 exports.OtFinalizar = async (req, res) => {
     try {
         const { OtId, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, Monto, updatedBy } = req.body;
+        const añoFechaFinalizacion = parseInt(OtFechaFinalizacion.split('-')[0]);
+        let fechaVencimientoBajada = "";
+
         await db.transaction(async (t)=> {
             if( OtFechaInicio >= OtFechaFinalizacion ) return res.status(400).send({msg: 'La hora de Inicio no puede ser mayor o igual a la de finalización'});
-            //buscamos el ultimo Movimiento
-            let ultimoMovimientoId = 0;
-            const ultimoMovimiento = await Movimiento.findOne({
-                order: [['MovimientoId', 'DESC']]
-            }); 
-            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
-            //instanciamos un nuevo movimiento
-            const movimiento = new Movimiento({transaction: t});
-            movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = Monto;
-            movimiento.MovimientoDia = new Date().getDate();
-            movimiento.MovimientoMes = new Date().getMonth()+1;
-            movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = 2;
-            movimiento.createdBy = updatedBy;
-            movimiento.OtId = OtId;
             const ot = await Ot.findByPk(OtId);
             ot.OtFechaInicio = OtFechaInicio;
             ot.OtFechaFinalizacion = OtFechaFinalizacion;
@@ -241,11 +228,20 @@ exports.OtFinalizar = async (req, res) => {
             ot.EstadoId = process.env.ESTADO_ID_OT_FINALIZADA;
             ot.updatedAt = new Date();
             ot.updatedBy = updatedBy;
-            const abonado = await User.findByPk(ot.AbonadoId);
-            abonado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            if(ot.OtEsPrimeraBajada) {
+                const abonado = await User.findByPk(ot.AbonadoId);
+                abonado.FechaBajada = OtFechaFinalizacion;
+                abonado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+                if(abonado.ServicioId === 1) {
+                    fechaVencimientoBajada = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 1);
+                }
+                else {
+                    fechaVencimientoBajada = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 2);
+                }
+                abonado.FechaVencimientoBajada = fechaVencimientoBajada;
+                await abonado.save({transaction: t});
+            }
             await ot.save({transaction: t});
-            await abonado.save({transaction: t});
-            await movimiento.save({transaction: t});
             const tareasOt = await OtTarea.findAll({
                 where: {
                     OtId: OtId
@@ -313,6 +309,25 @@ exports.OtFinalizar = async (req, res) => {
                         }
                     }
                 }
+            }
+            if(Monto > 0) {
+                //buscamos el ultimo Movimiento
+                let ultimoMovimientoId = 0;
+                const ultimoMovimiento = await Movimiento.findOne({
+                    order: [['MovimientoId', 'DESC']]
+                }); 
+                if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
+                //instanciamos un nuevo movimiento
+                const movimiento = new Movimiento({transaction: t});
+                movimiento.MovimientoId = ultimoMovimientoId + 1;
+                movimiento.MovimientoCantidad = Monto;
+                movimiento.MovimientoDia = new Date().getDate();
+                movimiento.MovimientoMes = new Date().getMonth()+1;
+                movimiento.MovimientoAño = new Date().getFullYear();
+                movimiento.MovimientoConceptoId = 2;
+                movimiento.createdBy = updatedBy;
+                movimiento.OtId = OtId;
+                await movimiento.save({transaction: t});
             }
             return res.status(200).json({msg: 'La OT ha sido finalizada correctamente'})
         })

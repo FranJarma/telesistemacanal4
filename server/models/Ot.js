@@ -10,6 +10,9 @@ const Ot = db.define('ot', {
         type: DATE,
         allowNull: false
     },
+    OtEsPrimeraBajada: {
+        type: INTEGER
+    },
     OtFechaInicio: {
         type: DATE,
     },

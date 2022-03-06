@@ -97,19 +97,14 @@ const ListaAbonadosActivos = () => {
     },
     {
         "name": <TooltipForTable name="Servicio" />,
-        "selector": row =>row["ServicioNombre"],
+        "selector": row => row["ServicioNombre"],
         "sortable": true,
         "hide": "sm",
     },
     {
-        "name": <TooltipForTable name="Vencimiento de Contrato" />,
-        "selector": row => <SpanVencimientoContrato timestamp={row["FechaVencimientoContrato"]}></SpanVencimientoContrato>,
+        "name": <TooltipForTable name="Vencimiento" />,
+        "selector": row => row["FechaVencimientoBajada"] ? <SpanVencimientoContrato timestamp={row["FechaVencimientoBajada"]}></SpanVencimientoContrato> : "",
         "sortable": true
-    },
-    {
-        "name": <TooltipForTable name="Fecha de Bajada" />,
-        "selector": row => convertirAFecha(row["Fecha de Bajada"]),
-        "omit": true,
     },
     {
         cell: (data) =>

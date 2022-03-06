@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, List, ListItem, ListItemIcon, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid, List, ListItem, MenuItem, TextField, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
@@ -16,7 +16,7 @@ import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
-    const { ordenesDeTrabajo, traerOrdenesDeTrabajo, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
+    const { ordenesDeTrabajo, tareasOrdenDeTrabajo, traerOrdenesDeTrabajo, traerTareasOt, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
 
     useEffect(()=>{
         traerOrdenesDeTrabajo(5);
@@ -66,6 +66,7 @@ const ListaOtPendientes = () => {
     const handleChangeModalFinalizarOt = (data = '') => {
         if(!ModalFinalizarOt) {
             setOtInfo(data);
+            traerTareasOt(data.OtId);
             setModalFinalizarOt(true);
         }
         else {
@@ -90,6 +91,7 @@ const ListaOtPendientes = () => {
             "selector": row => row["OtId"],
             "wrap": true,
             "sortable": true,
+            "width": "70px"
         },
         {
             "name": "Abonado",
@@ -239,17 +241,14 @@ const ListaOtPendientes = () => {
                     ></DatePicker>
                 </Grid>
             </Grid>
-            { OtInfo.OtPrimeraVisita ? <>
-                <Typography variant="h2">Visitas anteriores:</Typography>
-                <List>
-                    <ListItem><ListItemIcon>1</ListItemIcon>{OtInfo.OtPrimeraVisita}</ListItem>
-                    <ListItem><ListItemIcon>2</ListItemIcon>{OtInfo.OtSegundaVisita}</ListItem>
-                    <ListItem><ListItemIcon>3</ListItemIcon>{OtInfo.OtTerceraVisita}</ListItem>
-                    <ListItem><ListItemIcon>4</ListItemIcon>{OtInfo.OtCuartaVisita}</ListItem>
-                </List>
-                {OtInfo.OtTerceraVisita ? <Alert severity="info">La OT ya tiene 3 visitas realizadas por el técnico, se tiene que cobrar un monto adicional que se actualizará al monto de la OT</Alert> : ""}
-                </>
-            : ""}
+            <Typography variant="h2">Visitas realizadas por el técnico:</Typography>
+            <List>
+                <ListItem>{OtInfo.OtPrimeraVisita ? convertirAFecha(OtInfo.OtPrimeraVisita) : "-"}</ListItem>
+                <ListItem>{OtInfo.OtSegundaVisita ? convertirAFecha(OtInfo.OtSegundaVisita) : "-"}</ListItem>
+                <ListItem>{OtInfo.OtTerceraVisita ? convertirAFecha(OtInfo.OtTerceraVisita) : "-"}</ListItem>
+                <ListItem>{OtInfo.OtCuartaVisita ? convertirAFecha(OtInfo.OtCuartaVisita) : "-"}</ListItem>
+            </List>
+            {OtInfo.OtTerceraVisita ? <Alert severity="info">La OT ya tiene 3 visitas realizadas por el técnico, se tiene que cobrar un monto adicional que se actualizará al monto de la OT</Alert> : ""}
             </>}
             ></Modal>
             <Modal
@@ -263,6 +262,9 @@ const ListaOtPendientes = () => {
                 <>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} lg={12} xl={12}>
+                    {OtInfo.OtEsPrimeraBajada && tareasOrdenDeTrabajo.length > 0 && tareasOrdenDeTrabajo.find((tareasOt => tareasOt.TareaId === 1 || tareasOt.TareaId === 5 )) ?
+                    <><Alert severity='info'>Al finalizar esta órden de trabajo el abonado: <b>{OtInfo.ApellidoAbonado}, {OtInfo.NombreAbonado}</b> pasará a estar <b>Activo</b></Alert><br/></>
+                    : ""}
                         <KeyboardDateTimePicker
                         disableToolbar
                         inputVariant="outlined"

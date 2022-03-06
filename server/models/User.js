@@ -48,7 +48,7 @@ const User = db.define('_user', {
         type: DATE,
         allowNull: true
     },
-    FechaVencimientoContrato: {
+    FechaVencimientoBajada: {
         type: DATE,
         allowNull: true
     },

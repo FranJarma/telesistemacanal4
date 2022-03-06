@@ -4,7 +4,7 @@ const compararFechas = (fecha1, fecha2) => {
     const concatenateFecha1 =  arrayFecha1Split.reduce(function (a, b) {return a + b;});
     const concatenateFecha2 =  arrayFecha2Split.reduce(function (a, b) {return a + b;});
 
-    if(concatenateFecha2 > concatenateFecha1) {
+    if(parseInt(concatenateFecha2) > parseInt(concatenateFecha1)) {
         return true;
     }
     else {
