@@ -43,7 +43,8 @@ const useStyles = makeStyles(theme =>({
         }
     },
     cantidad: {
-        fontSize: "64px",
+        color: "teal",
+        fontSize: "40px",
         float: "right",
         fontFamily: 'Poppins, sans-serif'
     },

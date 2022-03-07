@@ -551,10 +551,9 @@ const CaratulaAbonado = () => {
                             <Datatable
                                 datos={ordenesDeTrabajoAsignadas}
                                 columnas={columnasOt}>
-                                </Datatable>
+                            </Datatable>
                             </CardContent>
                         </Card>
-
                     </Grid>
                     : ""}
                     {!location.state ?

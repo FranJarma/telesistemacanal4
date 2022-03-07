@@ -7,13 +7,15 @@ import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { Autocomplete } from '@material-ui/lab';
-import { DatePicker } from '@material-ui/pickers';
+import { DatePicker, TimePicker } from '@material-ui/pickers';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
-    const { tareas, barrios, historialDomicilios, municipios, provincias, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia,
-    traerProvincias, cambioDomicilioAbonado, traerTareas } = appContext;
+    const { tareas, barrios, historialDomicilios, municipios, provincias, usuarios, ordenesDeTrabajoAsignadas, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia, traerOrdenesDeTrabajoAsignadas,
+    traerProvincias, cambioDomicilioAbonado, traerTareas, traerUsuariosPorRol } = appContext;
     const location = useLocation();
     //Observables
     useEffect(() => {
@@ -21,6 +23,7 @@ const CambioDomicilio = () => {
         traerProvincias();
         traerMunicipiosPorProvincia(ProvinciaId);
         traerDomiciliosAbonado(location.state.UserId);
+        traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
     }, [])
     //States
     const [DomicilioInfo, setDomicilioInfo] = useState({
@@ -69,6 +72,14 @@ const CambioDomicilio = () => {
             ...DomicilioInfo,
             UserId: location.state.UserId
         })
+    }
+
+    const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(null);
+    const [Tecnico, setTecnico] = useState(null);
+    const [OtObservacionesResponsableEmision, setOtObservacionesResponsableEmision] = useState(null);
+
+    const onInputChangeObservacionesOt = (e) => {
+        setOtObservacionesResponsableEmision(e.target.value);
     }
 
     const onSubmitAbonado = (e) => {
@@ -128,6 +139,25 @@ const CambioDomicilio = () => {
             "wrap": true
         },
     ]
+    const columnasOt = [
+        {
+            "name": "id",
+            "selector": row => row["OtId"],
+            "omit": true
+        },
+        {
+            "name": <TooltipForTable name="Fecha prevista de visita" />,
+            "wrap": true,
+            "sortable": true,
+            "selector": row => convertirAFecha(row["OtFechaPrevistaVisita"]),
+        }  ,  
+        {
+            "name": "Domicilio",
+            "wrap": true,
+            "sortable": true,
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+        }    
+    ]
     const ExpandedComponent = ({ data }) =>
     <>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Dirección: {data.DomicilioCalle} {data.DomicilioNumero}</Typography>
@@ -171,20 +201,14 @@ const CambioDomicilio = () => {
         <Button onClick={handleChangeModalNuevoDomicilio}>Cerrar</Button></>}
         formulario={
             <>
-            <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-home"></i> Datos del nuevo domicilio</Typography>
+            <Tabs>
+            <TabList>
+                <Tab><i style={{color: "teal"}} className="bx bx-home"></i> Datos del nuevo domicilio</Tab>
+                <Tab><i style={{color: "teal"}} className="bx bx-task"></i> Datos de la OT</Tab>
+            </TabList>
+            <TabPanel>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
-                    <DatePicker
-                    inputVariant="outlined"
-                    value={FechaBajada}
-                    onChange={(fecha)=>setFechaBajada(fecha)}
-                    format="dd/MM/yyyy"
-                    fullWidth
-                    label="Fecha de Bajada"
-                    >
-                    </DatePicker>
-                </Grid>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant="filled"
                     disabled
@@ -199,7 +223,7 @@ const CambioDomicilio = () => {
                     ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <TextField
                     variant = "outlined"
                     onChange={handleChangeMunicipioSeleccionado}
@@ -214,7 +238,7 @@ const CambioDomicilio = () => {
                     )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={4} lg={4} xl={4}>
                     <Autocomplete
                     value={Barrio}
                     onChange={(_event, nuevoBarrio) => {
@@ -226,7 +250,7 @@ const CambioDomicilio = () => {
                     renderInput={(params) => <TextField {...params} variant = "outlined" fullWidth label="Barrios"/>}
                     />
                 </Grid>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
+                <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField
                     variant = "outlined"
                     value={DomicilioCalle}
@@ -236,7 +260,7 @@ const CambioDomicilio = () => {
                     label="Calle">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     onKeyPress={(event) => {
                         if (!/[0-9]/.test(event.key)) {
@@ -250,7 +274,7 @@ const CambioDomicilio = () => {
                     label="Número">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} md={3} lg={3} xl={3}>
                     <TextField
                     onKeyPress={(event) => {
                         if (!/[0-9]/.test(event.key)) {
@@ -279,10 +303,97 @@ const CambioDomicilio = () => {
                     label="Observaciones">
                     </TextField>
                     <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
-                    {location.state.ServicioId === 1 ? tareas.filter((tarea) => tarea.TareaId === 14).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)
-                    : tareas.filter((tarea) => tarea.TareaId === 15).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)}
                 </Grid>
             </Grid>
+            </TabPanel>
+            <TabPanel>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                        <DatePicker
+                        inputVariant="outlined"
+                        value={FechaBajada}
+                        onChange={(fecha)=>setFechaBajada(fecha)}
+                        format="dd/MM/yyyy"
+                        fullWidth
+                        label="Fecha de Bajada"
+                        >
+                        </DatePicker>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <Autocomplete
+                        value={Tecnico}
+                        onChange={(_event, newTecnico) => {
+                            traerOrdenesDeTrabajoAsignadas(newTecnico.UserId, 5);
+                            setTecnico(newTecnico);
+                        }}
+                        options={usuarios}
+                        noOptionsText="No se encontraron técnicos"
+                        getOptionLabel={(option) => option.Nombre +", "+ option.Apellido}
+                        renderInput={(params) => <TextField {...params} variant ="outlined" fullWidth label="Técnico encargado de ejecución"/>}
+                    />
+                    </Grid>
+                    { Tecnico !== null?
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                        <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {Tecnico.Nombre}, {Tecnico.Apellido}</Typography>
+                        <br/>
+                        <Card>
+                            <CardContent>
+                            <Datatable
+                                datos={ordenesDeTrabajoAsignadas}
+                                columnas={columnasOt}>
+                            </Datatable>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    : ""}
+                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            disabled
+                            variant="filled"
+                            value={sessionStorage.getItem('usr')}
+                            fullWidth
+                            label="Responsable de emisión de OT">
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={6} md={4} lg={4} xl={4}>
+                            <DatePicker
+                                disabled
+                                value={new Date()}
+                                format="dd/MM/yyyy"
+                                inputVariant="filled"
+                                fullWidth
+                                label="Fecha de emisión de OT"
+                            ></DatePicker>
+                        </Grid>
+                        <Grid item xs={6} md={4} lg={4} xl={4}>
+                            <TimePicker
+                                value={new Date()}
+                                disabled
+                                inputVariant="filled"
+                                fullWidth
+                                label="Hora de emisión de OT"
+                            ></TimePicker>
+                        </Grid>
+                        <Grid item xs={12} md={12} lg={12} xl={12}>
+                            <TextField
+                            variant = "outlined"
+                            multiline
+                            minRows={3}
+                            value={OtObservacionesResponsableEmision}
+                            name="OtObservacionesResponsableEmision"
+                            inputProps={{
+                                maxLength: 1000
+                            }}
+                            onChange={onInputChangeObservacionesOt}
+                            fullWidth
+                            label="Observaciones registro de OT">
+                            </TextField>
+                        </Grid>
+                </Grid>
+                {location.state.ServicioId === 1 ? tareas.filter((tarea) => tarea.TareaId === 14).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)
+                : tareas.filter((tarea) => tarea.TareaId === 15).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)}
+                </TabPanel>
+                </Tabs>
             </>
         }></Modal>
         </Card>
