@@ -54,18 +54,14 @@ const CambioDomicilio = () => {
     }*/
     const [Barrio, setBarrio] = useState(null);
     const [MunicipioId, setMunicipioId] = useState(0);
-    const [MunicipioNombre, setMunicipioNombre] = useState('')
     const [ModalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
-    const [FechaBajada, setFechaBajada] = useState(new Date());
 
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
         setBarrio(null);
         traerBarriosPorMunicipio(e.target.value);
     }
-    const handleFocusMunicipioSeleccionado = (e) => {
-        setMunicipioNombre(e.target.innerHTML)
-    }
+
     const handleChangeModalNuevoDomicilio = () => {
         setModalNuevoDomicilio(!ModalNuevoDomicilio);
         setDomicilioInfo({
@@ -91,13 +87,14 @@ const CambioDomicilio = () => {
                 //ProvinciaId
                 Barrio,
                 MunicipioId,
-                MunicipioNombre,
                 DomicilioCalle,
                 DomicilioNumero,
                 DomicilioPiso,
-                FechaBajada,
                 CambioDomicilioObservaciones,
-                createdBy
+                createdBy,
+                OtFechaPrevistaVisita,
+                Tecnico,
+                OtObservacionesResponsableEmision
             }, setModalNuevoDomicilio)
     }
 }
@@ -203,7 +200,7 @@ const CambioDomicilio = () => {
             <>
             <Tabs>
             <TabList>
-                <Tab><i style={{color: "teal"}} className="bx bx-home"></i> Datos del nuevo domicilio</Tab>
+                <Tab><i style={{color: "teal"}} className="bx bxs-home"></i> Datos del nuevo domicilio</Tab>
                 <Tab><i style={{color: "teal"}} className="bx bx-task"></i> Datos de la OT</Tab>
             </TabList>
             <TabPanel>
@@ -231,7 +228,6 @@ const CambioDomicilio = () => {
                     label="Municipio"
                     fullWidth
                     select
-                    onFocus={handleFocusMunicipioSeleccionado}
                     >
                     {municipios.length > 0 ? municipios.map((municipio)=>(
                         <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
@@ -288,22 +284,6 @@ const CambioDomicilio = () => {
                     label="Piso">
                     </TextField>
                 </Grid>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
-                    <TextField
-                    variant = "outlined"
-                    multiline
-                    minRows={3}
-                    value={CambioDomicilioObservaciones}
-                    name="CambioDomicilioObservaciones"
-                    inputProps={{
-                        maxLength: 1000
-                    }}
-                    onChange={onInputChange}
-                    fullWidth
-                    label="Observaciones">
-                    </TextField>
-                    <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
-                </Grid>
             </Grid>
             </TabPanel>
             <TabPanel>
@@ -311,11 +291,14 @@ const CambioDomicilio = () => {
                     <Grid item xs={12} md={6} lg={6} xl={6}>
                         <DatePicker
                         inputVariant="outlined"
-                        value={FechaBajada}
-                        onChange={(fecha)=>setFechaBajada(fecha)}
+                        value={OtFechaPrevistaVisita}
+                        onChange={(OtFechaPrevistaVisita)=> {
+                            setOtFechaPrevistaVisita(OtFechaPrevistaVisita)
+                        }}
                         format="dd/MM/yyyy"
+                        placeholder='dia/mes/año'
                         fullWidth
-                        label="Fecha de Bajada"
+                        label="Fecha prevista de visita"
                         >
                         </DatePicker>
                     </Grid>

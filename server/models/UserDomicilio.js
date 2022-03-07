@@ -12,6 +12,9 @@ const UserDomicilio = db.define('userdomicilio', {
     DomicilioId: {
         type: INTEGER
     },
+    EstadoId: {
+        type: INTEGER
+    },
     CambioDomicilioObservaciones: {
         type: STRING
     },

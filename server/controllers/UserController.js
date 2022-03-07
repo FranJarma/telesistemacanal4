@@ -295,7 +295,7 @@ exports.AbonadoCreate = async(req, res) => {
             'd.DomicilioCalle': req.body.DomicilioCalle,
             'd.DomicilioNumero': req.body.DomicilioNumero,
             'd.BarrioId': req.body.Barrio.BarrioId,
-            'm.MunicipioId': req.body.Municipio.MunicipioId
+            'm.MunicipioId': req.body.MunicipioId
         });
 
         if(domicilioBuscar.length > 0) {
@@ -519,6 +519,13 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                 order: [['DomicilioId', 'DESC']],
             });
             if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
+            let ultimaOtRegistradaId = 0;
+            //Buscamos la ultima OT registrada
+            let ultimaOtRegistrada = await Ot.findOne({
+                order: [['OtId', 'DESC']]
+            });
+            if (ultimaOtRegistrada) ultimaOtRegistradaId = ultimaOtRegistrada.OtId;
+
             // buscamos el ultimo Movimiento
             let ultimoMovimientoId = 0;
             const ultimoMovimiento = await Movimiento.findOne({
@@ -528,24 +535,21 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
-            //buscamos el user para actualizarle el domicilio y el estado
-            const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
-            abonado.DomicilioId = ultimoDomicilioId + 1;
-            // abonado.EstadoId = 1;
-            // abonado.FechaBajada = req.body.FechaBajada;
-            //await abonado.update(req.body.DomicilioId);
             let ultimoUserDomicilio = await UserDomicilio.findOne({
                 order: [["UserDomicilioId", "DESC"]]
             })
             const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
             abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
             abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
+            abonadoDomicilio.createdBy = req.body.createdBy;
+            abonadoDomicilio.CambioDomicilioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo domicilio del abonado';
             // traemos el precio de la tarea de cambio de domicilio
             const tarea = await Tarea.findOne({
                 where: {
                     TareaId: req.body.ServicioId === 1 ? 14 : 15
                 }
             })
+            const abonado = await User.findByPk(req.body.UserId, {transaction: t});
             // instanciamos un movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
@@ -556,8 +560,32 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MovimientoConceptoId = req.body.ServicioId === 1 ? 5 : 6; //cambio de domicilio
             movimiento.MunicipioId = req.body.MunicipioId;
+            const ot = new Ot(req.body);
+            ot.OtId = ultimaOtRegistradaId + 1;
+            ot.AbonadoId = req.body.UserId;
+            ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.OtFechaPrevistaVisita = req.body.OtFechaPrevistaVisita;
+            ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
+            ot.OtResponsableEjecucion = req.body.Tecnico.UserId;
+            ot.NuevoDomicilioId = domicilio.DomicilioId;
+            ot.createdBy = req.body.createdBy; 
+            await ot.save({transaction: t});
+            for (let i=0; i<= req.body.Tecnico.length-1; i++){
+                let obj = {
+                    TecnicoId: req.body.Tecnico[i].UserId,
+                    OtId: ot.OtId,
+                    createdBy: req.body.createdBy
+                }
+                const otTecnico = new OtTecnico(obj);
+                await otTecnico.save({transaction: t});
+            }
+            const otTarea = new OtTarea({
+                TareaId: abonado.ServicioId = 1 ? 14 : 15, //Cambio de Domicilio
+                OtId: ot.OtId,
+                createdBy: req.body.createdBy
+            });
+            await otTarea.save({transaction: t});
             await domicilio.save({transaction: t}),
-            await abonado.save({transaction: t});
             await abonadoDomicilio.save({transaction: t});
             await movimiento.save({transaction: t});
             return res.status(200).json({msg: 'El domicilio del abonado ha sido cambiado correctamente'})

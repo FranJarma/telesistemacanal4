@@ -22,9 +22,11 @@ exports.OtGet = async(req, res) => {
         'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
         'u2.Nombre as NombreResponsableEjecucion', 'u2.Apellido as ApellidoResponsableEjecucion',
-        'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre'
+        'd.DomicilioCalle', 'd.DomicilioNumero', 'd1.DomicilioCalle as DomicilioCalleCambio', 'd1.DomicilioNumero as DomicilioNumeroCambio',
+        'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre',
+        'b1.BarrioNombre as BarrioNombreCambio', 'm.MunicipioNombre as MunicipioNombreCambio'
         )
-        .sum('t.TareaPrecioUnitario as Monto')
+        .sum('t.TareaPrecioOt as Monto')
         .from('ot as ot')
         .innerJoin('_user as u', 'u.UserId', '=', 'ot.AbonadoId')
         .innerJoin('_user as u1', 'u1.UserId', '=', 'ot.createdBy')
@@ -32,6 +34,9 @@ exports.OtGet = async(req, res) => {
         .innerJoin('domicilio as d', 'u.DomicilioId', '=', 'd.DomicilioId')
         .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
         .innerJoin('municipio as m', 'b.MunicipioId', '=', 'm.MunicipioId')
+        .leftJoin('domicilio as d1', 'ot.NuevoDomicilioId', '=', 'd1.DomicilioId')
+        .leftJoin('barrio as b1', 'b1.BarrioId', '=', 'd1.BarrioId')
+        .leftJoin('municipio as m1', 'b1.MunicipioId', '=', 'm1.MunicipioId')
         .innerJoin('ottarea as ott', 'ott.OtId', '=' ,'ot.OtId')
         .innerJoin('tarea as t', 'ott.TareaId', '=' ,'t.TareaId')
         .where(
@@ -57,7 +62,7 @@ exports.OtGetByTecnico = async(req, res) => {
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
         'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre'
         )
-        .sum('t.TareaPrecioUnitario as Monto')
+        .sum('t.TareaPrecioOt as Monto')
         .from('ot as ot')
         .innerJoin('_user as u', 'u.UserId', '=', 'ot.AbonadoId')
         .innerJoin('_user as u1', 'u1.UserId', '=', 'ot.createdBy')
@@ -228,8 +233,9 @@ exports.OtFinalizar = async (req, res) => {
             ot.EstadoId = process.env.ESTADO_ID_OT_FINALIZADA;
             ot.updatedAt = new Date();
             ot.updatedBy = updatedBy;
+            const abonado = await User.findByPk(ot.AbonadoId);
+            //INSCRIPCIÓN
             if(ot.OtEsPrimeraBajada) {
-                const abonado = await User.findByPk(ot.AbonadoId);
                 abonado.FechaBajada = OtFechaFinalizacion;
                 abonado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
                 if(abonado.ServicioId === 1) {
@@ -242,73 +248,17 @@ exports.OtFinalizar = async (req, res) => {
                 await abonado.save({transaction: t});
             }
             await ot.save({transaction: t});
-            const tareasOt = await OtTarea.findAll({
-                where: {
-                    OtId: OtId
-                }
-            });
-            //si la tarea seleccionada es Cambio Domicilio (de cualquier tipo), instanciamos un objeto de la clase CambioDomicilio
-            for (let i=0; i<= tareasOt.length-1; i++) {
-                if(tareasOt[i].TareaId === 14 || tareasOt[i].TareaId === 15) {
-                    //traemos el id del ultimo domicilio registrado
-                    let ultimoDomicilioId = 0;
-                    const ultimoDomicilio = await Domicilio.findOne({
-                        order: [['DomicilioId', 'DESC']],
-                    });
-                    if (ultimoDomicilio) ultimoDomicilioId = ultimoDomicilio.DomicilioId;
-                    const domicilio = new Domicilio(req.body, {transaction: t});
-                    domicilio.DomicilioId = ultimoDomicilioId + 1;
-                    domicilio.BarrioId = req.body.barrio.BarrioId;
-                    domicilio.DomicilioCalle = req.body.DomicilioCalle;
-                    domicilio.DomicilioNumero = req.body.DomicilioNumero;
-                    domicilio.DomicilioPiso = req.body.DomicilioPiso;
-                    domicilio.createdAt = req.body.createdAt;
-                    domicilio.createdBy = req.body.createdBy;
-                    //buscamos el user para actualizarle el estado, el domicilio se lo actualiza cuando se confirme la instalación
-                    const abonado = await User.findByPk( req.body.abonado.UserId, {transaction: t} );
-                    let ultimoUserDomicilio = await UserDomicilio.findOne({
-                        order: [["UserDomicilioId", "DESC"]]
-                    })
-                    const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
-                    abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
-                    abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
-                    abonadoDomicilio.UserId = abonado.UserId;
-                    abonadoDomicilio.CambioDomicilioObservaciones = `Cambio de domicilio realizado en fecha: ${createdAt.split('T')[0]} por orden de trabajo N°: ${ot.OtId}`;
-                    abonadoDomicilio.createdAt = req.body.createdAt;
-                    abonadoDomicilio.createdBy = req.body.createdBy;
-                    await domicilio.save({transaction: t}),
-                    await abonado.save({transaction: t});
-                    await abonadoDomicilio.save({transaction: t});
-                }
-                //si la tarea seleccionada es algo relacionado a cambio de servicio, instanciamos un objeto de la clase CambioServicio  
-                if(tareasOt[i].TareaId === 16 || tareasOt[i].TareaId === 17) {
-                    if (abonado.ServicioId === req.body.ServicioId){
-                        return res.status(400).json({msg: 'Seleccione un servicio diferente al que ya tiene el abonado actualmente'});
+            //CAMBIO DE DOMICILIO
+            if(ot.NuevoDomicilioId !== null) {
+                const userDomicilio = await UserDomicilio.findOne({
+                    where: {
+                        DomicilioId: ot.NuevoDomicilioId
                     }
-                    else {
-                        let ultimoUserServicio = await UserServicio.findOne({
-                            order: [["UserServicioId", "DESC"]]
-                        })
-                        const abonadoServicio = new UserServicio(req.body, {transaction: t});
-                        const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
-                        abonadoServicio.UserServicioId = ultimoUserServicio.UserServicioId + 1;
-                        abonadoServicio.ServicioId = req.body.ServicioId;
-                        abonadoServicio.createdAt = req.body.createdAt;
-                        abonadoServicio.createdBy = req.body.createdBy;
-                        abonado.ServicioId = req.body.ServicioId;
-                        await abonado.save({transaction: t});
-                        await abonadoServicio.save({transaction: t});
-                        //si el servicio es INTERNET O COMBO, cambiamos el estado de la ONU a asignada
-                        if(req.body.ServicioId !== 1) {
-                            abonado.OnuId = req.body.OnuId;
-                            onu.EstadoId = 4;
-                        }
-                        else {
-                            abonado.OnuId = null;
-                            onu.EstadoId = 5; //desasignamos onu
-                        }
-                    }
-                }
+                }, {transaction: t});
+                userDomicilio.CambioDomicilioObservaciones = `Cambio correcto, ot n°:${ot.OtId}`;
+                abonado.DomicilioId = ot.NuevoDomicilioId;
+                await userDomicilio.save({transaction: t});
+                await abonado.save({transaction: t});
             }
             if(Monto > 0) {
                 //buscamos el ultimo Movimiento

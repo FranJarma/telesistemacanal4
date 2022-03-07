@@ -79,9 +79,11 @@ router.put('/abonados/cambiar-estado/:id', ValidarJWT, UserController.AbonadoCam
 router.put('/abonados/cambio-domicilio/:id', ValidarJWT,
 [
     check('MunicipioId', 'El municipio es obligatorio').not().contains(0),
-    check('BarrioId', 'El barrio es obligatorio').not().contains(0),
+    check('Barrio', 'El barrio es obligatorio').notEmpty(),
     check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
-    check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty()
+    check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
+    check('OtFechaPrevistaVisita', 'Selecciona una fecha prevista de visita').notEmpty(),
+    check('Tecnico', 'Seleccione un técnico').notEmpty()
 ],UserController.AbonadoCambioDomicilio);
 
 router.put('/abonados/cambio-servicio/:id', ValidarJWT,

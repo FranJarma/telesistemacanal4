@@ -13,6 +13,7 @@ import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import TooltipForTable from '../../../helpers/TooltipForTable';
+import DesdeHasta from '../../../helpers/DesdeHasta';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
@@ -28,7 +29,8 @@ const ListaOtPendientes = () => {
     const [ModalEliminarOt, setModalEliminarOt] = useState(false);
 
     const [OtInfo, setOtInfo] = useState({})
-
+    const [Desde, setDesde] = useState(null);
+    const [Hasta, setHasta] = useState(null);
     const [OtObservacionesResponsableEjecucion, setOtObservacionesResponsableEjecucion] = useState("");
     const [FechaVisita, setFechaVisita] = useState(new Date());
     const [OtFechaInicio, setOtFechaInicio] = useState(new Date());
@@ -101,9 +103,11 @@ const ListaOtPendientes = () => {
         },
         {
             "name": "Domicilio",
+            "width": "300px",
             "wrap": true,
             "sortable": true,
-            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+            "selector": row => row["NuevoDomicilioId"] !== null ? <DesdeHasta title1="Domicilio Viejo" title2="Domicilio Nuevo" proposito={"Cambio de Domicilio"} desde={row["DomicilioCalle"] + " " +  row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + "|" + row["MunicipioNombre"]} hasta={row["DomicilioCalleCambio"] + " " +  row["DomicilioNumeroCambio"] + "|Barrio " + row["BarrioNombreCambio"] + "|" + row["MunicipioNombreCambio"]}></DesdeHasta> : 
+            row["DomicilioCalle"] + " " + row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + " " + row["MunicipioNombre"],
         },
         {
             "name": <TooltipForTable name="Fecha de Emisión"/>,
@@ -118,7 +122,7 @@ const ListaOtPendientes = () => {
             "selector": row => "$ " + row["Monto"]
         },
         {
-            "name": <TooltipForTable name="Responsable de Ejecución"/>,
+            "name": <TooltipForTable name="Técnico responsable"/>,
             "wrap": true,
             "sortable": true,
             "selector": row => row["ApellidoResponsableEjecucion"] + ", " + row["NombreResponsableEjecucion"]
@@ -170,16 +174,20 @@ const ListaOtPendientes = () => {
                         <DatePicker
                             inputVariant="outlined"
                             format="dd/MM/yyyy"
+                            placeholder="dia/mes/año"
                             fullWidth
                             label="Desde"
+                            value={Desde}
                         ></DatePicker>
                     </Grid>
                     <Grid item xs={12} md={3} lg={3}>
                         <DatePicker
                             inputVariant="outlined"
                             format="dd/MM/yyyy"
+                            placeholder="dia/mes/año"
                             fullWidth
                             label="Hasta"
+                            value={Hasta}
                         ></DatePicker>
                     </Grid>
                     <Grid item xs={12} md={3} lg={3}>
