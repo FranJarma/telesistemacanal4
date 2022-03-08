@@ -11,9 +11,11 @@ require('dotenv').config({path: 'variables.env'});
 exports.PagosListarPorUsuario = async(req,res) => {
     try {
         const pagos = await knex.select('*').from('pago as p')
+        .innerJoin('movimientoconcepto as mc', 'p.PagoConceptoId', '=', 'mc.MovimientoConceptoId')
         .where(
             {'p.UserId': req.params.UserId,
-            'p.PagoAño': req.params.Periodo
+            'p.PagoAño': req.params.Periodo,
+            'p.PagoConceptoId': req.params.Periodo.split('=')[1]
         })
         .orderBy([{ column: 'PagoAño', order: 'desc' }, { column: 'PagoMes', order: 'desc' }])
         res.json(pagos);
@@ -25,6 +27,7 @@ exports.PagosListarPorUsuario = async(req,res) => {
 exports.PagoGet = async(req,res) => {
     try {
         const pago = await knex.select('*').from('pago as p')
+        .innerJoin('movimientoconcepto as mc', 'p.PagoConceptoId', '=', 'mc.MovimientoConceptoId')
         .where({
             'p.UserId': req.query.UserId,
             'p.PagoAño': req.query.PagoPeriodo.split('-')[0],
@@ -137,7 +140,7 @@ exports.PagoAñadirRecargo = async(req, res) => {
             //validar que el pago no esté completo
             if(pago.PagoSaldo === 0) return res.status(400).json({msg: 'El mes está saldado. No es posible añadir recargo'});
             //validar que el recargo se haga en la fecha correcta
-            if((diaActual < 21 && mesActual === pago.PagoMes && añoActual === pago.PagoAño)) return res.status(400).json({msg: 'No corresponde añadir recargo al mes actual'});
+            if((diaActual < 21 && mesActual === pago.PagoMes && añoActual === pago.PagoAño)) return res.status(400).json({msg: 'No corresponde añadir recargo al mes seleccionado'});
             if((mesActual > pago.PagoMes && añoActual === pago.PagoAño)) return res.status(400).json({msg: 'No es posible añadir recargo a un mes posterior al actual'});
             
             pago.PagoRecargo = pago.PagoRecargo + parseInt(PagoRecargo);

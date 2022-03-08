@@ -9,6 +9,8 @@ import Modal from '../design/components/Modal';
 import { DatePicker } from '@material-ui/pickers';
 import AppContext from '../../../context/appContext';
 import BotonesDatatable  from './../design/components/BotonesDatatable';
+import convertirAFecha from './../../../helpers/ConvertirAFecha';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
@@ -48,7 +50,7 @@ const ListaPagos = () => {
 
     useEffect(()=>{
         traerMediosPago();
-        traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear());
+        traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2); //trae pór defecto el 1er tab
     },[]);
 
     const onInputChange = (e) => {
@@ -103,12 +105,6 @@ const ListaPagos = () => {
             "wrap": true
         },
         {
-            "name": "Tipo de pago",
-            "selector": row => row["PagoTipo"],
-            "sortable": true,
-            "wrap": true
-        },
-        {
             "name": "Total",
             "selector": row => "$ " + row["PagoTotal"],
             "sortable": true,
@@ -159,7 +155,7 @@ const ListaPagos = () => {
         },
         {
             "name": "Fecha de registro ",
-            "selector": row =>row["createdAt"].split('T')[0].split('-').reverse().join('-'),
+            "selector": row => convertirAFecha(row["createdAt"]),
             "wrap": true,
             "sortable": true,
         },
@@ -217,12 +213,21 @@ const ListaPagos = () => {
                             onChange={nuevoAño => {
                                 setPagoAño(nuevoAño);
                                 setPagoPeriodo(nuevoAño);
-                                traerPagosPorAbonado(location.state.UserId, nuevoAño.getFullYear());
+                                traerPagosPorAbonado(location.state.UserId, nuevoAño.getFullYear(), 2);
                             }}
                             value={PagoAño}
                         ></DatePicker>
                     </Grid>
                 </Grid>
+                <br/>
+                <Tabs>
+                    <TabList>
+                        <Tab onClick={() => traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2)}><i style={{color: 'teal'}} className="bx bxs-notepad"></i> Inscripciones y reinscripciones</Tab>
+                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 1)}><i style={{color: 'teal'}} className='bx bxs-calendar'></i> Mensualidades</Tab>
+                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 5)}><i style={{color: 'teal'}} className='bx bxs-home'></i> Cambios de domicilio</Tab>
+                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6)}><i style={{color: 'teal'}} className='bx bxs-plug'></i> Cambios de servicio</Tab>
+                    </TabList>
+                <TabPanel>
                 <Datatable
                     loader={true}
                     columnas={columnasPagos}
@@ -230,6 +235,35 @@ const ListaPagos = () => {
                     paginacion={true}
                     buscar={true}
                 />
+                </TabPanel>
+                <TabPanel>
+                <Datatable
+                    loader={true}
+                    columnas={columnasPagos}
+                    datos={pagos}
+                    paginacion={true}
+                    buscar={true}
+                />
+                </TabPanel>
+                <TabPanel>
+                <Datatable
+                    loader={true}
+                    columnas={columnasPagos}
+                    datos={pagos}
+                    paginacion={true}
+                    buscar={true}
+                />
+                </TabPanel>
+                <TabPanel>
+                <Datatable
+                    loader={true}
+                    columnas={columnasPagos}
+                    datos={pagos}
+                    paginacion={true}
+                    buscar={true}
+                />
+                </TabPanel>
+                </Tabs>
                 <Modal
                 abrirModal={ModalNuevoPago}
                 funcionCerrar={handleChangeModalNuevoPago}

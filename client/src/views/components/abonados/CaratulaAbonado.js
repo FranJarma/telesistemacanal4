@@ -489,26 +489,21 @@ const CaratulaAbonado = () => {
                         >
                     </TextField>
                     </Grid>
+                    <Grid item xs={12} md={12} sm={12}>
+                    <Typography variant="h1">Precios finales</Typography>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
+                                <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
+                                <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
+                                <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                     </>
                     :""}
                 </Grid>
                 <br/>
-                {Servicio !== null && MedioPago !== null ?
-                <>
-                <Typography variant="h1">Precios finales</Typography>
-                <br/>
-                <Grid item xs={12} md={12} sm={12}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
-                            <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
-                            <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
-                            <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                </>
-                : "" }
             </CardContent>
         </Card>
     </TabPanel>

@@ -72,7 +72,10 @@ const Ot = db.define('ot', {
         allowNull: true
     },
     NuevoDomicilioId: {
-        type: STRING,
+        type: INTEGER,
+    },
+    NuevoServicioId: {
+        type: INTEGER,
     },
     AbonadoId: {
         type: CHAR

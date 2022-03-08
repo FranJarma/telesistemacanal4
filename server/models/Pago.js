@@ -55,6 +55,10 @@ const Pago = db.define('pago', {
         type: STRING(38),
         allowNull: false
     },
+    PagoConceptoId: {
+        type: INTEGER,
+        allowNull: false
+    }
 });
 
 module.exports = db.model('pago', Pago);

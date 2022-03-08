@@ -371,6 +371,7 @@ exports.AbonadoCreate = async(req, res) => {
             pago.PagoTotal = req.body.PagoInfo.Total;
             pago.PagoRecargo = 0;
             pago.PagoSaldo = req.body.PagoInfo.Saldo;
+            pago.PagoConceptoId = 2;
             pago.createdAt = new Date();
             pago.createdBy = req.body.createdBy;
             const detallePago = new DetallePago({transaction: t})
@@ -558,7 +559,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = req.body.ServicioId === 1 ? 5 : 6; //cambio de domicilio
+            movimiento.MovimientoConceptoId = 5; //cambio de domicilio
             movimiento.MunicipioId = req.body.MunicipioId;
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;

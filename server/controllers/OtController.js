@@ -260,6 +260,8 @@ exports.OtFinalizar = async (req, res) => {
                 await userDomicilio.save({transaction: t});
                 await abonado.save({transaction: t});
             }
+            //CAMBIO DE SERVICIO
+            
             if(Monto > 0) {
                 //buscamos el ultimo Movimiento
                 let ultimoMovimientoId = 0;

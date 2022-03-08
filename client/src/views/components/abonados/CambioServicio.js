@@ -3,17 +3,20 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, CardHeader, Chip, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
-import { DatePicker } from '@material-ui/pickers';
+import { DatePicker, TimePicker } from '@material-ui/pickers';
 import useStyles from './../Styles';
 import { Autocomplete } from '@material-ui/lab';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const { historialServicios, servicios, onus, tareas, traerTareas, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId, cambioServicioAbonado } = appContext;
+    const { historialServicios, mediosPago, ordenesDeTrabajoAsignadas, servicios, usuarios, cambioServicioAbonado, traerTareas, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId,
+    traerUsuariosPorRol, traerOrdenesDeTrabajoAsignadas, traerMediosPago } = appContext;
 
     const location = useLocation();
     const styles = useStyles();
@@ -23,12 +26,14 @@ const CambioServicio = () => {
         traerServicios();
         traerONUS(5);
         traerServiciosAbonado(location.state.UserId);
+        traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
+        traerMediosPago();
     }, [])
     //States
     const [ServicioInfo, setServicioInfo] = useState({
         UserId: location.state.UserId,
         CambioServicioObservaciones: null,
-        createdBy: null
+        createdBy: sessionStorage.getItem('identity')
     })
     const onInputChange = (e) => {
         setServicioInfo({
@@ -37,25 +42,31 @@ const CambioServicio = () => {
         });
     }
     const { UserId, CambioServicioFecha, createdBy, CambioServicioObservaciones} = ServicioInfo;
-    const [ServicioId, setServicioId] = useState(1);
-    const [ServicioNombre, setServicioNombre] = useState('Cable');
+    const [Servicio, setServicio] = useState(null);
     const [ModalNuevoServicio, setModalNuevoServicio] = useState(false);
-    const [FechaBajada, setFechaBajada] = useState(new Date());
-    const [OnuId, setOnuId] = useState(0);
-
-    const handleChangeServicioSeleccionado = (e) => {
-        setServicioId(e.target.value);
+    const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
+    const [Tecnico, setTecnico] = useState(null);
+    const [MedioPago, setMedioPago] = useState(null);
+    const [OtObservacionesResponsableEmision, setOtObservacionesResponsableEmision] = useState(null);
+    const [PagoInfo, setPagoInfo] = useState({
+        Interes: null,
+        Total: null,
+        Inscripcion: null,
+        Saldo: null
+    });
+    const onInputChangeObservacionesOt = (e) => {
+        setOtObservacionesResponsableEmision(e.target.value);
     }
-    const handleFocusServicioSeleccionado = (e) => {
-        setServicioNombre(e.target.innerHTML);
+    const handleChangeServicioSeleccionado = (e) => {
+        setServicio(e.target.value);
+        setMedioPago(null);   
     }
 
     const handleChangeModalNuevoServicio = () => {
         setModalNuevoServicio(!ModalNuevoServicio);
         if(!ModalNuevoServicio){
             setServicioInfo({
-                UserId: location.state.UserId,
-                createdBy: sessionStorage.getItem('identity')
+                UserId: location.state.UserId
             })
         }
         else {
@@ -64,18 +75,31 @@ const CambioServicio = () => {
             })
         }
     }
+    const handleChangeMedioPagoSeleccionado = (e) => {
+        setMedioPago(e.target.value);
+        setPagoInfo({
+            ...PagoInfo,
+            Interes: e.target.value.MedioPagoInteres / 100,
+            Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2),
+            Inscripcion: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas).toFixed(2),
+            Saldo: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)) - ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas)).toFixed(2)
+        })
+    }
 
     const onSubmitAbonado = (e) => {
         e.preventDefault();
         if(location.state) {
             cambioServicioAbonado({
                 UserId,
-                ServicioId,
-                ServicioNombre,
-                FechaBajada,
+                Servicio,
                 CambioServicioFecha,
                 CambioServicioObservaciones,
-                createdBy
+                createdBy,
+                PagoInfo,
+                MedioPago,
+                Tecnico,
+                OtFechaPrevistaVisita,
+                OtObservacionesResponsableEmision
             }, setModalNuevoServicio)
             traerONUPorId(location.state.OnuId);
     }
@@ -104,6 +128,25 @@ const CambioServicio = () => {
             "wrap": true,
             "sortable": true
         },
+    ]
+    const columnasOt = [
+        {
+            "name": "id",
+            "selector": row => row["OtId"],
+            "omit": true
+        },
+        {
+            "name": <TooltipForTable name="Fecha prevista de visita" />,
+            "wrap": true,
+            "sortable": true,
+            "selector": row => convertirAFecha(row["OtFechaPrevistaVisita"]),
+        }  ,  
+        {
+            "name": "Domicilio",
+            "wrap": true,
+            "sortable": true,
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+        }    
     ]
     const ExpandedComponent = ({ data }) =>
     <>
@@ -144,7 +187,13 @@ const CambioServicio = () => {
         <Button onClick={handleChangeModalNuevoServicio}>Cerrar</Button></>}
         formulario={
             <>
-            <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-info-square"></i> Datos importantes</Typography>
+            <Tabs>
+            <TabList>
+                <Tab><i style={{color: "teal"}} className="bx bx-info-square"></i> Datos del servicio contratado</Tab>
+                <Tab><i style={{color: "teal"}} className="bx bx-plug"></i> Datos del nuevo servicio</Tab>
+                <Tab><i style={{color: "teal"}} className="bx bx-task"></i> Datos de la OT</Tab>
+            </TabList>
+            <TabPanel>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <Card className={styles.cartaSecundaria}>
@@ -160,75 +209,74 @@ const CambioServicio = () => {
                         <CardContent>
                             <Typography variant="h6"><b>Servicio actual: </b> {location.state.ServicioNombre}</Typography>
                             <Typography variant="h6"><b>Fecha de contrato: </b> {location.state.FechaContrato.split('T')[0].split('-').reverse().join('/')}</Typography>
-                            {location.state.OnuMac ? <Typography variant="h6"><b>MAC ONU: </b> {location.state.OnuMac}</Typography> : ""}
                         </CardContent>
                     </Card>
                 </Grid>
             </Grid>
-            <br/>
-            <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-plug"></i> Datos del nuevo servicio</Typography>
+            </TabPanel>
+            <TabPanel>
             <Grid container spacing={3}>
-                <Grid item xs={6} md={6} lg={6} xl={6}>
-                    <DatePicker
-                    inputVariant="outlined"
-                    value={FechaBajada}
-                    onChange={(fecha)=>setFechaBajada(fecha)}
-                    format="dd/MM/yyyy"
-                    fullWidth
-                    label="Fecha de Bajada"
-                    >
-                    </DatePicker>
-                </Grid>
-                <Grid item xs={6} md={6} lg={6} xl={6}>
+                <Grid item xs={6} md={4} lg={4} xl={4}>
                     <TextField
                     variant="outlined"
                     onChange={handleChangeServicioSeleccionado}
-                    onFocus={handleFocusServicioSeleccionado}
-                    value={ServicioId}
+                    value={Servicio}
                     label="Servicio"
                     fullWidth
                     select
                     >
                     {servicios.map((servicio)=>(
-                        <MenuItem key={servicio.ServicioId} value={servicio.ServicioId}>{servicio.ServicioNombre}</MenuItem>
+                        <MenuItem key={servicio.ServicioId} value={servicio}>{servicio.ServicioNombre}</MenuItem>
                     ))}
                     </TextField>
                 </Grid>
-            </Grid>
-            {ServicioId !== 1 ?
-            <>
-            <Typography variant="h2"><i className='bx bx-broadcast'></i> Datos de ONU</Typography>
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
+                {Servicio !== null
+                    ?
+                    <>
+                    <Grid item xs={6} md={6} lg={6} xl={6}>
                     <TextField
-                    variant="outlined"
-                    disabled
-                    value={ServicioId}
-                    label="Tipo de ONU"
-                    fullWidth
-                    select
-                    >
-                    {servicios.map((servicio)=>(
-                        <MenuItem key={servicio.ServicioId} value={servicio.ServicioId}>{servicio.ServicioNombre}</MenuItem>
-                    ))}
+                        variant = "outlined"
+                        value={MedioPago}
+                        onChange={handleChangeMedioPagoSeleccionado}
+                        label="Medio de Pago de Inscripción"
+                        fullWidth
+                        select
+                        >
+                        {mediosPago.map((mp)=>(
+                            <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
+                        ))}
                     </TextField>
-                </Grid>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
-                <Autocomplete
-                disableClearable
-                value={OnuId}
-                onChange={(_event, newOnuId) => {
-                    setOnuId(newOnuId);
-                }}
-                options={onus}
-                noOptionsText="No se encontraron ONUS disponibles"
-                getOptionLabel={(option) => option.OnuMac}
-                renderInput={(params) => <TextField {...params} variant = "outlined" fullWidth label="MAC ONU"/>}
-                />
-                </Grid>
+                    </Grid>
+                    </>
+                : "" }
+                { Servicio !== null && MedioPago !== null
+                    ?
+                    <>
+                    <Grid item xs={12} md={2} lg={2} xl={2}>
+                        <TextField
+                            variant="outlined"
+                            value={PagoInfo.Interes * Servicio.ServicioInscripcion}
+                            label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
+                            fullWidth
+                            >
+                        </TextField>
+                    </Grid>
+                    <br/>
+                    <Grid item xs={12} md={12} sm={12}>
+                    <Typography variant="h1">Precios finales</Typography>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
+                                <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
+                                <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
+                                <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    </>
+                :""}
+                
             </Grid>
-            </>
-            : "" }
             <Grid container spacing={3}>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
                     <TextField
@@ -245,10 +293,95 @@ const CambioServicio = () => {
                     label="Observaciones">
                     </TextField>
                     <FormHelperText>Ingrese hasta 1000 palabras</FormHelperText>
-                    {location.state.ServicioId === 1 ? tareas.filter((tarea) => tarea.TareaId === 4).map((tarea) => <Typography>{tarea.TareaNombre}</Typography>)
-                    : tareas.filter((tarea) => tarea.TareaId === 4).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)}
                 </Grid>
             </Grid>
+            </TabPanel>
+            <TabPanel>
+                <Grid container spacing={3}>
+                    <Grid item xs={6} md={6} lg={6} xl={6}>
+                        <DatePicker
+                            inputVariant="outlined"
+                            value={OtFechaPrevistaVisita}
+                            onChange={(fecha)=>setOtFechaPrevistaVisita(fecha)}
+                            format="dd/MM/yyyy"
+                            fullWidth
+                            label="Fecha prevista de visita"
+                            >
+                        </DatePicker>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <Autocomplete
+                        value={Tecnico}
+                        onChange={(_event, newTecnico) => {
+                            traerOrdenesDeTrabajoAsignadas(newTecnico.UserId, 5);
+                            setTecnico(newTecnico);
+                        }}
+                        options={usuarios}
+                        noOptionsText="No se encontraron técnicos"
+                        getOptionLabel={(option) => option.Nombre +", "+ option.Apellido}
+                        renderInput={(params) => <TextField {...params} variant ="outlined" fullWidth label="Técnico encargado de ejecución"/>}
+                    />
+                    </Grid>
+                    { Tecnico !== null?
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                        <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {Tecnico.Nombre}, {Tecnico.Apellido}</Typography>
+                        <br/>
+                        <Card>
+                            <CardContent>
+                            <Datatable
+                                datos={ordenesDeTrabajoAsignadas}
+                                columnas={columnasOt}>
+                            </Datatable>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    : ""}
+                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            disabled
+                            variant="filled"
+                            value={sessionStorage.getItem('usr')}
+                            fullWidth
+                            label="Responsable de emisión de OT">
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={6} md={4} lg={4} xl={4}>
+                            <DatePicker
+                                disabled
+                                value={new Date()}
+                                format="dd/MM/yyyy"
+                                inputVariant="filled"
+                                fullWidth
+                                label="Fecha de emisión de OT"
+                            ></DatePicker>
+                        </Grid>
+                        <Grid item xs={6} md={4} lg={4} xl={4}>
+                            <TimePicker
+                                value={new Date()}
+                                disabled
+                                inputVariant="filled"
+                                fullWidth
+                                label="Hora de emisión de OT"
+                            ></TimePicker>
+                        </Grid>
+                        <Grid item xs={12} md={12} lg={12} xl={12}>
+                            <TextField
+                            variant = "outlined"
+                            multiline
+                            minRows={3}
+                            value={OtObservacionesResponsableEmision}
+                            name="OtObservacionesResponsableEmision"
+                            inputProps={{
+                                maxLength: 1000
+                            }}
+                            onChange={onInputChangeObservacionesOt}
+                            fullWidth
+                            label="Observaciones registro de OT">
+                            </TextField>
+                        </Grid>
+                </Grid>
+            </TabPanel>
+            </Tabs>
             </>
         }></Modal>
         </Card>

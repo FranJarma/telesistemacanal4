@@ -488,9 +488,9 @@ const AppState = props => {
             console.log(error);
         }
     };
-    const traerPagosPorAbonado = async (UserId, Periodo) => {
+    const traerPagosPorAbonado = async (UserId, Periodo, Concepto) => {
         try {
-            const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Periodo=${Periodo}`);
+            const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Periodo=${Periodo}&Concepto=${Concepto}`);
             dispatch({
                 type: TYPES.LISTA_PAGOS_ABONADO,
                 payload: resultado.data
