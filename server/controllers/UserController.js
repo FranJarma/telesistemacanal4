@@ -372,6 +372,7 @@ exports.AbonadoCreate = async(req, res) => {
             pago.PagoRecargo = 0;
             pago.PagoSaldo = req.body.PagoInfo.Saldo;
             pago.PagoConceptoId = 2;
+            pago.PagoCuotasRestantes = req.body.MedioPago.MedioPagoCantidadCuotas - 1;
             pago.createdAt = new Date();
             pago.createdBy = req.body.createdBy;
             const detallePago = new DetallePago({transaction: t})
@@ -526,7 +527,18 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                 order: [['OtId', 'DESC']]
             });
             if (ultimaOtRegistrada) ultimaOtRegistradaId = ultimaOtRegistrada.OtId;
-
+            //buscamos el ultimo pago
+            let ultimoPagoId = 0;
+            const ultimoPago = await Pago.findOne({
+                order: [['PagoId', 'DESC']]
+            }); 
+            if (ultimoPago) ultimoPagoId = ultimoPago.PagoId;
+            //buscamos el ultimo detalle de pago
+            let ultimoDetallePagoId = 0;
+            const ultimoDetallePago = await DetallePago.findOne({
+                order: [['DetallePagoId', 'DESC']]
+            }); 
+            if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
             // buscamos el ultimo Movimiento
             let ultimoMovimientoId = 0;
             const ultimoMovimiento = await Movimiento.findOne({
@@ -551,6 +563,27 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                 }
             })
             const abonado = await User.findByPk(req.body.UserId, {transaction: t});
+            //registramos un nuevo pago
+            const pago = new Pago({transaction: t});
+            pago.PagoId = ultimoPagoId + 1;
+            pago.UserId = abonado.UserId;
+            pago.PagoAño = new Date().getFullYear();
+            pago.PagoMes = new Date().getMonth() + 1;
+            pago.PagoTotal = req.body.PagoInfo.Total;
+            pago.PagoRecargo = 0;
+            pago.PagoSaldo = req.body.PagoInfo.Saldo;
+            pago.PagoCuotasRestantes = req.body.MedioPago.MedioPagoCantidadCuotas - 1;
+            pago.PagoConceptoId = 5;
+            pago.createdAt = new Date();
+            pago.createdBy = req.body.createdBy;
+            const detallePago = new DetallePago({transaction: t})
+            detallePago.DetallePagoId = ultimoDetallePagoId + 1;
+            detallePago.PagoId = ultimoPagoId + 1;
+            detallePago.MedioPagoId = req.body.MedioPago.MedioPagoId;
+            detallePago.createdAt = new Date();
+            detallePago.createdBy = req.body.createdBy;
+            detallePago.DetallePagoMonto = req.body.PagoInfo.Inscripcion;
+            detallePago.DetallePagoMotivo = 'Cambio de Domicilio';
             // instanciamos un movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
@@ -585,6 +618,8 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                 OtId: ot.OtId,
                 createdBy: req.body.createdBy
             });
+            await pago.save({transaction: t});
+            await detallePago.save({transaction: t});
             await otTarea.save({transaction: t});
             await domicilio.save({transaction: t}),
             await abonadoDomicilio.save({transaction: t});

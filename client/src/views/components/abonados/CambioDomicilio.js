@@ -3,7 +3,7 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, CardHeader, Chip, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { Autocomplete } from '@material-ui/lab';
@@ -14,8 +14,8 @@ import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
-    const { tareas, barrios, historialDomicilios, municipios, provincias, usuarios, ordenesDeTrabajoAsignadas, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia, traerOrdenesDeTrabajoAsignadas,
-    traerProvincias, cambioDomicilioAbonado, traerTareas, traerUsuariosPorRol } = appContext;
+    const { tareas, barrios, historialDomicilios, mediosPago, municipios, provincias, usuarios, ordenesDeTrabajoAsignadas, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia, traerOrdenesDeTrabajoAsignadas,
+    traerProvincias, cambioDomicilioAbonado, traerTareas, traerUsuariosPorRol, traerMediosPago } = appContext;
     const location = useLocation();
     //Observables
     useEffect(() => {
@@ -24,6 +24,13 @@ const CambioDomicilio = () => {
         traerMunicipiosPorProvincia(ProvinciaId);
         traerDomiciliosAbonado(location.state.UserId);
         traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
+        traerMediosPago();
+        if(location.state.ServicioId === 1) {
+            tareas.filter((tarea) => tarea.TareaId === 14).map((tarea) => setTareaCambioDomicilio(tarea));
+        }
+        else {
+            tareas.filter((tarea) => tarea.TareaId === 15).map((tarea) => setTareaCambioDomicilio(tarea));
+        }
     }, [])
     //States
     const [DomicilioInfo, setDomicilioInfo] = useState({
@@ -35,6 +42,7 @@ const CambioDomicilio = () => {
         CambioDomicilioObservaciones: null,
         createdBy: sessionStorage.getItem('identity')
     })
+    const [TareaCambioDomicilio, setTareaCambioDomicilio] = useState(null);
     const onInputChange = (e) => {
         setDomicilioInfo({
             ...DomicilioInfo,
@@ -55,7 +63,13 @@ const CambioDomicilio = () => {
     const [Barrio, setBarrio] = useState(null);
     const [MunicipioId, setMunicipioId] = useState(0);
     const [ModalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
-
+    const [MedioPago, setMedioPago] = useState(null);
+    const [PagoInfo, setPagoInfo] = useState({
+        Interes: null,
+        Total: null,
+        Inscripcion: null,
+        Saldo: null
+    });
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
         setBarrio(null);
@@ -67,6 +81,16 @@ const CambioDomicilio = () => {
         setDomicilioInfo({
             ...DomicilioInfo,
             UserId: location.state.UserId
+        })
+    }
+    const handleChangeMedioPagoSeleccionado = (e) => {
+        setMedioPago(e.target.value);
+        setPagoInfo({
+            ...PagoInfo,
+            Interes: e.target.value.MedioPagoInteres / 100,
+            Total: (500 + (500*e.target.value.MedioPagoInteres / 100)).toFixed(2),
+            Inscripcion: ((500 + (500*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas).toFixed(2),
+            Saldo: ((500 + (500*e.target.value.MedioPagoInteres / 100)) - ((500 + (500*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas)).toFixed(2)
         })
     }
 
@@ -94,7 +118,9 @@ const CambioDomicilio = () => {
                 createdBy,
                 OtFechaPrevistaVisita,
                 Tecnico,
-                OtObservacionesResponsableEmision
+                OtObservacionesResponsableEmision,
+                MedioPago,
+                PagoInfo
             }, setModalNuevoDomicilio)
     }
 }
@@ -202,6 +228,7 @@ const CambioDomicilio = () => {
             <TabList>
                 <Tab><i style={{color: "teal"}} className="bx bxs-home"></i> Datos del nuevo domicilio</Tab>
                 <Tab><i style={{color: "teal"}} className="bx bx-task"></i> Datos de la OT</Tab>
+                <Tab><i style={{color: "teal"}} className="bx bx-money"></i> Datos del pago</Tab>
             </TabList>
             <TabPanel>
             <Grid container spacing={3}>
@@ -373,8 +400,52 @@ const CambioDomicilio = () => {
                             </TextField>
                         </Grid>
                 </Grid>
-                {location.state.ServicioId === 1 ? tareas.filter((tarea) => tarea.TareaId === 14).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)
-                : tareas.filter((tarea) => tarea.TareaId === 15).map((tarea) => <Typography variant="h2">Total por {tarea.TareaNombre}: $ {tarea.TareaPrecioUnitario}</Typography>)}
+                </TabPanel>
+                <TabPanel>
+                {TareaCambioDomicilio !== null ?
+                <Typography variant="h2">Total por: {TareaCambioDomicilio.TareaNombre}: ${TareaCambioDomicilio.TareaPrecioUnitario}</Typography> :""}
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                        <TextField
+                            variant = "outlined"
+                            value={MedioPago}
+                            onChange={handleChangeMedioPagoSeleccionado}
+                            label="Medio de Pago"
+                            fullWidth
+                            select
+                            >
+                            {mediosPago.map((mp)=>(
+                                <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid>
+                    { MedioPago !== null
+                        ?
+                        <>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                        <TextField
+                            variant="outlined"
+                            value={PagoInfo.Interes * 500}
+                            label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
+                            fullWidth
+                            >
+                        </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={12} sm={12}>
+                        <Typography variant="h1">Precios finales</Typography>
+                        <br/>
+                            <Card>
+                                <CardContent>
+                                    <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
+                                    <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
+                                    <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
+                                    <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        </>
+                        :""}
+                    </Grid>
                 </TabPanel>
                 </Tabs>
             </>

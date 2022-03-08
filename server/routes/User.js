@@ -59,7 +59,8 @@ router.post('/abonados/create', ValidarJWT,
     check('Barrio', 'El barrio es obligatorio').not().contains(0),
     check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
     check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
-    check('Servicio', 'El tipo de servicio es obligatorio').notEmpty()
+    check('Servicio', 'El tipo de servicio es obligatorio').notEmpty(),
+    check('MedioPago', 'El medio de pago es obligatorio').notEmpty()
 ], UserController.AbonadoCreate);
 
 router.put('/abonados/update/:id', ValidarJWT,
@@ -83,7 +84,8 @@ router.put('/abonados/cambio-domicilio/:id', ValidarJWT,
     check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
     check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
     check('OtFechaPrevistaVisita', 'Selecciona una fecha prevista de visita').notEmpty(),
-    check('Tecnico', 'Seleccione un técnico').notEmpty()
+    check('Tecnico', 'Seleccione un técnico').notEmpty(),
+    check('MedioPago', 'El medio de pago es obligatorio').notEmpty()
 ],UserController.AbonadoCambioDomicilio);
 
 router.put('/abonados/cambio-servicio/:id', ValidarJWT,
