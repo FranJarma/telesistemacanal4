@@ -208,7 +208,7 @@ const CambioServicio = () => {
                     <Card className={styles.cartaSecundaria}>
                         <CardContent>
                             <Typography variant="h6"><b>Servicio actual: </b> {location.state.ServicioNombre}</Typography>
-                            <Typography variant="h6"><b>Fecha de contrato: </b> {location.state.FechaContrato.split('T')[0].split('-').reverse().join('/')}</Typography>
+                            <Typography variant="h6"><b>Fecha de contrato: </b> {convertirAFecha(location.state.FechaContrato)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>

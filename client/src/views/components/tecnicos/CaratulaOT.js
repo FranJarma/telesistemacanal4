@@ -5,7 +5,7 @@ import Footer from '../design/layout/Footer';
 import AppContext from '../../../context/appContext';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import { useLocation } from 'react-router';
-import { DatePicker } from '@material-ui/pickers';
+import { DatePicker, TimePicker } from '@material-ui/pickers';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import DataTable from 'react-data-table-component';
 
@@ -173,20 +173,23 @@ const CaratulaOt = () => {
                             </TextField>
                         </Grid>
                         <Grid item xs={6} md={3} lg={3} xl={3}>
-                            <TextField
-                                value={location.state ? location.state.createdAt.split('T')[0].split('-').reverse().join('/') : new Date().getDate()+"/"+(new Date().getMonth()+1) +"/"+new Date().getFullYear()}
-                                variant="outlined"
+                            <DatePicker
+                                disabled
+                                value={new Date()}
+                                format="dd/MM/yyyy"
+                                inputVariant="filled"
                                 fullWidth
                                 label="Fecha de emisión de OT"
-                            ></TextField>
+                            ></DatePicker>
                         </Grid>
-                        <Grid item xs={6} md={3} lg={3} xl={3}>
-                            <TextField
-                                value={location.state ? location.state.createdAt.split('T')[1].split('.')[0] : new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})}
-                                variant="outlined"
+                        <Grid item xs={6} md={2} lg={2} xl={2}>
+                            <TimePicker
+                                value={new Date()}
+                                disabled
+                                inputVariant="filled"
                                 fullWidth
                                 label="Hora de emisión de OT"
-                            ></TextField>
+                            ></TimePicker>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3} xl={3}>
                             <DatePicker

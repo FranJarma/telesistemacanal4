@@ -3,6 +3,8 @@ import React, { useContext, useEffect } from 'react';
 import AppContext from '../../../context/appContext';
 import olinet from '../../images/olinet.PNG';
 import logo3 from '../../images/logo3.PNG';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import convertirAHora from '../../../helpers/ConvertirAHora';
 
 const CaratulaImpresionOt = ({datos}) => {
     const appContext = useContext(AppContext);
@@ -28,8 +30,8 @@ const CaratulaImpresionOt = ({datos}) => {
             <hr/>
             <br/>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant="h6"><b>Fecha de emisión OT:</b> {datos.createdAt.split('T')[0]}</Typography>
-                <Typography variant="h6"><b>Hora: </b>{datos.createdAt.split('T')[1].split('.')[0]}</Typography>
+                <Typography variant="h6"><b>Fecha de emisión OT:</b> {convertirAFecha(datos.createdAt)}</Typography>
+                <Typography variant="h6"><b>Hora: </b>{convertirAHora(datos.createdAt)}</Typography>
             </div>
             <hr/>
             <br/>
@@ -52,19 +54,19 @@ const CaratulaImpresionOt = ({datos}) => {
             <hr/>
             <br/>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <Typography variant="h6"><b>1era visita:</b>{datos.OtPrimeraVisita ? datos.OtPrimeraVisita.split('T')[0].split('-').reverse().join('/') : ""}</Typography>
-            <Typography variant="h6"><b>2da visita:</b>{datos.OtSegundaVisita ? datos.OtSegundaVisita.split('T')[0].split('-').reverse().join('/') : ""}</Typography>
-            <Typography variant="h6"><b>3era visita:</b>{datos.OtTerceraVisita ? datos.OtTerceraVisita.split('T')[0].split('-').reverse().join('/') : ""}</Typography>
+            <Typography variant="h6"><b>1era visita:</b>{datos.OtPrimeraVisita ? convertirAFecha(datos.OtPrimeraVisita) : ""}</Typography>
+            <Typography variant="h6"><b>2da visita:</b>{datos.OtSegundaVisita ? convertirAFecha(datos.OtSegundaVisita) : ""}</Typography>
+            <Typography variant="h6"><b>3era visita:</b>{datos.OtTerceraVisita ? convertirAFecha(datos.OtTerceraVisita) : ""}</Typography>
             <br/>
             <br/>
             </div>
-            <Typography variant="h6"><b>Fecha de realización:</b>{datos.OtFechaFinalizacion ? datos.OtFechaFinalizacion.split('T')[0].split('-').reverse().join('/') : ""}</Typography>
+            <Typography variant="h6"><b>Fecha de realización:</b>{datos.OtFechaFinalizacion ? convertirAFecha(datos.OtFechaFinalizacion) : ""}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Hora de inicio:</b>{datos.OtFechaInicio ? datos.OtFechaInicio.split('T')[1].split('.')[0] : ""}</Typography>
+            <Typography variant="h6"><b>Hora de inicio:</b>{datos.OtFechaInicio ? convertirAFecha(datos.OtFechaInicio) : ""}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Hora de finalización:</b>{datos.OtFechaFinalizacion ? datos.OtFechaFinalizacion.split('T')[1].split('.')[0] : ""}</Typography>
+            <Typography variant="h6"><b>Hora de finalización:</b>{datos.OtFechaFinalizacion ? convertirAFecha(datos.OtFechaFinalizacion) : ""}</Typography>
             <hr/>
             <br/>
             <FormControl>

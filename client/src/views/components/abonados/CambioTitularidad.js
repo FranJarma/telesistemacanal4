@@ -7,6 +7,7 @@ import { DatePicker } from '@material-ui/pickers';
 import useStyles from '../Styles';
 import { useLocation } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
 
 const CambioTitularidad = () => {
     const appContext = useContext(AppContext);
@@ -154,7 +155,7 @@ const CambioTitularidad = () => {
                     <Card className={styles.cartaSecundaria}>
                         <CardContent>
                             <Typography variant="h6"> <b> Tipo de servicio contratado: </b> {location.state.ServicioNombre}</Typography>
-                            <Typography variant="h6"> <b> Fecha de Contrato: </b> {location.state.FechaContrato.split('T')[0]}</Typography>
+                            <Typography variant="h6"> <b> Fecha de Contrato: </b> {convertirAFecha(location.state.FechaContrato)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
