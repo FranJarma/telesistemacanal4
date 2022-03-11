@@ -12,6 +12,7 @@ import useStyles from '../Styles';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import SpanVencimientoServicio from '../../../helpers/SpanVencimientoServicio';
+import SpanServicio from '../../../helpers/SpanServicio';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
@@ -91,19 +92,17 @@ const ListaAbonadosActivos = () => {
     {
         "name": "DNI",
         "selector": row =>row["Documento"],
-        "sortable": true,
         "hide": "sm"
     },
     {
         "name": <TooltipForTable name="Servicio" />,
-        "selector": row => row["ServicioNombre"],
-        "sortable": true,
+        "selector": row => <SpanServicio servicioId={row["ServicioId"]} servicioNombre={row["ServicioNombre"]} onuMac={row["OnuMac"]}></SpanServicio>,
         "hide": "sm",
+        "width": "300px"
     },
-    {
+    { 
         "name": <TooltipForTable name="Vencimiento de Servicio" />,
         "selector": row => row["FechaVencimientoServicio"] ? <SpanVencimientoServicio timestamp={row["FechaVencimientoServicio"]}></SpanVencimientoServicio> : "",
-        "sortable": true
     },
     {
         cell: (data) =>

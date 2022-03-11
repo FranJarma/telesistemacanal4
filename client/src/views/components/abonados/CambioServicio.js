@@ -15,7 +15,7 @@ import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
-    const { historialServicios, mediosPago, ordenesDeTrabajoAsignadas, servicios, usuarios, cambioServicioAbonado, traerTareas, traerServicios, traerServiciosAbonado, traerONUS, traerONUPorId,
+    const { historialServicios, mediosPago, ordenesDeTrabajoAsignadas, servicios, usuarios, cambioServicioAbonado, traerTareas, traerServicios, traerServiciosAbonado, traerOnus, traerONUPorId,
     traerUsuariosPorRol, traerOrdenesDeTrabajoAsignadas, traerMediosPago } = appContext;
 
     const location = useLocation();
@@ -24,7 +24,7 @@ const CambioServicio = () => {
     useEffect(() => {
         traerTareas();
         traerServicios();
-        traerONUS(5);
+        traerOnus(5);
         traerServiciosAbonado(location.state.UserId);
         traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
         traerMediosPago();

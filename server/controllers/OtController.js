@@ -10,6 +10,7 @@ const User = require('./../models/User');
 const OtTecnico = require('../models/OtTecnico');
 const OtTarea = require('../models/OtTarea');
 const Movimiento = require('../models/Movimiento');
+const Onu = require('../models/Onu');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -18,8 +19,8 @@ exports.OtGet = async(req, res) => {
         const ot = await knex
         .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
         'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.OtRetiraCable', 'ot.OtRetiraOnu',
-        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion', 'ot.OtEsPrimeraBajada',
-        'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
+        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion', 'ot.OtEsPrimeraBajada', 'ot.NuevoServicioId',
+        'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado', 'u.ServicioId',
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
         'u2.Nombre as NombreResponsableEjecucion', 'u2.Apellido as ApellidoResponsableEjecucion',
         'd.DomicilioCalle', 'd.DomicilioNumero', 'd1.DomicilioCalle as DomicilioCalleCambio', 'd1.DomicilioNumero as DomicilioNumeroCambio',
@@ -57,8 +58,8 @@ exports.OtGetByTecnico = async(req, res) => {
         const ot = await knex
         .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
         'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.OtRetiraCable', 'ot.OtRetiraOnu',
-        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion',
-        'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado',
+        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion', 'ot.NuevoServicioId',
+        'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado', 'u.ServicioId',
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
         'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre'
         )
@@ -226,14 +227,14 @@ exports.OtFinalizar = async (req, res) => {
 
         await db.transaction(async (t)=> {
             if( OtFechaInicio >= OtFechaFinalizacion ) return res.status(400).send({msg: 'La hora de Inicio no puede ser mayor o igual a la de finalización'});
-            const ot = await Ot.findByPk(OtId);
+            const ot = await Ot.findByPk(OtId, {transaction: t});
             ot.OtFechaInicio = OtFechaInicio;
             ot.OtFechaFinalizacion = OtFechaFinalizacion;
             ot.OtObservacionesResponsableEjecucion = OtObservacionesResponsableEjecucion;
             ot.EstadoId = process.env.ESTADO_ID_OT_FINALIZADA;
             ot.updatedAt = new Date();
             ot.updatedBy = updatedBy;
-            const abonado = await User.findByPk(ot.AbonadoId);
+            const abonado = await User.findByPk(ot.AbonadoId, {transaction: t});
             //INSCRIPCIÓN
             if(ot.OtEsPrimeraBajada) {
                 abonado.FechaBajada = OtFechaFinalizacion;
@@ -243,6 +244,11 @@ exports.OtFinalizar = async (req, res) => {
                 }
                 else {
                     FechaVencimientoServicio = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 2);
+                    const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
+                    onu.EstadoId = 4;
+                    await onu.save({transaction: t});
+
+                    abonado.OnuId = onu.OnuId;
                 }
                 abonado.FechaVencimientoServicio = FechaVencimientoServicio;
                 await abonado.save({transaction: t});
@@ -262,6 +268,13 @@ exports.OtFinalizar = async (req, res) => {
             }
             //CAMBIO DE SERVICIO
             if(ot.NuevoServicioId !== null) {
+                if(ot.NuevoServicioId !== 1) {
+                    const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
+                    onu.EstadoId = 4;
+                    await onu.save({transaction: t});
+
+                    abonado.OnuId = onu.OnuId;
+                }
                 const userServicio = await UserServicio.findOne({
                     where: {
                         ServicioId: ot.NuevoServicioId,

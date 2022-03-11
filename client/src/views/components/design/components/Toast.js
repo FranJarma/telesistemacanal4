@@ -7,7 +7,7 @@ const Toast = (mensaje, categoria) => {
         position: 'top-end',
         showCloseButton: true,
         closeButtonHtml: '&times',
-        timer: 5000,
+        timer: 7000,
         icon: `${categoria}`,
         title: `<a style="font-family: Poppins">${mensaje}</a>`
       })

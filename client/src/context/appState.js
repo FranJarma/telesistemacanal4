@@ -900,7 +900,7 @@ const AppState = props => {
         })
     }
     //ONUS
-    const traerONUS = async (estadoId = 0) => {
+    const traerOnus = async (estadoId = 0) => {
         try {
             const resultado = await clienteAxios.get(`/api/onus/estado=${estadoId}`);
             dispatch({
@@ -1466,7 +1466,7 @@ const AppState = props => {
             traerMunicipios, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio,
             traerProvincias,
             traerServicios, crearServicio, modificarServicio, eliminarServicio,
-            traerONUS, traerONUPorId, crearONU, modificarONU, eliminarONU,
+            traerOnus, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago, crearMedioPago, modificarMedioPago, eliminarMedioPago,
             traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion,

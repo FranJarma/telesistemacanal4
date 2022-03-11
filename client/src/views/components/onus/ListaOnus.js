@@ -9,11 +9,11 @@ import InputMask from 'react-input-mask';
 
 const ListaOnus = ({location}) => {
     const appContext = useContext(AppContext);
-    const { onus, traerONUS, modelosONU, traerModelosONU, servicios, traerServicios, crearONU, modificarONU, eliminarONU } = appContext;
+    const { onus, traerOnus, modelosONU, traerModelosONU, servicios, traerServicios, crearONU, modificarONU, eliminarONU } = appContext;
     useEffect(()=>{
         //para abrir el modal directamente cuando se quiere dar de alta una ONU desde otra vista 
         location.state ? setModalOnu(true) : setModalOnu(false);
-        traerONUS();
+        traerOnus();
         traerModelosONU();
         traerServicios();
     },[])

@@ -48,7 +48,7 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     || (item.OtId && item.OtId.toString().includes(textoFiltrado.toLowerCase()))
     || (item.OtFechaPrevistaVisita && item.OtFechaPrevistaVisita.toString().includes(textoFiltrado.toLowerCase()))
     || (item.MovimientoCantidad && item.MovimientoCantidad.toString().includes(textoFiltrado.toLowerCase()))
-
+    || (item.FechaVencimientoServicio && item.FechaVencimientoServicio.toString().includes(textoFiltrado.toLowerCase()))
     );
     const paginacionOpciones = {
         rowsPerPageText: 'Registros por página',

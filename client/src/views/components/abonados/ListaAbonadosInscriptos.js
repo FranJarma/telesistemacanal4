@@ -13,6 +13,7 @@ import BotonesDatatable from '../design/components/BotonesDatatable';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import generarRecibo from '../../../helpers/GenerarRecibo';
+import SpanServicio from '../../../helpers/SpanServicio';
 
 const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
@@ -128,7 +129,7 @@ const ListaAbonadosInscriptos = () => {
     },
     {
         "name": "Servicio",
-        "selector": row =>row["ServicioNombre"],
+        "selector": row =><SpanServicio servicioId={row["ServicioId"]} servicioNombre={row["ServicioNombre"]}></SpanServicio>,
         "sortable": true,
         "hide": "sm",
     },

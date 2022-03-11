@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import CaratulaImpresionOt from './CaratulaImpresionOt';
 import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
 
-import { Alert } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import TooltipForTable from '../../../helpers/TooltipForTable';
@@ -17,10 +17,11 @@ import DesdeHasta from '../../../helpers/DesdeHasta';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
-    const { ordenesDeTrabajo, tareasOrdenDeTrabajo, traerOrdenesDeTrabajo, traerTareasOt, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
+    const { ordenesDeTrabajo, onus, tareasOrdenDeTrabajo, traerOrdenesDeTrabajo, traerTareasOt, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo, traerOnus} = appContext;
 
     useEffect(()=>{
         traerOrdenesDeTrabajo(5);
+        traerOnus(5);
     },[])
 
     const [ModalImprimirOt, setModalImprimirOt] = useState(false);
@@ -35,7 +36,8 @@ const ListaOtPendientes = () => {
     const [FechaVisita, setFechaVisita] = useState(new Date());
     const [OtFechaInicio, setOtFechaInicio] = useState(new Date());
     const [OtFechaFinalizacion, setOtFechaFinalizacion] = useState(new Date());
-
+    const [Onu, setOnu] = useState(null);
+    
     const onInputChange = (e) => {
         setOtObservacionesResponsableEjecucion(e.target.value);
     }
@@ -106,8 +108,8 @@ const ListaOtPendientes = () => {
             "width": "300px",
             "wrap": true,
             "sortable": true,
-            "selector": row => row["NuevoDomicilioId"] ? <DesdeHasta title1="Domicilio Viejo" title2="Domicilio Nuevo" proposito={"Cambio de Domicilio"} desde={row["DomicilioCalle"] + " " +  row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + "|" + row["MunicipioNombre"]} hasta={row["DomicilioCalleCambio"] + " " +  row["DomicilioNumeroCambio"] + "|Barrio " + row["BarrioNombreCambio"] + "|" + row["MunicipioNombreCambio"]}></DesdeHasta> : 
-            row["DomicilioCalle"] + " " + row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + " " + row["MunicipioNombre"],
+            "selector": row => row["NuevoDomicilioId"] == null ? row["DomicilioCalle"] + " " + row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + " " + row["MunicipioNombre"] :
+            <DesdeHasta title1="Domicilio Viejo" title2="Domicilio Nuevo" proposito={"Cambio de Domicilio"} desde={row["DomicilioCalle"] + " " +  row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + "|" + row["MunicipioNombre"]} hasta={row["DomicilioCalleCambio"] + " " +  row["DomicilioNumeroCambio"] + "|Barrio " + row["BarrioNombreCambio"] + "|" + row["MunicipioNombreCambio"]}></DesdeHasta>
         },
         {
             "name": <TooltipForTable name="Fecha de Emisión"/>,
@@ -264,7 +266,7 @@ const ListaOtPendientes = () => {
             funcionCerrar={handleChangeModalFinalizarOt}
             titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
             botones={<><Button variant='contained' color="primary"
-            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: sessionStorage.getItem('identity')},
+            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: sessionStorage.getItem('identity'), Onu},
             handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cerrar</Button></>}
             formulario={
                 <>
@@ -296,6 +298,20 @@ const ListaOtPendientes = () => {
                         label="Fecha y hora de finalización"
                         ></KeyboardDateTimePicker>
                     </Grid>
+                    {(OtInfo.OtEsPrimeraBajada && OtInfo.ServicioId !== 1) || (OtInfo.NuevoServicioId !== null && OtInfo.ServicioId !== 1) || (tareasOrdenDeTrabajo.length > 0 && tareasOrdenDeTrabajo.find((tareasOt => tareasOt.TareaId === 1 || tareasOt.TareaId === 5 ))) ?
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Autocomplete
+                            value={Onu}
+                            onChange={(_event, newOnu) => {
+                                setOnu(newOnu);
+                            }}
+                            options={onus}
+                            noOptionsText="No se encontraron onus disponibles"
+                            getOptionLabel={(option) => option.OnuMac}
+                            renderInput={(params) => <TextField {...params} variant ="outlined" fullWidth label="ONU"/>}
+                            />
+                        </Grid>
+                    : ""}
                     <Grid item xs={12} md={12} lg={12} xl={12}>
                         <TextField
                         variant = "outlined"

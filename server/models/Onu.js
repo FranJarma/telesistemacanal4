@@ -49,7 +49,8 @@ const Onu = db.define('onu', {
         allowNull: false
     },
     EstadoId: {
-        type: INTEGER
+        type: INTEGER,
+        allowNull: true
     }
 });
 

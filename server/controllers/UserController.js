@@ -12,12 +12,12 @@ const UserDomicilio = require('./../models/UserDomicilio');
 const UserEstado = require('./../models/UserEstado');
 const UserServicio = require('./../models/UserServicio');
 const UserRole = require('./../models/UserRole');
-const Onu = require('../models/Onu');
 const Movimiento = require('../models/Movimiento');
 const Tarea = require('../models/Tarea');
 const Ot = require('../models/Ot');
 const OtTecnico = require('../models/OtTecnico');
 const OtTarea = require('../models/OtTarea');
+const { Op } = require('sequelize');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -515,6 +515,21 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
+            const abonado = await User.findByPk(req.body.UserId, {transaction: t});
+            //verificamos que no exista una OT con cambio de domicilio pendiente
+            const otCambioDomicilioExistente = await Ot.findOne({
+                where: {
+                    AbonadoId: abonado.UserId,
+                    NuevoDomicilioId: {
+                        [Op.ne]: null
+                    },
+                    EstadoId: process.env.ESTADO_ID_OT_REGISTRADA
+                },
+                order: [['OtId', 'DESC']]
+            });
+            if(otCambioDomicilioExistente) {
+                return res.status(400).json({msg: `Ya existe un cambio de domicilio realizado y con una OT pendiente de finalización (N°:${otCambioDomicilioExistente.OtId}). Por favor, finalícela antes de poder registrar un nuevo cambio de domicilio.`});
+            }
             // traemos el id del ultimo domicilio registrado
             let ultimoDomicilioId = 0;
             const ultimoDomicilio = await Domicilio.findOne({
@@ -562,7 +577,6 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                     TareaId: req.body.ServicioId === 1 ? 14 : 15
                 }
             })
-            const abonado = await User.findByPk(req.body.UserId, {transaction: t});
             //registramos un nuevo pago
             const pago = new Pago({transaction: t});
             pago.PagoId = ultimoPagoId + 1;
@@ -640,8 +654,22 @@ exports.AbonadoCambioServicio = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            //buscamos el user para verificar que no le cambie el servicio al que ya tiene
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
+            //verificamos que no exista una OT con cambio de servicio pendiente
+            const otCambioServicioExistente = await Ot.findOne({
+                where: {
+                    AbonadoId: abonado.UserId,
+                    NuevoServicioId: {
+                        [Op.ne]: null
+                    },
+                    EstadoId: process.env.ESTADO_ID_OT_REGISTRADA
+                },
+                order: [['OtId', 'DESC']]
+            });
+            if(otCambioServicioExistente) {
+                return res.status(400).json({msg: `Ya existe un cambio de servicio realizado y con una OT pendiente de finalización (N°:${otCambioServicioExistente.OtId}). Por favor, finalícela antes de poder registrar un nuevo cambio de servicio.`});
+            }
+            //buscamos el user para verificar que no le cambie el servicio al que ya tiene
             if (abonado.ServicioId === req.body.Servicio.ServicioId){
                 return res.status(400).json({msg: 'Seleccione un servicio diferente al que ya tiene el abonado actualmente'});
             }
