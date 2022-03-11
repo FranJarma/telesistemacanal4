@@ -106,7 +106,7 @@ const ListaOtPendientes = () => {
             "width": "300px",
             "wrap": true,
             "sortable": true,
-            "selector": row => row["NuevoDomicilioId"] !== null ? <DesdeHasta title1="Domicilio Viejo" title2="Domicilio Nuevo" proposito={"Cambio de Domicilio"} desde={row["DomicilioCalle"] + " " +  row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + "|" + row["MunicipioNombre"]} hasta={row["DomicilioCalleCambio"] + " " +  row["DomicilioNumeroCambio"] + "|Barrio " + row["BarrioNombreCambio"] + "|" + row["MunicipioNombreCambio"]}></DesdeHasta> : 
+            "selector": row => row["NuevoDomicilioId"] ? <DesdeHasta title1="Domicilio Viejo" title2="Domicilio Nuevo" proposito={"Cambio de Domicilio"} desde={row["DomicilioCalle"] + " " +  row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + "|" + row["MunicipioNombre"]} hasta={row["DomicilioCalleCambio"] + " " +  row["DomicilioNumeroCambio"] + "|Barrio " + row["BarrioNombreCambio"] + "|" + row["MunicipioNombreCambio"]}></DesdeHasta> : 
             row["DomicilioCalle"] + " " + row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + " " + row["MunicipioNombre"],
         },
         {

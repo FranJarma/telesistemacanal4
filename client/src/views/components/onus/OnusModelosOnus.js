@@ -16,8 +16,8 @@ const OnusModelosOnus = () => {
         <main>
         <Tabs>
             <TabList>
-            <Tab><i style={{color: 'teal'}} className='bx bxs-hdd'></i> ONUS</Tab>
-            <Tab><i style={{color: 'teal'}} className="bx bxs-category"></i> Modelos ONUS</Tab>
+            <Tab><i className='bx bxs-hdd'></i> ONUS</Tab>
+            <Tab><i className="bx bxs-category"></i> Modelos ONUS</Tab>
             </TabList>
             <TabPanel>
             <ListaOnus location={location}/>

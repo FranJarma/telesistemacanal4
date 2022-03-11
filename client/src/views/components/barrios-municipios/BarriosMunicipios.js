@@ -14,8 +14,8 @@ const BarriosMunicipios = () => {
         <main>
         <Tabs>
             <TabList>
-            <Tab><i style={{color: 'teal'}} className="bx bx-map"></i> Municipios</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bx-map-alt'></i> Barrios</Tab>
+            <Tab><i className="bx bx-map"></i> Municipios</Tab>
+            <Tab><i className='bx bx-map-alt'></i> Barrios</Tab>
             </TabList>
             <TabPanel>
             <ListaMunicipios/>

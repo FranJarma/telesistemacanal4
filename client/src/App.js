@@ -106,7 +106,7 @@ const theme = createTheme({
       fontWeight: 'bold'
     },
     h6: {
-      fontSize: 12,
+      fontSize: 14,
       fontFamily: 'Poppins'
     },
     body1: {

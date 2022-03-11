@@ -261,7 +261,19 @@ exports.OtFinalizar = async (req, res) => {
                 await abonado.save({transaction: t});
             }
             //CAMBIO DE SERVICIO
-            
+            if(ot.NuevoServicioId !== null) {
+                const userServicio = await UserServicio.findOne({
+                    where: {
+                        ServicioId: ot.NuevoServicioId,
+                        UserId: abonado.UserId
+                    },
+                    order: [ [ 'UserServicioId', 'DESC' ]],
+                }, {transaction: t});
+                userServicio.CambioServicioObservaciones = `Cambio correcto, ot n°:${ot.OtId}`;
+                abonado.ServicioId = ot.NuevoServicioId;
+                await userServicio.save({transaction: t});
+                await abonado.save({transaction: t});
+            }
             if(Monto > 0) {
                 //buscamos el ultimo Movimiento
                 let ultimoMovimientoId = 0;

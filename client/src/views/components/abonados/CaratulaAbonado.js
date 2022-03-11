@@ -225,15 +225,15 @@ const CaratulaAbonado = () => {
     <form onSubmit={onSubmitAbonado}>
     <Tabs>
         <TabList>
-            <Tab><i style={{color: 'teal'}} className="bx bxs-user"></i> Abonado</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bxs-home'></i> Domicilio</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bx-money'></i> Servicio</Tab>
-            <Tab><i style={{color: 'teal'}} className='bx bxs-plug'></i> Instalación y OT</Tab>
+            <Tab><i className="bx bxs-user"></i> Abonado</Tab>
+            <Tab><i className='bx bxs-home'></i> Domicilio</Tab>
+            <Tab><i className='bx bx-money'></i> Servicio</Tab>
+            <Tab><i className='bx bxs-plug'></i> Instalación y OT</Tab>
         </TabList>
     <TabPanel>
         <Card>
             <CardContent>
-                <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Agregar abonado"}</Typography>
+                <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Inscribir abonado"}</Typography>
                     <br/>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={6} lg={6} xl={6}>

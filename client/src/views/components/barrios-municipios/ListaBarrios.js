@@ -174,7 +174,7 @@ const ListaBarrios = () => {
         botones={
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModal}, handleChangeModalBarrio)
-            : crearBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModal}, handleChangeModalBarrio)}}>{EditMode ? "Editar" : "Agregar"}</Button>
+            : crearBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModal}, handleChangeModalBarrio)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
             <Button variant="text" color="inherit" onClick={handleChangeModalBarrio} >Cerrar</Button>
             </>
         }

@@ -140,7 +140,7 @@ const ListaModelosOnus = ({location}) => {
         botones={
             <>
                 <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarModeloONU(ModeloOnuInfo, handleChangeModalModeloOnu)
-            : crearModeloONU(ModeloOnuInfo, handleChangeModalModeloOnu)}}>{EditMode ? "Editar" : "Agregar"}</Button>
+            : crearModeloONU(ModeloOnuInfo, handleChangeModalModeloOnu)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
             <Button variant="text" color="inherit" >Cerrar</Button>
             </>
         }

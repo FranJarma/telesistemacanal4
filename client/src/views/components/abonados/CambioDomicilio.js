@@ -220,15 +220,15 @@ const CambioDomicilio = () => {
             variant="contained"
             color="primary"
             onClick={onSubmitAbonado}>
-            Agregar</Button>
+            Confirmar</Button>
         <Button onClick={handleChangeModalNuevoDomicilio}>Cerrar</Button></>}
         formulario={
             <>
             <Tabs>
             <TabList>
-                <Tab><i style={{color: "teal"}} className="bx bxs-home"></i> Datos del nuevo domicilio</Tab>
-                <Tab><i style={{color: "teal"}} className="bx bx-task"></i> Datos de la OT</Tab>
-                <Tab><i style={{color: "teal"}} className="bx bx-money"></i> Datos del pago</Tab>
+                <Tab><i className="bx bxs-home"></i> Datos del nuevo domicilio</Tab>
+                <Tab><i className="bx bx-task"></i> Datos de la OT</Tab>
+                <Tab><i className="bx bx-money"></i> Datos del pago</Tab>
             </TabList>
             <TabPanel>
             <Grid container spacing={3}>
@@ -436,7 +436,7 @@ const CambioDomicilio = () => {
                         <br/>
                             <Card>
                                 <CardContent>
-                                    <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
+                                    <Typography variant="h2"><b>Total (Precio Cambio de Domicilio + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
                                     <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
                                     <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
                                     <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>

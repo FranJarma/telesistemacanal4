@@ -640,35 +640,128 @@ exports.AbonadoCambioServicio = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            //buscamos el user para actualizarle el servicio
-            console.log(req.body);
+            //buscamos el user para verificar que no le cambie el servicio al que ya tiene
             const abonado = await User.findByPk( req.body.UserId, {transaction: t} );
-            if (abonado.ServicioId === req.body.ServicioId){
+            if (abonado.ServicioId === req.body.Servicio.ServicioId){
                 return res.status(400).json({msg: 'Seleccione un servicio diferente al que ya tiene el abonado actualmente'});
             }
             else {
-                let ultimoUserServicio = await UserServicio.findOne({
-                    order: [["UserServicioId", "DESC"]]
-                })
-                const abonadoServicio = new UserServicio(req.body, {transaction: t});
-                const onu = await Onu.findByPk(req.body.OnuId, {transaction: t});
-                abonadoServicio.UserServicioId = ultimoUserServicio.UserServicioId + 1;
-                abonadoServicio.ServicioId = req.body.ServicioId;
-                abonado.ServicioId = req.body.ServicioId;
-                abonado.FechaBajada = req.body.FechaBajada;
-                await abonado.save({transaction: t});
-                await abonadoServicio.save({transaction: t});
-                //si el servicio es INTERNET O COMBO, cambiamos el estado de la ONU a asignada
-                if(req.body.ServicioId !== 1) {
-                    abonado.OnuId = req.body.OnuId;
-                    onu.EstadoId = 4;
+            abonado.FechaContrato = new Date();
+            let ultimoUserServicioId = 0;
+            let ultimoUserServicio = await UserServicio.findOne({
+                order: [["UserServicioId", "DESC"]]
+            })
+            if (ultimoUserServicio) ultimoUserServicioId = ultimoUserServicio.UserServicioId;
+            //Buscamos la ultima OT registrada
+            let ultimaOtRegistradaId = 0;
+            let ultimaOtRegistrada = await Ot.findOne({
+                order: [['OtId', 'DESC']]
+            });
+            if (ultimaOtRegistrada) ultimaOtRegistradaId = ultimaOtRegistrada.OtId;
+            //buscamos el ultimo pago
+            let ultimoPagoId = 0;
+            const ultimoPago = await Pago.findOne({
+                order: [['PagoId', 'DESC']]
+            }); 
+            if (ultimoPago) ultimoPagoId = ultimoPago.PagoId;
+            //buscamos el ultimo detalle de pago
+            let ultimoDetallePagoId = 0;
+            const ultimoDetallePago = await DetallePago.findOne({
+                order: [['DetallePagoId', 'DESC']]
+            }); 
+            if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
+            // buscamos el ultimo Movimiento
+            let ultimoMovimientoId = 0;
+            const ultimoMovimiento = await Movimiento.findOne({
+                order: [['MovimientoId', 'DESC']]
+            }); 
+            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
+            const abonadoServicio = new UserServicio(req.body, {transaction: t});
+            abonadoServicio.UserServicioId = ultimoUserServicioId + 1;
+            abonadoServicio.ServicioId = req.body.Servicio.ServicioId;
+            abonadoServicio.CambioServicioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo servicio del abonado';
+            //registramos un nuevo pago
+            const pago = new Pago({transaction: t});
+            pago.PagoId = ultimoPagoId + 1;
+            pago.UserId = abonado.UserId;
+            pago.PagoAño = new Date().getFullYear();
+            pago.PagoMes = new Date().getMonth() + 1;
+            pago.PagoTotal = req.body.PagoInfo.Total;
+            pago.PagoRecargo = 0;
+            pago.PagoSaldo = req.body.PagoInfo.Saldo;
+            pago.PagoCuotasRestantes = req.body.MedioPago.MedioPagoCantidadCuotas - 1;
+            pago.PagoConceptoId = 6;
+            pago.createdAt = new Date();
+            pago.createdBy = req.body.createdBy;
+            const detallePago = new DetallePago({transaction: t})
+            detallePago.DetallePagoId = ultimoDetallePagoId + 1;
+            detallePago.PagoId = ultimoPagoId + 1;
+            detallePago.MedioPagoId = req.body.MedioPago.MedioPagoId;
+            detallePago.createdAt = new Date();
+            detallePago.createdBy = req.body.createdBy;
+            detallePago.DetallePagoMonto = req.body.PagoInfo.Inscripcion;
+            detallePago.DetallePagoMotivo = 'Cambio de Servicio';
+            // instanciamos un movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = req.body.PagoInfo.Inscripcion;
+            movimiento.createdBy = req.body.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 6; //cambio de servicio
+            movimiento.MunicipioId = req.body.MunicipioId;
+            const ot = new Ot(req.body);
+            ot.OtId = ultimaOtRegistradaId + 1;
+            ot.AbonadoId = req.body.UserId;
+            ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.OtFechaPrevistaVisita = req.body.OtFechaPrevistaVisita;
+            ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
+            ot.OtResponsableEjecucion = req.body.Tecnico.UserId;
+            ot.NuevoServicioId = req.body.Servicio.ServicioId;
+            ot.createdBy = req.body.createdBy; 
+            await ot.save({transaction: t});
+            for (let i=0; i<= req.body.Tecnico.length-1; i++){
+                let obj = {
+                    TecnicoId: req.body.Tecnico[i].UserId,
+                    OtId: ot.OtId,
+                    createdBy: req.body.createdBy
                 }
-                else {
-                    abonado.OnuId = null;
-                    onu.EstadoId = 5; //desasignamos onu
-                }
-                return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
+                const otTecnico = new OtTecnico(obj);
+                await otTecnico.save({transaction: t});
             }
+
+            let otTarea1 = null;
+            let otTarea2 = null;
+            if(req.body.Servicio.ServicioId === 1 || req.body.Servicio.ServicioId === 2) {
+                otTarea1 = new OtTarea({
+                    TareaId: req.body.Servicio.ServicioId === 1 ? 1 : 5, //Bajada de Cable o Internet
+                    OtId: ot.OtId,
+                    createdBy: req.body.createdBy
+                });
+                await otTarea1.save({transaction: t});
+            }
+            else {
+                otTarea1 = new OtTarea({
+                    TareaId: 1, //Bajada de Cable
+                    OtId: ot.OtId,
+                    createdBy: req.body.createdBy
+                });
+                otTarea2 = new OtTarea({
+                    TareaId: 5, //Bajada de Internet
+                    OtId: ot.OtId,
+                    createdBy: req.body.createdBy
+                });
+                await otTarea1.save({transaction: t});
+                await otTarea2.save({transaction: t});
+            }
+            await pago.save({transaction: t});
+            await detallePago.save({transaction: t});
+            await movimiento.save({transaction: t});
+            await abonado.save({transaction: t});
+            await abonadoServicio.save({transaction: t});
+            return res.status(200).json({msg: 'El servicio del abonado ha sido cambiado correctamente'})
+        }
         })
     } catch (error) {
         res.status(400).json({msg: 'Hubo un error al cambiar el servicio del abonado'});

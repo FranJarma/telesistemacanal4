@@ -195,7 +195,7 @@ const ListaTiposTareas = () => {
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarTarea({...TareaInfo, updatedAt: new Date(),
             updatedBy: sessionStorage.getItem('identity')}, handleChangeModalTarea)
             : crearTarea({...TareaInfo,
-            createdBy: sessionStorage.getItem('identity')}, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Agregar"}</Button>
+            createdBy: sessionStorage.getItem('identity')}, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
             <Button variant="text" color="inherit" >Cerrar</Button>
             </>
         }

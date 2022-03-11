@@ -217,7 +217,7 @@ const ListaMunicipios = () => {
             modificarMunicipio({...MunicipioInfo, ProvinciaIdVieja, ProvinciaNombreModal, ProvinciaIdModal}, handleChangeModalMunicipio)
             :
             crearMunicipio({...MunicipioInfo, ProvinciaNombreModal, ProvinciaIdModal}, handleChangeModalMunicipio)}}
-            >{EditMode ? "Editar" : "Agregar"}</Button>
+            >{EditMode ? "Editar" : "Confirmar"}</Button>
             <Button variant="text" color="inherit" >Cerrar</Button>
             </>
         }

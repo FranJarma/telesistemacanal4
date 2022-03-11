@@ -222,10 +222,10 @@ const ListaPagos = () => {
                 <br/>
                 <Tabs>
                     <TabList>
-                        <Tab onClick={() => traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2)}><i style={{color: 'teal'}} className="bx bxs-notepad"></i> Inscripciones y reinscripciones</Tab>
-                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 1)}><i style={{color: 'teal'}} className='bx bxs-calendar'></i> Mensualidades</Tab>
-                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 5)}><i style={{color: 'teal'}} className='bx bxs-home'></i> Cambios de domicilio</Tab>
-                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6)}><i style={{color: 'teal'}} className='bx bxs-plug'></i> Cambios de servicio</Tab>
+                        <Tab onClick={() => traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2)}><i className="bx bxs-notepad"></i> Inscripciones y reinscripciones</Tab>
+                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 1)}><i className='bx bxs-calendar'></i> Mensualidades</Tab>
+                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 5)}><i className='bx bxs-home'></i> Cambios de domicilio</Tab>
+                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6)}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
                     </TabList>
                 <TabPanel>
                 <Datatable

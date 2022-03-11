@@ -90,7 +90,10 @@ router.put('/abonados/cambio-domicilio/:id', ValidarJWT,
 
 router.put('/abonados/cambio-servicio/:id', ValidarJWT,
 [
-    check('ServicioId', 'El servicio es obligatorio').not().contains(0)
+    check('Servicio', 'El servicio es obligatorio').notEmpty(),
+    check('MedioPago', 'El medio de pago es obligatorio').notEmpty(),
+    check('OtFechaPrevistaVisita', 'Selecciona una fecha prevista de visita').notEmpty(),
+    check('Tecnico', 'Seleccione un técnico').notEmpty(),
 ],UserController.AbonadoCambioServicio);
 
 router.put('/abonados/cambio-titularidad/:id', ValidarJWT,

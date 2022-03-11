@@ -30,18 +30,19 @@ const CambioServicio = () => {
         traerMediosPago();
     }, [])
     //States
-    const [ServicioInfo, setServicioInfo] = useState({
+    const [CambioServicioInfo, setCambioServicioInfo] = useState({
         UserId: location.state.UserId,
         CambioServicioObservaciones: null,
         createdBy: sessionStorage.getItem('identity')
     })
+    const [MunicipioId, setMunicipioId] = useState(location.state.MunicipioId);
     const onInputChange = (e) => {
-        setServicioInfo({
-            ...ServicioInfo,
+        CambioServicioInfo({
+            ...CambioServicioInfo,
             [e.target.name] : e.target.value
         });
     }
-    const { UserId, CambioServicioFecha, createdBy, CambioServicioObservaciones} = ServicioInfo;
+    const { UserId, createdBy, CambioServicioObservaciones} = CambioServicioInfo;
     const [Servicio, setServicio] = useState(null);
     const [ModalNuevoServicio, setModalNuevoServicio] = useState(false);
     const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
@@ -64,16 +65,6 @@ const CambioServicio = () => {
 
     const handleChangeModalNuevoServicio = () => {
         setModalNuevoServicio(!ModalNuevoServicio);
-        if(!ModalNuevoServicio){
-            setServicioInfo({
-                UserId: location.state.UserId
-            })
-        }
-        else {
-            setServicioInfo({
-                UserId: null
-            })
-        }
     }
     const handleChangeMedioPagoSeleccionado = (e) => {
         setMedioPago(e.target.value);
@@ -85,14 +76,13 @@ const CambioServicio = () => {
             Saldo: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)) - ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas)).toFixed(2)
         })
     }
-
     const onSubmitAbonado = (e) => {
         e.preventDefault();
         if(location.state) {
             cambioServicioAbonado({
                 UserId,
                 Servicio,
-                CambioServicioFecha,
+                MunicipioId,
                 CambioServicioObservaciones,
                 createdBy,
                 PagoInfo,
@@ -183,17 +173,18 @@ const CambioServicio = () => {
             variant="contained"
             color="primary"
             onClick={onSubmitAbonado}>
-            Agregar</Button>
+            Confirmar</Button>
         <Button onClick={handleChangeModalNuevoServicio}>Cerrar</Button></>}
         formulario={
             <>
             <Tabs>
             <TabList>
-                <Tab><i style={{color: "teal"}} className="bx bx-info-square"></i> Datos del servicio contratado</Tab>
-                <Tab><i style={{color: "teal"}} className="bx bx-plug"></i> Datos del nuevo servicio</Tab>
-                <Tab><i style={{color: "teal"}} className="bx bx-task"></i> Datos de la OT</Tab>
+                <Tab><i className="bx bx-info-square"></i> Datos del servicio contratado</Tab>
+                <Tab><i className="bx bx-plug"></i> Datos del nuevo servicio</Tab>
+                <Tab><i className="bx bx-task"></i> Datos de la OT</Tab>
             </TabList>
             <TabPanel>
+            <br/>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <Card className={styles.cartaSecundaria}>
@@ -215,18 +206,21 @@ const CambioServicio = () => {
             </Grid>
             </TabPanel>
             <TabPanel>
+            <br/>
             <Grid container spacing={3}>
                 <Grid item xs={6} md={4} lg={4} xl={4}>
                     <TextField
                     variant="outlined"
                     onChange={handleChangeServicioSeleccionado}
                     value={Servicio}
-                    label="Servicio"
+                    label="Nuevo Servicio"
                     fullWidth
                     select
                     >
-                    {servicios.map((servicio)=>(
-                        <MenuItem key={servicio.ServicioId} value={servicio}>{servicio.ServicioNombre}</MenuItem>
+                    {servicios
+                    .filter(servicio => servicio.ServicioId !== location.state.ServicioId)
+                    .map((servicio)=>(
+                        <MenuItem key={servicio.ServicioId} value={servicio}>{servicio.ServicioNombre} - ${servicio.ServicioInscripcion}</MenuItem>
                     ))}
                     </TextField>
                 </Grid>
@@ -297,6 +291,7 @@ const CambioServicio = () => {
             </Grid>
             </TabPanel>
             <TabPanel>
+            <br/>
                 <Grid container spacing={3}>
                     <Grid item xs={6} md={6} lg={6} xl={6}>
                         <DatePicker

@@ -92,13 +92,13 @@ const CaratulaRole = () => {
     <form onSubmit={onSubmitUsuario}>
     <Tabs>
     <TabList>
-            <Tab><i style={{color: 'teal'}} className="bx bxs-user"></i> Roles</Tab>
-            <Tab onClick={handleChangeTabsPermisos}><i style={{color: 'teal'}} className='bx bxs-lock'></i> Permisos</Tab>
+            <Tab><i className="bx bxs-user"></i> Roles</Tab>
+            <Tab onClick={handleChangeTabsPermisos}><i className='bx bxs-lock'></i> Permisos</Tab>
     </TabList>
     <TabPanel>
     <Card>
         <CardContent>
-            <Typography variant="h1">{location.state ? `Editar rol: ${location.state.RoleName}` : "Agregar rol"}</Typography>
+            <Typography variant="h1">{location.state ? `Editar rol: ${location.state.RoleName}` : "Crear rol"}</Typography>
             <Typography variant="h2"><i className="bx bx-user"></i> Datos del rol</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
