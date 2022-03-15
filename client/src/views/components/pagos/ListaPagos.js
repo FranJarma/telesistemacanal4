@@ -14,13 +14,13 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, detallesPago, mediosPago, crearPago, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago } = appContext;
+    const { pagos, detallesPago, mediosPago, conceptos, crearPago, agregarCuota, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos } = appContext;
 
     const location = useLocation();
-
-    const [PagoPeriodo, setPagoPeriodo] = useState(new Date());
+    const [PagoPeriodo, setPagoPeriodo] = useState(null);
     const [PagoAño, setPagoAño] = useState(new Date());
-
+    const [ConceptoId, setConceptoId] = useState(null);
+    const [MunicipioId, setMunicipioId] = useState(location.state.MunicipioId);
     const [PagoInfo, setPagoInfo] = useState({
         PagoId: null,
         PagoMes: null,
@@ -29,6 +29,7 @@ const ListaPagos = () => {
         MedioPagoId: 1,
         PagoRecargo: null,
         PagoTotal: location.state.ServicioPrecioUnitario,
+        PagoCuotasRestantes: null,
         DetallePagoId: '',
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
@@ -42,6 +43,7 @@ const ListaPagos = () => {
 
     const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
+    const [ModalAgregarCuota, setModalAgregarCuota] = useState(false);
     const [ModalRecargo, setModalRecargo] = useState(false);
     const [ModalNuevoPago, setModalNuevoPago] = useState(false);
     const [ModalDetallesPago, setModalDetallesPago] = useState(false);
@@ -49,6 +51,7 @@ const ListaPagos = () => {
     const [HabilitarPeriodoPago, setHabilitarPeriodoPago] = useState(true);
 
     useEffect(()=>{
+        traerConceptos(1);
         traerMediosPago();
         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2); //trae pór defecto el 1er tab
     },[]);
@@ -63,6 +66,9 @@ const ListaPagos = () => {
         setPagoInfo({
             ...PagoInfo,
             MedioPagoId: e.target.value});
+    }
+    const handleChangeConceptoId = (e) => {
+        setConceptoId(e.target.value);
     }
     const handleChangeModalNuevoPago = (data, edit = false) => {
         if(!edit) {
@@ -85,7 +91,13 @@ const ListaPagos = () => {
     }
     const handleChangeModalDetallesPago = (data) => {
         traerDetallesPago(data.PagoId);
+        setPagoInfo({...data, updatedBy: sessionStorage.getItem('identity')});
         setModalDetallesPago(!ModalDetallesPago);
+    }
+    const handleChangeModalAgregarCuota = (data) => {
+        traerDetallesPago(data.PagoId);
+        setPagoInfo({...data, updatedBy: sessionStorage.getItem('identity')});
+        setModalAgregarCuota(!ModalAgregarCuota);
     }
     const handleChangeModalEliminarDetallePago = (data) => {
         setPagoInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
@@ -118,7 +130,7 @@ const ListaPagos = () => {
         },
         {
             "name": "Completo",
-            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> :<><i style={{color: 'red'}} className="bx bx-x bx-md"></i><Typography><b>Saldo:</b> ${row["PagoSaldo"]}</Typography></>,
+            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> :<><i style={{color: 'red'}} className="bx bx-x bx-md"></i><Typography><b>Saldo:</b> ${row["PagoSaldo"]}</Typography><Typography><b>Cuotas restantes:</b> {row["PagoCuotasRestantes"]}</Typography></>,
             "wrap": true
         },
         {
@@ -126,12 +138,19 @@ const ListaPagos = () => {
             <>
             <BotonesDatatable botones={
                 <>
-                <MenuItem>
-                    <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
-                </MenuItem>
-                <MenuItem>
-                    <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-trash bx-xs'></i> Eliminar recargo</Typography>
-                </MenuItem>
+                {data.PagoSaldo > 0 ?
+                <>
+                    <MenuItem>
+                        <Typography onClick={()=>{handleChangeModalAgregarCuota(data)}} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago de Cuota</Typography>
+                    </MenuItem>
+                    <MenuItem>
+                        <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
+                    </MenuItem>
+                    <MenuItem>
+                        <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-trash bx-xs'></i> Eliminar recargo</Typography>
+                    </MenuItem>
+                </>
+                :""}
                 <MenuItem>
                     <Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i> Detalles</Typography>
                 </MenuItem>
@@ -192,11 +211,6 @@ const ListaPagos = () => {
         <br/>
         <Card>
             <CardContent>
-                {location.pathname.split('/')[2] !== 'view' ?
-                <CardHeader
-                    action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={handleChangeModalNuevoPago}> Asentar pago</Button>}>
-                </CardHeader>
-                :""}
                 <Typography variant="h1">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
                 <br/>
                 <Grid container spacing={3}>
@@ -237,6 +251,11 @@ const ListaPagos = () => {
                 />
                 </TabPanel>
                 <TabPanel>
+                {location.pathname.split('/')[2] !== 'view' ?
+                    <CardHeader
+                        action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={handleChangeModalNuevoPago}> Asentar pago mensual</Button>}>
+                    </CardHeader>
+                :""}
                 <Datatable
                     loader={true}
                     columnas={columnasPagos}
@@ -281,14 +300,26 @@ const ListaPagos = () => {
                 <Button onClick={handleChangeModalNuevoPago}>Cerrar</Button></>}
                 formulario={
                 <>
-                <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>
-                <Alert severity="info">
-                    <Typography variant="h6"><b>Total por servicio ({location.state.ServicioNombre}):</b> ${location.state.ServicioPrecioUnitario}</Typography>
-                </Alert>
+                <Typography variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>
                 <br/>
                 <br/>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={12} sm={12} lg={12}>
+                    <Grid item xs={6} md={6} sm={6} lg={6}>
+                        <TextField
+                            variant="outlined"
+                            label="Concepto"
+                            value={ConceptoId}
+                            name="ConceptoId"
+                            fullWidth
+                            select
+                            onChange={handleChangeConceptoId}
+                            >
+                            {conceptos.map((concepto)=>(
+                                <MenuItem key={concepto.MovimientoConceptoId} value={concepto.MovimientoConceptoId}>{concepto.MovimientoConceptoNombre}</MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid> 
+                    <Grid item xs={12} md={6} sm={6} lg={6}>
                         <DatePicker
                         inputVariant="outlined"
                         value={PagoPeriodo}
@@ -302,7 +333,7 @@ const ListaPagos = () => {
                         disabled ={!HabilitarPeriodoPago ? true : false}
                         >
                         </DatePicker>
-                </Grid>
+                    </Grid>
                     <Grid item xs={6} md={6} sm={6} lg={6}>
                         <TextField
                             variant="outlined"
@@ -351,6 +382,33 @@ const ListaPagos = () => {
                     </Grid>
                 </Grid>
                 <br/>
+                <br/>
+                </>}
+                >
+                </Modal>
+                <Modal
+                abrirModal={ModalAgregarCuota}
+                funcionCerrar={handleChangeModalAgregarCuota}
+                botones={
+                <>
+                <Button variant="contained" color="primary" onClick={() => agregarCuota(PagoInfo, detallesPago[0], MunicipioId, setModalAgregarCuota)}>Confirmar</Button>
+                <Button onClick={handleChangeModalAgregarCuota}>Cerrar</Button></>}
+                formulario={
+                <>
+                <Alert severity='info'>
+                    <Typography variant="h6">Revise la información del pago a realizar.</Typography>
+                </Alert>
+                <br/>
+                {detallesPago.length > 0 ?
+                <Card>
+                    <CardContent>
+                        <Typography variant="h6"><i className="bx bx-money bx-xs"></i> Valor de la cuota: ${detallesPago[0].DetallePagoMonto}</Typography>
+                        <Typography variant="h6"><i className="bx bx-credit-card bx-xs"></i> Medio de Pago: {detallesPago[0].MedioPagoNombre}</Typography>
+                        <Typography variant="h6"><i className="bx bx-calendar bx-xs"></i> Fecha y hora de registro: {new Date().toLocaleDateString()} - { new Date().toLocaleTimeString()}</Typography>
+                        <Typography variant="h6"><i className="bx bx-user bx-xs"></i> Usuario de registro: {sessionStorage.getItem('usr')}</Typography>
+                    </CardContent>
+                </Card>
+                : ""}
                 <br/>
                 </>}
                 >
@@ -408,10 +466,10 @@ const ListaPagos = () => {
                 <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-list-ol"></i> Detalles de pago</Typography>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} sm={12} lg={12}>
-                        <Datatable
+                     <Datatable
                         columnas={columnasDetallesPagos}
                         datos={detallesPago}
-                        buscar={true}/>
+                    buscar={true}/>
                         <br/>
                         <hr/>
                         <Typography variant="h2">Total pagado en el mes: ${ detallesPago.map(item => item.DetallePagoMonto).reduce((prev, curr) => prev + curr, 0)}</Typography>

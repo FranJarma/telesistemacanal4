@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { ProSidebar, Menu, MenuItem, SubMenu, SidebarHeader, SidebarFooter } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Link } from 'react-router-dom';
-import logo2 from './../../../images/logo2.png';
+import logo from './../../../images/logo-ts.png';
 import AppContext from '../../../../context/appContext';
 import { Button, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
 
@@ -88,7 +88,7 @@ const Aside = () => {
     (push ?
     <>
     <ProSidebar ref={wrapperRef} width={width}>
-    <img alt="" src={logo2}/>
+    <img alt="logo-tls" src={logo}/>
       <div className="menu" ref={wrapperRef}>
         <Menu iconShape="round">
           <SidebarHeader style={{marginLeft: '1rem'}}>

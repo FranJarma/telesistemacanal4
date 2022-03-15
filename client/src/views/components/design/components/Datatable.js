@@ -20,7 +20,7 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     (item.createdAt && item.createdAt.toString().includes(textoFiltrado.toLowerCase()))
     || (item.createdBy && item.createdBy.toString().includes(textoFiltrado.toLowerCase()))
     || (item.Nombre && item.Nombre.toLowerCase().includes(textoFiltrado.toLowerCase()))
-    || (item.Apellido && item.Apellido.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.Apellido && item.Apellido.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.NombreUsuario && item.NombreUsuario.toString().includes(textoFiltrado.toLowerCase()))
     || (item.Email && item.Email.toString().includes(textoFiltrado.toLowerCase()))
     || (item.Documento && item.Documento.toString().includes(textoFiltrado.toLowerCase()))
@@ -49,6 +49,10 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
     || (item.OtFechaPrevistaVisita && item.OtFechaPrevistaVisita.toString().includes(textoFiltrado.toLowerCase()))
     || (item.MovimientoCantidad && item.MovimientoCantidad.toString().includes(textoFiltrado.toLowerCase()))
     || (item.FechaVencimientoServicio && item.FechaVencimientoServicio.toString().includes(textoFiltrado.toLowerCase()))
+    || (item.NombreResponsableEjecucion && item.NombreResponsableEjecucion.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.ApellidoResponsableEjecucion && item.ApellidoResponsableEjecucion.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.NombreAbonado && item.NombreAbonado.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.ApellidoAbonado && item.ApellidoAbonado.toLowerCase().includes(textoFiltrado.toLowerCase()))
     );
     const paginacionOpciones = {
         rowsPerPageText: 'Registros por página',

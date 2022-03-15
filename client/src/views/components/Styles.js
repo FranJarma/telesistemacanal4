@@ -66,11 +66,10 @@ const useStyles = makeStyles(theme =>({
         boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
     },
     logoLogin: {
-        display: 'block',
         marginLeft: 'auto',
         marginRight: 'auto',
-        width: '120px',
-        height: '100px'
+        width: '150px',
+        height: '150px'
     },
     inputModal: {
         '& .MuiOutlinedInput-root': {  

@@ -7,6 +7,7 @@ import Toast from './../views/components/design/components/Toast';
 import Swal from './../views/components/design/components/Swal';
 import * as TYPES from '../types';
 import tokenAuthHeaders from '../config/token';
+import swal from 'sweetalert2';
 
 const AppState = props => {
     const initialState = {
@@ -591,6 +592,31 @@ const AppState = props => {
                     payload: pago
                 });
                 Swal('Operación completa', resOk.data.msg);
+        })
+        .catch(err => {
+            if(!err.response){
+                console.log(err);
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const agregarCuota = async(pago, detallesPago, MunicipioId, setModalAgregarCuota) => {
+        const pagoCompleto = {...pago, ...detallesPago, MunicipioId};
+        clienteAxios.put('/api/pagos/cuota', pagoCompleto)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.AGREGAR_CUOTA,
+                    payload: pagoCompleto
+                });
+                Swal('Operación completa', resOk.data.msg);
+                window.location.reload();
         })
         .catch(err => {
             if(!err.response){
@@ -1408,9 +1434,9 @@ const AppState = props => {
         }
     }
     //conceptos de movimientos
-    const traerConceptos = async () => {
+    const traerConceptos = async (tipo) => {
         try {
-            const resultado = await clienteAxios.get('/api/conceptos');
+            const resultado = await clienteAxios.get(`/api/conceptos/${tipo}`);
             dispatch({
                 type: TYPES.LISTA_CONCEPTOS,
                 payload: resultado.data
@@ -1469,7 +1495,7 @@ const AppState = props => {
             traerOnus, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago, crearMedioPago, modificarMedioPago, eliminarMedioPago,
-            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion,
+            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion, agregarCuota,
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,

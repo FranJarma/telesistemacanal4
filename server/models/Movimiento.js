@@ -42,6 +42,10 @@ const Movimiento = db.define('movimiento', {
         type: INTEGER,
         allowNull: false
     },
+    DetallePagoId: {
+        type: INTEGER,
+        allowNull: true
+    },
     createdAt: {
         type: DATE,
         allowNull: true,

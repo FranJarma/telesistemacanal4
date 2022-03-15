@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Button, Card, CardContent, Grid, InputAdornment, TextField, Typography } from '@material-ui/core';
-import logo from './../../images/logo.png';
+import logo from './../../images/logo-ts.png';
+import olinet from './../../images/olinet.png';
 import useStyles from './../Styles';
 import AppContext from '../../../context/appContext';
 import { useHistory } from 'react-router-dom';
@@ -35,7 +36,10 @@ const Login = () => {
     <form onSubmit={onSubmit}>
     <div className="fondo">
         <Card className={styles.cartaLogin}>
-            <img className={styles.logoLogin} src={logo} alt=""/>
+          <div style={{display: 'flex'}}>
+            <img className={styles.logoLogin} src={logo} alt="logo-tls"/>
+            <img className={styles.logoLogin} src={olinet} alt="logo-olinet"/>
+          </div>
             <CardContent>
             <Typography variant="h2">Ingrese sus datos para continuar</Typography>
                 <Grid container spacing = {3}>

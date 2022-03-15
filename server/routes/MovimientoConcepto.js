@@ -4,6 +4,6 @@ const MovimientoConceptoController = require('../controllers/MovimientoConceptoC
 const { check } = require('express-validator');
 const ValidarJWT = require('../middlewares/ValidarJWT');
 
-router.get('/', ValidarJWT, MovimientoConceptoController.MovimientosConceptosGet);
+router.get('/:tipo', ValidarJWT, MovimientoConceptoController.MovimientosConceptosGet);
 
 module.exports = router;

@@ -55,13 +55,13 @@ const ListaOtFinalizadas = () => {
             "name": <TooltipForTable name ="Fecha y hora de inicio"/> ,
             "wrap": true,
             "sortable": true,
-            "selector": row => convertirAFecha(row["OtFechaInicio"]) + "-" + convertirAHora(row["OtFechaInicio"])
+            "selector": row => row["OtFechaInicio"] ? convertirAFecha(row["OtFechaInicio"]) + "-" + convertirAHora(row["OtFechaInicio"]) : ""
         },
         {
             "name": <TooltipForTable name ="Fecha y hora de finalización"/>,
             "wrap": true,
             "sortable": true,
-            "selector": row => convertirAFecha(row["OtFechaFinalizacion"]) + "-" + convertirAHora(row["OtFechaFinalizacion"])
+            "selector": row => row["OtFechaFinalizacion"] ? convertirAFecha(row["OtFechaFinalizacion"]) + "-" + convertirAHora(row["OtFechaFinalizacion"]) : ""
         },
         {
             "name": <TooltipForTable name="Técnico a cargo"/>,

@@ -302,6 +302,7 @@ exports.OtFinalizar = async (req, res) => {
                 movimiento.MovimientoMes = new Date().getMonth()+1;
                 movimiento.MovimientoAño = new Date().getFullYear();
                 movimiento.MovimientoConceptoId = 2;
+                movimiento.AbonadoId = abonado.UserId;
                 movimiento.createdBy = updatedBy;
                 movimiento.OtId = OtId;
                 await movimiento.save({transaction: t});

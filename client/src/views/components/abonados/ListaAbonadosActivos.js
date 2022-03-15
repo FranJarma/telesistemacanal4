@@ -13,6 +13,7 @@ import BotonesDatatable from '../design/components/BotonesDatatable';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import SpanVencimientoServicio from '../../../helpers/SpanVencimientoServicio';
 import SpanServicio from '../../../helpers/SpanServicio';
+import formatDocumento from '../../../helpers/FormatDocumento';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
@@ -91,7 +92,7 @@ const ListaAbonadosActivos = () => {
     },
     {
         "name": "DNI",
-        "selector": row =>row["Documento"],
+        "selector": row => formatDocumento(row["Documento"]),
         "hide": "sm"
     },
     {
