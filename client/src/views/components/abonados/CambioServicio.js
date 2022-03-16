@@ -23,6 +23,7 @@ const CambioServicio = () => {
     const styles = useStyles();
     //Observables
     useEffect(() => {
+        setMunicipioId(location.state.MunicipioId);
         traerTareas();
         traerServicios();
         traerOnus(5);
@@ -36,7 +37,7 @@ const CambioServicio = () => {
         CambioServicioObservaciones: null,
         createdBy: sessionStorage.getItem('identity')
     })
-    const [MunicipioId, setMunicipioId] = useState(location.state.MunicipioId);
+    const [MunicipioId, setMunicipioId] = useState(null);
     const onInputChange = (e) => {
         CambioServicioInfo({
             ...CambioServicioInfo,

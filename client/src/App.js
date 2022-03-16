@@ -120,7 +120,7 @@ const theme = createTheme({
       main: "#008080"
     },
     secondary: {
-      main: "#f44336"
+      main: "#4D7F9E"
     }
   }
 }, esLocale)

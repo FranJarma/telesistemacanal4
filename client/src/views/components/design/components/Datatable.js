@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Spinner from './Spinner';
 import Buscador from './Buscador';
 
-const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, buscar, seleccionable, fnSeleccionable, fnExpandible}) => {
+const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, paginacionPorDefecto, buscar, seleccionable, fnSeleccionable, fnExpandible}) => {
     //state y effect para spinner
     const [cargando, setCargando] = useState(true);
 
@@ -77,12 +77,14 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, busc
             selectableRows={seleccionable ? true : false}
             onSelectedRowsChange={row => fnSeleccionable(row.selectedRows)}
             subHeader = {buscar ? true : false}
+            paginationPerPage={paginacionPorDefecto ? paginacionPorDefecto : 10}
             subHeaderComponent={
                 buscar ? 
                 <Buscador onFiltrar={e => setTextoFiltrado(e.target.value)} textoFiltrado={textoFiltrado}/>
                 : ""
             }
             striped
+            dense
         >
         </DataTable>
     );

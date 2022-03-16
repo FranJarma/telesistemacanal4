@@ -9,8 +9,7 @@ router.get('/UserId=:UserId&Periodo=:PagoAño&PagoMes=:PagoMes', ValidarJWT, Pag
 router.get('/UserId=:UserId&Inscripcion=:Inscripcion', ValidarJWT, PagoController.PagosTraerInscripcion);
 router.post('/create', ValidarJWT,
 [
-    check('MedioPagoId', 'El medio de pago es obligatorio').not().contains(0),
-    check('DetallePagoMonto', 'El monto es obligatorio').notEmpty(),
+    check('MedioPagoId', 'El medio de pago es obligatorio').notEmpty(),
 ], PagoController.PagoCreate);
 router.put('/recargo', ValidarJWT,
 [

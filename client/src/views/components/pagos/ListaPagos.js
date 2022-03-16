@@ -14,42 +14,40 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, detallesPago, mediosPago, conceptos, crearPago, agregarCuota, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos } = appContext;
+    const { pagos, detallesPago, mediosPago, conceptos, crearPago, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos } = appContext;
 
     const location = useLocation();
-    const [PagoPeriodo, setPagoPeriodo] = useState(null);
     const [PagoAño, setPagoAño] = useState(new Date());
     const [ConceptoId, setConceptoId] = useState(null);
-    const [MunicipioId, setMunicipioId] = useState(location.state.MunicipioId);
+    const [MunicipioId, setMunicipioId] = useState(null);
+    const [MedioPagoId, setMedioPagoId] = useState(null);
     const [PagoInfo, setPagoInfo] = useState({
         PagoId: null,
         PagoMes: null,
         PagoAño: null,
         UserId: location.state.UserId,
-        MedioPagoId: 1,
         PagoRecargo: null,
         PagoTotal: location.state.ServicioPrecioUnitario,
         DetallePagoId: '',
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         DetallePagoObservaciones: '',
-        createdBy: null,
+        createdBy: sessionStorage.getItem('identity'),
         updatedAt: null,
-        updatedBy: null,
+        updatedBy: sessionStorage.getItem('identity'),
         deletedBy: null,
         deletedAt: null
     });
 
     const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
-    const [ModalAgregarCuota, setModalAgregarCuota] = useState(false);
     const [ModalRecargo, setModalRecargo] = useState(false);
     const [ModalNuevoPago, setModalNuevoPago] = useState(false);
     const [ModalDetallesPago, setModalDetallesPago] = useState(false);
     const [ModalEliminarDetallePago, setModalEliminarDetallePago] = useState(false);
-    const [HabilitarPeriodoPago, setHabilitarPeriodoPago] = useState(true);
 
     useEffect(()=>{
+        setMunicipioId(location.state.MunicipioId);
         traerConceptos(1);
         traerMediosPago();
         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2); //trae por defecto el 1er tab
@@ -62,25 +60,18 @@ const ListaPagos = () => {
         });
     }
     const handleChangeMedioPagoId = (e) => {
-        setPagoInfo({
-            ...PagoInfo,
-            MedioPagoId: e.target.value});
+        setMedioPagoId(e.target.value);
     }
     const handleChangeConceptoId = (e) => {
         setConceptoId(e.target.value);
     }
     const handleChangeModalNuevoPago = (data, edit = false) => {
-        if(!edit) {
-            setPagoInfo({
-                ...PagoInfo,
-                createdBy: sessionStorage.getItem('identity')
-            });
-            setHabilitarPeriodoPago(true);
-        }
-        else {
-            //setPagoInfo(data);
-            setHabilitarPeriodoPago(false);
-        }
+        setPagoInfo({
+            ...data,
+            Año: data.PagoAño,
+            Mes: data.PagoMes,
+            DetallePagoMonto: data.PagoSaldo,
+        });
         setModalNuevoPago(!ModalNuevoPago);
     }
     const handleChangeModalRecargoPago = (data) => {
@@ -93,11 +84,7 @@ const ListaPagos = () => {
         setPagoInfo({...data, updatedBy: sessionStorage.getItem('identity')});
         setModalDetallesPago(!ModalDetallesPago);
     }
-    const handleChangeModalAgregarCuota = (data) => {
-        traerDetallesPago(data.PagoId);
-        setPagoInfo({...data, updatedBy: sessionStorage.getItem('identity')});
-        setModalAgregarCuota(!ModalAgregarCuota);
-    }
+
     const handleChangeModalEliminarDetallePago = (data) => {
         setPagoInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
         setModalEliminarDetallePago(!ModalEliminarDetallePago);
@@ -140,7 +127,7 @@ const ListaPagos = () => {
                 {data.PagoSaldo > 0 ?
                 <>
                     <MenuItem>
-                        <Typography onClick={()=>{handleChangeModalAgregarCuota(data)}} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago de Cuota</Typography>
+                        <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago</Typography>
                     </MenuItem>
                     <MenuItem>
                         <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
@@ -223,7 +210,6 @@ const ListaPagos = () => {
                             label="Año"
                             onChange={nuevoAño => {
                                 setPagoAño(nuevoAño);
-                                setPagoPeriodo(nuevoAño);
                                 traerPagosPorAbonado(location.state.UserId, nuevoAño.getFullYear(), ConceptoId);
                             }}
                             value={PagoAño}
@@ -257,12 +243,13 @@ const ListaPagos = () => {
                     datos={pagos}
                     paginacion={true}
                     buscar={true}
+                    paginacionPorDefecto={15}
                 />
                 </TabPanel>
                 <TabPanel>
                 {location.pathname.split('/')[2] !== 'view' ?
                     <CardHeader
-                        action={<><Button variant="outlined" startIcon={<i className="bx bx-calendar"></i>} color="primary" onClick={handleChangeModalNuevoPago}> Pago adelantado</Button><Button style={{marginLeft: 15}} variant="contained" startIcon={<i className="bx bx-calendar-week"></i>} color="primary" onClick={handleChangeModalNuevoPago}> Asentar pago mensual</Button></>}>
+                        action={<Button variant="contained" startIcon={<i className="bx bx-calendar"></i>} color="secondary" onClick={handleChangeModalNuevoPago}> Pago adelantado</Button>}>
                     </CardHeader>
                 :""}
                 <Datatable
@@ -271,6 +258,7 @@ const ListaPagos = () => {
                     datos={pagos}
                     paginacion={true}
                     buscar={true}
+                    paginacionPorDefecto={15}
                 />
                 </TabPanel>
                 <TabPanel>
@@ -280,6 +268,7 @@ const ListaPagos = () => {
                     datos={pagos}
                     paginacion={true}
                     buscar={true}
+                    paginacionPorDefecto={15}
                 />
                 </TabPanel>
                 <TabPanel>
@@ -289,6 +278,7 @@ const ListaPagos = () => {
                     datos={pagos}
                     paginacion={true}
                     buscar={true}
+                    paginacionPorDefecto={15}
                 />
                 </TabPanel>
                 </Tabs>
@@ -300,8 +290,9 @@ const ListaPagos = () => {
                 <Button onClick={()=>
                     {
                     crearPago(
-                        {...PagoInfo,
-                        PagoPeriodo
+                        {PagoInfo,
+                        MedioPagoId,
+                        MunicipioId
                     }, handleChangeModalNuevoPago)}}
                     variant="contained"
                     color="primary">
@@ -310,18 +301,16 @@ const ListaPagos = () => {
                 formulario={
                 <>
                 <Typography variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>
-                <br/>
-                <br/>
                 <Grid container spacing={3}>
-                    <Grid item xs={6} md={6} sm={6} lg={6}>
+                    <Grid item xs={12} md={6} sm={6} lg={6}>
                         <TextField
-                            variant="outlined"
+                            variant="filled"
                             label="Concepto"
                             value={ConceptoId}
                             name="ConceptoId"
                             fullWidth
                             select
-                            onChange={handleChangeConceptoId}
+                            disabled
                             >
                             {conceptos.map((concepto)=>(
                                 <MenuItem key={concepto.MovimientoConceptoId} value={concepto.MovimientoConceptoId}>{concepto.MovimientoConceptoNombre}</MenuItem>
@@ -329,32 +318,23 @@ const ListaPagos = () => {
                         </TextField>
                     </Grid> 
                     <Grid item xs={12} md={6} sm={6} lg={6}>
-                        <DatePicker
-                        inputVariant="outlined"
-                        value={PagoPeriodo}
-                        onChange={(periodo)=>{
-                            setPagoPeriodo(periodo)
-                        }}
+                        <TextField
+                        variant="filled"
+                        value={PagoInfo.PagoMes + "/" + PagoInfo.PagoAño}
                         fullWidth
-                        views={["year", "month"]}
                         label="Período de Pago"
-                        disableFuture
-                        disabled ={!HabilitarPeriodoPago ? true : false}
+                        disabled
                         >
-                        </DatePicker>
+                        </TextField>
                     </Grid>
                     <Grid item xs={6} md={6} sm={6} lg={6}>
                         <TextField
-                            variant="outlined"
-                            label="Recibido"
-                            onKeyPress={(e) => {
-                            if (!/^[.0-9]+$/.test(e.key)) {
-                                e.preventDefault();
-                            }}}
+                            variant="filled"
+                            label="Total ($)"
                             value={DetallePagoMonto}
                             name="DetallePagoMonto"
                             fullWidth
-                            onChange={onInputChange}
+                            disabled
                             >
                         </TextField>
                     </Grid>
@@ -362,13 +342,15 @@ const ListaPagos = () => {
                         <TextField
                             variant="outlined"
                             label="Medio de Pago"
-                            value={PagoInfo.MedioPagoId}
+                            value={MedioPagoId}
                             name="MedioPagoId"
                             fullWidth
                             select
                             onChange={handleChangeMedioPagoId}
                             >
-                            {mediosPago.map((mp)=>(
+                            {mediosPago
+                            .filter((mp)=> mp.MedioPagoId !== 10)
+                            .map((mp)=>(
                                 <MenuItem key={mp.MedioPagoId} value={mp.MedioPagoId}>{mp.MedioPagoNombre}</MenuItem>
                             ))}
                         </TextField>
@@ -391,33 +373,6 @@ const ListaPagos = () => {
                     </Grid>
                 </Grid>
                 <br/>
-                <br/>
-                </>}
-                >
-                </Modal>
-                <Modal
-                abrirModal={ModalAgregarCuota}
-                funcionCerrar={handleChangeModalAgregarCuota}
-                botones={
-                <>
-                <Button variant="contained" color="primary" onClick={() => agregarCuota(PagoInfo, detallesPago[0], MunicipioId, setModalAgregarCuota)}>Confirmar</Button>
-                <Button onClick={handleChangeModalAgregarCuota}>Cerrar</Button></>}
-                formulario={
-                <>
-                <Alert severity='info'>
-                    <Typography variant="h6">Revise la información del pago a realizar.</Typography>
-                </Alert>
-                <br/>
-                {detallesPago.length > 0 ?
-                <Card>
-                    <CardContent>
-                        <Typography variant="h6"><i className="bx bx-money bx-xs"></i> Valor de la cuota: ${detallesPago[0].DetallePagoMonto}</Typography>
-                        <Typography variant="h6"><i className="bx bx-credit-card bx-xs"></i> Medio de Pago: {detallesPago[0].MedioPagoNombre}</Typography>
-                        <Typography variant="h6"><i className="bx bx-calendar bx-xs"></i> Fecha y hora de registro: {new Date().toLocaleDateString()} - { new Date().toLocaleTimeString()}</Typography>
-                        <Typography variant="h6"><i className="bx bx-user bx-xs"></i> Usuario de registro: {sessionStorage.getItem('usr')}</Typography>
-                    </CardContent>
-                </Card>
-                : ""}
                 <br/>
                 </>}
                 >

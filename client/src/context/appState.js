@@ -606,31 +606,7 @@ const AppState = props => {
             }
         })
     }
-    const agregarCuota = async(pago, detallesPago, MunicipioId, setModalAgregarCuota) => {
-        const pagoCompleto = {...pago, ...detallesPago, MunicipioId};
-        clienteAxios.put('/api/pagos/cuota', pagoCompleto)
-        .then(resOk => {
-            if (resOk.data)
-                dispatch({
-                    type: TYPES.AGREGAR_CUOTA,
-                    payload: pagoCompleto
-                });
-                Swal('Operación completa', resOk.data.msg);
-                window.location.reload();
-        })
-        .catch(err => {
-            if(!err.response){
-                console.log(err);
-                Toast('Error de conexión con el servidor', 'error');
-            }
-            else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'warning');
-            }
-            else if(err.response.data.errors){
-                Toast(err.response.data.errors[0].msg, 'warning');
-            }
-        })
-    }
+
     const traerDatosInscripcion = async(UserId) => {
         try {
             const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Inscripcion=${true}`);
@@ -1495,7 +1471,7 @@ const AppState = props => {
             traerOnus, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago, crearMedioPago, modificarMedioPago, eliminarMedioPago,
-            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion, agregarCuota,
+            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion,
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,

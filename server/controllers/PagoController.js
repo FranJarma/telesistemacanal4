@@ -41,6 +41,7 @@ exports.PagoGet = async(req,res) => {
     }
 }
 exports.PagoCreate = async(req,res) => {
+    console.log(req.body);
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
@@ -64,16 +65,15 @@ exports.PagoCreate = async(req,res) => {
             //buscamos si hay un pago registrado con ese UserId y esa fecha
             const pagoBuscar = await Pago.findOne({
                 where: {
-                    UserId: req.body.UserId,
-                    PagoAño: req.body.PagoPeriodo.split('-')[0],
-                    PagoMes: req.body.PagoPeriodo.split('-')[1]
+                    PagoId: req.body.PagoInfo.PagoId
                 }
             })
             //instanciamos un nuevo movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = req.body.DetallePagoMonto;
-            movimiento.createdBy = req.body.createdBy;
+            movimiento.MunicipioId = req.body.MunicipioId;
+            movimiento.MovimientoCantidad = parseInt(req.body.PagoInfo.DetallePagoMonto);
+            movimiento.createdBy = req.body.PagoInfo.createdBy;
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
@@ -82,36 +82,25 @@ exports.PagoCreate = async(req,res) => {
             if(pagoBuscar) {
                 //verificamos que el monto ingresado no supere el saldo restante
                 if(req.body.DetallePagoMonto > pagoBuscar.PagoSaldo) return res.status(400).json({msg: `El monto no puede ser mayor al saldo restante de: $ ${pagoBuscar.PagoSaldo}`})
-                pagoBuscar.PagoSaldo = pagoBuscar.PagoSaldo - req.body.DetallePagoMonto;
+                pagoBuscar.PagoSaldo = parseInt(pagoBuscar.PagoSaldo) - parseInt(req.body.PagoInfo.DetallePagoMonto);
+                pagoBuscar.updatedBy = req.body.PagoInfo.updatedBy;
                 const detallePago = new DetallePago(req.body, {transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
                 detallePago.PagoId = pagoBuscar.PagoId;
-                //registramos el id del pago al movimiento
-                movimiento.PagoId = pagoBuscar.PagoId;
+                detallePago.MedioPagoId = req.body.MedioPagoId;
+                detallePago.DetallePagoMonto = req.body.PagoInfo.DetallePagoMonto;
+                detallePago.DetallePagoMotivo = 'Pago mensual';
+                detallePago.createdAt = new Date();
+                detallePago.createdBy = req.body.PagoInfo.createdBy;
+                //registramos el id del detalle del pago pago al movimiento
+                movimiento.DetallePagoId = detallePago.DetallePagoId;
                 await pagoBuscar.save({transaction: t});
                 await detallePago.save({transaction: t});
                 await movimiento.save({transaction: t});
             }
             else {
-            //si no encuentra el pago, se lo registra desde 0, con un nuevo detalle de pago
-                let ultimoPagoId = 0;
-                const ultimoPago = await Pago.findOne({
-                    order: [['PagoId', 'DESC']],
-                });
-                if (ultimoPago) ultimoPagoId = ultimoPago.PagoId;
-                const pago = new Pago(req.body, {transaction: t});
-                pago.PagoId = ultimoPagoId + 1;
-                pago.PagoSaldo = req.body.PagoTotal - req.body.DetallePagoMonto;
-                pago.PagoAño = req.body.PagoPeriodo.split('-')[0];
-                pago.PagoMes = req.body.PagoPeriodo.split('-')[1];
-                const detallePago = new DetallePago(req.body, {transaction: t});
-                detallePago.DetallePagoId = ultimoDetallePagoId + 1;
-                detallePago.PagoId = ultimoPagoId + 1;
-                //registramos el pago id del movimiento
-                movimiento.PagoId = pago.PagoId;
-                await pago.save({transaction: t});
-                await detallePago.save({transaction: t});
-                await movimiento.save({transaction: t});
+            //si no encuentra el pago
+                res.status(400).json({msg: 'No se encontró el pago correspondiente'});
             }
             return res.status(200).json({msg: 'El Pago ha sido registrado correctamente'})
         })
