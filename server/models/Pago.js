@@ -26,9 +26,6 @@ const Pago = db.define('pago', {
         type: INTEGER,
         allowNull: false
     },
-    PagoCuotasRestantes: {
-        type: INTEGER
-    },
     createdAt: {
         type: DATE,
         allowNull: true,

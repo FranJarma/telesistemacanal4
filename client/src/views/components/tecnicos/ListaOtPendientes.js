@@ -298,7 +298,7 @@ const ListaOtPendientes = () => {
                         label="Fecha y hora de finalización"
                         ></KeyboardDateTimePicker>
                     </Grid>
-                    {(OtInfo.OtEsPrimeraBajada && OtInfo.ServicioId !== 1) || (OtInfo.NuevoServicioId !== null && OtInfo.ServicioId !== 1) || (tareasOrdenDeTrabajo.length > 0 && tareasOrdenDeTrabajo.find((tareasOt => tareasOt.TareaId === 1 || tareasOt.TareaId === 5 ))) ?
+                    {OtInfo.ServicioId !== 1 ?
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Autocomplete
                             value={Onu}

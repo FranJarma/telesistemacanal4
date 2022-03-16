@@ -3,7 +3,7 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, CardHeader, Chip, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { DatePicker, TimePicker } from '@material-ui/pickers';
@@ -12,6 +12,7 @@ import { Autocomplete } from '@material-ui/lab';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TooltipForTable from '../../../helpers/TooltipForTable';
+import convertirAMoney from '../../../helpers/ConvertirAMoney';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
@@ -70,11 +71,9 @@ const CambioServicio = () => {
         setMedioPago(e.target.value);
         setPagoInfo({
             ...PagoInfo,
-            Interes: e.target.value.MedioPagoInteres / 100,
             Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2),
-            Inscripcion: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas).toFixed(2),
-            Saldo: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)) - ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas)).toFixed(2)
-        })
+            Saldo: (Servicio.ServicioInscripcion/e.target.value.MedioPagoCantidadCuotas)
+        });
     }
     const onSubmitAbonado = (e) => {
         e.preventDefault();
@@ -236,7 +235,11 @@ const CambioServicio = () => {
                         fullWidth
                         select
                         >
-                        {mediosPago.map((mp)=>(
+                        {Servicio.ServicioId !== 1 ? mediosPago.map((mp)=>(
+                            <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
+                        )): mediosPago //Quitamos Facilidad de Pago si es Cable el servicio elegido
+                        .filter((mp)=>mp.MedioPagoId !== 10)
+                        .map((mp)=>(
                             <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
                         ))}
                     </TextField>
@@ -257,15 +260,9 @@ const CambioServicio = () => {
                     </Grid>
                     <br/>
                     <Grid item xs={12} md={12} sm={12}>
-                    <Typography variant="h1">Precios finales</Typography>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
-                                <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
-                                <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
-                                <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
-                            </CardContent>
-                        </Card>
+                        <Typography variant="h2"><b>Precio Final (Precio Inscripción + Interés {MedioPago.MedioPagoInteres} %):</b> ${convertirAMoney(PagoInfo.Total)}</Typography>
+                        {MedioPago.MedioPagoId === 10 ? 
+                        <Typography variant="h2"><b>Saldo restante por facilidad de pago:</b> ${PagoInfo.Saldo}</Typography> : "" }
                     </Grid>
                     </>
                 :""}

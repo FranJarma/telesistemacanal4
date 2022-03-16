@@ -3,12 +3,13 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, CardHeader, Chip, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
 import { Autocomplete } from '@material-ui/lab';
 import { DatePicker, TimePicker } from '@material-ui/pickers';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import convertirAMoney from '../../../helpers/ConvertirAMoney';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 
@@ -65,9 +66,7 @@ const CambioDomicilio = () => {
     const [ModalNuevoDomicilio, setModalNuevoDomicilio] = useState(false);
     const [MedioPago, setMedioPago] = useState(null);
     const [PagoInfo, setPagoInfo] = useState({
-        Interes: null,
         Total: null,
-        Inscripcion: null,
         Saldo: null
     });
     const handleChangeMunicipioSeleccionado = (e) => {
@@ -87,10 +86,7 @@ const CambioDomicilio = () => {
         setMedioPago(e.target.value);
         setPagoInfo({
             ...PagoInfo,
-            Interes: e.target.value.MedioPagoInteres / 100,
-            Total: (500 + (500*e.target.value.MedioPagoInteres / 100)).toFixed(2),
-            Inscripcion: ((500 + (500*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas).toFixed(2),
-            Saldo: ((500 + (500*e.target.value.MedioPagoInteres / 100)) - ((500 + (500*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas)).toFixed(2)
+            Total: (TareaCambioDomicilio.TareaPrecioUnitario + (TareaCambioDomicilio.TareaPrecioUnitario*e.target.value.MedioPagoInteres / 100)).toFixed(2)
         })
     }
 
@@ -425,23 +421,14 @@ const CambioDomicilio = () => {
                         <Grid item xs={12} md={6} lg={6} xl={6}>
                         <TextField
                             variant="outlined"
-                            value={PagoInfo.Interes * 500}
+                            value={PagoInfo.Interes * TareaCambioDomicilio.TareaPrecioUnitario}
                             label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
                             fullWidth
                             >
                         </TextField>
                         </Grid>
                         <Grid item xs={12} md={12} sm={12}>
-                        <Typography variant="h1">Precios finales</Typography>
-                        <br/>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h2"><b>Total (Precio Cambio de Domicilio + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
-                                    <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
-                                    <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
-                                    <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
-                                </CardContent>
-                            </Card>
+                            <Typography variant="h2"><b>Precio Final (Precio Inscripción + Interés {MedioPago.MedioPagoInteres} %):</b> ${convertirAMoney(PagoInfo.Total)}</Typography>
                         </Grid>
                         </>
                         :""}

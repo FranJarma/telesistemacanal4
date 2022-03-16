@@ -22,13 +22,14 @@ const ListaServicios = () => {
         ServicioPrecioUnitario: '',
         ServicioDescripcion: '',
         ServicioInscripcion: '',
+        ServicioMultiplicadorPrimerMes: '',
         createdBy: null,
         updatedAt: null,
         updatedBy: null,
         deletedBy: null,
         deletedAt: null
     })
-    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion, ServicioInscripcion } = ServicioInfo;
+    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion, ServicioInscripcion, ServicioMultiplicadorPrimerMes } = ServicioInfo;
 
     const onInputChange= (e) =>{
         setServicioInfo({
@@ -81,6 +82,12 @@ const ListaServicios = () => {
             "sortable": true
         },
         {
+            "name": "Multiplicador de 1er mes",
+            "selector": row => row["ServicioMultiplicadorPrimerMes"],
+            "wrap": true,
+            "sortable": true
+        },
+        {
             "name": "Descripción",
             "selector": row => row["ServicioDescripcion"],
             "wrap": true,
@@ -128,7 +135,7 @@ const ListaServicios = () => {
         titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Servicio" : "Nuevo Servicio"}</Typography>}
         formulario={
             <Grid container spacing={3}>
-                <Grid item xs={12} md={4} sm={4} xl={4}>
+                <Grid item xs={12} md={3} sm={3} xl={3}>
                     <TextField
                     color="primary"
                     autoFocus
@@ -140,7 +147,7 @@ const ListaServicios = () => {
                     name="ServicioNombre"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={4} sm={4} xl={4}>
+                <Grid item xs={12} md={3} sm={3} xl={3}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
@@ -155,7 +162,7 @@ const ListaServicios = () => {
                     name="ServicioPrecioUnitario"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={4} sm={4} xl={4}>
+                <Grid item xs={12} md={3} sm={3} xl={3}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
@@ -168,6 +175,21 @@ const ListaServicios = () => {
                     onChange={onInputChange}
                     value={ServicioInscripcion}
                     name="ServicioInscripcion"
+                    ></TextField>
+                </Grid>
+                <Grid item xs={12} md={3} sm={3} xl={3}>
+                    <TextField
+                    color="primary"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
+                    variant="outlined"
+                    label="Multiplicador de 1er mes"
+                    fullWidth
+                    onChange={onInputChange}
+                    value={ServicioMultiplicadorPrimerMes}
+                    name="ServicioMultiplicadorPrimerMes"
                     ></TextField>
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>

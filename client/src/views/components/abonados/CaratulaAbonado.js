@@ -2,13 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, Chip, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker, TimePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
 import { Autocomplete } from '@material-ui/lab';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Datatable from '../design/components/Datatable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import convertirAMoney from '../../../helpers/ConvertirAMoney';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const CaratulaAbonado = () => {
@@ -30,7 +31,7 @@ const CaratulaAbonado = () => {
         DomicilioPiso: null,
         createdBy: sessionStorage.getItem('identity'),
         updatedAt: null,
-        updatedBy: null
+        updatedBy: sessionStorage.getItem('identity')
     })
     const onInputChange = (e) => {
         setAbonadoInfo({
@@ -61,9 +62,7 @@ const CaratulaAbonado = () => {
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [PagoInfo, setPagoInfo] = useState({
-        Interes: null,
         Total: null,
-        Inscripcion: null,
         Saldo: null
     });
     const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(null);
@@ -94,10 +93,8 @@ const CaratulaAbonado = () => {
         setMedioPago(e.target.value);
         setPagoInfo({
             ...PagoInfo,
-            Interes: e.target.value.MedioPagoInteres / 100,
             Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2),
-            Inscripcion: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas).toFixed(2),
-            Saldo: ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)) - ((Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100))/e.target.value.MedioPagoCantidadCuotas)).toFixed(2)
+            Saldo: (Servicio.ServicioInscripcion/e.target.value.MedioPagoCantidadCuotas)
         })
     }
     useEffect(() => {
@@ -168,7 +165,6 @@ const CaratulaAbonado = () => {
                 Barrio,
                 Servicio,
                 createdBy,
-                PagoInfo,
                 MedioPago,
                 Tecnico,
                 OtObservacionesResponsableEmision
@@ -443,7 +439,7 @@ const CaratulaAbonado = () => {
             <CardContent>
             <br/>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
                         <TextField
                         variant = {location.state ? "filled" : "outlined"}
                         disabled = {location.state ? true : false}
@@ -470,9 +466,13 @@ const CaratulaAbonado = () => {
                         fullWidth
                         select
                         >
-                        {!location.state ? mediosPago.map((mp)=>(
+                        {Servicio.ServicioId !== 1 ? mediosPago.map((mp)=>(
                             <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
-                        )): ""}
+                        )): mediosPago //Quitamos Facilidad de Pago si es Cable el servicio elegido
+                        .filter((mp)=>mp.MedioPagoId !== 10)
+                        .map((mp)=>(
+                            <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
+                        ))}
                     </TextField>
                     </Grid>
                     </>
@@ -480,25 +480,10 @@ const CaratulaAbonado = () => {
                     { Servicio !== null && MedioPago !== null && !location.state
                     ?
                     <>
-                    <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                        variant="outlined"
-                        value={PagoInfo.Interes * Servicio.ServicioInscripcion}
-                        label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
-                        fullWidth
-                        >
-                    </TextField>
-                    </Grid>
                     <Grid item xs={12} md={12} sm={12}>
-                    <Typography variant="h1">Precios finales</Typography>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h2"><b>Total (Precio Inscripción + {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
-                                <Typography variant="h2"><b>Cantidad de cuotas: </b>{MedioPago.MedioPagoCantidadCuotas}</Typography>
-                                <Typography variant="h2"><b>Valor de cada cuota: </b> ${PagoInfo.Inscripcion} <i className='bx bx-left-arrow-alt'></i> <Chip variant="outlined" color="secondary" label="Entra en caja hoy"></Chip></Typography>
-                                <Typography variant="h2"><b>Saldo restante:</b> ${PagoInfo.Saldo}</Typography>
-                            </CardContent>
-                        </Card>
+                        <Typography variant="h2"><b>Precio Final (Precio Inscripción + Interés {MedioPago.MedioPagoInteres} %):</b> ${convertirAMoney(PagoInfo.Total)}</Typography>
+                        {MedioPago.MedioPagoId === 10 ? 
+                        <Typography variant="h2"><b>Saldo restante por facilidad de pago:</b> ${PagoInfo.Saldo}</Typography> : "" }
                     </Grid>
                     </>
                     :""}

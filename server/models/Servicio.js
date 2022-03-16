@@ -15,6 +15,10 @@ const Servicio = db.define('servicio', {
         type: FLOAT,
         allowNull: false
     },
+    ServicioMultiplicadorPrimerMes: {
+        type: FLOAT,
+        allowNull: false
+    },
     ServicioInscripcion: {
         type: FLOAT,
         allowNull: false

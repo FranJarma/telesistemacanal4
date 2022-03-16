@@ -209,7 +209,7 @@ exports.PagoAñadirCuota = async(req,res) => {
         await db.transaction(async(t)=>{
             //buscamos el pago
             const pago = await Pago.findByPk(req.body.PagoId, {transaction: t});
-            if(pago.PagoCuotasRestantes == 0 || pago.PagoSaldo == 0) {
+            if(pago.PagoSaldo == 0) {
                 return res.status(400).json({msg: 'El mes está saldado.'});
             }
             //buscamos el ultimo Movimiento
@@ -227,7 +227,6 @@ exports.PagoAñadirCuota = async(req,res) => {
             if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
             pago.updatedAt = new Date();
             pago.updatedBy = req.body.updatedBy;
-            pago.PagoCuotasRestantes = pago.PagoCuotasRestantes - 1;
             pago.PagoSaldo = pago.PagoSaldo - req.body.DetallePagoMonto;
             //buscamos el ultimo detalle de pago para hacer una copia del mismo
             const detallePago = await DetallePago.findOne({

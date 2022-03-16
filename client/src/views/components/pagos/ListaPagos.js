@@ -29,7 +29,6 @@ const ListaPagos = () => {
         MedioPagoId: 1,
         PagoRecargo: null,
         PagoTotal: location.state.ServicioPrecioUnitario,
-        PagoCuotasRestantes: null,
         DetallePagoId: '',
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
@@ -53,7 +52,7 @@ const ListaPagos = () => {
     useEffect(()=>{
         traerConceptos(1);
         traerMediosPago();
-        traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2); //trae pór defecto el 1er tab
+        traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2); //trae por defecto el 1er tab
     },[]);
 
     const onInputChange = (e) => {
@@ -130,7 +129,7 @@ const ListaPagos = () => {
         },
         {
             "name": "Completo",
-            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> :<><i style={{color: 'red'}} className="bx bx-x bx-md"></i><Typography><b>Saldo:</b> ${row["PagoSaldo"]}</Typography><Typography><b>Cuotas restantes:</b> {row["PagoCuotasRestantes"]}</Typography></>,
+            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> :<><i style={{color: 'red'}} className="bx bx-x bx-md"></i><Typography><b>Saldo:</b> ${row["PagoSaldo"]}</Typography></>,
             "wrap": true
         },
         {
@@ -221,13 +220,11 @@ const ListaPagos = () => {
                             format="yyyy"
                             views={["year"]}
                             fullWidth
-                            disableFuture
-                            disableToolbar
                             label="Año"
                             onChange={nuevoAño => {
                                 setPagoAño(nuevoAño);
                                 setPagoPeriodo(nuevoAño);
-                                traerPagosPorAbonado(location.state.UserId, nuevoAño.getFullYear(), 2);
+                                traerPagosPorAbonado(location.state.UserId, nuevoAño.getFullYear(), ConceptoId);
                             }}
                             value={PagoAño}
                         ></DatePicker>
@@ -236,10 +233,22 @@ const ListaPagos = () => {
                 <br/>
                 <Tabs>
                     <TabList>
-                        <Tab onClick={() => traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2)}><i className="bx bxs-notepad"></i> Inscripciones y reinscripciones</Tab>
-                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 1)}><i className='bx bxs-calendar'></i> Mensualidades</Tab>
-                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 5)}><i className='bx bxs-home'></i> Cambios de domicilio</Tab>
-                        <Tab onClick={() =>  traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6)}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
+                        <Tab onClick={() => {
+                            setConceptoId(2);
+                            traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2)
+                        }}><i className="bx bxs-notepad"></i> Inscripciones y reinscripciones</Tab>
+                        <Tab onClick={() => {
+                            setConceptoId(1);
+                            traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 1);
+                        }}><i className='bx bxs-calendar'></i> Mensualidades</Tab>
+                        <Tab onClick={() => {
+                            setConceptoId(5);
+                            traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 5);
+                        }}><i className='bx bxs-home'></i> Cambios de domicilio</Tab>
+                        <Tab onClick={() => {
+                            setConceptoId(6);
+                            traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6);
+                        }}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
                     </TabList>
                 <TabPanel>
                 <Datatable
@@ -253,7 +262,7 @@ const ListaPagos = () => {
                 <TabPanel>
                 {location.pathname.split('/')[2] !== 'view' ?
                     <CardHeader
-                        action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={handleChangeModalNuevoPago}> Asentar pago mensual</Button>}>
+                        action={<><Button variant="outlined" startIcon={<i className="bx bx-calendar"></i>} color="primary" onClick={handleChangeModalNuevoPago}> Pago adelantado</Button><Button style={{marginLeft: 15}} variant="contained" startIcon={<i className="bx bx-calendar-week"></i>} color="primary" onClick={handleChangeModalNuevoPago}> Asentar pago mensual</Button></>}>
                     </CardHeader>
                 :""}
                 <Datatable

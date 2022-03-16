@@ -1,8 +1,8 @@
 import { Checkbox, FormControl, FormControlLabel, Typography } from '@material-ui/core';
 import React, { useContext, useEffect } from 'react';
 import AppContext from '../../../context/appContext';
-import olinet from '../../images/olinet.PNG';
-import logo3 from '../../images/logo3.PNG';
+import olinet from '../../images/olinet.png';
+import logo from '../../images/logo-ts.png';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import convertirAHora from '../../../helpers/ConvertirAHora';
 
@@ -18,7 +18,7 @@ const CaratulaImpresionOt = ({datos}) => {
         (datos ? 
         <>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <img src={logo3} alt="" style={{width: '6rem', height: '3rem'}}/>
+            <img src={logo} alt="" style={{width: '6rem', height: '3rem'}}/>
             <Typography variant="h1">Orden de trabajo N° {datos.OtId}</Typography>
             <img src={olinet} alt="" style={{width: '6rem', height: '3rem'}}/>
         </div>
