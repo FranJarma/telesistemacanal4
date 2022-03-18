@@ -357,43 +357,38 @@ const ListaPagos = () => {
                                 <Card>
                                     <CardContent>
                                     <Typography variant="h2"> Seleccione los meses a pagar y el medio de pago</Typography>   
-                                        <Grid container spacing={3}>
-                                            <Grid item xs={12} sm={6} md={6} lg={6}>
-                                                <TextField
-                                                    variant="outlined"
-                                                    label="Cantidad de meses a pagar"
-                                                    value={CantidadMesesAPagar}
-                                                    name="CantidadMesesAPagar"
-                                                    fullWidth
-                                                    select
-                                                    onChange={handleChangeMesesAPagar}
-                                                    >
-                                                    {mesesAPagar
-                                                    .filter((mp)=>(
-                                                        mp.value <= pagosPendientes.length //filtramos los meses según los pagos pendientes que tenga
-                                                    ))
-                                                    .map((mp)=>(
-                                                        <MenuItem key={mp.key} value={mp.value}>{mp.value}</MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </Grid>
-                                            <Grid item xs={12} sm={6} md={6} lg={6}>
-                                                <TextField
-                                                    variant="outlined"
-                                                    label="Medio de Pago"
-                                                    value={MedioPagoId}
-                                                    name="MedioPagoId"
-                                                    fullWidth
-                                                    select
-                                                    onChange={handleChangeMedioPagoId}>
-                                                    {mediosPago
-                                                    .filter((mp)=> mp.MedioPagoId !== 10)
-                                                    .map((mp)=>(
-                                                        <MenuItem key={mp.MedioPagoId} value={mp.MedioPagoId}>{mp.MedioPagoNombre}</MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </Grid>
-                                        </Grid>
+                                        <TextField
+                                            variant="outlined"
+                                            label="Cantidad de meses a pagar"
+                                            value={CantidadMesesAPagar}
+                                            name="CantidadMesesAPagar"
+                                            fullWidth
+                                            select
+                                            onChange={handleChangeMesesAPagar}
+                                            >
+                                            {mesesAPagar
+                                            .filter((mp)=>(
+                                                mp.value <= pagosPendientes.length //filtramos los meses según los pagos pendientes que tenga
+                                            ))
+                                            .map((mp)=>(
+                                                <MenuItem key={mp.key} value={mp.value}>{mp.value}</MenuItem>
+                                            ))}
+                                        </TextField>
+                                        <TextField
+                                            style={{marginTop: 25}}
+                                            variant="outlined"
+                                            label="Medio de Pago"
+                                            value={MedioPagoId}
+                                            name="MedioPagoId"
+                                            fullWidth
+                                            select
+                                            onChange={handleChangeMedioPagoId}>
+                                            {mediosPago
+                                            .filter((mp)=> mp.MedioPagoId !== 10)
+                                            .map((mp)=>(
+                                                <MenuItem key={mp.MedioPagoId} value={mp.MedioPagoId}>{mp.MedioPagoNombre}</MenuItem>
+                                            ))}
+                                        </TextField>
                                     </CardContent>
                                 </Card>
                                 <br/>
@@ -576,7 +571,8 @@ const ListaPagos = () => {
                      <Datatable
                         columnas={columnasDetallesPagos}
                         datos={detallesPago}
-                    buscar={true}/>
+                        loader
+                        buscar/>
                         <br/>
                         <hr/>
                         <Typography variant="h2">Total pagado en el mes: ${ detallesPago.map(item => item.DetallePagoMonto).reduce((prev, curr) => prev + curr, 0)}</Typography>
