@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid,  MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Chip, Grid,  MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
@@ -11,16 +11,19 @@ import AppContext from '../../../context/appContext';
 import BotonesDatatable  from './../design/components/BotonesDatatable';
 import convertirAFecha from './../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import Spinner from '../design/components/Spinner';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, detallesPago, mediosPago, conceptos, crearPago, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos } = appContext;
+    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner } = appContext;
 
     const location = useLocation();
     const [PagoAño, setPagoAño] = useState(new Date());
     const [ConceptoId, setConceptoId] = useState(null);
     const [MunicipioId, setMunicipioId] = useState(null);
     const [MedioPagoId, setMedioPagoId] = useState(null);
+    const [CantidadMesesAPagar, setCantidadMesesAPagar] = useState(null);
+
     const [PagoInfo, setPagoInfo] = useState({
         PagoId: null,
         PagoMes: null,
@@ -41,16 +44,17 @@ const ListaPagos = () => {
 
     const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
-    const [ModalRecargo, setModalRecargo] = useState(false);
+    const [ModalPagoAdelantado, setModalPagoAdelantado] = useState(false);
     const [ModalNuevoPago, setModalNuevoPago] = useState(false);
+    const [ModalRecargo, setModalRecargo] = useState(false);
     const [ModalDetallesPago, setModalDetallesPago] = useState(false);
     const [ModalEliminarDetallePago, setModalEliminarDetallePago] = useState(false);
-
+    
     useEffect(()=>{
         setMunicipioId(location.state.MunicipioId);
         traerConceptos(1);
         traerMediosPago();
-        traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2); //trae por defecto el 1er tab
+        traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2);  //trae por defecto el 1er tab
     },[]);
 
     const onInputChange = (e) => {
@@ -62,17 +66,23 @@ const ListaPagos = () => {
     const handleChangeMedioPagoId = (e) => {
         setMedioPagoId(e.target.value);
     }
-    const handleChangeConceptoId = (e) => {
-        setConceptoId(e.target.value);
+    const handleChangeMesesAPagar = (e) => {
+        mostrarSpinner();
+        setCantidadMesesAPagar(e.target.value);
+        traerPagosMensualesPendientes(location.state.UserId, 1, e.target.value);
+    }
+    const handleChangeModalPagoAdelantado = (data, edit = false) => {
+        setModalPagoAdelantado(!ModalPagoAdelantado);
+        traerPagosMensualesPendientes(location.state.UserId, 1);
     }
     const handleChangeModalNuevoPago = (data, edit = false) => {
+        setModalNuevoPago(!ModalNuevoPago);
         setPagoInfo({
             ...data,
             Año: data.PagoAño,
             Mes: data.PagoMes,
             DetallePagoMonto: data.PagoSaldo,
         });
-        setModalNuevoPago(!ModalNuevoPago);
     }
     const handleChangeModalRecargoPago = (data) => {
         setPagoInfo({...data, updatedBy: sessionStorage.getItem('identity')});
@@ -116,7 +126,13 @@ const ListaPagos = () => {
         },
         {
             "name": "Completo",
-            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> :<><i style={{color: 'red'}} className="bx bx-x bx-md"></i><Typography><b>Saldo:</b> ${row["PagoSaldo"]}</Typography></>,
+            "selector": row => row["PagoSaldo"] === 0 ? <i style={{color: 'green'}} className="bx bx-check bx-md"></i> :<div style={{display: 'inline-block'}}><i style={{color: 'red'}} className="bx bx-x bx-md"></i><span><b>Debe:</b> ${row["PagoSaldo"]}</span></div>,
+            "wrap": true
+        },
+        {
+            "name": "Observaciones",
+            "selector": row => row["PagoObservaciones"] ? row["PagoObservaciones"] : '-',
+            "sortable": true,
             "wrap": true
         },
         {
@@ -143,6 +159,25 @@ const ListaPagos = () => {
                 </>
             }/>
             </>,
+        }
+    ]
+    const columnasPagosPendientes = [
+        {
+            "name": "N°",
+            "selector": row => row["PagoId"],
+            "omit": true
+        },
+        {
+            "name": "Periodo",
+            "selector": row => row["PagoMes"] + "/" + row["PagoAño"],
+            "sortable": true,
+            "wrap": true
+        },
+        {
+            "name": "Total",
+            "selector": row => "$ " + row["PagoTotal"],
+            "sortable": true,
+            "wrap": true
         }
     ]
 
@@ -189,6 +224,7 @@ const ListaPagos = () => {
             </>,
         }
     ]
+    const mesesAPagar = [{key: 6,value: 6},{key: 12,value: 12},{key: 18,value: 18},{key: 24,value: 24}];
     return (
         <>
         <div className="container">
@@ -249,7 +285,7 @@ const ListaPagos = () => {
                 <TabPanel>
                 {location.pathname.split('/')[2] !== 'view' ?
                     <CardHeader
-                        action={<Button variant="contained" startIcon={<i className="bx bx-calendar"></i>} color="secondary" onClick={handleChangeModalNuevoPago}> Pago adelantado</Button>}>
+                        action={<Button variant="contained" startIcon={<i className="bx bx-calendar"></i>} color="secondary" onClick={handleChangeModalPagoAdelantado}> Pago adelantado</Button>}>
                     </CardHeader>
                 :""}
                 <Datatable
@@ -282,6 +318,113 @@ const ListaPagos = () => {
                 />
                 </TabPanel>
                 </Tabs>
+                <Modal
+                abrirModal={ModalPagoAdelantado}
+                funcionCerrar={handleChangeModalPagoAdelantado}
+                botones={
+                <>
+                <Button onClick={()=>
+                    {
+                    crearPago(
+                        {PagoInfo,
+                        MedioPagoId,
+                        MunicipioId
+                    }, handleChangeModalPagoAdelantado)}}
+                    variant="contained"
+                    color="primary">
+                    Aceptar</Button>
+                <Button onClick={handleChangeModalPagoAdelantado}>Cerrar</Button></>}
+                formulario={
+                <>
+                <Card>
+                    <CardContent>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                <Card>
+                                    <CardContent>
+                                    <Typography variant="h2">Meses que debe({pagosPendientes.length})</Typography>
+                                    <Datatable
+                                            loader={true}
+                                            columnas={columnasPagosPendientes}
+                                            datos={pagosPendientes}
+                                            paginacion
+                                    />
+                                    </CardContent>
+                                </Card>
+                                <br/>
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                <Card>
+                                    <CardContent>
+                                    <Typography variant="h2"> Seleccione los meses a pagar y el medio de pago</Typography>   
+                                        <Grid container spacing={3}>
+                                            <Grid item xs={12} sm={6} md={6} lg={6}>
+                                                <TextField
+                                                    variant="outlined"
+                                                    label="Cantidad de meses a pagar"
+                                                    value={CantidadMesesAPagar}
+                                                    name="CantidadMesesAPagar"
+                                                    fullWidth
+                                                    select
+                                                    onChange={handleChangeMesesAPagar}
+                                                    >
+                                                    {mesesAPagar
+                                                    .filter((mp)=>(
+                                                        mp.value <= pagosPendientes.length //filtramos los meses según los pagos pendientes que tenga
+                                                    ))
+                                                    .map((mp)=>(
+                                                        <MenuItem key={mp.key} value={mp.value}>{mp.value}</MenuItem>
+                                                    ))}
+                                                </TextField>
+                                            </Grid>
+                                            <Grid item xs={12} sm={6} md={6} lg={6}>
+                                                <TextField
+                                                    variant="outlined"
+                                                    label="Medio de Pago"
+                                                    value={MedioPagoId}
+                                                    name="MedioPagoId"
+                                                    fullWidth
+                                                    select
+                                                    onChange={handleChangeMedioPagoId}>
+                                                    {mediosPago
+                                                    .filter((mp)=> mp.MedioPagoId !== 10)
+                                                    .map((mp)=>(
+                                                        <MenuItem key={mp.MedioPagoId} value={mp.MedioPagoId}>{mp.MedioPagoNombre}</MenuItem>
+                                                    ))}
+                                                </TextField>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
+                                <br/>
+                                {pagosPendientesTop.length > 0 && !cargando ?
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="h2">Datos del pago</Typography>
+                                        <Typography variant="h6">Meses a pagar: {pagosPendientesTop.map((pagosPend)=>(<Chip icon={<i className="bx bx-calendar"></i>} color="secondary" style={{margin: 2, fontSize: 10}} label={pagosPend.PagoMes+"/"+pagosPend.PagoAño}></Chip>))}</Typography>
+                                        {CantidadMesesAPagar === 6 ?
+                                        <><Typography variant="h6">Subtotal : ${pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0)}</Typography>
+                                        <Typography variant="h6">Descuento del {location.state.ServicioBonificacionPagoSeisMeses}% : ${(pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => (prev + curr), 0))*location.state.ServicioBonificacionPagoSeisMeses/100}</Typography>
+                                        <Typography variant="h6">Total con descuento aplicado : ${pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => (prev + curr), 0)-(pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => (prev + curr), 0))*location.state.ServicioBonificacionPagoSeisMeses/100}</Typography></>
+                                        :CantidadMesesAPagar === 12  ?
+                                        <><Typography variant="h6">Total : ${pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0)-pagosPendientesTop[pagosPendientesTop.length-1].PagoTotal}</Typography>
+                                        <Typography variant="h6">Mes gratis : <Chip icon={<i className="bx bx-calendar"></i>} variant="outlined" color="primary" style={{margin: 2, fontSize: 10}} label={pagosPendientesTop[pagosPendientesTop.length-1].PagoMes+"/"+pagosPendientesTop[pagosPendientesTop.length-1].PagoAño}></Chip></Typography></>
+                                        :CantidadMesesAPagar === 18 ?
+                                        <><Typography variant="h6">Total : ${pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0)-pagosPendientesTop[pagosPendientesTop.length-1].PagoTotal-pagosPendientesTop[pagosPendientesTop.length-2].PagoTotal}</Typography>
+                                        <Typography variant="h6">Meses gratis : <Chip icon={<i className="bx bx-calendar"></i>} variant="outlined" color="primary" style={{margin: 2, fontSize: 10}} label={pagosPendientesTop[pagosPendientesTop.length-2].PagoMes+"/"+pagosPendientesTop[pagosPendientesTop.length-2].PagoAño}></Chip><Chip icon={<i className="bx bx-calendar"></i>} variant="outlined" color="primary" style={{margin: 2, fontSize: 10}} label={pagosPendientesTop[pagosPendientesTop.length-1].PagoMes+"/"+pagosPendientesTop[pagosPendientesTop.length-1].PagoAño}></Chip></Typography></>
+                                        :CantidadMesesAPagar === 24?
+                                        <><Typography variant="h6">Total : ${pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0)-pagosPendientesTop[pagosPendientesTop.length-1].PagoTotal-pagosPendientesTop[pagosPendientesTop.length-2].PagoTotal-pagosPendientesTop[pagosPendientesTop.length-3].PagoTotal}</Typography>
+                                        <Typography variant="h6">Meses gratis : <Chip icon={<i className="bx bx-calendar"></i>} variant="outlined" color="primary" style={{margin: 2, fontSize: 10}} label={pagosPendientesTop[pagosPendientesTop.length-3].PagoMes+"/"+pagosPendientesTop[pagosPendientesTop.length-3].PagoAño}></Chip><Chip icon={<i className="bx bx-calendar"></i>} variant="outlined" color="primary" style={{margin: 2, fontSize: 10}} label={pagosPendientesTop[pagosPendientesTop.length-2].PagoMes+"/"+pagosPendientesTop[pagosPendientesTop.length-2].PagoAño}></Chip><Chip icon={<i className="bx bx-calendar"></i>} variant="outlined" color="primary" style={{margin: 2, fontSize: 10}} label={pagosPendientesTop[pagosPendientesTop.length-1].PagoMes+"/"+pagosPendientesTop[pagosPendientesTop.length-1].PagoAño}></Chip></Typography></> :""}
+                                    </CardContent>
+                                </Card>
+                                : !cargando ? "" : <Spinner></Spinner>}
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
+                </>}
+                >
+                </Modal>
                 <Modal
                 abrirModal={ModalNuevoPago}
                 funcionCerrar={handleChangeModalNuevoPago}

@@ -17,13 +17,56 @@ exports.PagosListarPorUsuario = async(req,res) => {
             'p.PagoAño': req.params.Periodo,
             'p.PagoConceptoId': req.params.Periodo.split('=')[1]
         })
-        .orderBy([{ column: 'PagoAño', order: 'desc' }, { column: 'PagoMes', order: 'desc' }])
+        .orderBy([{ column: 'PagoAño', order: 'desc' }, { column: 'PagoMes', order: 'asc' }])
         res.json(pagos);
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
     }
 }
+exports.PagosMensualesPendientes = async(req,res) => {
+    try {
+        if(req.params.Cantidad) {
+            const cantidadPagos = await knex('pago as p')
+            .innerJoin('movimientoconcepto as mc', 'p.PagoConceptoId', '=', 'mc.MovimientoConceptoId')
+            .where(
+                {'p.UserId': req.params.UserId
+            })
+            .andWhere('p.PagoSaldo', '>', '0')
+            .count('p.PagoId', {as: 'pagos'})
+            .first();
+            res.json(cantidadPagos.pagos);
+        }
+
+        if(req.params.top !== null) {
+            const pagos = await knex.select('*').from('pago as p')
+            .innerJoin('movimientoconcepto as mc', 'p.PagoConceptoId', '=', 'mc.MovimientoConceptoId')
+            .where(
+                {'p.UserId': req.params.UserId
+            })
+            .andWhere('p.PagoSaldo', '>', '0')
+            .limit(req.params.top)
+            .offset(0)
+            .orderBy([{ column: 'PagoAño', order: 'asc' }, { column: 'PagoMes', order: 'asc' }])
+            res.json(pagos);
+        }
+        else {
+            const pagosAll = await knex.select('*').from('pago as p')
+            .innerJoin('movimientoconcepto as mc', 'p.PagoConceptoId', '=', 'mc.MovimientoConceptoId')
+            .where(
+                {'p.UserId': req.params.UserId
+            })
+            .andWhere('p.PagoSaldo', '>', '0')
+            .orderBy([{ column: 'PagoAño', order: 'asc' }, { column: 'PagoMes', order: 'asc' }])
+            res.json(pagosAll);
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
+    }
+}
+
 exports.PagoGet = async(req,res) => {
     try {
         const pago = await knex.select('*').from('pago as p')

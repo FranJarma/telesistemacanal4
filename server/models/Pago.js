@@ -26,6 +26,10 @@ const Pago = db.define('pago', {
         type: INTEGER,
         allowNull: false
     },
+    PagoObservaciones: {
+        type: STRING,
+        allowNull: true
+    },
     createdAt: {
         type: DATE,
         allowNull: true,

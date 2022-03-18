@@ -252,6 +252,16 @@ export default (state, action) => {
                 ...state,
                 pagos: action.payload
         }
+        case TYPES.LISTA_PAGOS_PENDIENTES_ABONADO:
+            return {
+                ...state,
+                pagosPendientes: action.payload
+        }
+        case TYPES.LISTA_PAGOS_PENDIENTES_ABONADO_TOP:
+            return {
+                ...state,
+                pagosPendientesTop: action.payload
+        }
         case TYPES.TRAER_PAGO:
             return {
                 ...state,
@@ -359,6 +369,16 @@ export default (state, action) => {
                 conceptos: action.payload
             }
         }
+        case TYPES.MOSTRAR_SPINNER:
+            return {
+                ...state,
+                cargando: true
+            }
+        case TYPES.OCULTAR_SPINNER:
+            return {
+                ...state,
+                cargando: false,
+            }
         default:
             return state;
     }

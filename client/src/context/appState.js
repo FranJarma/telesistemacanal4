@@ -7,7 +7,6 @@ import Toast from './../views/components/design/components/Toast';
 import Swal from './../views/components/design/components/Swal';
 import * as TYPES from '../types';
 import tokenAuthHeaders from '../config/token';
-import swal from 'sweetalert2';
 
 const AppState = props => {
     const initialState = {
@@ -15,6 +14,7 @@ const AppState = props => {
         usuarioLogueado: null,
         usuarioAutenticado: false,
         push: false,
+        mostrarSpinner: false,
         usuarios: [],
         roles: [],
         rolesUser: [],
@@ -35,6 +35,8 @@ const AppState = props => {
         historialServicios: [],
         mediosPago: [],
         pagos: [],
+        pagosPendientes: [],
+        pagosPendientesTop: [],
         inscripcion: [],
         detallesPago: [],
         tareas: [],
@@ -43,7 +45,9 @@ const AppState = props => {
         tecnicosOrdenDeTrabajo: [],
         tareasOrdenDeTrabajo: [],
         movimientos: [],
-        conceptos: []
+        conceptos: [],
+        cargando: false,
+        mensaje: ''
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -384,7 +388,9 @@ const AppState = props => {
                 })
                 Swal('Operación completa', resOk.data.msg);
                 setModalNuevoDomicilio(false);
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
         })
         .catch(err => {
             if(!err.response){
@@ -408,7 +414,9 @@ const AppState = props => {
                 })
                 Swal('Operación completa', resOk.data.msg);
                 setModalNuevoServicio(false);
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
         })
         .catch(err => {
             if(!err.response){
@@ -489,13 +497,32 @@ const AppState = props => {
             console.log(error);
         }
     };
-    const traerPagosPorAbonado = async (UserId, Periodo, Concepto) => {
+    const traerPagosPorAbonado = async (UserId, Periodo = null, Concepto) => {
         try {
             const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Periodo=${Periodo}&Concepto=${Concepto}`);
             dispatch({
                 type: TYPES.LISTA_PAGOS_ABONADO,
                 payload: resultado.data
             })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerPagosMensualesPendientes = async (UserId, Concepto, top) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Concepto=${Concepto}&top=${top}`);
+            if(!top) {
+                dispatch({
+                    type: TYPES.LISTA_PAGOS_PENDIENTES_ABONADO,
+                    payload: resultado.data
+                })
+            }
+            else {
+                dispatch({
+                    type: TYPES.LISTA_PAGOS_PENDIENTES_ABONADO_TOP,
+                    payload: resultado.data
+                })
+            }
         } catch (error) {
             console.log(error);
         }
@@ -544,7 +571,9 @@ const AppState = props => {
                     payload: pago
                 });
                 Swal('Operación completa', resOk.data.msg);
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
         })
         .catch(err => {
             if(!err.response){
@@ -748,7 +777,9 @@ const AppState = props => {
                 });
                 Swal('Operación completa', resOk.data.msg);
                 cerrarModal(true);
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
         })
         .catch(err => {
             if(!err.response){
@@ -934,7 +965,9 @@ const AppState = props => {
                 });
                 Swal('Operación completa', resOk.data.msg);
                 cerrarModal(true);
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
         })
         .catch(err => {
             if(!err.response){
@@ -1421,6 +1454,18 @@ const AppState = props => {
             console.log(error);
         }
     }
+    //spinner
+    const mostrarSpinner = () => {
+        dispatch({
+            type: TYPES.MOSTRAR_SPINNER
+        });
+        setTimeout(()=>{
+            dispatch({
+                type: TYPES.OCULTAR_SPINNER,
+            });
+        },2000)
+    };
+
     return(
         <AppContext.Provider
         value={{
@@ -1449,6 +1494,8 @@ const AppState = props => {
             historialServicios: state.historialServicios,
             mediosPago: state.mediosPago,
             pagos: state.pagos,
+            pagosPendientes: state.pagosPendientes,
+            pagosPendientesTop: state.pagosPendientesTop,
             inscripcion: state.inscripcion,
             detallesPago: state.detallesPago,
             tareas: state.tareas,
@@ -1458,6 +1505,8 @@ const AppState = props => {
             tareasOrdenDeTrabajo: state.tareasOrdenDeTrabajo,
             movimientos: state.movimientos,
             conceptos: state.conceptos,
+            cargando: state.cargando,
+            mensaje: state.mensaje,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
@@ -1471,13 +1520,14 @@ const AppState = props => {
             traerOnus, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago, crearMedioPago, modificarMedioPago, eliminarMedioPago,
-            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion,
+            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion, traerPagosMensualesPendientes, traerPagosMensualesPendientes,
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,
             finalizarOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo,
             traerMovimientosPorFecha,
-            traerConceptos
+            traerConceptos,
+            mostrarSpinner,
         }}>{props.children}
         </AppContext.Provider>
     )

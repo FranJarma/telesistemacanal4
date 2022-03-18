@@ -23,13 +23,14 @@ const ListaServicios = () => {
         ServicioDescripcion: '',
         ServicioInscripcion: '',
         ServicioMultiplicadorPrimerMes: '',
+        ServicioBonificacionPagoSeisMeses: '',
         createdBy: null,
         updatedAt: null,
         updatedBy: null,
         deletedBy: null,
         deletedAt: null
     })
-    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion, ServicioInscripcion, ServicioMultiplicadorPrimerMes } = ServicioInfo;
+    const { ServicioNombre, ServicioPrecioUnitario, ServicioDescripcion, ServicioInscripcion, ServicioMultiplicadorPrimerMes, ServicioBonificacionPagoSeisMeses } = ServicioInfo;
 
     const onInputChange= (e) =>{
         setServicioInfo({
@@ -88,6 +89,12 @@ const ListaServicios = () => {
             "sortable": true
         },
         {
+            "name": "Bonificación 6 meses",
+            "selector": row => row["ServicioBonificacionPagoSeisMeses"]+"%",
+            "wrap": true,
+            "sortable": true
+        },
+        {
             "name": "Descripción",
             "selector": row => row["ServicioDescripcion"],
             "wrap": true,
@@ -135,7 +142,7 @@ const ListaServicios = () => {
         titulo={<Typography variant="h2"><i className="bx bx-plug"></i>{EditMode ? "Editar Servicio" : "Nuevo Servicio"}</Typography>}
         formulario={
             <Grid container spacing={3}>
-                <Grid item xs={12} md={3} sm={3} xl={3}>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
                     <TextField
                     color="primary"
                     autoFocus
@@ -147,7 +154,7 @@ const ListaServicios = () => {
                     name="ServicioNombre"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={3} sm={3} xl={3}>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
@@ -162,7 +169,7 @@ const ListaServicios = () => {
                     name="ServicioPrecioUnitario"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={3} sm={3} xl={3}>
+                <Grid item xs={12} md={4} sm={4} xl={4}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
@@ -177,7 +184,7 @@ const ListaServicios = () => {
                     name="ServicioInscripcion"
                     ></TextField>
                 </Grid>
-                <Grid item xs={12} md={3} sm={3} xl={3}>
+                <Grid item xs={12} md={6} sm={6} xl={6}>
                     <TextField
                     color="primary"
                     onKeyPress={(e) => {
@@ -190,6 +197,22 @@ const ListaServicios = () => {
                     onChange={onInputChange}
                     value={ServicioMultiplicadorPrimerMes}
                     name="ServicioMultiplicadorPrimerMes"
+                    ></TextField>
+                </Grid>
+                <Grid item xs={12} md={6} sm={6} xl={6}>
+                    <TextField
+                    color="primary"
+                    onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    }}}
+                    inputProps={{ maxLength: 3 }}
+                    variant="outlined"
+                    label="Bonificación por 6 meses de pago(%)"
+                    fullWidth
+                    onChange={onInputChange}
+                    value={ServicioBonificacionPagoSeisMeses}
+                    name="ServicioBonificacionPagoSeisMeses"
                     ></TextField>
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} xl={12}>
