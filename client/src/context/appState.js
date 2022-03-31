@@ -588,6 +588,32 @@ const AppState = props => {
             }
         })
     }
+    const crearPagoAdelantado = async(pagoAdelantadoInfo) => {
+        clienteAxios.post('/api/pagos/createPagoAdelantado', pagoAdelantadoInfo)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_PAGO_ADELANTADO,
+                    payload: pagoAdelantadoInfo
+                });
+                Swal('Operación completa', resOk.data.msg);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+        })
+        .catch(err => {
+            if(!err.response){
+                console.log(err);
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     const agregarRecargo = async(pago, setModalRecargo) => {
         clienteAxios.put('/api/pagos/recargo', pago)
         .then(resOk => {
@@ -1520,7 +1546,7 @@ const AppState = props => {
             traerOnus, traerONUPorId, crearONU, modificarONU, eliminarONU,
             traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU,
             traerMediosPago, crearMedioPago, modificarMedioPago, eliminarMedioPago,
-            traerPagosPorAbonado, crearPago, agregarRecargo, eliminarRecargo, traerDatosInscripcion, traerPagosMensualesPendientes, traerPagosMensualesPendientes,
+            traerPagosPorAbonado, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, traerDatosInscripcion, traerPagosMensualesPendientes, traerPagosMensualesPendientes,
             traerDetallesPago, eliminarDetallePago,
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,

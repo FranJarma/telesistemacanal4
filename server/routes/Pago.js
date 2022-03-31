@@ -12,6 +12,11 @@ router.post('/create', ValidarJWT,
 [
     check('MedioPagoId', 'El medio de pago es obligatorio').notEmpty(),
 ], PagoController.PagoCreate);
+router.post('/createPagoAdelantado', ValidarJWT,
+[
+    check('PagoAdelantadoInfo.CantidadMesesAPagar', 'Seleccione la cantidad de meses a pagar').notEmpty(),
+    check('PagoAdelantadoInfo.MedioPagoId', 'El medio de pago es obligatorio').notEmpty()
+], PagoController.PagoAdelantadoCreate);
 router.put('/recargo', ValidarJWT,
 [
     check('PagoRecargo', 'El monto del recargo no puede ser $ 0').notEmpty()

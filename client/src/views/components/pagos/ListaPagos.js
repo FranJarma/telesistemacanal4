@@ -15,7 +15,7 @@ import Spinner from '../design/components/Spinner';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner } = appContext;
+    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner } = appContext;
 
     const location = useLocation();
     const [PagoAño, setPagoAño] = useState(new Date());
@@ -42,6 +42,8 @@ const ListaPagos = () => {
         deletedAt: null
     });
 
+    const [PagoAdelantadoInfo, setPagoAdelantadoInfo] = useState(null);
+
     const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
     const [ModalPagoAdelantado, setModalPagoAdelantado] = useState(false);
@@ -49,9 +51,11 @@ const ListaPagos = () => {
     const [ModalRecargo, setModalRecargo] = useState(false);
     const [ModalDetallesPago, setModalDetallesPago] = useState(false);
     const [ModalEliminarDetallePago, setModalEliminarDetallePago] = useState(false);
-    
+    const [ServicioId, setServicioId] = useState(null);
+
     useEffect(()=>{
         setMunicipioId(location.state.MunicipioId);
+        setServicioId(location.state.ServicioId);
         traerConceptos(1);
         traerMediosPago();
         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2);  //trae por defecto el 1er tab
@@ -65,13 +69,27 @@ const ListaPagos = () => {
     }
     const handleChangeMedioPagoId = (e) => {
         setMedioPagoId(e.target.value);
+        setPagoAdelantadoInfo({
+            ...PagoAdelantadoInfo,
+            MedioPagoId: e.target.value
+        })
     }
     const handleChangeMesesAPagar = (e) => {
         mostrarSpinner();
         setCantidadMesesAPagar(e.target.value);
         traerPagosMensualesPendientes(location.state.UserId, 1, e.target.value);
+        setPagoAdelantadoInfo({
+            ...PagoAdelantadoInfo,
+            CantidadMesesAPagar: e.target.value
+        })
     }
     const handleChangeModalPagoAdelantado = (data, edit = false) => {
+        setPagoAdelantadoInfo({
+            MunicipioId: MunicipioId,
+            ServicioId: ServicioId,
+            createdBy: sessionStorage.getItem('identity'),
+            updatedBy: sessionStorage.getItem('identity')
+        })
         setModalPagoAdelantado(!ModalPagoAdelantado);
         traerPagosMensualesPendientes(location.state.UserId, 1);
     }
@@ -325,11 +343,7 @@ const ListaPagos = () => {
                 <>
                 <Button onClick={()=>
                     {
-                    crearPago(
-                        {PagoInfo,
-                        MedioPagoId,
-                        MunicipioId
-                    }, handleChangeModalPagoAdelantado)}}
+                    crearPagoAdelantado({MesesAPagar: pagosPendientesTop, PagoAdelantadoInfo})}}
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
@@ -361,7 +375,7 @@ const ListaPagos = () => {
                                             variant="outlined"
                                             label="Cantidad de meses a pagar"
                                             value={CantidadMesesAPagar}
-                                            name="CantidadMesesAPagar"
+                                            name="CantidcadMesesAPagar"
                                             fullWidth
                                             select
                                             onChange={handleChangeMesesAPagar}

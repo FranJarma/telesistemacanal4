@@ -5,6 +5,7 @@ const { validationResult } = require('express-validator');
 const Pago = require('./../models/Pago');
 const DetallePago = require('./../models/DetallePago');
 const Movimiento = require('../models/Movimiento');
+const Servicio = require('../models/Servicio');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -84,7 +85,6 @@ exports.PagoGet = async(req,res) => {
     }
 }
 exports.PagoCreate = async(req,res) => {
-    console.log(req.body);
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
@@ -146,6 +146,83 @@ exports.PagoCreate = async(req,res) => {
                 res.status(400).json({msg: 'No se encontró el pago correspondiente'});
             }
             return res.status(200).json({msg: 'El Pago ha sido registrado correctamente'})
+        })
+        }   
+    catch (error) {
+        console.log(error);
+        res.status(400).json({msg: 'Hubo un error al registrar el pago'});
+    }
+}
+
+exports.PagoAdelantadoCreate = async(req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    try {
+        await db.transaction(async(t)=>{
+            const servicio = await Servicio.findByPk(req.body.PagoAdelantadoInfo.ServicioId, {transaction: t});
+            let totalSinDescuento = req.body.MesesAPagar.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0);
+            let total = null;
+            if(req.body.PagoAdelantadoInfo.CantidadMesesAPagar === 6){
+                total = totalSinDescuento - (totalSinDescuento * servicio.ServicioBonificacionPagoSeisMeses/100);
+            }
+            if(req.body.PagoAdelantadoInfo.CantidadMesesAPagar === 12){
+                total = totalSinDescuento - servicio.ServicioPrecioUnitario;
+            }
+            if(req.body.PagoAdelantadoInfo.CantidadMesesAPagar === 18){
+                total = totalSinDescuento - 2* servicio.ServicioPrecioUnitario;
+            }
+            if(req.body.PagoAdelantadoInfo.CantidadMesesAPagar === 24){
+                total = totalSinDescuento - 3* servicio.ServicioPrecioUnitario;
+            }
+            //buscamos el ultimo Movimiento
+            let ultimoMovimientoId = 0;
+            const ultimoMovimiento = await Movimiento.findOne({
+                order: [['MovimientoId', 'DESC']]
+            }); 
+            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
+
+            let ultimoDetallePagoId = 0;
+            //Buscamos el último DetallePago
+            const ultimoDetallePago = await DetallePago.findOne({
+                order: [['DetallePagoId', 'DESC']]
+            });
+            if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
+
+            for(let i=0; i<=req.body.PagoAdelantadoInfo.CantidadMesesAPagar-1; i++){
+                const pago = await Pago.findByPk(req.body.MesesAPagar[i].PagoId, {transaction: t});
+                pago.PagoSaldo = 0;
+                pago.PagoObservaciones = `Pago Adelantado: ${req.body.PagoAdelantadoInfo.CantidadMesesAPagar} meses`;
+                pago.updatedAt = new Date();
+                pago.updatedBy = req.body.PagoAdelantadoInfo.updatedBy;
+                const detallePago = new DetallePago({transaction: t});
+                detallePago.DetallePagoId = ultimoDetallePagoId + 1;
+                detallePago.PagoId = pago.PagoId;
+                detallePago.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
+                detallePago.DetallePagoMonto = pago.PagoTotal;
+                detallePago.DetallePagoMotivo = 'Pago mensual';
+                detallePago.DetallePagoObservaciones = `Pago Adelantado: ${req.body.PagoAdelantadoInfo.CantidadMesesAPagar} meses`;
+                detallePago.createdAt = new Date();
+                detallePago.createdBy = req.body.PagoAdelantadoInfo.createdBy;
+                ultimoDetallePagoId++;
+                await pago.save({transaction: t});
+                await detallePago.save({transaction: t});
+            }
+            //instanciamos un unico movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MunicipioId = req.body.PagoAdelantadoInfo.MunicipioId;
+            movimiento.MovimientoCantidad = parseInt(total);
+            movimiento.createdAt = new Date();
+            movimiento.createdBy = req.body.PagoAdelantadoInfo.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 8; //Pago Adelantado
+            movimiento.PagoId = req.body.MesesAPagar[0].PagoId;
+            await movimiento.save({transaction: t});
+            return res.status(200).json({msg: 'El Pago Adelantado ha sido registrado correctamente'})
         })
         }   
     catch (error) {
