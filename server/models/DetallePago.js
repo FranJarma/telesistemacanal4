@@ -43,7 +43,7 @@ const DetallePago = db.define('detallepago', {
         allowNull: true
     },
     //fk
-    PagoId: {
+    MovimientoId: {
         type: INTEGER,
         allowNull: false
     },

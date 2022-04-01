@@ -352,6 +352,16 @@ exports.AbonadoCreate = async(req, res) => {
             abonadoEstado.UserId = abonado.UserId;
             abonadoEstado.CambioEstadoFecha = new Date();
             abonadoEstado.CambioEstadoObservaciones = 'Dado de alta';
+            //instanciamos un nuevo movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = detallePago.DetallePagoMonto;
+            movimiento.createdBy = req.body.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 2; //inscripción
+            movimiento.MunicipioId = req.body.MunicipioId;
             //registramos un nuevo pago
             const pago = new Pago({transaction: t});
             pago.PagoId = ultimoPagoId + 1;
@@ -372,17 +382,7 @@ exports.AbonadoCreate = async(req, res) => {
             detallePago.createdBy = req.body.createdBy;
             detallePago.DetallePagoMonto = req.body.MedioPago.MedioPagoId == 10 ? (req.body.Servicio.ServicioInscripcion / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.Servicio.ServicioInscripcion;
             detallePago.DetallePagoMotivo = 'Inscripción';
-            //instanciamos un nuevo movimiento
-            const movimiento = new Movimiento({transaction: t});
-            movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = detallePago.DetallePagoMonto;
-            movimiento.createdBy = req.body.createdBy;
-            movimiento.MovimientoDia = new Date().getDate();
-            movimiento.MovimientoMes = new Date().getMonth()+1;
-            movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = 2; //inscripción
-            movimiento.DetallePagoId = detallePago.DetallePagoId;
-            movimiento.MunicipioId = req.body.MunicipioId;
+            detallePago.MovimientoId = movimiento.MovimientoId;
             await domicilio.save({transaction: t});
             await abonado.save({transaction: t});
             await abonadoRole.save({transaction: t});
@@ -577,6 +577,16 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                     TareaId: req.body.ServicioId === 1 ? 14 : 15
                 }
             })
+            // instanciamos un movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = tarea.TareaPrecioUnitario;
+            movimiento.createdBy = req.body.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 5; //cambio de domicilio
+            movimiento.MunicipioId = req.body.MunicipioId;
             //registramos un nuevo pago
             const pago = new Pago({transaction: t});
             pago.PagoId = ultimoPagoId + 1;
@@ -597,17 +607,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             detallePago.createdBy = req.body.createdBy;
             detallePago.DetallePagoMonto = req.body.PagoInfo.Inscripcion;
             detallePago.DetallePagoMotivo = 'Cambio de Domicilio';
-            // instanciamos un movimiento
-            const movimiento = new Movimiento({transaction: t});
-            movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = tarea.TareaPrecioUnitario;
-            movimiento.createdBy = req.body.createdBy;
-            movimiento.MovimientoDia = new Date().getDate();
-            movimiento.MovimientoMes = new Date().getMonth()+1;
-            movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = 5; //cambio de domicilio
-            movimiento.DetallePagoId = detallePago.DetallePagoId;
-            movimiento.MunicipioId = req.body.MunicipioId;
+            detallePago.MovimientoId = movimiento.MovimientoId;
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = req.body.UserId;
@@ -708,6 +708,16 @@ exports.AbonadoCambioServicio = async(req, res) => {
             abonadoServicio.UserServicioId = ultimoUserServicioId + 1;
             abonadoServicio.ServicioId = req.body.Servicio.ServicioId;
             abonadoServicio.CambioServicioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo servicio del abonado';
+            // instanciamos un movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MovimientoCantidad = req.body.PagoInfo.Inscripcion;
+            movimiento.createdBy = req.body.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 6; //cambio de servicio
+            movimiento.MunicipioId = req.body.MunicipioId;
             //registramos un nuevo pago
             const pago = new Pago({transaction: t});
             pago.PagoId = ultimoPagoId + 1;
@@ -728,17 +738,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
             detallePago.createdBy = req.body.createdBy;
             detallePago.DetallePagoMonto = req.body.PagoInfo.Inscripcion;
             detallePago.DetallePagoMotivo = 'Cambio de Servicio';
-            // instanciamos un movimiento
-            const movimiento = new Movimiento({transaction: t});
-            movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = req.body.PagoInfo.Inscripcion;
-            movimiento.createdBy = req.body.createdBy;
-            movimiento.MovimientoDia = new Date().getDate();
-            movimiento.MovimientoMes = new Date().getMonth()+1;
-            movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = 6; //cambio de servicio
-            movimiento.DetallePagoId = detallePago.DetallePagoId;
-            movimiento.MunicipioId = req.body.MunicipioId;
+            detallePago.MovimientoId = movimiento.MovimientoId;
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = req.body.UserId;

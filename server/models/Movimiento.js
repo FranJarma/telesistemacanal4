@@ -26,25 +26,9 @@ const Movimiento = db.define('movimiento', {
         type: INTEGER,
         allowNull: false
     },
-    // CajaId: {
-    //     type: INTEGER,
-    //     allowNull: false
-    // },
-    // PagoId: {
-    //     type: INTEGER,
-    //     allowNull: true
-    // },
-    // OtId: {
-    //     type: INTEGER,
-    //     allowNull: true
-    // },
     MunicipioId: {
         type: INTEGER,
         allowNull: false
-    },
-    DetallePagoId: {
-        type: INTEGER,
-        allowNull: true
     },
     createdAt: {
         type: DATE,

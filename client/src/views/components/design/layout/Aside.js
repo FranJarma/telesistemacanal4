@@ -5,7 +5,7 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import { Link } from 'react-router-dom';
 import logo from './../../../images/logo-ts.png';
 import AppContext from '../../../../context/appContext';
-import { Button, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
+import { Backdrop, Button, Dialog, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
@@ -28,12 +28,16 @@ const Aside = () => {
   
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
+    const [backdropOpen, setBackdropOpen] = useState(false);
 
     const onClickWidth = () => {
-      if(width === '0px')
+      if(width === '0px'){
         setWidth('280px');
+        setBackdropOpen(true);
+    }
       else {
         setWidth('0px');
+        setBackdropOpen(false);
       }
     }
     const onClickMenuAbonados = () => {
@@ -87,9 +91,15 @@ const Aside = () => {
     return (   
     (push ?
     <>
+    <Dialog
+    open={backdropOpen}
+    onClick={() => setBackdropOpen(!backdropOpen)}
+    >
+    </Dialog>
     <ProSidebar ref={wrapperRef} width={width}>
+    <span title="Cerrar"><i style={{marginTop: '10px', marginLeft: '18px', color: "#fff"}} onClick={onClickWidth} class='bx bx-left-arrow-circle bx-md'></i></span>
     <img alt="logo-tls" src={logo}/>
-      <div className="menu" ref={wrapperRef}>
+    <div className="menu" ref={wrapperRef}>
         <Menu iconShape="round">
           <SidebarHeader style={{marginLeft: '1rem'}}>
             <Typography variant="h6">{sessionStorage.getItem('usr')}</Typography>
@@ -142,6 +152,7 @@ const Aside = () => {
         </Menu>
       </div>
     </ProSidebar>
+
     <div className="header">
         <i style={{display: width === '280px' ? "none" : "unset"}} onClick={onClickWidth} className="bx bx-menu"/>
         <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{sessionStorage.getItem('usr')}</Button>

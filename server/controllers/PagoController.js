@@ -135,8 +135,7 @@ exports.PagoCreate = async(req,res) => {
                 detallePago.DetallePagoMotivo = 'Pago mensual';
                 detallePago.createdAt = new Date();
                 detallePago.createdBy = req.body.PagoInfo.createdBy;
-                //registramos el id del detalle del pago pago al movimiento
-                movimiento.DetallePagoId = detallePago.DetallePagoId;
+                detallePago.MovimientoId = movimiento.MovimientoId;
                 await pagoBuscar.save({transaction: t});
                 await detallePago.save({transaction: t});
                 await movimiento.save({transaction: t});
@@ -189,7 +188,17 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 order: [['DetallePagoId', 'DESC']]
             });
             if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
-
+            //instanciamos un unico movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MunicipioId = req.body.PagoAdelantadoInfo.MunicipioId;
+            movimiento.MovimientoCantidad = parseInt(total);
+            movimiento.createdAt = new Date();
+            movimiento.createdBy = req.body.PagoAdelantadoInfo.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = 8; //Pago Adelantado
             for(let i=0; i<=req.body.PagoAdelantadoInfo.CantidadMesesAPagar-1; i++){
                 const pago = await Pago.findByPk(req.body.MesesAPagar[i].PagoId, {transaction: t});
                 pago.PagoSaldo = 0;
@@ -205,22 +214,11 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 detallePago.DetallePagoObservaciones = `Pago Adelantado: ${req.body.PagoAdelantadoInfo.CantidadMesesAPagar} meses`;
                 detallePago.createdAt = new Date();
                 detallePago.createdBy = req.body.PagoAdelantadoInfo.createdBy;
+                detallePago.MovimientoId = movimiento.MovimientoId;
                 ultimoDetallePagoId++;
                 await pago.save({transaction: t});
                 await detallePago.save({transaction: t});
             }
-            //instanciamos un unico movimiento
-            const movimiento = new Movimiento({transaction: t});
-            movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MunicipioId = req.body.PagoAdelantadoInfo.MunicipioId;
-            movimiento.MovimientoCantidad = parseInt(total);
-            movimiento.createdAt = new Date();
-            movimiento.createdBy = req.body.PagoAdelantadoInfo.createdBy;
-            movimiento.MovimientoDia = new Date().getDate();
-            movimiento.MovimientoMes = new Date().getMonth()+1;
-            movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = 8; //Pago Adelantado
-            movimiento.PagoId = req.body.MesesAPagar[0].PagoId;
             await movimiento.save({transaction: t});
             return res.status(200).json({msg: 'El Pago Adelantado ha sido registrado correctamente'})
         })

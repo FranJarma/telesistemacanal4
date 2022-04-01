@@ -239,9 +239,6 @@ exports.OtFinalizar = async (req, res) => {
             const servicio = await Servicio.findByPk(abonado.ServicioId, {transaction: t});
             //INSCRIPCIÓN
             if(ot.OtEsPrimeraBajada) {
-                let pagosPorAño1 = [];
-                let pagosPorAño2 = [];
-                let pagosPorAño3 = [];
                 //buscamos el ultimo pago
                 let ultimoPagoId = 0;
                 const ultimoPago = await Pago.findOne({
@@ -256,8 +253,8 @@ exports.OtFinalizar = async (req, res) => {
                 let pago1 = null;
                 let pago2 = null;
                 let pago3 = null;
+                FechaVencimientoServicio = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 2);
                 if(abonado.ServicioId === 1) {
-                    FechaVencimientoServicio = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 2);
                     //Registramos los pagos vacíos de 2 años
                     for(let i= 1; i<=12; i++) {
                         if(i==mesActual) {
@@ -333,7 +330,6 @@ exports.OtFinalizar = async (req, res) => {
                     }
                 }
                 else {
-                    FechaVencimientoServicio = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 1);
                     const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
                     onu.EstadoId = 4;
                     // await onu.save({transaction: t});
