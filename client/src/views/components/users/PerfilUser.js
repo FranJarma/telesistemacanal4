@@ -68,11 +68,11 @@ const PerfilUser = () => {
     <div className="container">
     <Aside/>
     <main>
+    <Typography variant="h6">Editar usuario: {location.state.User.Apellido}, {location.state.User.Nombre}</Typography>
+    <br/>
     <form onSubmit={onSubmitUsuario}>
         <Card>
         <CardContent>
-            <Typography variant="h1">Editar usuario: {location.state.User.Apellido}, {location.state.User.Nombre}</Typography>
-            <Typography variant="h2"><i className="bx bx-user"></i> Datos del usuario</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField

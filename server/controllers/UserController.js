@@ -355,7 +355,7 @@ exports.AbonadoCreate = async(req, res) => {
             //instanciamos un nuevo movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = detallePago.DetallePagoMonto;
+            movimiento.MovimientoCantidad = req.body.MedioPago.MedioPagoId == 10 ? (req.body.Servicio.ServicioInscripcion / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.Servicio.ServicioInscripcion;
             movimiento.createdBy = req.body.createdBy;
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
@@ -376,12 +376,11 @@ exports.AbonadoCreate = async(req, res) => {
             pago.createdBy = req.body.createdBy;
             const detallePago = new DetallePago({transaction: t})
             detallePago.DetallePagoId = ultimoDetallePagoId + 1;
-            detallePago.PagoId = ultimoPagoId + 1;
+            detallePago.PagoId = pago.PagoId;
             detallePago.MedioPagoId = req.body.MedioPago.MedioPagoId;
             detallePago.createdAt = new Date();
             detallePago.createdBy = req.body.createdBy;
             detallePago.DetallePagoMonto = req.body.MedioPago.MedioPagoId == 10 ? (req.body.Servicio.ServicioInscripcion / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.Servicio.ServicioInscripcion;
-            detallePago.DetallePagoMotivo = 'Inscripción';
             detallePago.MovimientoId = movimiento.MovimientoId;
             await domicilio.save({transaction: t});
             await abonado.save({transaction: t});
@@ -571,16 +570,10 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
             abonadoDomicilio.createdBy = req.body.createdBy;
             abonadoDomicilio.CambioDomicilioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo domicilio del abonado';
-            // traemos el precio de la tarea de cambio de domicilio
-            const tarea = await Tarea.findOne({
-                where: {
-                    TareaId: req.body.ServicioId === 1 ? 14 : 15
-                }
-            })
             // instanciamos un movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = tarea.TareaPrecioUnitario;
+            movimiento.MovimientoCantidad = req.body.PagoInfo.Total;
             movimiento.createdBy = req.body.createdBy;
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
@@ -605,8 +598,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             detallePago.MedioPagoId = req.body.MedioPago.MedioPagoId;
             detallePago.createdAt = new Date();
             detallePago.createdBy = req.body.createdBy;
-            detallePago.DetallePagoMonto = req.body.PagoInfo.Inscripcion;
-            detallePago.DetallePagoMotivo = 'Cambio de Domicilio';
+            detallePago.DetallePagoMonto = req.body.PagoInfo.Total;
             detallePago.MovimientoId = movimiento.MovimientoId;
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
@@ -737,7 +729,6 @@ exports.AbonadoCambioServicio = async(req, res) => {
             detallePago.createdAt = new Date();
             detallePago.createdBy = req.body.createdBy;
             detallePago.DetallePagoMonto = req.body.PagoInfo.Inscripcion;
-            detallePago.DetallePagoMotivo = 'Cambio de Servicio';
             detallePago.MovimientoId = movimiento.MovimientoId;
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;

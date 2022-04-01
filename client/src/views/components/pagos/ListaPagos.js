@@ -231,7 +231,7 @@ const ListaPagos = () => {
         },
         {
             "name": "Motivo de pago",
-            "selector": row => row["DetallePagoMotivo"],
+            "selector": row => row["MovimientoConceptoNombre"],
             "wrap": true,
             "sortable": true,
         },

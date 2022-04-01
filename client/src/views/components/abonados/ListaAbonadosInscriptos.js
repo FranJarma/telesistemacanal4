@@ -14,6 +14,7 @@ import TooltipForTable from '../../../helpers/TooltipForTable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import generarRecibo from '../../../helpers/GenerarRecibo';
 import SpanServicio from '../../../helpers/SpanServicio';
+import formatDocumento from '../../../helpers/FormatDocumento';
 
 const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
@@ -123,7 +124,7 @@ const ListaAbonadosInscriptos = () => {
     },
     {
         "name": "DNI",
-        "selector": row =>row["Documento"],
+        "selector": row =>formatDocumento(row["Documento"]),
         "sortable": true,
         "hide": "sm"
     },

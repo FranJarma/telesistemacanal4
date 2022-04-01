@@ -8,10 +8,12 @@ require('dotenv').config({path: 'variables.env'});
 
 exports.DetallesPagoListar = async(req,res) => {
     try {
-        const detallesPagos = await knex.select('dp.DetallePagoMonto','dp.createdAt','dp.DetallePagoMotivo',
+        const detallesPagos = await knex.select('dp.DetallePagoMonto','dp.createdAt','mc.MovimientoConceptoNombre',
         'mp.MedioPagoNombre', 'u.Nombre', 'u.Apellido').from('detallepago as dp')
         .innerJoin('mediopago as mp','dp.MedioPagoId', '=', 'mp.MedioPagoId')
         .innerJoin('_user as u', 'u.UserId', '=', 'dp.createdBy')
+        .innerJoin('movimiento as m', 'dp.MovimientoId', '=', 'm.MovimientoId')
+        .innerJoin('movimientoConcepto as mc', 'mc.MovimientoConceptoId', '=', 'm.MovimientoConceptoId')
         .where({
             'dp.PagoId': req.params.id,
             'dp.deletedAt': null

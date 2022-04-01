@@ -218,6 +218,8 @@ const CaratulaAbonado = () => {
     <div className="container">
     <Aside/>
     <main>
+    <Typography variant="h6">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Inscribir abonado"}</Typography>
+    <br/>
     <form onSubmit={onSubmitAbonado}>
     <Tabs>
         <TabList>
@@ -229,8 +231,6 @@ const CaratulaAbonado = () => {
     <TabPanel>
         <Card>
             <CardContent>
-                <Typography variant="h1">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Inscribir abonado"}</Typography>
-                    <br/>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={6} lg={6} xl={6}>
                             <TextField

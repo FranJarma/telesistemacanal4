@@ -136,10 +136,11 @@ const CambioTitularidad = () => {
     <div className="container">
     <Aside/>
     <main>
+    <Typography variant="h6">Cambio titularidad: {location.state.Nombre} {location.state.Apellido}</Typography>
     <form onSubmit={onSubmitCambioTitularidad}>
+    <br/>
     <Card>
         <CardContent>
-            <Typography variant="h1">Cambio titularidad: {location.state.Nombre} {location.state.Apellido}</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} lg={3}>
                 <Typography variant="h2"><i className="bx bx-user"></i> Datos del abonado original</Typography>

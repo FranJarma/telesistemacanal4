@@ -129,10 +129,9 @@ exports.PagoCreate = async(req,res) => {
                 pagoBuscar.updatedBy = req.body.PagoInfo.updatedBy;
                 const detallePago = new DetallePago(req.body, {transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
-                detallePago.PagoId = pagoBuscar.PagoId;
+                detallePago.PagoId = req.body.PagoInfo.PagoId;
                 detallePago.MedioPagoId = req.body.MedioPagoId;
                 detallePago.DetallePagoMonto = req.body.PagoInfo.DetallePagoMonto;
-                detallePago.DetallePagoMotivo = 'Pago mensual';
                 detallePago.createdAt = new Date();
                 detallePago.createdBy = req.body.PagoInfo.createdBy;
                 detallePago.MovimientoId = movimiento.MovimientoId;
@@ -207,10 +206,9 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 pago.updatedBy = req.body.PagoAdelantadoInfo.updatedBy;
                 const detallePago = new DetallePago({transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
-                detallePago.PagoId = pago.PagoId;
+                detallePago.PagoId = req.body.MesesAPagar[i].PagoId;
                 detallePago.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
                 detallePago.DetallePagoMonto = pago.PagoTotal;
-                detallePago.DetallePagoMotivo = 'Pago mensual';
                 detallePago.DetallePagoObservaciones = `Pago Adelantado: ${req.body.PagoAdelantadoInfo.CantidadMesesAPagar} meses`;
                 detallePago.createdAt = new Date();
                 detallePago.createdBy = req.body.PagoAdelantadoInfo.createdBy;
@@ -297,78 +295,11 @@ exports.PagosTraerInscripcion = async(req,res) => {
         .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'dp.MedioPagoId')
         .where(
             {
-                'p.UserId': req.params.UserId,
-                'dp.DetallePagoMotivo': 'Inscripción'
+                'p.UserId': req.params.UserId
             })
         res.json(inscripcion);
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
-    }
-}
-
-exports.PagoAñadirCuota = async(req,res) => {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors: errors.array()})
-    }
-    try {
-        await db.transaction(async(t)=>{
-            //buscamos el pago
-            const pago = await Pago.findByPk(req.body.PagoId, {transaction: t});
-            if(pago.PagoSaldo == 0) {
-                return res.status(400).json({msg: 'El mes está saldado.'});
-            }
-            //buscamos el ultimo Movimiento
-            let ultimoMovimientoId = 0;
-            const ultimoMovimiento = await Movimiento.findOne({
-                order: [['MovimientoId', 'DESC']]
-            }); 
-            if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
-
-            let ultimoDetallePagoId = 0;
-            //Buscamos el último DetallePago
-            const ultimoDetallePago = await DetallePago.findOne({
-                order: [['DetallePagoId', 'DESC']]
-            });
-            if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
-            pago.updatedAt = new Date();
-            pago.updatedBy = req.body.updatedBy;
-            pago.PagoSaldo = pago.PagoSaldo - req.body.DetallePagoMonto;
-            //buscamos el ultimo detalle de pago para hacer una copia del mismo
-            const detallePago = await DetallePago.findOne({
-                where: {
-                    PagoId: pago.PagoId
-                },
-                order: [['DetallePagoId', 'DESC']]
-            })
-            const nuevoDetallePago = new DetallePago({transaction: t});
-            nuevoDetallePago.DetallePagoId = ultimoDetallePagoId + 1;
-            nuevoDetallePago.DetallePagoMonto = detallePago.DetallePagoMonto;
-            nuevoDetallePago.DetallePagoMotivo = detallePago.DetallePagoMotivo;
-            nuevoDetallePago.PagoId = detallePago.PagoId;
-            nuevoDetallePago.MedioPagoId = detallePago.MedioPagoId;
-            nuevoDetallePago.createdAt = new Date();
-            nuevoDetallePago.createdBy = req.body.createdBy;
-            //instanciamos un nuevo movimiento
-            const movimiento = new Movimiento({transaction: t});
-            movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = req.body.DetallePagoMonto;
-            movimiento.createdBy = req.body.createdBy;
-            movimiento.MovimientoDia = new Date().getDate();
-            movimiento.MovimientoMes = new Date().getMonth()+1;
-            movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MunicipioId = req.body.MunicipioId;
-            movimiento.MovimientoConceptoId = 1;
-            movimiento.DetallePagoId = nuevoDetallePago.DetallePagoId;
-            await pago.save({transaction: t});
-            await nuevoDetallePago.save({transaction: t});
-            await movimiento.save({transaction: t});
-            return res.status(200).json({msg: 'La cuota del pago ha sido registrada correctamente'})
-        })
-        }   
-    catch (error) {
-        console.log(error);
-        res.status(400).json({msg: 'Hubo un error al registrar el pago'});
     }
 }

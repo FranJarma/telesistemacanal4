@@ -10,10 +10,6 @@ const DetallePago = db.define('detallepago', {
         type: FLOAT,
         allowNull: false
     },
-    DetallePagoMotivo: {
-        type: STRING,
-        allowNull: true
-    },
     DetallePagoObservaciones: {
         type: STRING,
         allowNull: true

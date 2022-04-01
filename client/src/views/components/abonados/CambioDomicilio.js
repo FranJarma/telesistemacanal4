@@ -190,13 +190,13 @@ const CambioDomicilio = () => {
     <div className="container">
     <Aside/>
     <main>
+    <Typography variant="h6">Historial de cambios de domicilio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
+    <br/>
     <Card>
         <CardHeader
             action={<Button onClick={setModalNuevoDomicilio} startIcon={<i className="bx bx-plus"></i>} variant="contained" color="primary">Nuevo Domicilio</Button>}>
         </CardHeader>
         <CardContent>
-            <Typography variant="h1">Historial de cambios de domicilio del abonado: {location.state.Apellido}, {location.state.Nombre}</Typography>
-            <br/>
             <Datatable
             loader={true}
             expandedComponent={ExpandedComponent}

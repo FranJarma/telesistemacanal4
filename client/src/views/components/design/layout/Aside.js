@@ -5,7 +5,7 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import { Link } from 'react-router-dom';
 import logo from './../../../images/logo-ts.png';
 import AppContext from '../../../../context/appContext';
-import { Backdrop, Button, Dialog, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
+import { Button, Dialog, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
