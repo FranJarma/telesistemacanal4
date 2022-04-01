@@ -3,7 +3,7 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import './../design/layout/styles/styles.css';
-import { Button, Card, CardContent, CardHeader, MenuItem, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, MenuItem, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Modal from '../design/components/Modal';
@@ -117,12 +117,13 @@ const Users = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Listado de usuarios del sistema</Typography>
+        <br/>
         <Card>
             <CardHeader
             action={<Link style={{textDecoration: 'none'}} to="/caratula-user"><Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary"> Nuevo usuario</Button></Link>}>
             </CardHeader>
             <CardContent>
-                <Typography variant="h1">Listado de usuarios del sistema</Typography>
                 <br/>
                 <Modal
                 abrirModal={modalDarDeBaja}

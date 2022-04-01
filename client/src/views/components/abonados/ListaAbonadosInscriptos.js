@@ -216,14 +216,15 @@ const columnasInscripcion = [
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Abonados Inscriptos <Tooltip arrow title="Los abonados inscriptos son aquellos que fueron dados de alta pero no se les realizó la instalación correspondiente">
+            <i style={{color: 'blue'}} className="bx bxs-help-circle bx-tada-hover bx-sm"></i></Tooltip>
+        </Typography>
+        <br/>
         <Card>
             <CardHeader
             action={<Link style={{textDecoration: 'none'}} to="/caratula-abonado"><Button startIcon={<i className="bx bx-plus"></i>} variant="contained" color="primary"> Inscribir abonado</Button></Link>}>
             </CardHeader>
             <CardContent>
-                <Typography variant="h1">Abonados Inscriptos <Tooltip arrow title="Los abonados inscriptos son aquellos que fueron dados de alta pero no se les realizó la instalación correspondiente">
-                    <i style={{color: 'blue'}} className="bx bxs-help-circle bx-tada-hover bx-sm"></i></Tooltip>
-                </Typography>
                 <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField

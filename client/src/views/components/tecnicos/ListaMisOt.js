@@ -125,10 +125,10 @@ const ListaMisOt = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Mis órdenes de Trabajo</Typography>
         <br/>
         <Card>
             <CardContent>
-                <Typography variant="h1">Mis órdenes de Trabajo</Typography>
                 <Datatable
                     loader={true}
                     datos={ordenesDeTrabajoAsignadas}

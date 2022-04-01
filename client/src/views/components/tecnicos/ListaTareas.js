@@ -109,12 +109,12 @@ const ListaTiposTareas = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Listado de Tareas</Typography><br/>
         <Card>
             <CardContent>
                 <CardHeader
                     action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalTarea()}} > Nueva tarea</Button>}>
                 </CardHeader>
-                <Typography variant="h1">Listado de Tareas</Typography>
                 <Datatable
                     loader={true}
                     datos={tareas}

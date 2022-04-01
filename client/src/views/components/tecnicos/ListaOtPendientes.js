@@ -169,10 +169,12 @@ const ListaOtPendientes = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Filtros</Typography>
+        <br/>
         <Card>
             <CardContent>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid item xs={5} md={4} lg={4}>
                         <DatePicker
                             inputVariant="outlined"
                             format="dd/MM/yyyy"
@@ -182,7 +184,7 @@ const ListaOtPendientes = () => {
                             value={Desde}
                         ></DatePicker>
                     </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid item xs={4} md={4} lg={4}>
                         <DatePicker
                             inputVariant="outlined"
                             format="dd/MM/yyyy"
@@ -192,21 +194,21 @@ const ListaOtPendientes = () => {
                             value={Hasta}
                         ></DatePicker>
                     </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid item xs={4} md={4} lg={4}>
                         <Button
                         style={{marginTop: '10px'}}
                         variant="contained"
                         color="secondary">Buscar</Button>
                     </Grid>
-
                 </Grid>
             </CardContent>
         </Card>
         <br/>
+        <Typography variant="h6">Listado de Órdenes de Trabajo sin finalizar</Typography>
+        <br/>
         <Card>
             <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary"> Nueva OT</Button></Link>}></CardHeader>
             <CardContent>
-                <Typography variant="h1">Listado de Órdenes de Trabajo sin finalizar</Typography>
                 <Datatable
                     loader={true}
                     datos={ordenesDeTrabajo}

@@ -119,7 +119,6 @@ const ListaOnus = ({location}) => {
                 <CardHeader
                     action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalOnu()}} > Nueva onu</Button>}>
                 </CardHeader>
-                <Typography variant="h1">Listado de ONUS</Typography>
                 <Datatable
                     loader={true}
                     datos={onus}

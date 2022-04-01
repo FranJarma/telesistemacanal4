@@ -121,12 +121,12 @@ const ListaServicios = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Listado de Servicios</Typography><br/>
         <Card>
             <CardContent>
                 <CardHeader
                     action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalServicio()}} > Nuevo servicio</Button>}>
                 </CardHeader>
-                <Typography variant="h1">Listado de Servicios</Typography>
                 <Datatable
                     loader={true}
                     datos={servicios}

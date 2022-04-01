@@ -81,9 +81,10 @@ const ListaOtFinalizadas = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Listado de Órdenes de Trabajo finalizadas</Typography>
+        <br/>
         <Card>
             <CardContent>
-                <Typography variant="h1">Listado de Órdenes de Trabajo finalizadas</Typography>
                 <Datatable
                     loader={true}
                     datos={ordenesDeTrabajo}

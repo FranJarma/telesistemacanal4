@@ -136,11 +136,13 @@ const ExpandedComponent = ({ data }) =>
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Abonados Inactivos <Tooltip arrow title="Los abonados inactivos son aquellos que fueron dados de baja por diversos motivos. Por ej: Mora, conexión Clandestina, etc">
+            <i style={{color: 'blue'}} className="bx bxs-help-circle bx-tada-hover bx-sm"></i></Tooltip>
+        </Typography>
+        <br/>
         <Card>
             <CardContent>
-                <Typography variant="h1">Abonados Inactivos <Tooltip arrow title="Los abonados inactivos son aquellos que fueron dados de baja por diversos motivos. Por ej: Mora, conexión Clandestina, etc">
-                <i style={{color: 'blue'}} className="bx bxs-help-circle bx-tada-hover bx-sm"></i></Tooltip>
-                </Typography>                <br/>
+                <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField
                     onChange={handleChangeMunicipioSeleccionado}

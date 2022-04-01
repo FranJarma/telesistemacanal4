@@ -107,12 +107,13 @@ const ListaMediosPago = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Listado de Medios de Pago</Typography>
+        <br/>
         <Card>
             <CardContent>
                 <CardHeader
                     action={<Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary" onClick={()=>{handleChangeModalMedioPago()}} > Nuevo medio de pago</Button>}>
                 </CardHeader>
-                <Typography variant="h1">Listado de Medios de Pago</Typography>
                 <Datatable
                     loader={true}
                     datos={mediosPago}

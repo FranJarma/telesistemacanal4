@@ -172,11 +172,12 @@ const ListaAbonadosActivos = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Abonados Activos <Tooltip arrow title="Los abonados activos son aquellos a los cuáles se le realizó la instalación correspondiente">
+            <i style={{color: 'blue'}} className="bx bxs-help-circle bx-tada-hover bx-sm"></i></Tooltip>
+        </Typography>
+        <br/>
         <Card>
             <CardContent>
-                <Typography variant="h1">Abonados Activos <Tooltip arrow title="Los abonados activos son aquellos a los cuáles se le realizó la instalación correspondiente">
-                <i style={{color: 'blue'}} className="bx bxs-help-circle bx-tada-hover bx-sm"></i></Tooltip>
-                </Typography>
                 <br/>
                 <Grid item xs={12} md={2} lg={2} xl={2}>
                     <TextField

@@ -248,10 +248,10 @@ const ListaPagos = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
         <br/>
         <Card>
             <CardContent>
-                <Typography variant="h1">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
                 <br/>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={2} lg={2}>

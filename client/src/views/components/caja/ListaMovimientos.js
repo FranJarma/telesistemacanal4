@@ -78,6 +78,7 @@ const ListaMovimientos = () => {
         <div className="container">
         <Aside/>
         <main>
+        <Typography variant="h6">Cierre de caja del día : {diaMovimiento.toLocaleDateString()}</Typography>
         <br/>
         <Card>
             <CardContent>
@@ -88,7 +89,6 @@ const ListaMovimientos = () => {
                     <Button style={{marginLeft: '25px'}} onClick={handleChangeModalMovimiento} startIcon={<i className="bx bx-plus"></i>} variant="contained" color="primary"> Añadir movimiento</Button>
                     </>}>
                 </CardHeader>
-                <Typography variant="h1">Cierre de caja del día : {diaMovimiento.toLocaleDateString()}</Typography>
                 <br/>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={4} lg={4} xl={4}>
