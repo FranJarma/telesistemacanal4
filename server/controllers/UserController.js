@@ -362,6 +362,7 @@ exports.AbonadoCreate = async(req, res) => {
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MovimientoConceptoId = 2; //inscripción
             movimiento.MunicipioId = req.body.MunicipioId;
+            await movimiento.save({transaction: t});
             //registramos un nuevo pago
             const pago = new Pago({transaction: t});
             pago.PagoId = ultimoPagoId + 1;
@@ -374,6 +375,7 @@ exports.AbonadoCreate = async(req, res) => {
             pago.PagoConceptoId = 2;
             pago.createdAt = new Date();
             pago.createdBy = req.body.createdBy;
+            await pago.save({transaction: t});
             const detallePago = new DetallePago({transaction: t})
             detallePago.DetallePagoId = ultimoDetallePagoId + 1;
             detallePago.PagoId = pago.PagoId;
@@ -386,9 +388,7 @@ exports.AbonadoCreate = async(req, res) => {
             await abonado.save({transaction: t});
             await abonadoRole.save({transaction: t});
             await abonadoEstado.save({transaction: t});
-            await pago.save({transaction: t});
             await detallePago.save({transaction: t});
-            await movimiento.save({transaction: t});
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = UserId;

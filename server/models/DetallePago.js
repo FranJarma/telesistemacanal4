@@ -43,6 +43,10 @@ const DetallePago = db.define('detallepago', {
         type: INTEGER,
         allowNull: false
     },
+    PagoId: {
+        type: INTEGER,
+        allowNull: false
+    },
     MedioPagoId: {
         type: INTEGER,
         allowNull: false

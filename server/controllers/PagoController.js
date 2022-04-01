@@ -120,7 +120,7 @@ exports.PagoCreate = async(req,res) => {
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = 1;
+            movimiento.MovimientoConceptoId = req.body.PagoInfo.PagoConceptoId;
             //si encuentra el pago, NO se lo registra de nuevo, sino que solo se registra un nuevo detalle de pago y se actualiza el saldo
             if(pagoBuscar) {
                 //verificamos que el monto ingresado no supere el saldo restante
@@ -204,9 +204,10 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 pago.PagoObservaciones = `Pago Adelantado: ${req.body.PagoAdelantadoInfo.CantidadMesesAPagar} meses`;
                 pago.updatedAt = new Date();
                 pago.updatedBy = req.body.PagoAdelantadoInfo.updatedBy;
+                await pago.save({transaction: t});
                 const detallePago = new DetallePago({transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
-                detallePago.PagoId = req.body.MesesAPagar[i].PagoId;
+                detallePago.PagoId = pago.PagoId;
                 detallePago.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
                 detallePago.DetallePagoMonto = pago.PagoTotal;
                 detallePago.DetallePagoObservaciones = `Pago Adelantado: ${req.body.PagoAdelantadoInfo.CantidadMesesAPagar} meses`;
@@ -214,7 +215,6 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 detallePago.createdBy = req.body.PagoAdelantadoInfo.createdBy;
                 detallePago.MovimientoId = movimiento.MovimientoId;
                 ultimoDetallePagoId++;
-                await pago.save({transaction: t});
                 await detallePago.save({transaction: t});
             }
             await movimiento.save({transaction: t});

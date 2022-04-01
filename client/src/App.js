@@ -75,9 +75,9 @@ const CambioTitularidad = lazy(() => {
   );
 });
 
-const CaratulaOt = lazy(() => {
+const CaratulaOT = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 4000)).then(
-    () => import('./views/components/tecnicos/CaratulaOt')
+    () => import('./views/components/tecnicos/CaratulaOT')
   );
 });
 
@@ -172,7 +172,7 @@ function App() {
                   </PrivateRoute>
                   <PrivateRoute exact path="/medios-de-pago" component={ListaMediosPago}>
                   </PrivateRoute>
-                  <PrivateRoute path="/caratula-ot" component={CaratulaOt}>
+                  <PrivateRoute path="/caratula-ot" component={CaratulaOT}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/ot-pendientes" component={ListaOtPendientes}>
                   </PrivateRoute>

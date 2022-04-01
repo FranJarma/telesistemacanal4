@@ -39,7 +39,8 @@ const ListaPagos = () => {
         updatedAt: null,
         updatedBy: sessionStorage.getItem('identity'),
         deletedBy: null,
-        deletedAt: null
+        deletedAt: null,
+        PagoConceptoId: 2 //por defecto
     });
 
     const [PagoAdelantadoInfo, setPagoAdelantadoInfo] = useState(null);
@@ -275,18 +276,22 @@ const ListaPagos = () => {
                     <TabList>
                         <Tab onClick={() => {
                             setConceptoId(2);
+                            setPagoInfo({...PagoInfo, PagoConceptoId: 2});
                             traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2)
                         }}><i className="bx bxs-notepad"></i> Inscripciones y reinscripciones</Tab>
                         <Tab onClick={() => {
                             setConceptoId(1);
+                            setPagoInfo({...PagoInfo, PagoConceptoId: 1});
                             traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 1);
                         }}><i className='bx bxs-calendar'></i> Mensualidades</Tab>
                         <Tab onClick={() => {
                             setConceptoId(5);
+                            setPagoInfo({...PagoInfo, PagoConceptoId: 5});
                             traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 5);
                         }}><i className='bx bxs-home'></i> Cambios de domicilio</Tab>
                         <Tab onClick={() => {
                             setConceptoId(6);
+                            setPagoInfo({...PagoInfo, PagoConceptoId: 6});
                             traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6);
                         }}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
                     </TabList>
