@@ -113,8 +113,8 @@ const ListaAbonadosActivos = () => {
                 <Link to={{
                 pathname: `/caratula-abonado/edit/${data.Nombre + "-" +  data.Apellido}`,
                 state: data
-                }} style={{textDecoration: 'none', color: "teal"}}>
-                <Typography style={{color: 'teal'}}>
+                }} style={{textDecoration: 'none', color: "#4D7F9E"}}>
+                <Typography style={{color: '#4D7F9E'}}>
                 <i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
                 </Link> 
             </MenuItem>
@@ -122,8 +122,8 @@ const ListaAbonadosActivos = () => {
                 <Link to={{
                 pathname: `/cambio-domicilio/${data.Nombre + "-" +  data.Apellido}`,
                 state: data
-                }} style={{textDecoration: 'none', color: "teal"}}>
-                <Typography style={{color: 'teal'}}>
+                }} style={{textDecoration: 'none', color: "#4D7F9E"}}>
+                <Typography style={{color: '#4D7F9E'}}>
                 <i className='bx bxs-home bx-xs'></i> Cambios de domicilio</Typography>
                 </Link> 
             </MenuItem>

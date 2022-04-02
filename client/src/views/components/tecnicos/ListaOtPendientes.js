@@ -145,7 +145,7 @@ const ListaOtPendientes = () => {
                     pathname: `/caratula-ot/edit/OtId=${data.OtId}`,
                     state: data
                     }}
-                    style={{textDecoration: 'none', color: "teal"}}>
+                    style={{textDecoration: 'none', color: "#4D7F9E"}}>
                     <Typography><i className='bx bxs-pencil bx-xs' ></i>  Editar</Typography>
                     
                     </Link>

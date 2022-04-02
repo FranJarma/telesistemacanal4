@@ -107,7 +107,7 @@ const ListaMisOt = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                <Typography onClick={()=>{handleChangeModalVerOt(data)}} style={{color: "teal", cursor: 'pointer'}}><i className="bx bx-show-alt bx-xs"></i> Ver OT</Typography>
+                <Typography onClick={()=>{handleChangeModalVerOt(data)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><i className="bx bx-show-alt bx-xs"></i> Ver OT</Typography>
                 </MenuItem>
                 <MenuItem>
                     <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "palevioletred", cursor: 'pointer'}}><i className='bx bxs-calendar bx-xs'> </i> Registrar visita</Typography>

@@ -45,6 +45,7 @@ const Login = () => {
                 <Grid container spacing = {3}>
                     <Grid item xs={12} lg={12} sm={12} md={12}>
                     <TextField
+                    color='secondary'
                     autoFocus
                     fullWidth
                     label="Usuario"
@@ -64,6 +65,7 @@ const Login = () => {
                     </Grid>
                     <Grid item xs={12} lg={12} sm={12} md={12}>
                     <TextField
+                    color='secondary'
                     fullWidth
                     label="Contraseña"
                     InputProps={{
@@ -81,7 +83,7 @@ const Login = () => {
                     </TextField>
                     </Grid>
                 </Grid>
-                <Button type="submit" fullWidth className={styles.botonIniciarSesion} variant="contained" color="primary">Iniciar sesión</Button>
+                <Button color='secondary' type="submit" fullWidth className={styles.botonIniciarSesion} variant="contained">Iniciar sesión</Button>
             </CardContent>
         </Card>
     </div>

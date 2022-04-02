@@ -162,7 +162,7 @@ const ListaPagos = () => {
                 {data.PagoSaldo > 0 ?
                 <>
                     <MenuItem>
-                        <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "teal", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago</Typography>
+                        <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "#4D7F9E", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago</Typography>
                     </MenuItem>
                     <MenuItem>
                         <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
@@ -239,7 +239,7 @@ const ListaPagos = () => {
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeModalNuevoPago(data, true)}} style={{color: "teal", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-pencil bx-xs"></i></Tooltip></Typography>
+            <Typography onClick={()=>{handleChangeModalNuevoPago(data, true)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-pencil bx-xs"></i></Tooltip></Typography>
             </>,
         }
     ]

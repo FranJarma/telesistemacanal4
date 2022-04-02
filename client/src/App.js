@@ -93,7 +93,7 @@ const theme = createTheme({
       fontFamily: 'Poppins',
       marginTop: '1rem',
       marginBottom: '1rem',
-      color: "teal",
+      color: "#4D7F9E",
       textTransform: "uppercase",
     },
     //titulo principal de Home
@@ -117,7 +117,7 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: "#008080"
+      main: "#e3ac4d"
     },
     secondary: {
       main: "#4D7F9E"

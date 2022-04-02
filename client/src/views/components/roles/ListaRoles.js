@@ -70,7 +70,7 @@ const Roles = () => {
                 pathname: `/caratula-role/edit/RoleId=${data.RoleId}`,
                 state: data
                 }}
-                style={{textDecoration: 'none', color: "teal"}}>
+                style={{textDecoration: 'none', color: "#4D7F9E"}}>
                 <Typography><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
                 </Link>
             </MenuItem>

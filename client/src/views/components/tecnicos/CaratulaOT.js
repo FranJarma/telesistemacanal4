@@ -153,9 +153,9 @@ const CaratulaOt = () => {
         <form onSubmit={onSubmitOT}>
         <Tabs>
             <TabList>
-                <Tab onClick={handleChangeTabOt}><i style={{color: 'teal'}} className="bx bx-task"></i> Datos de la OT</Tab>
-                <Tab onClick={handleChangeTabTecnicos}><i style={{color: 'teal'}} className='bx bxs-wrench'></i> Técnicos</Tab>
-                <Tab onClick={handleChangeTabTareas}><i style={{color: 'teal'}} className='bx bx-list-ol'></i> Tareas</Tab>
+                <Tab onClick={handleChangeTabOt}><i style={{color: '#4D7F9E'}} className="bx bx-task"></i> Datos de la OT</Tab>
+                <Tab onClick={handleChangeTabTecnicos}><i style={{color: '#4D7F9E'}} className='bx bxs-wrench'></i> Técnicos</Tab>
+                <Tab onClick={handleChangeTabTareas}><i style={{color: '#4D7F9E'}} className='bx bx-list-ol'></i> Tareas</Tab>
             </TabList>
         <TabPanel>
             <Card>

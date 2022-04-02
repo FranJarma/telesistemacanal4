@@ -92,12 +92,13 @@ const Aside = () => {
     (push ?
     <>
     <Dialog
+    style={{backdropFilter: 'blur(2px)'}}
     open={backdropOpen}
     onClick={() => setBackdropOpen(!backdropOpen)}
     >
     </Dialog>
     <ProSidebar ref={wrapperRef} width={width}>
-    <span title="Cerrar"><i style={{marginTop: '10px', marginLeft: '18px', color: "#fff"}} onClick={onClickWidth} class='bx bx-left-arrow-circle bx-md'></i></span>
+    <span title="Cerrar"><i style={{marginTop: '10px', marginLeft: '18px', color: "#fff", cursor: 'pointer'}} onClick={onClickWidth} class='bx bx-left-arrow-circle bx-md'></i></span>
     <img alt="logo-tls" src={logo}/>
     <div className="menu" ref={wrapperRef}>
         <Menu iconShape="round">

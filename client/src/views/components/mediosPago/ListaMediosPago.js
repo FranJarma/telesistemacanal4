@@ -92,7 +92,7 @@ const ListaMediosPago = () => {
             <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Typography onClick={()=>{handleChangeModalMedioPago(data)}} style={{color: "teal", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
+                <Typography onClick={()=>{handleChangeModalMedioPago(data)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
             </MenuItem>
             <MenuItem>
                 <Typography onClick={()=>{handleChangeModalEliminarMedioPago(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>

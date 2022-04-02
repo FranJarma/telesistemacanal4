@@ -100,7 +100,7 @@ const Users = () => {
                 pathname: `/caratula-user/edit/UserId=${data.UserId}`,
                 state: data
                 }}
-                style={{textDecoration: 'none', color: "teal"}}>
+                style={{textDecoration: 'none', color: "#4D7F9E"}}>
                 <Typography ><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
                 </Link>
             </MenuItem>
