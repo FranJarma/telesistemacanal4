@@ -1457,9 +1457,17 @@ const AppState = props => {
         })
     }
     //movimientos
-    const traerMovimientosPorFecha = async (Fecha) => {
+    const traerMovimientosPorFecha = async (Fecha, Municipio = null, Turno = null) => {
         try {
-            const resultado = await clienteAxios.get(`/api/movimientos/Dia=${Fecha.getDate()}&Mes=${Fecha.getMonth()+1}&Anio=${Fecha.getFullYear()}`);
+            const resultado = await clienteAxios.get('/api/movimientos', {
+                params: {
+                    Dia: Fecha.getDate(),
+                    Mes: Fecha.getMonth() + 1,
+                    Año: Fecha.getFullYear(),
+                    Municipio: Municipio,
+                    Turno: Turno
+                }
+            })
             dispatch({
                 type: TYPES.LISTA_MOVIMIENTOS,
                 payload: resultado.data

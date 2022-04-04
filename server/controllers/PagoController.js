@@ -92,6 +92,7 @@ exports.PagoCreate = async(req,res) => {
     if(req.body.DetallePagoMonto <= 0) return res.status(400).json({msg: 'El monto tiene que ser mayor a 0'});
     try {
         await db.transaction(async(t)=>{
+            console.log(req.body.PagoInfo);
             //buscamos el ultimo Movimiento
             let ultimoMovimientoId = 0;
             const ultimoMovimiento = await Movimiento.findOne({
@@ -105,7 +106,7 @@ exports.PagoCreate = async(req,res) => {
                 order: [['DetallePagoId', 'DESC']]
             });
             if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
-            //buscamos si hay un pago registrado con ese UserId y esa fecha
+            //buscamos si hay un pago registrado con ese PagoId
             const pagoBuscar = await Pago.findOne({
                 where: {
                     PagoId: req.body.PagoInfo.PagoId
@@ -121,6 +122,7 @@ exports.PagoCreate = async(req,res) => {
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MovimientoConceptoId = req.body.PagoInfo.PagoConceptoId;
+            movimiento.AbonadoId = req.body.PagoInfo.UserId;
             //si encuentra el pago, NO se lo registra de nuevo, sino que solo se registra un nuevo detalle de pago y se actualiza el saldo
             if(pagoBuscar) {
                 //verificamos que el monto ingresado no supere el saldo restante
@@ -198,6 +200,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MovimientoConceptoId = 8; //Pago Adelantado
+            movimiento.AbonadoId = req.body.PagoAdelantadoInfo.UserId;
             for(let i=0; i<=req.body.PagoAdelantadoInfo.CantidadMesesAPagar-1; i++){
                 const pago = await Pago.findByPk(req.body.MesesAPagar[i].PagoId, {transaction: t});
                 pago.PagoSaldo = 0;

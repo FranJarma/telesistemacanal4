@@ -6,17 +6,132 @@ const Movimiento = require('../models/Movimiento');
 const MovimientoConcepto = require('../models/MovimientoConcepto');
 
 exports.MovimientosGetByFecha = async (req, res) => {
+    const timestamp = req.query.Año+'-'+req.query.Mes+'-'+req.query.Dia;
+    let movimientos = "";
     try {
-        const movimientos = await knex.
-        select('m.MovimientoId', 'm.MovimientoCantidad', 'm.MovimientoDia', 'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga', 'u.Apellido as ApellidoCarga', 'mc.MovimientoConceptoNombre as Concepto', 'mc.MovimientoConceptoTipo as Tipo')
-        .from('movimiento as m')
-        .innerJoin('_user as u','u.UserId','=','m.createdBy')
-        .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
-        .where({
-            'm.MovimientoDia': req.params.Dia,
-            'm.MovimientoMes': req.params.Mes,
-            'm.MovimientoAño': req.params.Anio
-        })
+        //SELECCIONADO TODOS LOS MUNICIPIOS Y TODO EL DIA
+        if(req.query.Municipio == 0 && req.query.Turno === 'Todos'){
+            movimientos = await knex.
+            select('m.MovimientoId', 'm.MunicipioId', 'm.MovimientoCantidad', 'm.MovimientoDia',
+            'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
+            'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
+            'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
+            'mc.MovimientoConceptoTipo as Tipo')
+            .from('movimiento as m')
+            .innerJoin('_user as u','u.UserId','=','m.createdBy')
+            .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
+            .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .where({
+                'm.MovimientoDia': req.query.Dia,
+                'm.MovimientoMes': req.query.Mes,
+                'm.MovimientoAño': req.query.Año
+            })
+            .andWhere('m.createdAt', '<=', timestamp + "T20:00:00")
+            .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
+        }
+        //SELECCIONADO TODOS LOS MUNICIPIOS Y TURNO MAÑANA
+        if(req.query.Municipio == 0 && req.query.Turno === 'Mañana'){
+            movimientos = await knex.
+            select('m.MovimientoId', 'm.MunicipioId', 'm.MovimientoCantidad', 'm.MovimientoDia',
+            'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
+            'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
+            'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
+            'mc.MovimientoConceptoTipo as Tipo')
+            .from('movimiento as m')
+            .innerJoin('_user as u','u.UserId','=','m.createdBy')
+            .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
+            .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .where({
+                'm.MovimientoDia': req.query.Dia,
+                'm.MovimientoMes': req.query.Mes,
+                'm.MovimientoAño': req.query.Año
+            })
+            .andWhere('m.createdAt', '<=', timestamp + "T12:00:00")
+            .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
+        }
+        //SELECCIONADO TODOS LOS MUNICIPIOS Y TURNO TARDE
+        if(req.query.Municipio == 0 && req.query.Turno === 'Tarde'){
+            movimientos = await knex.
+            select('m.MovimientoId', 'm.MunicipioId', 'm.MovimientoCantidad', 'm.MovimientoDia',
+            'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
+            'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
+            'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
+            'mc.MovimientoConceptoTipo as Tipo')
+            .from('movimiento as m')
+            .innerJoin('_user as u','u.UserId','=','m.createdBy')
+            .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
+            .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .where({
+                'm.MovimientoDia': req.query.Dia,
+                'm.MovimientoMes': req.query.Mes,
+                'm.MovimientoAño': req.query.Año
+            })
+            .andWhere('m.createdAt', '<=', timestamp + "T20:00:00")
+            .andWhere('m.createdAt', '>=', timestamp + "T16:00:00")
+        }
+        //SELECCIONADO ALGUN MUNICIPIO Y TODO EL DIA
+        if(req.query.Municipio != 0 && req.query.Turno === 'Todos'){
+            movimientos = await knex.
+            select('m.MovimientoId', 'm.MunicipioId', 'm.MovimientoCantidad', 'm.MovimientoDia',
+            'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
+            'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
+            'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
+            'mc.MovimientoConceptoTipo as Tipo')
+            .from('movimiento as m')
+            .innerJoin('_user as u','u.UserId','=','m.createdBy')
+            .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
+            .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .where({
+                'm.MovimientoDia': req.query.Dia,
+                'm.MovimientoMes': req.query.Mes,
+                'm.MovimientoAño': req.query.Año,
+                'm.MunicipioId': req.query.Municipio
+            })
+            .andWhere('m.createdAt', '<=', timestamp + "T20:00:00")
+            .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
+        }
+        //SELECCIONADO ALGUN MUNICIPIO Y TURNO MAÑANA
+        if(req.query.Municipio != 0 && req.query.Turno === 'Mañana'){
+            movimientos = await knex.
+            select('m.MovimientoId', 'm.MunicipioId', 'm.MovimientoCantidad', 'm.MovimientoDia',
+            'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
+            'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
+            'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
+            'mc.MovimientoConceptoTipo as Tipo')
+            .from('movimiento as m')
+            .innerJoin('_user as u','u.UserId','=','m.createdBy')
+            .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
+            .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .where({
+                'm.MovimientoDia': req.query.Dia,
+                'm.MovimientoMes': req.query.Mes,
+                'm.MovimientoAño': req.query.Año,
+                'm.MunicipioId': req.query.Municipio
+            })
+            .andWhere('m.createdAt', '<=', timestamp + "T12:00:00")
+            .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
+        }
+        //SELECCIONADO ALGUN MUNICIPIO Y TURNO TARDE
+        if(req.query.Municipio != 0 && req.query.Turno === 'Tarde'){
+            movimientos = await knex.
+            select('m.MovimientoId', 'm.MunicipioId', 'm.MovimientoCantidad', 'm.MovimientoDia',
+            'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
+            'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
+            'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
+            'mc.MovimientoConceptoTipo as Tipo')
+            .from('movimiento as m')
+            .innerJoin('_user as u','u.UserId','=','m.createdBy')
+            .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
+            .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .where({
+                'm.MovimientoDia': req.query.Dia,
+                'm.MovimientoMes': req.query.Mes,
+                'm.MovimientoAño': req.query.Año,
+                'm.MunicipioId': req.query.Municipio
+            })
+            .andWhere('m.createdAt', '<=', timestamp + "T20:00:00")
+            .andWhere('m.createdAt', '>=', timestamp + "T16:00:00")
+        }
         res.json(movimientos);
     } catch (error) {
         console.log(error);

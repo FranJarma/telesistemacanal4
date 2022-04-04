@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid,  MenuItem, TextField, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Chip, Grid,  MenuItem, TextField, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
@@ -9,6 +9,7 @@ import AppContext from '../../../context/appContext';
 import { Autocomplete } from '@material-ui/lab';
 import { useLocation } from 'react-router-dom';
 import convertirAHora from '../../../helpers/ConvertirAHora';
+import Toast from '../design/components/Toast';
 
 const ListaMovimientos = () => {
     const appContext = useContext(AppContext);
@@ -23,34 +24,39 @@ const ListaMovimientos = () => {
     const [MovimientoConcepto, setMovimientoConcepto] = useState(0);
     const [ModalMovimiento, setModalMovimiento] = useState(0);
     const [ModalCerrarCaja, setModalCerrarCaja] = useState(0);
-    const [Municipio, setMunicipio] = useState({});
-    const [Turno, setTurno] = useState(null);
+    const [Municipio, setMunicipio] = useState(0);
+    const [Turno, setTurno] = useState('Todos');
 
     const handleChangeModalMovimiento = e => {
         setModalMovimiento(!ModalMovimiento);
     }
     const handleChangeModalCerrarCaja = e => {
-        setModalCerrarCaja(!ModalCerrarCaja);
+        if(Municipio === 0) {
+            Toast('No es posible cerrar caja, por favor, seleccione un municipio en particular', 'warning')
+        }
+        else{
+            setModalCerrarCaja(!ModalCerrarCaja);
+        }
     }
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipio(e.target.value);
+        traerMovimientosPorFecha(diaMovimiento, e.target.value, Turno);
     }
     const handleChangeTurnoSeleccionado = (e) => {
         setTurno(e.target.value);
+        traerMovimientosPorFecha(diaMovimiento, Municipio, e.target.value);
     }
 
     useEffect(()=> {
         traerMunicipiosPorProvincia(10);
-        setMunicipio(2); //por defecto tendriamos que poner el municipio del usuario logueado
-        traerMovimientosPorFecha(diaMovimiento);
+        traerMovimientosPorFecha(diaMovimiento, Municipio, Turno); //traemos los movimientos del dia de TODOS los municipios
         traerConceptos();
     },[]);
 
     const columnasMovimientos = [
         {
             "name": "N°",
-            "selector": row =>row["MovimientoId"],
-            "omit": true
+            "selector": row =>row["MovimientoId"]
         },
         {
             "name": "Cantidad",
@@ -65,6 +71,11 @@ const ListaMovimientos = () => {
         {
             "name": "Usuario de carga",
             "selector": row => row["ApellidoCarga"] + ", " +row["NombreCarga"],
+            "wrap": true
+        },
+        {
+            "name": "Abonado",
+            "selector": row => row["ApellidoAbonado"] ? row["ApellidoAbonado"] + ", " +row["NombreAbonado"] : "-",
             "wrap": true
         },
         {
@@ -86,7 +97,7 @@ const ListaMovimientos = () => {
                     action={
                     <>
                     <Button onClick={handleChangeModalCerrarCaja} startIcon={<i className="bx bx-calculator"></i>} variant="contained" color="secondary">Cerrar caja</Button>
-                    <Button style={{marginLeft: '25px'}} onClick={handleChangeModalMovimiento} startIcon={<i className="bx bx-plus"></i>} variant="contained" color="primary"> Añadir movimiento</Button>
+                    <Button style={{marginLeft: '25px'}} onClick={handleChangeModalMovimiento} startIcon={<i className="bx bx-plus"></i>} variant="contained" color="primary"> Añadir gasto</Button>
                     </>}>
                 </CardHeader>
                 <br/>
@@ -102,8 +113,8 @@ const ListaMovimientos = () => {
                             label="Día"
                             value={diaMovimiento}
                             onChange={newDia => {
-                                setDiaMovimiento(newDia)
-                                traerMovimientosPorFecha(newDia);
+                                setDiaMovimiento(newDia);
+                                traerMovimientosPorFecha(newDia, Municipio, Turno);
                             }}
                         ></DatePicker>
                     </Grid>
@@ -117,10 +128,12 @@ const ListaMovimientos = () => {
                         fullWidth
                         select
                         >
+                        <MenuItem key={0} value={0}>Todos</MenuItem>
                         {
                         municipios.length > 0 ?
-                        municipios.map((municipio)=>(
-                            <MenuItem key={municipio.MunicipioId} value={municipio}>{municipio.MunicipioNombre}</MenuItem>
+                        municipios
+                        .map((municipio)=>(
+                            <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
                         )) : <MenuItem disabled>No se encontraron municipios</MenuItem>}
                         </TextField>
                     </Grid>
@@ -133,6 +146,7 @@ const ListaMovimientos = () => {
                         fullWidth
                         select
                         >
+                        <MenuItem value={'Todos'}><b>Todo el día</b> - 08:00 a 20:00</MenuItem>
                         <MenuItem value={'Mañana'}><b>Mañana</b> - 08:00 a 12:00</MenuItem>
                         <MenuItem value={'Tarde'}><b>Tarde</b> - 16:00 a 20:00</MenuItem>
                         </TextField>
@@ -154,7 +168,7 @@ const ListaMovimientos = () => {
         <Modal
         abrirModal={ModalMovimiento}
         funcionCerrar={handleChangeModalMovimiento}
-        titulo ={<Typography variant="h2"><i className='bx bx-money'></i> Añadir movimiento</Typography>}
+        titulo ={<Typography variant="h2"><i className='bx bx-money'></i> Añadir gasto</Typography>}
         botones={
             <>
             <Button
@@ -186,6 +200,9 @@ const ListaMovimientos = () => {
                     if (!/^[,0-9]+$/.test(event.key)) {
                     event.preventDefault();
                 }}}
+                inputProps={{
+                    maxLength: 8
+                }}
                 variant="outlined"
                 color="primary"
                 fullWidth
@@ -212,6 +229,7 @@ const ListaMovimientos = () => {
             </>
         }
         formulario={
+            Municipio !== null && Turno !== null ?
         <>
         <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={5}>
@@ -222,7 +240,7 @@ const ListaMovimientos = () => {
                 <Typography><b>Horario de cierre:</b> {new Date().toLocaleTimeString()}</Typography>
             </Grid>
         </Grid>
-        </>}
+        </>:""}
         ></Modal>
         </main>
         <Footer/>

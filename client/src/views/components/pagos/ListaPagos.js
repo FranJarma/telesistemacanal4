@@ -43,7 +43,9 @@ const ListaPagos = () => {
         PagoConceptoId: 2 //por defecto
     });
 
-    const [PagoAdelantadoInfo, setPagoAdelantadoInfo] = useState(null);
+    const [PagoAdelantadoInfo, setPagoAdelantadoInfo] = useState({
+        UserId: location.state.UserId
+    });
 
     const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
 
