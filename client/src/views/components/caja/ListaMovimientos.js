@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Chip, Grid,  MenuItem, TextField, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid,  MenuItem, TextField, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
@@ -16,19 +16,34 @@ const ListaMovimientos = () => {
     const { movimientos, municipios, conceptos, traerMovimientosPorFecha, traerConceptos, traerMunicipiosPorProvincia, crearMovimiento } = appContext;
     const location = useLocation();
 
-    const [MovimientoCantidad, setMovimientoCantidad] = useState(null);
+    const [MovimientoCantidad, setMovimientoCantidad] = useState({
+        MovimientoPesos: null,
+        MovimientoCentavos: '00'
+    })
+
+    const {MovimientoPesos, MovimientoCentavos} = MovimientoCantidad;
+
     const onInputChange = e => {
-        setMovimientoCantidad(e.target.value);
+        setMovimientoCantidad({
+            ...MovimientoCantidad,
+            [e.target.name] : e.target.value
+        });
     }
+
     const [diaMovimiento, setDiaMovimiento] = useState(new Date());
-    const [MovimientoConcepto, setMovimientoConcepto] = useState(0);
+    const [MovimientoConcepto, setMovimientoConcepto] = useState(null);
     const [ModalMovimiento, setModalMovimiento] = useState(0);
     const [ModalCerrarCaja, setModalCerrarCaja] = useState(0);
     const [Municipio, setMunicipio] = useState(0);
     const [Turno, setTurno] = useState('Todos');
 
     const handleChangeModalMovimiento = e => {
-        setModalMovimiento(!ModalMovimiento);
+        if(Municipio === 0) {
+            Toast('Para agregar un gasto, seleccione un municipio en particular', 'warning')
+        }
+        else{
+            setModalMovimiento(!ModalMovimiento);
+        }
     }
     const handleChangeModalCerrarCaja = e => {
         if(Municipio === 0) {
@@ -160,8 +175,8 @@ const ListaMovimientos = () => {
                     buscar={true}
                 />
             <div style={{display: 'flex'}}>
-            <Typography variant="h2">Total de Ingresos : ${movimientos.map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
-            <Typography style={{'margin-left': '25px'}} color='secondary' variant="h2">Total de gastos : ${movimientos.map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
+            <Typography variant="h2">Total de Ingresos : ${movimientos.filter(item => item.MovimientoCantidad > 0).map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
+            <Typography style={{'margin-left': '25px'}} color='secondary' variant="h2">Total de gastos : ${movimientos.filter(item => item.MovimientoCantidad < 0).map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
             </div>
             </CardContent>
         </Card>
@@ -172,7 +187,7 @@ const ListaMovimientos = () => {
         botones={
             <>
             <Button
-            onClick={crearMovimiento}
+            onClick={() => crearMovimiento({MovimientoCantidad: MovimientoCantidad, MovimientoConcepto: MovimientoConcepto, Municipio, createdBy: sessionStorage.getItem('identity')})}
             variant="contained"
             color="primary">Registrar</Button>
             <Button onClick={handleChangeModalMovimiento}>Cerrar</Button>
@@ -181,7 +196,26 @@ const ListaMovimientos = () => {
         formulario={
         <>
         <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} md={5}>
+            <Grid item xs={12} md={4} lg={4} xl={4}>
+                <TextField
+                variant="filled"
+                disabled
+                onChange={handleChangeMunicipioSeleccionado}
+                value={Municipio}
+                label="Municipio"
+                fullWidth
+                select
+                >
+                <MenuItem key={0} value={0}>Todos</MenuItem>
+                {
+                municipios.length > 0 ?
+                municipios
+                .map((municipio)=>(
+                    <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
+                )) : <MenuItem disabled>No se encontraron municipios</MenuItem>}
+                </TextField>
+            </Grid>
+            <Grid item xs={12} md={4} lg={4} xl={4}>
                 <Autocomplete
                     disableClearable
                     value={MovimientoConcepto}
@@ -194,11 +228,11 @@ const ListaMovimientos = () => {
                     renderInput={(params) => <TextField {...params} variant = "outlined" fullWidth label="Concepto"/>}
                 />
             </Grid>
-            <Grid item xs={12} sm={12} md={5}>
+            <Grid item xs={6} md={2} lg={2} xl={2}>
                 <TextField
-                onKeyPress={(event) => {
-                    if (!/^[,0-9]+$/.test(event.key)) {
-                    event.preventDefault();
+                onKeyPress={(e) => {
+                    if (!/^[0-9]*$/.test(e.key)) {
+                    e.preventDefault();
                 }}}
                 inputProps={{
                     maxLength: 8
@@ -206,9 +240,27 @@ const ListaMovimientos = () => {
                 variant="outlined"
                 color="primary"
                 fullWidth
-                name="MovimientoCantidad"
-                value={MovimientoCantidad}
-                label="Cantidad"
+                name="MovimientoPesos"
+                value={MovimientoPesos}
+                label="Pesos"
+                onChange={onInputChange}>
+                </TextField>
+            </Grid>
+            <Grid item xs={6} md={2} lg={2} xl={2}>
+                <TextField
+                onKeyPress={(e) => {
+                    if (!/^[0-9]*$/.test(e.key)) {
+                    e.preventDefault();
+                }}}
+                inputProps={{
+                    maxLength: 2
+                }}
+                variant="outlined"
+                color="primary"
+                fullWidth
+                name="MovimientoCentavos"
+                value={MovimientoCentavos}
+                label="Centavos (modificar si corresponde)"
                 onChange={onInputChange}>
                 </TextField>
             </Grid>
@@ -222,7 +274,6 @@ const ListaMovimientos = () => {
         botones={
             <>
             <Button
-            onClick={crearMovimiento}
             variant="contained"
             color="primary">Registrar</Button>
             <Button onClick={handleChangeModalCerrarCaja}>Cerrar</Button>

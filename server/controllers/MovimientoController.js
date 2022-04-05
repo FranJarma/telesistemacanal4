@@ -26,7 +26,7 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoMes': req.query.Mes,
                 'm.MovimientoAño': req.query.Año
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T20:00:00")
+            .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
             .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
         }
         //SELECCIONADO TODOS LOS MUNICIPIOS Y TURNO MAÑANA
@@ -66,7 +66,7 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoMes': req.query.Mes,
                 'm.MovimientoAño': req.query.Año
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T20:00:00")
+            .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
             .andWhere('m.createdAt', '>=', timestamp + "T16:00:00")
         }
         //SELECCIONADO ALGUN MUNICIPIO Y TODO EL DIA
@@ -87,7 +87,7 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoAño': req.query.Año,
                 'm.MunicipioId': req.query.Municipio
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T20:00:00")
+            .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
             .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
         }
         //SELECCIONADO ALGUN MUNICIPIO Y TURNO MAÑANA
@@ -129,7 +129,7 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoAño': req.query.Año,
                 'm.MunicipioId': req.query.Municipio
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T20:00:00")
+            .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
             .andWhere('m.createdAt', '>=', timestamp + "T16:00:00")
         }
         res.json(movimientos);
@@ -145,6 +145,10 @@ exports.MovimientoCreate = async(req, res) => {
         return res.status(400).json({errors: errors.array()})
     }
     try {
+        let movimientoCantidad = req.body.MovimientoCantidad.MovimientoPesos;
+        if(req.body.MovimientoCantidad.MovimientoCentavos != 00){
+            movimientoCantidad = movimientoCantidad + '.' + parseInt(req.body.MovimientoCantidad.MovimientoCentavos);
+        }
         await db.transaction(async(t)=>{
             const ultimoMovimiento = await Movimiento.findOne({
                 order: [['MovimientoId', 'DESC']]
@@ -155,9 +159,12 @@ exports.MovimientoCreate = async(req, res) => {
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
-            const movimientoConcepto = MovimientoConcepto.findByPk(req.body.MovimientoConceptoId, {transaction: t});
-            if(movimientoConcepto.MovimientoConceptoTipo === 'Gasto') {
-                movimiento.MovimientoCantidad = (-1) * req.body.MovimientoCantidad;
+            movimiento.MunicipioId = req.body.Municipio;
+            movimiento.MovimientoConceptoId = req.body.MovimientoConcepto.MovimientoConceptoId;
+            movimiento.createdAt = new Date();
+            movimiento.createdBy = req.body.createdBy;
+            if(req.body.MovimientoConcepto.MovimientoConceptoTipo === 'Gasto') {
+                movimiento.MovimientoCantidad = (-1) * movimientoCantidad;
             }
             await movimiento.save({transaction: t});
             return res.status(200).json({msg: 'El Movimiento ha sido registrado correctamente'})

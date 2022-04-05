@@ -32,7 +32,7 @@ const Movimiento = db.define('movimiento', {
     },
     AbonadoId: {
         type: UUIDV4,
-        allowNull: false
+        allowNull: true
     },
     createdAt: {
         type: DATE,

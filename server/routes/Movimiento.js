@@ -5,8 +5,8 @@ const { check } = require('express-validator');
 const ValidarJWT = require('../middlewares/ValidarJWT');
 
 router.post('/create', ValidarJWT, [
-    check('MovimientoCantidad', 'La cantidad del movimiento es obligatoria').notEmpty(),
-    check('MovimientoConceptoId', 'El concepto es obligatorio').notEmpty(),
+    check('MovimientoConcepto', 'El concepto es obligatorio').notEmpty(),
+    check('MovimientoCantidad.MovimientoPesos', 'La cantidad de Pesos es obligatoria').notEmpty(),
 ], MovimientoController.MovimientoCreate);
 router.get('/', ValidarJWT, MovimientoController.MovimientosGetByFecha);
 

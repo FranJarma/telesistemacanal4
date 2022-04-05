@@ -357,6 +357,11 @@ export default (state, action) => {
                 tareasOrdenDeTrabajo: action.payload
             }
         }
+        case TYPES.CREAR_MOVIMIENTO:
+            return {
+                ...state,
+                movimientos: [action.payload, ...state.movimientos],
+        }
         case TYPES.LISTA_MOVIMIENTOS: {
             return {
                 ...state,

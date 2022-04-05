@@ -1457,6 +1457,30 @@ const AppState = props => {
         })
     }
     //movimientos
+    const crearMovimiento = async(movimiento) => {
+        clienteAxios.post('/api/movimientos/create', movimiento)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CREAR_MOVIMIENTO,
+                    payload: movimiento
+                });
+                Swal('Operación completa', resOk.data.msg);
+                window.location.reload();
+        })
+        .catch(err => {
+            if(!err.response){
+                console.log(err);
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     const traerMovimientosPorFecha = async (Fecha, Municipio = null, Turno = null) => {
         try {
             const resultado = await clienteAxios.get('/api/movimientos', {
@@ -1559,7 +1583,7 @@ const AppState = props => {
             traerTareas, crearTarea, modificarTarea, eliminarTarea,
             traerOrdenesDeTrabajo, traerOrdenesDeTrabajoAsignadas, traerTecnicosOt, traerTareasOt, crearOrdenDeTrabajo, modificarOrdenDeTrabajo,
             finalizarOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo,
-            traerMovimientosPorFecha,
+            traerMovimientosPorFecha, crearMovimiento,
             traerConceptos,
             mostrarSpinner,
         }}>{props.children}
