@@ -123,7 +123,7 @@ exports.UserDelete = async(req, res) => {
             //buscamos el user por su Id
             const user = await User.findByPk( req.body.UserId, {transaction: t} );
             user.DeletedAt = new Date();
-            user.DeletedBy = sessionStorage.getItem('identity');
+            user.DeletedBy = localStorage.getItem('identity');
             await user.save({transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido eliminado correctamente'})
         })

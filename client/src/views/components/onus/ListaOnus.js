@@ -51,19 +51,19 @@ const ListaOnus = ({location}) => {
         setModalEliminarOnu(false);
         if(data !== '') {
             setEditMode(true);
-            setOnuInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
+            setOnuInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
             setModeloOnuId(data.ModeloOnuId);
         }
         else {
             setEditMode(false);
-            setOnuInfo({...data, createdBy: sessionStorage.getItem('identity')});
+            setOnuInfo({...data, createdBy: localStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarOnu = (data = '') => {
         setModalEliminarOnu(!ModalEliminarOnu);
         setModalOnu(false);
-        setOnuInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
+        setOnuInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasONUS = [

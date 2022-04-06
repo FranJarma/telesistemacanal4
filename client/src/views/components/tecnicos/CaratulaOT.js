@@ -98,7 +98,7 @@ const CaratulaOt = () => {
                 OtFechaPrevistaVisita,
                 OtRetiraCable,
                 OtRetiraOnu,
-                createdBy: sessionStorage.getItem('identity'),
+                createdBy: localStorage.getItem('identity'),
                 abonado,
                 tecnicosOt,
                 tareasOt,
@@ -112,7 +112,7 @@ const CaratulaOt = () => {
                 OtFechaPrevistaVisita,
                 OtRetiraCable,
                 OtRetiraOnu,
-                updatedBy: sessionStorage.getItem('identity'),
+                updatedBy: localStorage.getItem('identity'),
                 tecnicosOt,
                 tareasOt
             });
@@ -167,7 +167,7 @@ const CaratulaOt = () => {
                         <Grid item xs={12} md={3} lg={3} xl={3}>
                             <TextField
                             variant="outlined"
-                            value={sessionStorage.getItem('usr')}
+                            value={localStorage.getItem('usr')}
                             fullWidth
                             label="Responsable de emisión de OT">
                             </TextField>

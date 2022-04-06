@@ -43,20 +43,20 @@ const ListaBarrios = () => {
         setModalEliminarBarrio(false);
         if(data !== '') {
             setEditMode(true);
-            setBarrioInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
+            setBarrioInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
             setMunicipioIdModal(data.MunicipioId);
             setMunicipioNombre(data.MunicipioNombre);
         }
         else {
             setEditMode(false);
-            setBarrioInfo({...data, createdBy: sessionStorage.getItem('identity')});
+            setBarrioInfo({...data, createdBy: localStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarBarrio = (data = '') => {
         setModalEliminarBarrio(!ModalEliminarBarrio);
         setModalBarrio(false);
-        setBarrioInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
+        setBarrioInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const handleChangeMunicipioSeleccionado = (e) => {

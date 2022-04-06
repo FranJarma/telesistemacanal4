@@ -44,18 +44,18 @@ const ListaServicios = () => {
         setModalEliminarServicio(false);
         if(data !== '') {
             setEditMode(true);
-            setServicioInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
+            setServicioInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setServicioInfo({...data, createdBy: sessionStorage.getItem('identity')});
+            setServicioInfo({...data, createdBy: localStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarServicio = (data = '') => {
         setModalEliminarServicio(!ModalEliminarServicio);
         setModalServicio(false);
-        setServicioInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
+        setServicioInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasServicios = [

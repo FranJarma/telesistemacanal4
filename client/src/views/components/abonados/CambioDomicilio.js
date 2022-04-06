@@ -41,7 +41,7 @@ const CambioDomicilio = () => {
         DomicilioNumero: null,
         DomicilioPiso: null,
         CambioDomicilioObservaciones: null,
-        createdBy: sessionStorage.getItem('identity')
+        createdBy: localStorage.getItem('identity')
     })
     const [TareaCambioDomicilio, setTareaCambioDomicilio] = useState(null);
     const onInputChange = (e) => {
@@ -356,7 +356,7 @@ const CambioDomicilio = () => {
                             <TextField
                             disabled
                             variant="filled"
-                            value={sessionStorage.getItem('usr')}
+                            value={localStorage.getItem('usr')}
                             fullWidth
                             label="Responsable de emisión de OT">
                             </TextField>

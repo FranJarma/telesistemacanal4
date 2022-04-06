@@ -103,7 +103,7 @@ const Aside = () => {
     <div className="menu" ref={wrapperRef}>
         <Menu iconShape="round">
           <SidebarHeader style={{marginLeft: '1rem'}}>
-            <Typography variant="h6">{sessionStorage.getItem('usr')}</Typography>
+            <Typography variant="h6">{localStorage.getItem('usr')}</Typography>
           </SidebarHeader>
           <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
           {
@@ -157,7 +157,7 @@ const Aside = () => {
 
     <div className="header">
         <i style={{display: width === '280px' ? "none" : "unset"}} onClick={onClickWidth} className="bx bx-menu"/>
-        <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{sessionStorage.getItem('usr')}</Button>
+        <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{localStorage.getItem('usr')}</Button>
         <Popover 
           id={id}
           open={open}

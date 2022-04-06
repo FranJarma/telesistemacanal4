@@ -35,9 +35,9 @@ const ListaPagos = () => {
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         DetallePagoObservaciones: '',
-        createdBy: sessionStorage.getItem('identity'),
+        createdBy: localStorage.getItem('identity'),
         updatedAt: null,
-        updatedBy: sessionStorage.getItem('identity'),
+        updatedBy: localStorage.getItem('identity'),
         deletedBy: null,
         deletedAt: null,
         PagoConceptoId: 2 //por defecto
@@ -90,8 +90,8 @@ const ListaPagos = () => {
         setPagoAdelantadoInfo({
             MunicipioId: MunicipioId,
             ServicioId: ServicioId,
-            createdBy: sessionStorage.getItem('identity'),
-            updatedBy: sessionStorage.getItem('identity')
+            createdBy: localStorage.getItem('identity'),
+            updatedBy: localStorage.getItem('identity')
         })
         setModalPagoAdelantado(!ModalPagoAdelantado);
         traerPagosMensualesPendientes(location.state.UserId, 1);
@@ -106,18 +106,18 @@ const ListaPagos = () => {
         });
     }
     const handleChangeModalRecargoPago = (data) => {
-        setPagoInfo({...data, updatedBy: sessionStorage.getItem('identity')});
+        setPagoInfo({...data, updatedBy: localStorage.getItem('identity')});
         setModalRecargo(!ModalRecargo);
 
     }
     const handleChangeModalDetallesPago = (data) => {
         traerDetallesPago(data.PagoId);
-        setPagoInfo({...data, updatedBy: sessionStorage.getItem('identity')});
+        setPagoInfo({...data, updatedBy: localStorage.getItem('identity')});
         setModalDetallesPago(!ModalDetallesPago);
     }
 
     const handleChangeModalEliminarDetallePago = (data) => {
-        setPagoInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
+        setPagoInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
         setModalEliminarDetallePago(!ModalEliminarDetallePago);
     }
     

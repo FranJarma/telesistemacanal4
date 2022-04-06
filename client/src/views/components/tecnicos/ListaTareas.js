@@ -193,9 +193,9 @@ const ListaTiposTareas = () => {
         botones={
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarTarea({...TareaInfo, updatedAt: new Date(),
-            updatedBy: sessionStorage.getItem('identity')}, handleChangeModalTarea)
+            updatedBy: localStorage.getItem('identity')}, handleChangeModalTarea)
             : crearTarea({...TareaInfo,
-            createdBy: sessionStorage.getItem('identity')}, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
+            createdBy: localStorage.getItem('identity')}, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
             <Button variant="text" color="inherit" >Cancelar</Button>
             </>
         }
@@ -207,7 +207,7 @@ const ListaTiposTareas = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarTarea({...TareaInfo, deletedAt: new Date(),
-            deletedBy: sessionStorage.getItem('identity')}, handleChangeModalEliminarTarea)}}>Eliminar</Button>
+            deletedBy: localStorage.getItem('identity')}, handleChangeModalEliminarTarea)}}>Eliminar</Button>
             <Button variant="text" color="inherit" onClick={handleChangeModalEliminarTarea}>Cancelar</Button>
             </>
         }

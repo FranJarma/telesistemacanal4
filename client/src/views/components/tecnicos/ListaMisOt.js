@@ -17,7 +17,7 @@ const ListaMisOt = () => {
     const { ordenesDeTrabajoAsignadas, traerOrdenesDeTrabajoAsignadas, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
 
     useEffect(()=>{
-        traerOrdenesDeTrabajoAsignadas(sessionStorage.getItem('identity'), 5);
+        traerOrdenesDeTrabajoAsignadas(localStorage.getItem('identity'), 5);
     },[]);
 
     const [ModalVerOt, setModalVerOt] = useState(false);
@@ -192,7 +192,7 @@ const ListaMisOt = () => {
             funcionCerrar={handleChangeModalFinalizarOt}
             titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
             botones={<><Button variant='contained' color="primary"
-            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: sessionStorage.getItem('identity')},
+            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: localStorage.getItem('identity')},
             handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cancelar</Button></>}
             formulario={
                 <>

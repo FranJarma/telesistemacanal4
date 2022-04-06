@@ -69,7 +69,7 @@ const CambioTitularidad = () => {
                 DomicilioCalle: location.state.DomicilioCalle,
                 DomicilioNumero: location.state.DomicilioNumero,
                 DomicilioPiso: location.state.DomicilioPiso,
-                createdBy: sessionStorage.getItem('identity')
+                createdBy: localStorage.getItem('identity')
             });
             setDomicilioId(location.state.DomicilioId);
         }

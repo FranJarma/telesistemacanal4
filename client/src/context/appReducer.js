@@ -4,15 +4,15 @@ export default (state, action) => {
     let pago = null;
     switch (action.type) {
         case TYPES.LOGIN_EXITOSO:
-            sessionStorage.setItem('token',action.payload.token);
+            localStorage.setItem('token',action.payload.token);
             return {
                 ...state,
-                token: sessionStorage.getItem('token'),
+                token: localStorage.getItem('token'),
                 usuarioAutenticado: true
         }
         case TYPES.OBTENER_INFO_USUARIO:
-            sessionStorage.setItem('usr', action.payload.User.Apellido + ", "+ action.payload.User.Nombre);
-            sessionStorage.setItem('identity', action.payload.User.UserId);
+            localStorage.setItem('usr', action.payload.User.Apellido + ", "+ action.payload.User.Nombre);
+            localStorage.setItem('identity', action.payload.User.UserId);
             return {
                 ...state,
                 usuarioLogueado: action.payload,
@@ -20,9 +20,9 @@ export default (state, action) => {
                 push: true
         }
         case TYPES.CERRAR_SESION:
-            sessionStorage.removeItem('token');
-            sessionStorage.removeItem('usr');
-            sessionStorage.removeItem('identity');
+            localStorage.removeItem('token');
+            localStorage.removeItem('usr');
+            localStorage.removeItem('identity');
             return {
                 ...state,
                 usuarioAutenticado: false,

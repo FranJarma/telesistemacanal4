@@ -60,20 +60,20 @@ const ListaMunicipios = () => {
         if(data !== '') {
             setProvinciaIdVieja(data.ProvinciaId);
             setEditMode(true);
-            setMunicipioInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
+            setMunicipioInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
             setProvinciaIdModal(data.ProvinciaId); //para que cargue JUJUY por defecto
             setProvinciaNombreModal(data.ProvinciaNombre);
         }
         else {
             setEditMode(false);
-            setMunicipioInfo({...data, createdBy: sessionStorage.getItem('identity')});
+            setMunicipioInfo({...data, createdBy: localStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarMunicipio = (data = '') => {
         setModalEliminarMunicipio(!ModalEliminarMunicipio);
         setModalMunicipio(false);
-        setMunicipioInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
+        setMunicipioInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasMunicipios = [

@@ -211,7 +211,7 @@ const ListaMovimientos = () => {
         botones={
             <>
             <Button
-            onClick={() => crearMovimiento({MovimientoCantidad: MovimientoCantidad, MovimientoConcepto: MovimientoConcepto, Municipio, MedioPagoId, createdBy: sessionStorage.getItem('identity')})}
+            onClick={() => crearMovimiento({MovimientoCantidad: MovimientoCantidad, MovimientoConcepto: MovimientoConcepto, Municipio, MedioPagoId, createdBy: localStorage.getItem('identity')})}
             variant="contained"
             color="primary">Registrar</Button>
             <Button onClick={handleChangeModalMovimiento}>Cancelar</Button>
@@ -364,7 +364,7 @@ const ListaMovimientos = () => {
                         <Grid item xs={12} md={4} lg={4} xl={4}>
                             <TextField
                             variant="filled"
-                            value={sessionStorage.getItem('usr')}
+                            value={localStorage.getItem('usr')}
                             label="Usuario a cerrar caja"
                             fullWidth
                             >

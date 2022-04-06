@@ -41,18 +41,18 @@ const ListaModelosOnus = ({location}) => {
         setModalEliminarModeloOnu(false);
         if(data !== '') {
             setEditMode(true);
-            setModeloOnuInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
+            setModeloOnuInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setModeloOnuInfo({...data, createdBy: sessionStorage.getItem('identity')});
+            setModeloOnuInfo({...data, createdBy: localStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarModeloOnu = (data = '') => {
         setModalEliminarModeloOnu(!ModalEliminarModeloOnu);
         setModalModeloOnu(false);
-        setModeloOnuInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
+        setModeloOnuInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasModelosONUS = [

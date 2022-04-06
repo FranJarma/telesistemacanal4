@@ -28,7 +28,7 @@ import ListaMediosPago from './views/components/mediosPago/ListaMediosPago';
 import Error401 from './views/components/Error401';
 
 //revisamos si tenemos un token
-const token = sessionStorage.getItem('token');
+const token = localStorage.getItem('token');
 if (token) {
   tokenAuthHeaders(token);
 }

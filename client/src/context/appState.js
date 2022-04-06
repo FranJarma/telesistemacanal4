@@ -10,7 +10,7 @@ import tokenAuthHeaders from '../config/token';
 
 const AppState = props => {
     const initialState = {
-        token: sessionStorage.getItem('token'),
+        token: localStorage.getItem('token'),
         usuarioLogueado: null,
         usuarioAutenticado: false,
         push: false,
@@ -55,7 +55,7 @@ const AppState = props => {
     //retorna el usuario autenticado, nos servirá tanto al momento del registro como del logueo
     const obtenerUsuarioAutenticado = async ()=>{
         //leemos en el local storage si hay un token
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         if (token) {
             // funcion para enviar el token por headers
             tokenAuthHeaders(token);

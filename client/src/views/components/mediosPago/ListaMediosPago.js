@@ -42,18 +42,18 @@ const ListaMediosPago = () => {
         setModalEliminarMedioPago(false);
         if(data !== '') {
             setEditMode(true);
-            setMedioPagoInfo({...data, updatedBy: sessionStorage.getItem('identity'), updatedAt: new Date() });
+            setMedioPagoInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setMedioPagoInfo({...data, createdBy: sessionStorage.getItem('identity')});
+            setMedioPagoInfo({...data, createdBy: localStorage.getItem('identity')});
         }
     }
 
     const handleChangeModalEliminarMedioPago = (data = '') => {
         setModalEliminarMedioPago(!ModalEliminarMedioPago);
         setModalMedioPago(false);
-        setMedioPagoInfo({...data, deletedBy: sessionStorage.getItem('identity'), deletedAt: new Date() });
+        setMedioPagoInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
     }
 
     const columnasMedioPago = [

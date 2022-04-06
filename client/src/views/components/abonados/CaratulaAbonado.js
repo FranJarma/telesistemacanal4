@@ -29,9 +29,9 @@ const CaratulaAbonado = () => {
         DomicilioCalle: null,
         DomicilioNumero: null,
         DomicilioPiso: null,
-        createdBy: sessionStorage.getItem('identity'),
+        createdBy: localStorage.getItem('identity'),
         updatedAt: null,
-        updatedBy: sessionStorage.getItem('identity')
+        updatedBy: localStorage.getItem('identity')
     })
     const onInputChange = (e) => {
         setAbonadoInfo({
@@ -122,7 +122,7 @@ const CaratulaAbonado = () => {
                 DomicilioNumero: location.state.DomicilioNumero,
                 DomicilioPiso: location.state.DomicilioPiso,
                 updatedAt: new Date(),
-                updatedBy: sessionStorage.getItem('identity')
+                updatedBy: localStorage.getItem('identity')
             });
             setMunicipioId(location.state.MunicipioId);
             traerBarriosPorMunicipio(location.state.MunicipioId);
@@ -557,7 +557,7 @@ const CaratulaAbonado = () => {
                             <TextField
                             disabled
                             variant="filled"
-                            value={sessionStorage.getItem('usr')}
+                            value={localStorage.getItem('usr')}
                             fullWidth
                             label="Responsable de emisión de OT">
                             </TextField>

@@ -35,7 +35,7 @@ const CambioServicio = () => {
     const [CambioServicioInfo, setCambioServicioInfo] = useState({
         UserId: location.state.UserId,
         CambioServicioObservaciones: null,
-        createdBy: sessionStorage.getItem('identity')
+        createdBy: localStorage.getItem('identity')
     })
     const [MunicipioId, setMunicipioId] = useState(null);
     const onInputChange = (e) => {
@@ -333,7 +333,7 @@ const CambioServicio = () => {
                             <TextField
                             disabled
                             variant="filled"
-                            value={sessionStorage.getItem('usr')}
+                            value={localStorage.getItem('usr')}
                             fullWidth
                             label="Responsable de emisión de OT">
                             </TextField>
