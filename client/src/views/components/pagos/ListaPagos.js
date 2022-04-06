@@ -12,6 +12,7 @@ import BotonesDatatable  from './../design/components/BotonesDatatable';
 import convertirAFecha from './../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Spinner from '../design/components/Spinner';
+import styles from './../design/layout/styles/styles.css'
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
@@ -245,7 +246,7 @@ const ListaPagos = () => {
             </>,
         }
     ]
-    const mesesAPagar = [{key: 6,value: 6},{key: 12,value: 12},{key: 18,value: 18},{key: 24,value: 24}];
+    const mesesAPagar = [{key: 2,value: 2},{key: 3,value: 3},{key: 4,value: 4},{key: 5,value: 5},{key: 6,value: 6},{key: 12,value: 12},{key: 18,value: 18},{key: 24,value: 24}];
     return (
         <>
         <div className="container">
@@ -354,7 +355,7 @@ const ListaPagos = () => {
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalPagoAdelantado}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalPagoAdelantado}>Cancelar</Button></>}
                 formulario={
                 <>
                 <Card>
@@ -417,8 +418,11 @@ const ListaPagos = () => {
                                 <Card>
                                     <CardContent>
                                         <Typography variant="h2">Datos del pago</Typography>
-                                        <Typography variant="h6">Meses a pagar: {pagosPendientesTop.map((pagosPend)=>(<Chip icon={<i className="bx bx-calendar"></i>} color="secondary" style={{margin: 2}} label={pagosPend.PagoMes+"/"+pagosPend.PagoAño}></Chip>))}</Typography>
-                                        {CantidadMesesAPagar === 6 ?
+                                        {
+                                        CantidadMesesAPagar < 6 ?
+                                        <>  <Typography variant="h6">Meses a pagar: {pagosPendientesTop.map((pagosPend)=>(<Chip icon={<i className="bx bx-calendar"></i>} color="secondary" style={{margin: 2}} label={pagosPend.PagoMes+"/"+pagosPend.PagoAño}></Chip>))}</Typography>
+                                        <Typography variant="h6">Total a pagar : ${pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => (prev + curr), 0)}</Typography></>
+                                        :CantidadMesesAPagar === 6 ?
                                         <><Typography variant="h6">Subtotal : ${pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0)}</Typography>
                                         <Typography variant="h6">Descuento del {location.state.ServicioBonificacionPagoSeisMeses}% : ${(pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => (prev + curr), 0))*location.state.ServicioBonificacionPagoSeisMeses/100}</Typography>
                                         <Typography variant="h6">Total con descuento aplicado : ${pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => (prev + curr), 0)-(pagosPendientesTop.map(item => item.PagoTotal).reduce((prev, curr) => (prev + curr), 0))*location.state.ServicioBonificacionPagoSeisMeses/100}</Typography></>
@@ -456,7 +460,7 @@ const ListaPagos = () => {
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalNuevoPago}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalNuevoPago}>Cancelar</Button></>}
                 formulario={
                 <>
                 <Typography variant="h2"><i className="bx bx-dollar"></i> Datos del pago</Typography>
@@ -547,7 +551,7 @@ const ListaPagos = () => {
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalRecargoPago}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalRecargoPago}>Cancelar</Button></>}
                 formulario={
                 <>
                 <Grid container spacing={3}>
@@ -583,7 +587,7 @@ const ListaPagos = () => {
                 funcionCerrar={handleChangeModalDetallesPago}
                 botones={
                 <>
-                <Button onClick={handleChangeModalDetallesPago}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalDetallesPago}>Cancelar</Button></>}
                 formulario={
                 <>
                 <Typography style={{marginTop: '0px'}} variant="h2"><i className="bx bx-list-ol"></i> Detalles de pago</Typography>
@@ -610,7 +614,7 @@ const ListaPagos = () => {
                 botones={
                     <>
                     <Button variant="contained" color="secondary" onClick={()=>{eliminarDetallePago(PagoInfo, handleChangeModalEliminarDetallePago)}}>Eliminar</Button>
-                    <Button variant="text" color="inherit" onClick={handleChangeModalEliminarDetallePago}>Cerrar</Button>
+                    <Button variant="text" color="inherit" onClick={handleChangeModalEliminarDetallePago}>Cancelar</Button>
                     </>
                 }
                 />

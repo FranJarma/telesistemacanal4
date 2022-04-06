@@ -170,7 +170,7 @@ const ExpandedComponent = ({ data }) =>
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalDarDeAlta}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalDarDeAlta}>Cancelar</Button></>}
                 formulario={
                 <>
                 <TextField

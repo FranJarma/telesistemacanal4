@@ -65,7 +65,16 @@ const useStyles = makeStyles(theme =>({
         },
         boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
     },
-    logoLogin: {
+    cartaError: {
+        backgroundColor: '#e2e2e2',
+        marginTop: '10rem',
+        [theme.breakpoints.up('lg')]:{
+            marginTop: '20rem',
+            marginLeft: '5rem',
+            marginRight: '60rem',
+        },
+        boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
+    },    logoLogin: {
         marginLeft: 'auto',
         marginRight: 'auto',
         width: '150px',

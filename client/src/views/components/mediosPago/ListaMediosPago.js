@@ -193,7 +193,7 @@ const ListaMediosPago = () => {
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarMedioPago(MedioPagoInfo, handleChangeModalMedioPago)
             : crearMedioPago(MedioPagoInfo, handleChangeModalMedioPago)}}>{EditMode ? "Editar" : "Agregar"}</Button>
-            <Button onClick={handleChangeModalMedioPago} variant="text" color="inherit" >Cerrar</Button>
+            <Button onClick={handleChangeModalMedioPago} variant="text" color="inherit" >Cancelar</Button>
             </>
         }
         />
@@ -204,7 +204,7 @@ const ListaMediosPago = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarMedioPago(MedioPagoInfo, handleChangeModalEliminarMedioPago)}}>Eliminar</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarMedioPago}>Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarMedioPago}>Cancelar</Button>
             </>
         }
         />

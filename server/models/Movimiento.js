@@ -34,6 +34,10 @@ const Movimiento = db.define('movimiento', {
         type: UUIDV4,
         allowNull: true
     },
+    MedioPagoId: {
+        type: INTEGER,
+        allowNull: false
+    },
     createdAt: {
         type: DATE,
         allowNull: true,

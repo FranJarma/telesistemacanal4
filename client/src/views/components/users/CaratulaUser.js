@@ -133,11 +133,10 @@ const CaratulaUser = () => {
             <Tab><i className="bx bx-user"></i> Usuario</Tab>
             <Tab onClick={handleChangeTabRoles}><i className='bx bxs-user'></i> Roles</Tab>
         </TabList>
+        <Typography variant="h6">{location.state ? `Editar usuario: ${location.state.Apellido},  ${location.state.Nombre}` : "Registrar usuario"}</Typography><br/>
         <TabPanel>
         <Card>
         <CardContent>
-            <Typography variant="h1">{location.state ? `Editar usuario: ${location.state.Apellido},  ${location.state.Nombre}` : "Registrar usuario"}</Typography>
-            <Typography variant="h2"><i className="bx bx-user"></i> Datos del usuario</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={6} xl={6}>
                     <TextField

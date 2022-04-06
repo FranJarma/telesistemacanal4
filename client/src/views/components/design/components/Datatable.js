@@ -53,6 +53,10 @@ const Datatable = ({loader, columnas, datos, expandedComponent, paginacion, pagi
     || (item.ApellidoResponsableEjecucion && item.ApellidoResponsableEjecucion.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.NombreAbonado && item.NombreAbonado.toLowerCase().includes(textoFiltrado.toLowerCase()))
     || (item.ApellidoAbonado && item.ApellidoAbonado.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.NombreCarga && item.NombreCarga.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.ApellidoCarga && item.ApellidoCarga.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.Tipo && item.Tipo.toLowerCase().includes(textoFiltrado.toLowerCase()))
+    || (item.Concepto && item.Concepto.toLowerCase().includes(textoFiltrado.toLowerCase()))
     );
     const paginacionOpciones = {
         rowsPerPageText: 'Registros por página',

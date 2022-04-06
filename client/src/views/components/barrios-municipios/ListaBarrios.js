@@ -175,7 +175,7 @@ const ListaBarrios = () => {
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModal}, handleChangeModalBarrio)
             : crearBarrio({...BarrioInfo, MunicipioNombre, MunicipioIdModal}, handleChangeModalBarrio)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalBarrio} >Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalBarrio} >Cancelar</Button>
             </>
         }
         />
@@ -186,7 +186,7 @@ const ListaBarrios = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarBarrio(BarrioInfo, handleChangeModalEliminarBarrio)}}>Eliminar</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarBarrio}>Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarBarrio}>Cancelar</Button>
             </>
         }
         />

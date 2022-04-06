@@ -254,7 +254,7 @@ const columnasInscripcion = [
                     variant="contained"
                     color="secondary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalDarDeBaja}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalDarDeBaja}>Cancelar</Button></>}
                 formulario={
                 <>
                 <TextField
@@ -283,7 +283,7 @@ const columnasInscripcion = [
                     variant="contained"
                     color="primary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalConfirmarInstalacion}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalConfirmarInstalacion}>Cancelar</Button></>}
                 formulario={
                 <>
                 <TextField

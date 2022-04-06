@@ -15,11 +15,19 @@ const Caja = db.define('caja', {
         type: TINYINT,
         allowNull: false
     },
-    CajaCerradaUserId: {
+    CajaCierreUserId: {
         type: UUIDV4,
         allowNull: false
     },
-    CajaTotalVentas: {
+    CajaReAperturaUserId: {
+        type: UUIDV4,
+        allowNull: false
+    },
+    CajaTotalIngresos: {
+        type: FLOAT,
+        allowNull: false
+    },
+    CajaTotalIngresosSistema: {
         type: FLOAT,
         allowNull: false
     }

@@ -21,6 +21,14 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+.react-tabs__tab--selected {
+  border: none !important;
+  border-bottom: 4px solid #e3ac4d !important;
+  color: #000 !important;
+}
+.react-tabs__tab--selected i {
+  color: #e3ac4d !important;
+}
 .pro-sidebar {
   height: 100%; /* 100% Full-height */
   position: fixed; /* Stay in place */
@@ -250,7 +258,7 @@ main {
   flex-direction: column;
   min-height: 100vh;
 }
-.fondo {
+.fondo, .fondo401 {
   width: 100%;
   height: 100%;
 }
@@ -266,6 +274,18 @@ main {
   position: absolute;
   z-index: -1;   
 }
+.fondo401::after {
+  width: 50%;
+  content: "";
+  filter: blur(3px);
+  background: url('D:\Proyectos de React\telesistemacanal4\client\src\views\images\security.png') center;
+  top: 0;
+  left: 50%;
+  bottom: 0;
+  position: absolute;
+  z-index: -1;   
+}
+
 .header{
   z-index: 2;
   display: inline;

@@ -137,7 +137,7 @@ const Users = () => {
                     variant="contained"
                     color="secondary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalDarDeBaja}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalDarDeBaja}>Cancelar</Button></>}
                 >
                 </Modal>
                 <Datatable

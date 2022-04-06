@@ -218,7 +218,7 @@ const ListaMunicipios = () => {
             :
             crearMunicipio({...MunicipioInfo, ProvinciaNombreModal, ProvinciaIdModal}, handleChangeModalMunicipio)}}
             >{EditMode ? "Editar" : "Confirmar"}</Button>
-            <Button variant="text" color="inherit" >Cerrar</Button>
+            <Button variant="text" color="inherit" >Cancelar</Button>
             </>
         }
         />
@@ -229,7 +229,7 @@ const ListaMunicipios = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarMunicipio(MunicipioInfo, handleChangeModalEliminarMunicipio)}}>Eliminar</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarMunicipio}>Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarMunicipio}>Cancelar</Button>
             </>
         }
         />

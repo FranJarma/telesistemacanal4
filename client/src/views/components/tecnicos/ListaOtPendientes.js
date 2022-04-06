@@ -228,7 +228,7 @@ const ListaOtPendientes = () => {
             funcionCerrar={handleChangeModalRegistrarVisitaOt}
             titulo ={<Typography variant="h2"><i className="bx bxs-calendar"></i> Registrar Visita OT</Typography>}
             botones={<><Button variant='contained' color="primary" onClick={() =>
-                registrarVisitaOrdenDeTrabajo({...OtInfo, FechaVisita}, handleChangeModalRegistrarVisitaOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalRegistrarVisitaOt}>Cerrar</Button></>}
+                registrarVisitaOrdenDeTrabajo({...OtInfo, FechaVisita}, handleChangeModalRegistrarVisitaOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalRegistrarVisitaOt}>Cancelar</Button></>}
             formulario={
             <>
             <Grid container spacing ={3}>
@@ -269,7 +269,7 @@ const ListaOtPendientes = () => {
             titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
             botones={<><Button variant='contained' color="primary"
             onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: sessionStorage.getItem('identity'), Onu},
-            handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cerrar</Button></>}
+            handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cancelar</Button></>}
             formulario={
                 <>
                 <Grid container spacing={3}>
@@ -341,7 +341,7 @@ const ListaOtPendientes = () => {
             botones={
                 <>
                 <Button variant="contained" color="secondary" onClick={()=>{}}>Eliminar</Button>
-                <Button variant="text" color="inherit">Cerrar</Button>
+                <Button variant="text" color="inherit">Cancelar</Button>
                 </>
             }
             />

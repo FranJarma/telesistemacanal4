@@ -123,6 +123,7 @@ exports.PagoCreate = async(req,res) => {
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MovimientoConceptoId = req.body.PagoInfo.PagoConceptoId;
             movimiento.AbonadoId = req.body.PagoInfo.UserId;
+            movimiento.MedioPagoId = req.body.MedioPagoId;
             //si encuentra el pago, NO se lo registra de nuevo, sino que solo se registra un nuevo detalle de pago y se actualiza el saldo
             if(pagoBuscar) {
                 //verificamos que el monto ingresado no supere el saldo restante
@@ -201,6 +202,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MovimientoConceptoId = 8; //Pago Adelantado
             movimiento.AbonadoId = req.body.PagoAdelantadoInfo.UserId;
+            movimiento.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
             for(let i=0; i<=req.body.PagoAdelantadoInfo.CantidadMesesAPagar-1; i++){
                 const pago = await Pago.findByPk(req.body.MesesAPagar[i].PagoId, {transaction: t});
                 pago.PagoSaldo = 0;

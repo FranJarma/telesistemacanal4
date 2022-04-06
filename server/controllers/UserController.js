@@ -363,6 +363,7 @@ exports.AbonadoCreate = async(req, res) => {
             movimiento.MovimientoConceptoId = 2; //inscripción
             movimiento.MunicipioId = req.body.MunicipioId;
             movimiento.AbonadoId = UserId;
+            movimiento.MedioPagoId = req.body.MedioPago.MedioPagoId;
             await movimiento.save({transaction: t});
             //registramos un nuevo pago
             const pago = new Pago({transaction: t});
@@ -582,6 +583,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             movimiento.MovimientoConceptoId = 5; //cambio de domicilio
             movimiento.MunicipioId = req.body.MunicipioId;
             movimiento.AbonadoId = abonado.UserId;
+            movimiento.MedioPagoId = req.body.MedioPago.MedioPagoId;
             //registramos un nuevo pago
             const pago = new Pago({transaction: t});
             pago.PagoId = ultimoPagoId + 1;
@@ -713,6 +715,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
             movimiento.MovimientoConceptoId = 6; //cambio de servicio
             movimiento.MunicipioId = req.body.MunicipioId;
             movimiento.AbonadoId = abonado.UserId;
+            movimiento.MedioPagoId = req.body.MedioPago.MedioPagoId;
             //registramos un nuevo pago
             const pago = new Pago({transaction: t});
             pago.PagoId = ultimoPagoId + 1;

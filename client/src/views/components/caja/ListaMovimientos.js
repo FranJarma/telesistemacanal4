@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid,  MenuItem, TextField, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Chip, Grid,  MenuItem, TextField, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
@@ -13,7 +13,7 @@ import Toast from '../design/components/Toast';
 
 const ListaMovimientos = () => {
     const appContext = useContext(AppContext);
-    const { movimientos, municipios, conceptos, traerMovimientosPorFecha, traerConceptos, traerMunicipiosPorProvincia, crearMovimiento } = appContext;
+    const { mediosPago, movimientos, municipios, conceptos, traerMediosPago, traerMovimientosPorFecha, traerConceptos, traerMunicipiosPorProvincia, crearMovimiento } = appContext;
     const location = useLocation();
 
     const [MovimientoCantidad, setMovimientoCantidad] = useState({
@@ -36,20 +36,21 @@ const ListaMovimientos = () => {
     const [ModalCerrarCaja, setModalCerrarCaja] = useState(0);
     const [Municipio, setMunicipio] = useState(0);
     const [Turno, setTurno] = useState('Todos');
+    const [MedioPagoId, setMedioPagoId] = useState(1);
 
     const handleChangeModalMovimiento = e => {
-        if(Municipio === 0) {
-            Toast('Para agregar un gasto, seleccione un municipio en particular', 'warning')
+        if((Municipio === 0 && Turno === "Todos")||(Municipio === 0 && Turno !== "Todos")||(Municipio !== 0 && Turno === "Todos")) {
+            Toast('Para agregar un gasto seleccione un municipio y un turno en específico', 'warning')
         }
         else{
             setModalMovimiento(!ModalMovimiento);
         }
     }
     const handleChangeModalCerrarCaja = e => {
-        if(Municipio === 0) {
-            Toast('No es posible cerrar caja, por favor, seleccione un municipio en particular', 'warning')
+        if((Municipio === 0 && Turno === "Todos")||(Municipio === 0 && Turno !== "Todos")||(Municipio !== 0 && Turno === "Todos")) {
+            Toast('No es posible cerrar caja, por favor, seleccione un municipio y un turno en específico', 'warning')
         }
-        else{
+        else {
             setModalCerrarCaja(!ModalCerrarCaja);
         }
     }
@@ -63,6 +64,7 @@ const ListaMovimientos = () => {
     }
 
     useEffect(()=> {
+        traerMediosPago();
         traerMunicipiosPorProvincia(10);
         traerMovimientosPorFecha(diaMovimiento, Municipio, Turno); //traemos los movimientos del dia de TODOS los municipios
         traerConceptos();
@@ -71,11 +73,17 @@ const ListaMovimientos = () => {
     const columnasMovimientos = [
         {
             "name": "N°",
-            "selector": row =>row["MovimientoId"]
+            "selector": row =>row["MovimientoId"],
+            "omit": true
         },
         {
             "name": "Cantidad",
-            "selector": row =>row["MovimientoCantidad"] > 0 ? <><i style={{color: 'green', fontWeight: 'bold'}} className='bx bx-up-arrow-alt'></i><span style={{color: 'green'}}> ${row["MovimientoCantidad"]} </span></> : <><i style={{color: 'red'}} className='bx bx-down-arrow-alt'></i><span style={{color: 'red'}}> ${row["MovimientoCantidad"]}</span></>,
+            "selector": row =>row["MovimientoCantidad"] > 0 ? <><i style={{color: 'green', fontWeight: 'bold'}} className='bx bx-up-arrow-alt'></i><span style={{color: 'green'}}> ${row["MovimientoCantidad"]} </span></> : <><i style={{color: 'red'}} className='bx bx-down-arrow-alt'></i><span style={{color: 'red'}}> ${(-1)*row["MovimientoCantidad"]}</span></>,
+            "wrap": true
+        },
+        {
+            "name": "Medio de Pago",
+            "selector": row =>row["MedioPagoNombre"],
             "wrap": true
         },
         {
@@ -84,7 +92,7 @@ const ListaMovimientos = () => {
             "wrap": true
         },
         {
-            "name": "Usuario de carga",
+            "name": "Quién cargo movimiento",
             "selector": row => row["ApellidoCarga"] + ", " +row["NombreCarga"],
             "wrap": true
         },
@@ -104,7 +112,23 @@ const ListaMovimientos = () => {
         <div className="container">
         <Aside/>
         <main>
-        <Typography variant="h6">Cierre de caja del día : {diaMovimiento.toLocaleDateString()}</Typography>
+        <Typography variant="h6">Cierre de caja del día : {diaMovimiento.toLocaleDateString()} - Turno: {Turno}</Typography><br/>
+        {Turno !== "Todos" ?
+        <Grid container spacing={3}>
+            <Grid item xs={6} sm={6} md={3} lg={3}>
+                <Card>
+                    <CardHeader
+                        action={<Chip style={{backgroundColor: "red", color: "white", marginLeft: 15}} label="Cerrada"></Chip>}>
+                    </CardHeader>
+                    <CardContent>
+                        <Typography>Recibida por: ADMIN</Typography>
+                        <Typography>Cerrada por: ADMIN</Typography>
+                        <Typography>A las: 21:45 hs</Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+        </Grid>
+        : ""}
         <br/>
         <Card>
             <CardContent>
@@ -175,22 +199,22 @@ const ListaMovimientos = () => {
                     buscar={true}
                 />
             <div style={{display: 'flex'}}>
-            <Typography variant="h2">Total de Ingresos : ${movimientos.filter(item => item.MovimientoCantidad > 0).map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
-            <Typography style={{'margin-left': '25px'}} color='secondary' variant="h2">Total de gastos : ${movimientos.filter(item => item.MovimientoCantidad < 0).map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
+                <i style={{color: 'green', fontWeight: 'bold', marginTop: 3}} className='bx bx-up-arrow-alt'></i><Typography variant="h6" style={{color: 'green'}}> Total de Ingresos: ${movimientos.filter(item => item.MovimientoCantidad > 0).map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
+                <i style={{color: 'red', fontWeight: 'bold', marginTop: 3, marginLeft: 25}} className='bx bx-down-arrow-alt'></i><Typography variant="h6" style={{color: 'red'}}> Total de gastos : ${(-1)*movimientos.filter(item => item.MovimientoCantidad < 0).map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}</Typography>
             </div>
             </CardContent>
         </Card>
         <Modal
         abrirModal={ModalMovimiento}
         funcionCerrar={handleChangeModalMovimiento}
-        titulo ={<Typography variant="h2"><i className='bx bx-money'></i> Añadir gasto</Typography>}
+        titulo ={<Typography variant="h2"><i className='bx bx-money'></i> Añadir gasto en efectivo</Typography>}
         botones={
             <>
             <Button
-            onClick={() => crearMovimiento({MovimientoCantidad: MovimientoCantidad, MovimientoConcepto: MovimientoConcepto, Municipio, createdBy: sessionStorage.getItem('identity')})}
+            onClick={() => crearMovimiento({MovimientoCantidad: MovimientoCantidad, MovimientoConcepto: MovimientoConcepto, Municipio, MedioPagoId, createdBy: sessionStorage.getItem('identity')})}
             variant="contained"
             color="primary">Registrar</Button>
-            <Button onClick={handleChangeModalMovimiento}>Cerrar</Button>
+            <Button onClick={handleChangeModalMovimiento}>Cancelar</Button>
             </>
         }
         formulario={
@@ -216,6 +240,23 @@ const ListaMovimientos = () => {
                 </TextField>
             </Grid>
             <Grid item xs={12} md={4} lg={4} xl={4}>
+                <TextField
+                    disabled
+                    variant="filled"
+                    label="Medio de Pago"
+                    value={MedioPagoId}
+                    name="MedioPagoId"
+                    fullWidth
+                    select
+                    >
+                    {mediosPago
+                    .filter((mp)=> mp.MedioPagoId !== 10)
+                    .map((mp)=>(
+                        <MenuItem key={mp.MedioPagoId} value={mp.MedioPagoId}>{mp.MedioPagoNombre}</MenuItem>
+                    ))}
+                </TextField>
+            </Grid>
+            <Grid item xs={12} md={4} lg={4} xl={4}>
                 <Autocomplete
                     disableClearable
                     value={MovimientoConcepto}
@@ -228,7 +269,7 @@ const ListaMovimientos = () => {
                     renderInput={(params) => <TextField {...params} variant = "outlined" fullWidth label="Concepto"/>}
                 />
             </Grid>
-            <Grid item xs={6} md={2} lg={2} xl={2}>
+            <Grid item xs={6} md={6} lg={6} xl={6}>
                 <TextField
                 onKeyPress={(e) => {
                     if (!/^[0-9]*$/.test(e.key)) {
@@ -246,7 +287,7 @@ const ListaMovimientos = () => {
                 onChange={onInputChange}>
                 </TextField>
             </Grid>
-            <Grid item xs={6} md={2} lg={2} xl={2}>
+            <Grid item xs={6} md={6} lg={6} xl={6}>
                 <TextField
                 onKeyPress={(e) => {
                     if (!/^[0-9]*$/.test(e.key)) {
@@ -275,22 +316,90 @@ const ListaMovimientos = () => {
             <>
             <Button
             variant="contained"
-            color="primary">Registrar</Button>
-            <Button onClick={handleChangeModalCerrarCaja}>Cerrar</Button>
+            color="primary">Cerrar caja</Button>
+            <Button onClick={handleChangeModalCerrarCaja}>Cancelar</Button>
             </>
         }
         formulario={
             Municipio !== null && Turno !== null ?
         <>
-        <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} md={5}>
-                <Typography><b>Día a cerrar:</b> {diaMovimiento.toLocaleDateString()}</Typography>
-                <Typography><b>Municipio:</b> {Municipio.MunicipioNombre}</Typography>
-                <Typography><b>Turno:</b> {Turno}</Typography>
-                <Typography><b>Usuario a cerrar caja:</b> {sessionStorage.getItem('usr')}</Typography>
-                <Typography><b>Horario de cierre:</b> {new Date().toLocaleTimeString()}</Typography>
-            </Grid>
-        </Grid>
+            <Card>
+                <CardContent>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                            <TextField
+                            variant="filled"
+                            fullWidth
+                            label="Día a cerrar"
+                            value={diaMovimiento.toLocaleDateString()}
+                            ></TextField>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                            <TextField
+                            variant="filled"
+                            disabled
+                            value={Municipio}
+                            label="Municipio"
+                            fullWidth
+                            select
+                            >
+                            <MenuItem key={0} value={0}>Todos</MenuItem>
+                            {
+                            municipios.length > 0 ?
+                            municipios
+                            .map((municipio)=>(
+                                <MenuItem key={municipio.MunicipioId} value={municipio.MunicipioId}>{municipio.MunicipioNombre}</MenuItem>
+                            )) : <MenuItem disabled>No se encontraron municipios</MenuItem>}
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            variant="filled"
+                            value={Turno}
+                            label="Turno"
+                            fullWidth
+                            >
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            variant="filled"
+                            value={sessionStorage.getItem('usr')}
+                            label="Usuario a cerrar caja"
+                            fullWidth
+                            >
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            variant="filled"
+                            value={new Date().toLocaleTimeString()}
+                            label="Horario de cierre"
+                            fullWidth
+                            >
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                            <TextField
+                            variant="outlined"
+                            value={movimientos.filter(item => item.MovimientoCantidad > 0).map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}
+                            label="Total en caja"
+                            fullWidth
+                            >
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                            <TextField
+                            variant="outlined"
+                            value={movimientos.filter(item => item.MovimientoCantidad > 0).map(item => item.MovimientoCantidad).reduce((prev, curr) => prev + curr, 0)}
+                            label="Total de ingresos registrado en sistema"
+                            fullWidth
+                            >
+                            </TextField>
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
         </>:""}
         ></Modal>
         </main>

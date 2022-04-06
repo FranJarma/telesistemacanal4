@@ -217,7 +217,7 @@ const CambioDomicilio = () => {
             color="primary"
             onClick={onSubmitAbonado}>
             Confirmar</Button>
-        <Button onClick={handleChangeModalNuevoDomicilio}>Cerrar</Button></>}
+        <Button onClick={handleChangeModalNuevoDomicilio}>Cancelar</Button></>}
         formulario={
             <>
             <Tabs>

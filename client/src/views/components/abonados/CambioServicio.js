@@ -174,7 +174,7 @@ const CambioServicio = () => {
             color="primary"
             onClick={onSubmitAbonado}>
             Confirmar</Button>
-        <Button onClick={handleChangeModalNuevoServicio}>Cerrar</Button></>}
+        <Button onClick={handleChangeModalNuevoServicio}>Cancelar</Button></>}
         formulario={
             <>
             <Tabs>

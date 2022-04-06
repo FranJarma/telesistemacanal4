@@ -19,13 +19,13 @@ import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
 import PrivateRoute from './routes/PrivateRoute';
-import LoginRoute from './routes/LoginRoute';
 import ListaMisOt from './views/components/tecnicos/ListaMisOt';
 import ListaTareas from './views/components/tecnicos/ListaTareas';
 import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
 import ListaOtFinalizadas from './views/components/tecnicos/ListaOtFinalizadas';
 import ListaMovimientos from './views/components/caja/ListaMovimientos';
 import ListaMediosPago from './views/components/mediosPago/ListaMediosPago';
+import Error401 from './views/components/Error401';
 
 //revisamos si tenemos un token
 const token = sessionStorage.getItem('token');
@@ -133,9 +133,12 @@ function App() {
           <AppState>
             <Switch>
                 <Suspense fallback={<Cargando/>}>
-                  <LoginRoute exact path="/">
+                  <Route exact path="/">
                     <Login/>
-                  </LoginRoute>
+                  </Route>
+                  <Route exact path="/Error-401">
+                    <Error401/>
+                  </Route>
                   <PrivateRoute exact path="/home" component={Home}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/users" component={ListaUsers}>

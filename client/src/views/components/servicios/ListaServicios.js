@@ -237,7 +237,7 @@ const ListaServicios = () => {
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarServicio(ServicioInfo, handleChangeModalServicio)
             : crearServicio(ServicioInfo, handleChangeModalServicio)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
-            <Button onClick={handleChangeModalServicio} variant="text" color="inherit" >Cerrar</Button>
+            <Button onClick={handleChangeModalServicio} variant="text" color="inherit" >Cancelar</Button>
             </>
         }
         />
@@ -248,7 +248,7 @@ const ListaServicios = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarServicio(ServicioInfo, handleChangeModalEliminarServicio)}}>Eliminar</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarServicio}>Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarServicio}>Cancelar</Button>
             </>
         }
         />

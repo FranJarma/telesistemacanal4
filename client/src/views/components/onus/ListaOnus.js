@@ -207,7 +207,7 @@ const ListaOnus = ({location}) => {
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarONU({...OnuInfo, ServicioId, ModeloOnuId}, handleChangeModalOnu)
             : crearONU({...OnuInfo, ServicioId, ModeloOnuId}, handleChangeModalOnu)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
-            <Button variant="text" color="inherit" >Cerrar</Button>
+            <Button variant="text" color="inherit" >Cancelar</Button>
             </>
         }
         />
@@ -218,7 +218,7 @@ const ListaOnus = ({location}) => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarONU(OnuInfo, handleChangeModalEliminarOnu)}}>Eliminar</Button>
-            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarOnu}>Cerrar</Button>
+            <Button variant="text" color="inherit" onClick={handleChangeModalEliminarOnu}>Cancelar</Button>
             </>
         }
         />

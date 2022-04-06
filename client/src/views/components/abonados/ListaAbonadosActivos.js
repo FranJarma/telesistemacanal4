@@ -206,7 +206,7 @@ const ListaAbonadosActivos = () => {
                     variant="contained"
                     color="secondary">
                     Aceptar</Button>
-                <Button onClick={handleChangeModalDarDeBaja}>Cerrar</Button></>}
+                <Button onClick={handleChangeModalDarDeBaja}>Cancelar</Button></>}
                 formulario={
                 <>
                 <TextField

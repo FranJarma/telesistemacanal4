@@ -16,11 +16,12 @@ exports.MovimientosGetByFecha = async (req, res) => {
             'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
             'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
             'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
-            'mc.MovimientoConceptoTipo as Tipo')
+            'mc.MovimientoConceptoTipo as Tipo', 'mp.MedioPagoNombre')
             .from('movimiento as m')
             .innerJoin('_user as u','u.UserId','=','m.createdBy')
             .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
             .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'm.MedioPagoId')
             .where({
                 'm.MovimientoDia': req.query.Dia,
                 'm.MovimientoMes': req.query.Mes,
@@ -36,11 +37,12 @@ exports.MovimientosGetByFecha = async (req, res) => {
             'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
             'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
             'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
-            'mc.MovimientoConceptoTipo as Tipo')
+            'mc.MovimientoConceptoTipo as Tipo', 'mp.MedioPagoNombre')
             .from('movimiento as m')
             .innerJoin('_user as u','u.UserId','=','m.createdBy')
             .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
             .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'm.MedioPagoId')
             .where({
                 'm.MovimientoDia': req.query.Dia,
                 'm.MovimientoMes': req.query.Mes,
@@ -56,11 +58,12 @@ exports.MovimientosGetByFecha = async (req, res) => {
             'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
             'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
             'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
-            'mc.MovimientoConceptoTipo as Tipo')
+            'mc.MovimientoConceptoTipo as Tipo', 'mp.MedioPagoNombre')
             .from('movimiento as m')
             .innerJoin('_user as u','u.UserId','=','m.createdBy')
             .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
             .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'm.MedioPagoId')
             .where({
                 'm.MovimientoDia': req.query.Dia,
                 'm.MovimientoMes': req.query.Mes,
@@ -76,11 +79,12 @@ exports.MovimientosGetByFecha = async (req, res) => {
             'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
             'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
             'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
-            'mc.MovimientoConceptoTipo as Tipo')
+            'mc.MovimientoConceptoTipo as Tipo', 'mp.MedioPagoNombre')
             .from('movimiento as m')
             .innerJoin('_user as u','u.UserId','=','m.createdBy')
             .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
             .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'm.MedioPagoId')
             .where({
                 'm.MovimientoDia': req.query.Dia,
                 'm.MovimientoMes': req.query.Mes,
@@ -97,11 +101,12 @@ exports.MovimientosGetByFecha = async (req, res) => {
             'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
             'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
             'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
-            'mc.MovimientoConceptoTipo as Tipo')
+            'mc.MovimientoConceptoTipo as Tipo', 'mp.MedioPagoNombre')
             .from('movimiento as m')
             .innerJoin('_user as u','u.UserId','=','m.createdBy')
             .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
             .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'm.MedioPagoId')
             .where({
                 'm.MovimientoDia': req.query.Dia,
                 'm.MovimientoMes': req.query.Mes,
@@ -118,11 +123,12 @@ exports.MovimientosGetByFecha = async (req, res) => {
             'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
             'u.Apellido as ApellidoCarga','u1.Nombre as NombreAbonado',
             'u1.Apellido as ApellidoAbonado', 'mc.MovimientoConceptoNombre as Concepto',
-            'mc.MovimientoConceptoTipo as Tipo')
+            'mc.MovimientoConceptoTipo as Tipo', 'mp.MedioPagoNombre')
             .from('movimiento as m')
             .innerJoin('_user as u','u.UserId','=','m.createdBy')
             .leftJoin('_user as u1','u1.UserId','=','m.abonadoId')
             .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+            .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'm.MedioPagoId')
             .where({
                 'm.MovimientoDia': req.query.Dia,
                 'm.MovimientoMes': req.query.Mes,
@@ -161,6 +167,7 @@ exports.MovimientoCreate = async(req, res) => {
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MunicipioId = req.body.Municipio;
             movimiento.MovimientoConceptoId = req.body.MovimientoConcepto.MovimientoConceptoId;
+            movimiento.MedioPagoId = req.body.MedioPagoId;
             movimiento.createdAt = new Date();
             movimiento.createdBy = req.body.createdBy;
             if(req.body.MovimientoConcepto.MovimientoConceptoTipo === 'Gasto') {
