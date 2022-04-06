@@ -128,12 +128,12 @@ const CaratulaUser = () => {
     <Aside/>
     <main>
     <form onSubmit={onSubmitUsuario}>
+    <Typography variant="h6">{location.state ? `Editar usuario: ${location.state.Apellido},  ${location.state.Nombre}` : "Registrar usuario"}</Typography><br/>
     <Tabs>
         <TabList>
             <Tab><i className="bx bx-user"></i> Usuario</Tab>
             <Tab onClick={handleChangeTabRoles}><i className='bx bxs-user'></i> Roles</Tab>
         </TabList>
-        <Typography variant="h6">{location.state ? `Editar usuario: ${location.state.Apellido},  ${location.state.Nombre}` : "Registrar usuario"}</Typography><br/>
         <TabPanel>
         <Card>
         <CardContent>

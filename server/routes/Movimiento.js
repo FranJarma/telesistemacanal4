@@ -9,5 +9,6 @@ router.post('/create', ValidarJWT, [
     check('MovimientoCantidad.MovimientoPesos', 'La cantidad de Pesos es obligatoria').notEmpty(),
 ], MovimientoController.MovimientoCreate);
 router.get('/', ValidarJWT, MovimientoController.MovimientosGetByFecha);
+// router.get('/abonado', ValidarJWT, MovimientoController.MovimientosAbonadoGet);
 
 module.exports = router;

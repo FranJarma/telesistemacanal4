@@ -1500,6 +1500,22 @@ const AppState = props => {
             console.log(error);
         }
     }
+    const traerMovimientosPorAbonado = async (Mes, Abonado) => {
+        try {
+            const resultado = await clienteAxios.get('/api/movimientos/abonado', {
+                params: {
+                    Mes: Mes,
+                    Abonado: Abonado
+                }
+            })
+            dispatch({
+                type: TYPES.LISTA_MOVIMIENTOS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     //conceptos de movimientos
     const traerConceptos = async (tipo) => {
         try {
