@@ -47,7 +47,8 @@ const AppState = props => {
         movimientos: [],
         conceptos: [],
         cargando: false,
-        mensaje: ''
+        mensaje: '',
+        cajas: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -252,7 +253,7 @@ const AppState = props => {
             console.log(error);
         }
     }
-    const traerUsuariosPorRol = async (rolId = 0) => {
+    const traerUsuariosPorRol = async (rolId) => {
         try {
             const resultado =  await clienteAxios.get(`/api/usuarios/rol=${rolId}`);
             dispatch({
@@ -1539,7 +1540,55 @@ const AppState = props => {
             });
         },2000)
     };
-
+    //caja
+    const traerCaja = async (municipio, fecha, turno) => {
+        try {
+            if(state.cajas.length > 0) {
+                dispatch({
+                    type: TYPES.REINICIALIZAR_CAJA
+                })
+            }
+            const resultado = await clienteAxios.get('/api/caja', {
+                params: {
+                    municipio: municipio,
+                    dia: fecha.getDate(),
+                    mes: fecha.getMonth() + 1,
+                    año: fecha.getFullYear(),
+                    turno: turno
+                }
+            });
+            dispatch({
+                type: TYPES.TRAER_CAJA,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const cerrarCaja = async (caja, cerrarModal) => {
+        clienteAxios.post('/api/caja/create', caja)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.CERRAR_CAJA,
+                    payload: caja
+                });
+                Swal('Operación completa', resOk.data.msg);
+                cerrarModal(true);
+        })
+        .catch(err => {
+            if(!err.response){
+                console.log(err);
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
     return(
         <AppContext.Provider
         value={{
@@ -1581,6 +1630,7 @@ const AppState = props => {
             conceptos: state.conceptos,
             cargando: state.cargando,
             mensaje: state.mensaje,
+            cajas: state.cajas,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
@@ -1602,6 +1652,7 @@ const AppState = props => {
             traerMovimientosPorFecha, crearMovimiento,
             traerConceptos,
             mostrarSpinner,
+            traerCaja, cerrarCaja
         }}>{props.children}
         </AppContext.Provider>
     )

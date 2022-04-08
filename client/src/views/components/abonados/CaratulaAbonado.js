@@ -11,6 +11,7 @@ import Datatable from '../design/components/Datatable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import convertirAMoney from '../../../helpers/ConvertirAMoney';
 import TooltipForTable from '../../../helpers/TooltipForTable';
+import * as VARIABLES from './../../../types/variables';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
@@ -104,7 +105,7 @@ const CaratulaAbonado = () => {
         traerMediosPago();
         traerServicios();
         traerCondicionesIva();
-        traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
+        traerUsuariosPorRol(VARIABLES.ID_ROL_TECNICO);
     }, [])
     
     useEffect(() => {

@@ -3,7 +3,6 @@ const options =require('./../config/knex');
 const knex = require('knex')(options);
 const { validationResult } = require('express-validator');
 const Movimiento = require('../models/Movimiento');
-const MovimientoConcepto = require('../models/MovimientoConcepto');
 
 exports.MovimientosGetByFecha = async (req, res) => {
     const timestamp = req.query.Año+'-'+req.query.Mes+'-'+req.query.Dia;
@@ -27,8 +26,8 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoMes': req.query.Mes,
                 'm.MovimientoAño': req.query.Año
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
-            .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
+            // .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
+            // .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
         }
         //SELECCIONADO TODOS LOS MUNICIPIOS Y TURNO MAÑANA
         if(req.query.Municipio == 0 && req.query.Turno === 'Mañana'){
@@ -48,8 +47,8 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoMes': req.query.Mes,
                 'm.MovimientoAño': req.query.Año
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T12:00:00")
-            .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
+            // .andWhere('m.createdAt', '<=', timestamp + "T12:00:00")
+            // .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
         }
         //SELECCIONADO TODOS LOS MUNICIPIOS Y TURNO TARDE
         if(req.query.Municipio == 0 && req.query.Turno === 'Tarde'){
@@ -69,8 +68,8 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoMes': req.query.Mes,
                 'm.MovimientoAño': req.query.Año
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
-            .andWhere('m.createdAt', '>=', timestamp + "T16:00:00")
+            // .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
+            // .andWhere('m.createdAt', '>=', timestamp + "T16:00:00")
         }
         //SELECCIONADO ALGUN MUNICIPIO Y TODO EL DIA
         if(req.query.Municipio != 0 && req.query.Turno === 'Todos'){
@@ -91,8 +90,8 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoAño': req.query.Año,
                 'm.MunicipioId': req.query.Municipio
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
-            .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
+            // .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
+            // .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
         }
         //SELECCIONADO ALGUN MUNICIPIO Y TURNO MAÑANA
         if(req.query.Municipio != 0 && req.query.Turno === 'Mañana'){
@@ -113,8 +112,8 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoAño': req.query.Año,
                 'm.MunicipioId': req.query.Municipio
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T12:00:00")
-            .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
+            // .andWhere('m.createdAt', '<=', timestamp + "T12:00:00")
+            // .andWhere('m.createdAt', '>=', timestamp + "T8:00:00")
         }
         //SELECCIONADO ALGUN MUNICIPIO Y TURNO TARDE
         if(req.query.Municipio != 0 && req.query.Turno === 'Tarde'){
@@ -135,8 +134,8 @@ exports.MovimientosGetByFecha = async (req, res) => {
                 'm.MovimientoAño': req.query.Año,
                 'm.MunicipioId': req.query.Municipio
             })
-            .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
-            .andWhere('m.createdAt', '>=', timestamp + "T16:00:00")
+            // .andWhere('m.createdAt', '<=', timestamp + "T22:00:00")
+            // .andWhere('m.createdAt', '>=', timestamp + "T16:00:00")
         }
         res.json(movimientos);
     } catch (error) {

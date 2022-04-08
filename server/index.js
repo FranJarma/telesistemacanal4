@@ -51,6 +51,8 @@ app.use('/api/ot', require('./routes/Ot.js'));
 app.use('/api/movimientos', require('./routes/Movimiento.js'));
 //CONCEPTOS
 app.use('/api/conceptos', require('./routes/MovimientoConcepto.js'));
+//CAJA
+app.use('/api/caja', require('./routes/Caja.js'));
 //pág principal
 app.get('/', (req, res)=>{
     res.send(`Conectado a: ${process.env.DB_NAME} en puerto: ${PORT}`)

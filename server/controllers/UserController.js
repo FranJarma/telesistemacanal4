@@ -18,6 +18,7 @@ const Ot = require('../models/Ot');
 const OtTecnico = require('../models/OtTecnico');
 const OtTarea = require('../models/OtTarea');
 const { Op } = require('sequelize');
+const VARIABLES = require('./../config/variables');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -36,11 +37,11 @@ exports.UserCreate = async(req, res) => {
             const salt = bcrypt.genSaltSync();
             user.Contraseña = bcrypt.hashSync(req.body.Contraseña, salt);
             user.UserId = uuidv4().toUpperCase();
-            user.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;  // es el mismo estado
+            user.EstadoId = VARIABLES.ESTADO_ID_ABONADO_ACTIVO;  // es el mismo estado
             user.EsUsuarioDeSistema = 1;
             //hay que armar un array con todos los objetos a crear
             const userEstado = new UserEstado();
-            userEstado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            userEstado.EstadoId = VARIABLES.ESTADO_ID_ABONADO_ACTIVO;
             userEstado.UserId = user.UserId;
             userEstado.CambioEstadoObservaciones = 'Dado de alta';
             await user.save({transaction: t});
@@ -147,7 +148,7 @@ exports.UsersGetByRole = async(req, res) => {
     try {
         const users = await knex.select('u.UserId', 'u.Apellido', 'u.Nombre').from('_userrole as ur')
         .innerJoin('_user as u', 'u.UserId', '=', 'ur.UserId')
-        .where({'ur.RoleId': '3EF5B486-2604-44E6-BA2C-D9F78BF7A612'});
+        .where({'ur.RoleId': req.params.rolId});
         res.json(users);
     } catch (error) {
         console.log(error);
@@ -182,7 +183,7 @@ exports.AbonadosGet = async(req, res) => {
         .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
         .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
         .where({
-            'r.RoleId': process.env.ID_ROL_ABONADO,
+            'r.RoleId': VARIABLES.ID_ROL_ABONADO,
             'm.MunicipioId': req.params.municipioId,
             'u.EstadoId': req.params.estadoId
         })
@@ -199,7 +200,7 @@ exports.AbonadosGet = async(req, res) => {
         .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
         .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
         .where({
-            'r.RoleId': process.env.ID_ROL_ABONADO,
+            'r.RoleId': VARIABLES.ID_ROL_ABONADO,
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId != 0 && req.params.estadoId == 0 ?
@@ -215,7 +216,7 @@ exports.AbonadosGet = async(req, res) => {
         .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
         .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
         .where({
-            'r.RoleId': process.env.ID_ROL_ABONADO,
+            'r.RoleId': VARIABLES.ID_ROL_ABONADO,
             'm.MunicipioId': req.params.municipioId,
         })
         : abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
@@ -230,7 +231,7 @@ exports.AbonadosGet = async(req, res) => {
         .leftJoin('onu as o', 'o.OnuId', '=','u.OnuId')
         .leftJoin('modeloonu as mo', 'mo.ModeloOnuId', '=', 'o.ModeloOnuId')
         .where({
-            'r.RoleId': process.env.ID_ROL_ABONADO
+            'r.RoleId': VARIABLES.ID_ROL_ABONADO
         })
         res.json(abonados);
     } catch (error) {
@@ -339,16 +340,16 @@ exports.AbonadoCreate = async(req, res) => {
             abonado.UserId = UserId;
             abonado.DomicilioId = ultimoDomicilioId + 1;
             abonado.ServicioId = req.body.Servicio.ServicioId;
-            abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
+            abonado.EstadoId = VARIABLES.ESTADO_ID_ABONADO_INSCRIPTO;
             abonado.EsUsuarioDeSistema = 0;
             const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
             const abonadoRole = new UserRole({transaction: t});
             abonadoRole.UserId = abonado.UserId;
-            abonadoRole.RoleId = process.env.ID_ROL_ABONADO;
+            abonadoRole.RoleId = VARIABLES.ID_ROL_ABONADO;
             const abonadoEstado = new UserEstado({transaction: t});
-            abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INSCRIPTO;
+            abonadoEstado.EstadoId = VARIABLES.ESTADO_ID_ABONADO_INSCRIPTO;
             abonadoEstado.UserId = abonado.UserId;
             abonadoEstado.CambioEstadoFecha = new Date();
             abonadoEstado.CambioEstadoObservaciones = 'Dado de alta';
@@ -394,7 +395,7 @@ exports.AbonadoCreate = async(req, res) => {
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = UserId;
-            ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.EstadoId = VARIABLES.ESTADO_ID_OT_REGISTRADA;
             ot.OtFechaPrevistaVisita = req.body.OtFechaPrevistaVisita;
             ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
             ot.OtResponsableEjecucion = req.body.Tecnico.UserId;
@@ -524,7 +525,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                     NuevoDomicilioId: {
                         [Op.ne]: null
                     },
-                    EstadoId: process.env.ESTADO_ID_OT_REGISTRADA
+                    EstadoId: VARIABLES.ESTADO_ID_OT_REGISTRADA
                 },
                 order: [['OtId', 'DESC']]
             });
@@ -607,7 +608,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = req.body.UserId;
-            ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.EstadoId = VARIABLES.ESTADO_ID_OT_REGISTRADA;
             ot.OtFechaPrevistaVisita = req.body.OtFechaPrevistaVisita;
             ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
             ot.OtResponsableEjecucion = req.body.Tecnico.UserId;
@@ -658,7 +659,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
                     NuevoServicioId: {
                         [Op.ne]: null
                     },
-                    EstadoId: process.env.ESTADO_ID_OT_REGISTRADA
+                    EstadoId: VARIABLES.ESTADO_ID_OT_REGISTRADA
                 },
                 order: [['OtId', 'DESC']]
             });
@@ -739,7 +740,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = req.body.UserId;
-            ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.EstadoId = VARIABLES.ESTADO_ID_OT_REGISTRADA;
             ot.OtFechaPrevistaVisita = req.body.OtFechaPrevistaVisita;
             ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
             ot.OtResponsableEjecucion = req.body.Tecnico.UserId;
@@ -807,22 +808,22 @@ exports.AbonadoCambioTitularidad = async(req, res) => {
             //cambiamos su estado a INACTIVO, le desasignamos la ONU si es que tiene y la fecha de bajada
             abonado.OnuId = null;
             abonado.FechaBajada = null;
-            abonado.EstadoId = process.env.ESTADO_ID_ABONADO_INACTIVO;
+            abonado.EstadoId = VARIABLES.ESTADO_ID_ABONADO_INACTIVO;
             //creamos nuevo abonado con la información de la vista
             const abonadoNuevo = new User(req.body, {transaction: t});
             abonadoNuevo.UserId = uuidv4().toUpperCase();
-            abonadoNuevo.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            abonadoNuevo.EstadoId = VARIABLES.ESTADO_ID_ABONADO_ACTIVO;
             abonadoNuevo.EsUsuarioDeSistema = 0;
             const abonadoNuevoRole = new UserRole();
             abonadoNuevoRole.UserId = abonadoNuevo.UserId;
-            abonadoNuevoRole.RoleId = process.env.ID_ROL_ABONADO;
+            abonadoNuevoRole.RoleId = VARIABLES.ID_ROL_ABONADO;
             const abonadoEstado = new UserEstado(req.body, {transaction: t});
             let ultimoUserEstado = await UserEstado.findOne({
                 order: [["UserEstadoId", "DESC"]]
             });
             abonadoEstado.UserEstadoId = ultimoUserEstado.UserEstadoId + 1;
             abonadoEstado.UserId = abonado.UserId;
-            abonadoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_INACTIVO;
+            abonadoEstado.EstadoId = VARIABLES.ESTADO_ID_ABONADO_INACTIVO;
             abonadoEstado.CambioEstadoFecha = new Date();
             abonadoEstado.CambioEstadoObservaciones = `Dado de Baja por Cambio de Titularidad con abonado: ${abonado.Apellido}, ${abonado.Nombre}`;
             //le asignamos el nuevo usuario a los pagos del abonado viejo
@@ -837,7 +838,7 @@ exports.AbonadoCambioTitularidad = async(req, res) => {
             const abonadoNuevoEstado = new UserEstado(req.body, {transaction: t});
             abonadoNuevoEstado.UserEstadoId = ultimoUserEstado.UserEstadoId + 2;
             abonadoNuevoEstado.UserId = abonadoNuevo.UserId;
-            abonadoNuevoEstado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+            abonadoNuevoEstado.EstadoId = VARIABLES.ESTADO_ID_ABONADO_ACTIVO;
             abonadoNuevoEstado.CambioEstadoFecha = new Date();
             abonadoNuevoEstado.CambioEstadoObservaciones =  `Dado de Alta por Cambio de Titularidad con abonado: ${abonadoNuevo.Apellido}, ${abonadoNuevo.Nombre}`;
             if(req.body.DomicilioId === 0) { //chequeamos si es mismo domicilio

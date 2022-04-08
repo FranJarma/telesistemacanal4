@@ -8,6 +8,7 @@ import { useLocation } from 'react-router';
 import { DatePicker, TimePicker } from '@material-ui/pickers';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import DataTable from 'react-data-table-component';
+import * as VARIABLES from './../../../types/variables';
 
 const CaratulaOt = () => {
     const appContext = useContext(AppContext);
@@ -41,7 +42,7 @@ const CaratulaOt = () => {
         traerTareas();
         traerMunicipios();
         traerAbonados();
-        traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
+        traerUsuariosPorRol(VARIABLES.ID_ROL_TECNICO);
     },[])
 
     useEffect(()=>{

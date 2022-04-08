@@ -11,7 +11,7 @@ const PerfilUser = () => {
     const location = useLocation();
 
     const [UserInfo, setUserInfo] = useState({
-        UserIdLogueado: location.state.User.UserId,
+        UserIdLogueado: localStorage.getItem('identity'),
         UserId: null,
         Nombre: null,
         Apellido: null,
@@ -68,7 +68,7 @@ const PerfilUser = () => {
     <div className="container">
     <Aside/>
     <main>
-    <Typography variant="h6">Editar usuario: {location.state.User.Apellido}, {location.state.User.Nombre}</Typography>
+    <Typography variant="h6">Editar usuario: {localStorage.getItem('usr')}</Typography>
     <br/>
     <form onSubmit={onSubmitUsuario}>
         <Card>

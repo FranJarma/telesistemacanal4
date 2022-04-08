@@ -13,6 +13,7 @@ import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import convertirAMoney from '../../../helpers/ConvertirAMoney';
+import * as VARIABLES from './../../../types/variables';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
@@ -28,7 +29,7 @@ const CambioServicio = () => {
         traerServicios();
         traerOnus(5);
         traerServiciosAbonado(location.state.UserId);
-        traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
+        traerUsuariosPorRol(VARIABLES.ID_ROL_TECNICO);
         traerMediosPago();
     }, [])
     //States

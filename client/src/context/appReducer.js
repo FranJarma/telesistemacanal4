@@ -384,6 +384,21 @@ export default (state, action) => {
                 ...state,
                 cargando: false,
             }
+        case TYPES.TRAER_CAJA:
+            return {
+                ...state,
+                cajas: action.payload
+        }
+        case TYPES.CERRAR_CAJA:
+            return {
+                ...state,
+                cajas: [{...action.payload, CajaCerradaFecha: new Date().toISOString()}] //isoString es el formato de MYSQL
+        }
+        case TYPES.REINICIALIZAR_CAJA:
+            return {
+                ...state,
+                cajas: []
+        }
         default:
             return state;
     }

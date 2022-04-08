@@ -92,7 +92,6 @@ exports.PagoCreate = async(req,res) => {
     if(req.body.DetallePagoMonto <= 0) return res.status(400).json({msg: 'El monto tiene que ser mayor a 0'});
     try {
         await db.transaction(async(t)=>{
-            console.log(req.body.PagoInfo);
             //buscamos el ultimo Movimiento
             let ultimoMovimientoId = 0;
             const ultimoMovimiento = await Movimiento.findOne({

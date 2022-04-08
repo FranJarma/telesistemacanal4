@@ -1,4 +1,4 @@
-const { INTEGER, DATE, UUIDV4, TINYINT, FLOAT } = require('sequelize');
+const { INTEGER, DATE, UUIDV4, TINYINT, FLOAT, STRING } = require('sequelize');
 const db = require('../config/connection');
 
 const Caja = db.define('caja', {
@@ -6,30 +6,57 @@ const Caja = db.define('caja', {
         type: INTEGER,
         primaryKey: true
     },
-    CajaFecha: {
+    CajaDia: {
+        type: INTEGER,
+        allowNull: false
+    },
+    CajaMes: {
+        type: INTEGER,
+        allowNull: false
+    },
+    CajaAño: {
+        type: INTEGER,
+        allowNull: false
+    },
+    CajaMunicipio: {
+        type: INTEGER,
+        allowNull: false
+    },
+    CajaTurno: {
+        type: STRING,
+        allowNull: false
+    },
+    CajaCerradaFecha: {
         type: DATE,
-        unique: true,
         allowNull: false
     },
-    CajaCerrada: {
-        type: TINYINT,
-        allowNull: false
-    },
-    CajaCierreUserId: {
+    CajaCerradaUser: {
         type: UUIDV4,
         allowNull: false
     },
-    CajaReAperturaUserId: {
+    CajaRecibeUser: {
         type: UUIDV4,
         allowNull: false
     },
-    CajaTotalIngresos: {
+    CajaReAbiertaFecha: {
+        type: DATE,
+        allowNull: true
+    },
+    CajaReAbiertaUser: {
+        type: UUIDV4,
+        allowNull: true
+    },
+    CajaTotal: {
         type: FLOAT,
         allowNull: false
     },
-    CajaTotalIngresosSistema: {
+    CajaTotalSistema: {
         type: FLOAT,
         allowNull: false
+    },
+    CajaCierreObservaciones: {
+        type: STRING,
+        allowNull: true
     }
 });
 

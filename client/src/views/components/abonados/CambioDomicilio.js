@@ -12,6 +12,7 @@ import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import convertirAMoney from '../../../helpers/ConvertirAMoney';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TooltipForTable from '../../../helpers/TooltipForTable';
+import * as VARIABLES from './../../../types/variables';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
@@ -24,14 +25,8 @@ const CambioDomicilio = () => {
         traerProvincias();
         traerMunicipiosPorProvincia(ProvinciaId);
         traerDomiciliosAbonado(location.state.UserId);
-        traerUsuariosPorRol(process.env.ID_ROL_TECNICO);
+        traerUsuariosPorRol(VARIABLES.ID_ROL_TECNICO);
         traerMediosPago();
-        if(location.state.ServicioId === 1) {
-            tareas.filter((tarea) => tarea.TareaId === 14).map((tarea) => setTareaCambioDomicilio(tarea));
-        }
-        else {
-            tareas.filter((tarea) => tarea.TareaId === 15).map((tarea) => setTareaCambioDomicilio(tarea));
-        }
     }, [])
     //States
     const [DomicilioInfo, setDomicilioInfo] = useState({
@@ -43,7 +38,9 @@ const CambioDomicilio = () => {
         CambioDomicilioObservaciones: null,
         createdBy: localStorage.getItem('identity')
     })
-    const [TareaCambioDomicilio, setTareaCambioDomicilio] = useState(null);
+    const [TareaCambioDomicilioCable, setTareaCambioDomicilioCable] = useState(tareas.filter((tarea)=> tarea.TareaId === 14));
+    const [TareaCambioDomicilioInternet, setTareaCambioDomicilioInternet] = useState(tareas.filter((tarea)=> tarea.TareaId === 15));
+
     const onInputChange = (e) => {
         setDomicilioInfo({
             ...DomicilioInfo,
@@ -86,7 +83,7 @@ const CambioDomicilio = () => {
         setMedioPago(e.target.value);
         setPagoInfo({
             ...PagoInfo,
-            Total: (TareaCambioDomicilio.TareaPrecioUnitario + (TareaCambioDomicilio.TareaPrecioUnitario*e.target.value.MedioPagoInteres / 100)).toFixed(2)
+            Total: location.state.ServicioId === 1 ? (TareaCambioDomicilioCable[0].TareaPrecioUnitario + (TareaCambioDomicilioCable[0].TareaPrecioUnitario*e.target.value.MedioPagoInteres / 100)).toFixed(2) : (TareaCambioDomicilioInternet[0].TareaPrecioUnitario + (TareaCambioDomicilioInternet[0].TareaPrecioUnitario*e.target.value.MedioPagoInteres / 100)).toFixed(2)
         })
     }
 
@@ -398,8 +395,9 @@ const CambioDomicilio = () => {
                 </Grid>
                 </TabPanel>
                 <TabPanel>
-                {TareaCambioDomicilio !== null ?
-                <Typography variant="h2">Total por: {TareaCambioDomicilio.TareaNombre}: ${TareaCambioDomicilio.TareaPrecioUnitario}</Typography> :""}
+                {/* {TareaCambioDomicilioCable !== null && location.state.ServicioId === 1 ?
+                <Typography variant="h2">Total por: {TareaCambioDomicilioCable[0].TareaNombre}: ${TareaCambioDomicilioCable[0].TareaPrecioUnitario}</Typography> :
+                <Typography variant="h2">Total por: {TareaCambioDomicilioInternet[0].TareaNombre}: ${TareaCambioDomicilioInternet[0].TareaPrecioUnitario}</Typography>} */}
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={6} lg={6} xl={6}>
                         <TextField
@@ -415,13 +413,13 @@ const CambioDomicilio = () => {
                             ))}
                         </TextField>
                     </Grid>
-                    { MedioPago !== null
+                    { MedioPago !== null && MedioPago.MedioPagoInteres > 0
                         ?
                         <>
                         <Grid item xs={12} md={6} lg={6} xl={6}>
                         <TextField
                             variant="outlined"
-                            value={PagoInfo.Interes * TareaCambioDomicilio.TareaPrecioUnitario}
+                            value={PagoInfo.Interes * TareaCambioDomicilioCable.TareaPrecioUnitario}
                             label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
                             fullWidth
                             >

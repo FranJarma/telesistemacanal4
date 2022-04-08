@@ -12,6 +12,7 @@ const Movimiento = require('../models/Movimiento');
 const Onu = require('../models/Onu');
 const Pago = require('../models/Pago');
 const Servicio = require('../models/Servicio');
+const VARIABLES = require('./../config/variables');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -104,7 +105,7 @@ exports.OtCreate = async(req, res) => {
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;
             ot.AbonadoId = req.body.abonado.UserId;
-            ot.EstadoId = process.env.ESTADO_ID_OT_REGISTRADA;
+            ot.EstadoId = VARIABLES.ESTADO_ID_OT_REGISTRADA;
             ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
             ot.createdBy = req.body.createdBy; //registrada
             await ot.save({transaction: t});
@@ -232,7 +233,7 @@ exports.OtFinalizar = async (req, res) => {
             ot.OtFechaInicio = OtFechaInicio;
             ot.OtFechaFinalizacion = OtFechaFinalizacion;
             ot.OtObservacionesResponsableEjecucion = OtObservacionesResponsableEjecucion;
-            ot.EstadoId = process.env.ESTADO_ID_OT_FINALIZADA;
+            ot.EstadoId = VARIABLES.ESTADO_ID_OT_FINALIZADA;
             ot.updatedAt = new Date();
             ot.updatedBy = updatedBy;
             const abonado = await User.findByPk(ot.AbonadoId, {transaction: t});
@@ -246,7 +247,7 @@ exports.OtFinalizar = async (req, res) => {
                 }); 
                 if (ultimoPago) ultimoPagoId = ultimoPago.PagoId;
                 abonado.FechaBajada = OtFechaFinalizacion;
-                abonado.EstadoId = process.env.ESTADO_ID_ABONADO_ACTIVO;
+                abonado.EstadoId = VARIABLES.ESTADO_ID_ABONADO_ACTIVO;
                 const diaActual = new Date().getDate();
                 const mesActual = new Date().getMonth()+1;
                 const ultimoDiaDelMes = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
