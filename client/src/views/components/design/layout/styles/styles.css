@@ -25,7 +25,7 @@
   font-size: 14px !important;
 }
 .react-tabs__tab--selected {
-  background-color: #e2e2e2 !important;
+  background-color: #fff !important;
   border: none !important;
   border-bottom: 4px solid #e3ac4d !important;
   color: #000 !important;

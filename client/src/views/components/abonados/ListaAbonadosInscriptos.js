@@ -117,8 +117,8 @@ const ListaAbonadosInscriptos = () => {
         "sortable": true,
     },
     {
-        "name": <TooltipForTable name="Domicilio Completo" />,
-        "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+        "name": <TooltipForTable name="Domicilio" />,
+        "selector": row => row["DomicilioCalle"] + ' ' + row["DomicilioNumero"] +  ", B° " + row["BarrioNombre"] + ' ' +  row["MunicipioNombre"],
         "wrap": true,
         "sortable": true
     },

@@ -129,143 +129,146 @@ const CaratulaUser = () => {
     <main>
     <form onSubmit={onSubmitUsuario}>
     <Typography variant="h6">{location.state ? `Editar usuario: ${location.state.Apellido},  ${location.state.Nombre}` : "Registrar usuario"}</Typography><br/>
-    <Tabs>
-        <TabList>
-            <Tab><i className="bx bx-user"></i> Usuario</Tab>
-            <Tab onClick={handleChangeTabRoles}><i className='bx bxs-user'></i> Roles</Tab>
-        </TabList>
-        <TabPanel>
-        <Card>
+    <Card>
         <CardContent>
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                    autoFocus
-                    variant="outlined"
-                    value={Nombre}
-                    name="Nombre"
-                    onChange={onInputChange}
-                    fullWidth
-                    label="Nombre">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                    variant="outlined"
-                    value={Apellido}
-                    name="Apellido"
-                    onChange={onInputChange}
-                    fullWidth
-                    label="Apellido">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <TextField
-                    variant="outlined"
-                    value={Documento}
-                    name="Documento"
-                    onChange={onInputChange}
-                    fullWidth
-                    label="DNI"
-                    onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault();
-                    }}}>
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <TextField
-                    variant="outlined"
-                    value={Email}
-                    name="Email"
-                    onChange={onInputChange}
-                    fullWidth
-                    label="Email"
-                    >
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <TextField
-                    variant="outlined"
-                    value={Telefono}
-                    name="Telefono"
-                    onChange={onInputChange}
-                    onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault();
-                    }}}
-                    fullWidth
-                    label="N° Teléfono">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <TextField
-                    disabled= {location.state ? true : false}
-                    variant={location.state ? "filled": "outlined"}
-                    value={NombreUsuario}
-                    name="NombreUsuario"
-                    onChange={onInputChange}
-                    fullWidth
-                    label="Nombre de usuario">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <TextField
-                    variant="outlined"
-                    value={Contraseña}
-                    name="Contraseña"
-                    onChange={onInputChange}
-                    type="password"
-                    fullWidth
-                    label="Contraseña"
-                    >
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4} xl={4}>
-                    <TextField
-                    variant="outlined"
-                    value={RContraseña}
-                    name="RContraseña"
-                    onChange={onInputChange}
-                    type="password"
-                    fullWidth
-                    label="Repita contraseña">
-                    </TextField>
-                </Grid>
-                </Grid>
-                <br/>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                <FormGroup style={{marginTop: '1rem'}}>
-                    { location.state ?
-                    <>
-                    <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckEstaBloqueado} checked={EstaBloqueado} />} label="Bloqueado" />
-                    </>
-                    : ""}
-                    <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckUsuarioDePrueba} checked={EsUsuarioDePrueba}/>} label="Es usuario de prueba" />   
-                </FormGroup>
-                </Grid>
-        </CardContent>
-        <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
-            <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
-            variant="contained" color="primary">
-            {location.state ? "Modificar" : "Registrar"}
-        </Button>
-        </div>
-    </Card>
-        </TabPanel>
-        <TabPanel>
-            <Card>
-            <DataTable
-                columns={columnasRoles}
-                data={roles}
-                onSelectedRowsChange={row => setRolesSeleccionados(row.selectedRows)}
-                selectableRows
-                selectableRowSelected={row => RolesSeleccionados.find((rol) => rol.RoleId === row.RoleId)}>
-            </DataTable>
+            <Tabs>
+                <TabList>
+                    <Tab><i className="bx bx-user"></i> Usuario</Tab>
+                    <Tab onClick={handleChangeTabRoles}><i className='bx bxs-user'></i> Roles</Tab>
+                </TabList>
+                <TabPanel>
+                <Card>
+                <CardContent>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                            <TextField
+                            autoFocus
+                            variant="outlined"
+                            value={Nombre}
+                            name="Nombre"
+                            onChange={onInputChange}
+                            fullWidth
+                            label="Nombre">
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                            <TextField
+                            variant="outlined"
+                            value={Apellido}
+                            name="Apellido"
+                            onChange={onInputChange}
+                            fullWidth
+                            label="Apellido">
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            variant="outlined"
+                            value={Documento}
+                            name="Documento"
+                            onChange={onInputChange}
+                            fullWidth
+                            label="DNI"
+                            onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                            e.preventDefault();
+                            }}}>
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            variant="outlined"
+                            value={Email}
+                            name="Email"
+                            onChange={onInputChange}
+                            fullWidth
+                            label="Email"
+                            >
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            variant="outlined"
+                            value={Telefono}
+                            name="Telefono"
+                            onChange={onInputChange}
+                            onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                            e.preventDefault();
+                            }}}
+                            fullWidth
+                            label="N° Teléfono">
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            disabled= {location.state ? true : false}
+                            variant={location.state ? "filled": "outlined"}
+                            value={NombreUsuario}
+                            name="NombreUsuario"
+                            onChange={onInputChange}
+                            fullWidth
+                            label="Nombre de usuario">
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            variant="outlined"
+                            value={Contraseña}
+                            name="Contraseña"
+                            onChange={onInputChange}
+                            type="password"
+                            fullWidth
+                            label="Contraseña"
+                            >
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={4} xl={4}>
+                            <TextField
+                            variant="outlined"
+                            value={RContraseña}
+                            name="RContraseña"
+                            onChange={onInputChange}
+                            type="password"
+                            fullWidth
+                            label="Repita contraseña">
+                            </TextField>
+                        </Grid>
+                        </Grid>
+                        <br/>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
+                        <FormGroup style={{marginTop: '1rem'}}>
+                            { location.state ?
+                            <>
+                            <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckEstaBloqueado} checked={EstaBloqueado} />} label="Bloqueado" />
+                            </>
+                            : ""}
+                            <FormControlLabel control={<Switch color="primary" onChange={handleChangeCheckUsuarioDePrueba} checked={EsUsuarioDePrueba}/>} label="Es usuario de prueba" />   
+                        </FormGroup>
+                        </Grid>
+                </CardContent>
+                <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
+                    <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
+                    variant="contained" color="primary">
+                    {location.state ? "Modificar" : "Registrar"}
+                </Button>
+                </div>
             </Card>
-        </TabPanel>
-    </Tabs> 
-    
+                </TabPanel>
+                <TabPanel>
+                    <Card>
+                    <DataTable
+                        columns={columnasRoles}
+                        data={roles}
+                        onSelectedRowsChange={row => setRolesSeleccionados(row.selectedRows)}
+                        selectableRows
+                        selectableRowSelected={row => RolesSeleccionados.find((rol) => rol.RoleId === row.RoleId)}>
+                    </DataTable>
+                    </Card>
+                </TabPanel>
+            </Tabs>
+        </CardContent>
+    </Card>
     </form>
     </main>
     <br/>

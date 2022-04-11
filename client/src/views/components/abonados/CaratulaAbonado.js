@@ -222,6 +222,8 @@ const CaratulaAbonado = () => {
     <Typography variant="h6">{location.state ? `Editar abonado: ${location.state.Apellido},  ${location.state.Nombre}` : "Inscribir abonado"}</Typography>
     <br/>
     <form onSubmit={onSubmitAbonado}>
+    <Card>
+        <CardContent>
     <Tabs>
         <TabList>
             <Tab><i className="bx bxs-user"></i> Abonado</Tab>
@@ -604,6 +606,8 @@ const CaratulaAbonado = () => {
         </Card>
     </TabPanel>
     </Tabs>
+    </CardContent>
+    </Card>
     </form>
     </main>
     <Footer/>

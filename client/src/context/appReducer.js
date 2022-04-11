@@ -74,7 +74,15 @@ export default (state, action) => {
         case TYPES.CAMBIO_DOMICILIO_ABONADO: {
             return {
                 ...state,
-                historialDomicilios: [action.payload, ...state.historialDomicilios]
+                historialDomicilios: [{
+                    DomicilioCalle: action.payload.DomicilioCalle,
+                    DomicilioNumero: action.payload.DomicilioNumero,
+                    BarrioNombre: action.payload.Barrio.BarrioNombre,
+                    MunicipioNombre: action.payload.Municipio.MunicipioNombre,
+                    FechaPedidoCambio: new Date().toISOString(),
+                    FechaFinalizacionOt: null,
+                    CambioDomicilioObservaciones: 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo domicilio del abonado'
+                }, ...state.historialDomicilios]
             };
         }
         case TYPES.CAMBIO_SERVICIO_ABONADO: {

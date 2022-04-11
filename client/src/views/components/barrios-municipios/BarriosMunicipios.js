@@ -1,3 +1,4 @@
+import { Card, CardContent } from '@material-ui/core';
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -12,18 +13,22 @@ const BarriosMunicipios = () => {
     <div className="container">
         <Aside/>
         <main>
-        <Tabs>
-            <TabList>
-            <Tab><i className="bx bx-map"></i> Municipios</Tab>
-            <Tab><i className='bx bx-map-alt'></i> Barrios</Tab>
-            </TabList>
-            <TabPanel>
-            <ListaMunicipios/>
-            </TabPanel>
-            <TabPanel>
-            <ListaBarrios/>
-            </TabPanel>
-        </Tabs>
+        <Card>
+            <CardContent>
+                <Tabs>
+                    <TabList>
+                    <Tab><i className="bx bx-map"></i> Municipios</Tab>
+                    <Tab><i className='bx bx-map-alt'></i> Barrios</Tab>
+                    </TabList>
+                    <TabPanel>
+                    <ListaMunicipios/>
+                    </TabPanel>
+                    <TabPanel>
+                    <ListaBarrios/>
+                    </TabPanel>
+                </Tabs>
+            </CardContent>
+        </Card>
     </main>
     <Footer/>
     </div>

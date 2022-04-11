@@ -91,61 +91,65 @@ const CaratulaRole = () => {
     <main>
     <form onSubmit={onSubmitUsuario}>
     <Typography variant="h6">{location.state ? `Editar rol: ${location.state.RoleName}` : "Crear rol"}</Typography><br/>
-    <Tabs>
-    <TabList>
-        <Tab><i className="bx bxs-user"></i> Rol</Tab>
-        <Tab onClick={handleChangeTabsPermisos}><i className='bx bxs-lock'></i> Permisos</Tab>
-    </TabList>
-    <TabPanel>
     <Card>
         <CardContent>
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                    autoFocus
-                    variant="outlined"
-                    value={RoleName}
-                    name="RoleName"
-                    onChange={onInputChange}
-                    fullWidth
-                    label="Nombre">
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <TextField
-                    variant="outlined"
-                    value={RoleDescription}
-                    name="RoleDescription"
-                    onChange={onInputChange}
-                    fullWidth
-                    label="Descripción">
-                    </TextField>
-                </Grid>
-                </Grid>
-                <br/>
-        </CardContent>
-        <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
-            <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
-            variant="contained" color="primary">
-            {location.state ? "Modificar" : "Registrar"}
-        </Button>
-        </div>
+            <Tabs>
+                <TabList>
+                    <Tab><i className="bx bxs-user"></i> Rol</Tab>
+                    <Tab onClick={handleChangeTabsPermisos}><i className='bx bxs-lock'></i> Permisos</Tab>
+                </TabList>
+                <TabPanel>
+                <Card>
+                    <CardContent>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={6} lg={6} xl={6}>
+                                <TextField
+                                autoFocus
+                                variant="outlined"
+                                value={RoleName}
+                                name="RoleName"
+                                onChange={onInputChange}
+                                fullWidth
+                                label="Nombre">
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={6} xl={6}>
+                                <TextField
+                                variant="outlined"
+                                value={RoleDescription}
+                                name="RoleDescription"
+                                onChange={onInputChange}
+                                fullWidth
+                                label="Descripción">
+                                </TextField>
+                            </Grid>
+                            </Grid>
+                            <br/>
+                    </CardContent>
+                    <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
+                        <Button type="submit" startIcon={<i className={location.state ? "bx bx-edit":"bx bx-check"}></i>}
+                        variant="contained" color="primary">
+                        {location.state ? "Modificar" : "Registrar"}
+                    </Button>
+                    </div>
+                </Card>
+                </TabPanel>
+                <TabPanel>
+                    <Card>
+                    <DataTable
+                        columns={columnasPermisos}
+                        data={permisos}
+                        onSelectedRowsChange={row => setPermisosSeleccionados(row.selectedRows)}
+                        paginationComponentOptions={paginacionOpciones}
+                        pagination={true}
+                        selectableRows
+                        selectableRowSelected={row => PermisosSeleccionados.find((permiso) => row.PermissionId === permiso.PermissionId)}>
+                    </DataTable>
+                    </Card>
+                </TabPanel>
+            </Tabs>
+    </CardContent>
     </Card>
-    </TabPanel>
-    <TabPanel>
-        <Card>
-        <DataTable
-            columns={columnasPermisos}
-            data={permisos}
-            onSelectedRowsChange={row => setPermisosSeleccionados(row.selectedRows)}
-            paginationComponentOptions={paginacionOpciones}
-            pagination={true}
-            selectableRows
-            selectableRowSelected={row => PermisosSeleccionados.find((permiso) => row.PermissionId === permiso.PermissionId)}>
-        </DataTable>
-        </Card>
-    </TabPanel>
-    </Tabs>
     </form>
     </main>
     <br/>

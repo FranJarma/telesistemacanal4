@@ -1,5 +1,5 @@
 import { Checkbox, FormControl, FormControlLabel, Typography } from '@material-ui/core';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AppContext from '../../../context/appContext';
 import olinet from '../../images/olinet.png';
 import logo from '../../images/logo-ts.png';
@@ -9,6 +9,7 @@ import convertirAHora from '../../../helpers/ConvertirAHora';
 const CaratulaImpresionOt = ({datos}) => {
     const appContext = useContext(AppContext);
     const { tareasOrdenDeTrabajo, tecnicosOrdenDeTrabajo, traerTareasOt, traerTecnicosOt } = appContext;
+    
     useEffect(()=> {
         traerTareasOt(datos.OtId);
         traerTecnicosOt(datos.OtId);
@@ -18,11 +19,10 @@ const CaratulaImpresionOt = ({datos}) => {
         (datos ? 
         <>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <img src={logo} alt="" style={{width: '6rem', height: '3rem'}}/>
-            <Typography variant="h1">Orden de trabajo N° {datos.OtId}</Typography>
-            <img src={olinet} alt="" style={{width: '6rem', height: '3rem'}}/>
+            <img src={logo} alt="" style={{width: '4rem', height: '5rem', marginTop: -36}}/>
+            <Typography variant="h1">Orden de trabajo N° {datos.OtId} <i onClick={() => window.print()} className="bx bx-printer"></i></Typography>
+            <img src={olinet} alt="" style={{width: '4rem', height: '5rem', marginTop: -36}}/>
         </div>
-        <br/>
         <Typography variant="h6"><b>Responsable de emisión: </b>{datos.ApellidoResponsableCreacion} {datos.NombreResponsableCreacion}</Typography>
             <hr/>
             <br/>
@@ -63,10 +63,10 @@ const CaratulaImpresionOt = ({datos}) => {
             <Typography variant="h6"><b>Fecha de realización:</b>{datos.OtFechaFinalizacion ? convertirAFecha(datos.OtFechaFinalizacion) : ""}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Hora de inicio:</b>{datos.OtFechaInicio ? convertirAFecha(datos.OtFechaInicio) : ""}</Typography>
+            <Typography variant="h6"><b>Hora de inicio:</b>{datos.OtFechaInicio ? convertirAHora(datos.OtFechaInicio) : ""}</Typography>
             <hr/>
             <br/>
-            <Typography variant="h6"><b>Hora de finalización:</b>{datos.OtFechaFinalizacion ? convertirAFecha(datos.OtFechaFinalizacion) : ""}</Typography>
+            <Typography variant="h6"><b>Hora de finalización:</b>{datos.OtFechaFinalizacion ? convertirAHora(datos.OtFechaFinalizacion) : ""}</Typography>
             <hr/>
             <br/>
             <FormControl>

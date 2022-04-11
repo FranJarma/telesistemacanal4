@@ -255,11 +255,13 @@ exports.AbonadoGetById = async(req, res) => {
 }
 exports.AbonadoListarDomicilios = async(req, res) => {
     try {
-        const domicilios = await knex.select('*').from('userdomicilio as ud')
+        const domicilios = await knex.select('*','ud.createdAt as FechaPedidoCambio', 'ot.OtFechaInicio as FechaInicioOt', 'ot.OtFechaFinalizacion as FechaFinalizacionOt')
+        .from('userdomicilio as ud')
         .innerJoin('_user as u', 'u.UserId', '=', 'ud.UserId')
         .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'ud.DomicilioId')
         .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
         .innerJoin('municipio as m', 'm.MunicipioId', '=', 'b.MunicipioId')
+        .leftJoin('ot as ot', 'ot.NuevoDomicilioId', '=', 'd.DomicilioId')
         .where('ud.UserId', '=', req.params.id)
         .orderBy('ud.createdAt', 'desc');
         res.json(domicilios);
@@ -563,6 +565,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             }); 
             if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
             const domicilio = new Domicilio(req.body, {transaction: t});
+            domicilio.createdAt = new Date();
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
             let ultimoUserDomicilio = await UserDomicilio.findOne({
@@ -570,6 +573,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             })
             const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
             abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
+            abonadoDomicilio.createdAt = new Date();
             abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
             abonadoDomicilio.createdBy = req.body.createdBy;
             abonadoDomicilio.CambioDomicilioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo domicilio del abonado';
@@ -582,7 +586,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MovimientoConceptoId = 5; //cambio de domicilio
-            movimiento.MunicipioId = req.body.MunicipioId;
+            movimiento.MunicipioId = req.body.Municipio.MunicipioId;
             movimiento.AbonadoId = abonado.UserId;
             movimiento.MedioPagoId = req.body.MedioPago.MedioPagoId;
             //registramos un nuevo pago

@@ -10,6 +10,7 @@ import Modal from '../design/components/Modal';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import { Link } from 'react-router-dom';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import TooltipForTable from '../../../helpers/TooltipForTable';
 
 const ListaAbonadosInactivos = () => {
     const appContext = useContext(AppContext);
@@ -83,8 +84,8 @@ const ListaAbonadosInactivos = () => {
             "hide": "sm"
         },
         {
-            "name": "Domicilio",
-            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+            "name": <TooltipForTable name="Domicilio" />,
+            "selector": row => row["DomicilioCalle"] + ' ' + row["DomicilioNumero"] +  ", B° " + row["BarrioNombre"] + ' ' +  row["MunicipioNombre"],
             "wrap": true,
             "sortable": true
         },

@@ -108,8 +108,8 @@ const ListaOtPendientes = () => {
             "width": "300px",
             "wrap": true,
             "sortable": true,
-            "selector": row => row["NuevoDomicilioId"] == null ? row["DomicilioCalle"] + " " + row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + " " + row["MunicipioNombre"] :
-            <DesdeHasta title1="Domicilio Viejo" title2="Domicilio Nuevo" proposito={"Cambio de Domicilio"} desde={row["DomicilioCalle"] + " " +  row["DomicilioNumero"] + "|Barrio " + row["BarrioNombre"] + "|" + row["MunicipioNombre"]} hasta={row["DomicilioCalleCambio"] + " " +  row["DomicilioNumeroCambio"] + "|Barrio " + row["BarrioNombreCambio"] + "|" + row["MunicipioNombreCambio"]}></DesdeHasta>
+            "selector": row => row["NuevoDomicilioId"] == "" ? row["DomicilioCalle"] + " " + row["DomicilioNumero"] + ", B° " + row["BarrioNombre"] + " " + row["MunicipioNombre"] :
+            <DesdeHasta title1="Domicilio Viejo" title2="Domicilio Nuevo" proposito={"Cambio de Domicilio"} desde={row["DomicilioCalle"] + " " +  row["DomicilioNumero"] + ", B° " + row["BarrioNombre"] + " " + row["MunicipioNombre"]} hasta={row["DomicilioCalleCambio"] + " " +  row["DomicilioNumeroCambio"] + ", B° " + row["BarrioNombreCambio"] + " " + row["MunicipioNombreCambio"]}></DesdeHasta>
         },
         {
             "name": <TooltipForTable name="Fecha de Emisión"/>,
@@ -169,7 +169,7 @@ const ListaOtPendientes = () => {
         <div className="container">
         <Aside/>
         <main>
-        <Typography variant="h6">Filtros</Typography>
+        {/* <Typography variant="h6">Filtros</Typography>
         <br/>
         <Card>
             <CardContent>
@@ -203,7 +203,7 @@ const ListaOtPendientes = () => {
                 </Grid>
             </CardContent>
         </Card>
-        <br/>
+        <br/> */}
         <Typography variant="h6">Listado de Órdenes de Trabajo sin finalizar</Typography>
         <br/>
         <Card>

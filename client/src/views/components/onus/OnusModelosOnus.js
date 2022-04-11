@@ -1,3 +1,4 @@
+import { Card, CardContent } from '@material-ui/core';
 import React from 'react';
 import { useLocation } from 'react-router';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -14,18 +15,22 @@ const OnusModelosOnus = () => {
     <div className="container">
         <Aside/>
         <main>
-        <Tabs>
-            <TabList>
-            <Tab><i className='bx bxs-hdd'></i> ONUS</Tab>
-            <Tab><i className="bx bxs-category"></i> Modelos ONUS</Tab>
-            </TabList>
-            <TabPanel>
-            <ListaOnus location={location}/>
-            </TabPanel>
-            <TabPanel>
-            <ListaModelosOnus location={location}/>
-            </TabPanel>
-        </Tabs>
+            <Card>
+                <CardContent>
+                <Tabs>
+                    <TabList>
+                    <Tab><i className='bx bxs-hdd'></i> ONUS</Tab>
+                    <Tab><i className="bx bxs-category"></i> Modelos ONUS</Tab>
+                    </TabList>
+                    <TabPanel>
+                    <ListaOnus location={location}/>
+                    </TabPanel>
+                    <TabPanel>
+                    <ListaModelosOnus location={location}/>
+                    </TabPanel>
+                </Tabs>
+                </CardContent>
+            </Card>
     </main>
     <Footer/>
     </div>
