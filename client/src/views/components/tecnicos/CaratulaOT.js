@@ -201,23 +201,20 @@ const CaratulaOt = () => {
                                     </TextField>
                                 </Grid>
                                 <Grid item xs={6} md={3} lg={3} xl={3}>
-                                    <DatePicker
-                                        disabled
-                                        value={new Date()}
-                                        format="dd/MM/yyyy"
-                                        inputVariant="filled"
+                                    <TextField
+                                        value={new Date().toLocaleDateString()}
+                                        variant="outlined"
                                         fullWidth
                                         label="Fecha de emisión de OT"
-                                    ></DatePicker>
+                                    ></TextField>
                                 </Grid>
                                 <Grid item xs={6} md={2} lg={2} xl={2}>
-                                    <TimePicker
-                                        value={new Date()}
-                                        disabled
-                                        inputVariant="filled"
+                                    <TextField
+                                        value={new Date().toLocaleTimeString()}
+                                        variant="outlined"
                                         fullWidth
                                         label="Hora de emisión de OT"
-                                    ></TimePicker>
+                                    ></TextField>
                                 </Grid>
                                 <Grid item xs={12} md={4} lg={4} xl={4}>
                                     <DatePicker
@@ -331,6 +328,7 @@ const CaratulaOt = () => {
                                     <Card>
                                         <CardContent>
                                         <Datatable
+                                            loader
                                             datos={ordenesDeTrabajoAsignadas}
                                             columnas={columnasOt}>
                                         </Datatable>

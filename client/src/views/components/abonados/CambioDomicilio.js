@@ -361,6 +361,7 @@ const CambioDomicilio = () => {
                         <Card>
                             <CardContent>
                             <Datatable
+                                loader
                                 datos={ordenesDeTrabajoAsignadas}
                                 columnas={columnasOt}>
                             </Datatable>

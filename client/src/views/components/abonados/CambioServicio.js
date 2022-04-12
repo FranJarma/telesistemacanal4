@@ -306,6 +306,7 @@ const CambioServicio = () => {
                         <Card>
                             <CardContent>
                             <Datatable
+                                loader
                                 datos={ordenesDeTrabajoAsignadas}
                                 columnas={columnasOt}>
                             </Datatable>
