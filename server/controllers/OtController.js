@@ -13,6 +13,7 @@ const Onu = require('../models/Onu');
 const Pago = require('../models/Pago');
 const Servicio = require('../models/Servicio');
 const VARIABLES = require('./../config/variables');
+const { Op } = require('sequelize');
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -21,10 +22,12 @@ exports.OtGet = async(req, res) => {
         const ot = await knex
         .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
         'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.OtRetiraCable', 'ot.OtRetiraOnu',
-        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion', 'ot.OtEsPrimeraBajada', 'ot.NuevoServicioId',
-        'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado', 'u.ServicioId',
+        'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion', 'ot.OtEsPrimeraBajada', 'ot.NuevoServicioId', 'ot.NuevoDomicilioId',
+        'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado', 'u.OnuId',
+        's.ServicioId as ServicioViejoId', 's1.ServicioId as ServicioNuevoId',
+        's.ServicioNombre as ServicioViejo', 's1.ServicioNombre as ServicioNuevo',
         'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
-        'u2.Nombre as NombreResponsableEjecucion', 'u2.Apellido as ApellidoResponsableEjecucion',
+        'u2.Nombre as NombreResponsableEjecucion', 'u2.Apellido as ApellidoResponsableEjecucion', 'u2.UserId as OtResponsableEjecucion' ,
         'd.DomicilioCalle', 'd.DomicilioNumero', 'd1.DomicilioCalle as DomicilioCalleCambio', 'd1.DomicilioNumero as DomicilioNumeroCambio',
         'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre',
         'b1.BarrioNombre as BarrioNombreCambio', 'm.MunicipioNombre as MunicipioNombreCambio'
@@ -40,6 +43,8 @@ exports.OtGet = async(req, res) => {
         .leftJoin('domicilio as d1', 'ot.NuevoDomicilioId', '=', 'd1.DomicilioId')
         .leftJoin('barrio as b1', 'b1.BarrioId', '=', 'd1.BarrioId')
         .leftJoin('municipio as m1', 'b1.MunicipioId', '=', 'm1.MunicipioId')
+        .leftJoin('servicio as s', 's.ServicioId', '=', 'u.ServicioId')
+        .leftJoin('servicio as s1', 's1.ServicioId', '=', 'ot.NuevoServicioId')
         .innerJoin('ottarea as ott', 'ott.OtId', '=' ,'ot.OtId')
         .innerJoin('tarea as t', 'ott.TareaId', '=' ,'t.TareaId')
         .where(
@@ -58,11 +63,11 @@ exports.OtGet = async(req, res) => {
 exports.OtGetByTecnico = async(req, res) => {
     try {
         const ot = await knex
-        .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita', 'ot.OtCuartaVisita',
+        .select('ot.OtId', 'ot.OtFechaPrevistaVisita', 'ot.OtPrimeraVisita', 'ot.OtSegundaVisita', 'ot.OtTerceraVisita','ot.OtCuartaVisita',
         'ot.OtObservacionesResponsableEmision', 'ot.OtFechaInicio', 'ot.OtFechaFinalizacion', 'ot.OtRetiraCable', 'ot.OtRetiraOnu',
         'ot.createdAt', 'ot.OtObservacionesResponsableEjecucion', 'ot.NuevoServicioId',
         'u.Nombre as NombreAbonado', 'u.Apellido as ApellidoAbonado', 'u.ServicioId',
-        'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion',
+        'u1.Nombre as NombreResponsableCreacion', 'u1.Apellido as ApellidoResponsableCreacion', 'u.OnuId',
         'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioId', 'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre'
         )
         .sum('t.TareaPrecioOt as Monto')
@@ -107,17 +112,9 @@ exports.OtCreate = async(req, res) => {
             ot.AbonadoId = req.body.abonado.UserId;
             ot.EstadoId = VARIABLES.ESTADO_ID_OT_REGISTRADA;
             ot.OtObservacionesResponsableEmision = req.body.OtObservacionesResponsableEmision;
+            ot.OtResponsableEjecucion = req.body.OtResponsableEjecucion.UserId;
             ot.createdBy = req.body.createdBy; //registrada
             await ot.save({transaction: t});
-            for (let i=0; i<= req.body.tecnicosOt.length-1; i++){
-                let obj = {
-                    TecnicoId: req.body.tecnicosOt[i].UserId,
-                    OtId: ot.OtId,
-                    createdBy: req.body.createdBy
-                }
-                const otTecnico = new OtTecnico(obj);
-                await otTecnico.save({transaction: t});
-            }
         
             for (let i=0; i<= req.body.tareasOt.length-1; i++){
                 let obj = {
@@ -257,88 +254,10 @@ exports.OtFinalizar = async (req, res) => {
                 FechaVencimientoServicio = OtFechaFinalizacion.replace(añoFechaFinalizacion, añoFechaFinalizacion + 2);
                 //Registramos los pagos vacíos de 2 años
                 for(let i= 1; i<=12; i++) {
-                if(i==mesActual && diaActual >=15) {
-                    pago1 = {
-                        PagoId: ultimoPagoId + 1,
-                        PagoSaldo: (ultimoDiaDelMes - diaActual) * servicio.ServicioMultiplicadorPrimerMes, //precio mensual del servicio,
-                        PagoTotal: (ultimoDiaDelMes - diaActual) * servicio.ServicioMultiplicadorPrimerMes,
-                        PagoRecargo: 0,
-                        PagoAño: new Date().getFullYear(),
-                        PagoMes: i,
-                        createdAt: new Date(),
-                        createdBy: updatedBy,
-                        UserId: abonado.UserId,
-                        PagoConceptoId: 1
-                    }
-                    const newPago1 = new Pago(pago1);
-                    await newPago1.save({transaction: t});
-                    ultimoPagoId = ultimoPagoId + 1;
-                }
-                if(i>mesActual) {
-                    pago1 = {
-                        PagoId: ultimoPagoId + 1,
-                        PagoSaldo: servicio.ServicioPrecioUnitario, //precio mensual del servicio,
-                        PagoTotal: servicio.ServicioPrecioUnitario,
-                        PagoRecargo: 0,
-                        PagoAño: new Date().getFullYear(),
-                        PagoMes: i,
-                        createdAt: new Date(),
-                        createdBy: updatedBy,
-                        UserId: abonado.UserId,
-                        PagoConceptoId: 1
-                    }
-                    const newPago1 = new Pago(pago1);
-                    await newPago1.save({transaction: t});
-                    ultimoPagoId = ultimoPagoId + 1;
-                }
-            }
-            for(let i= 1; i<=12; i++) {
-                pago2 = {
-                    PagoId: ultimoPagoId + 1,
-                    PagoSaldo: servicio.ServicioPrecioUnitario, //precio mensual del servicio,
-                    PagoTotal: servicio.ServicioPrecioUnitario,
-                    PagoRecargo: 0,
-                    PagoAño: new Date().getFullYear()+1,
-                    PagoMes: i,
-                    createdAt: new Date(),
-                    createdBy: updatedBy,
-                    UserId: abonado.UserId,
-                    PagoConceptoId: 1
-                }
-                const newPago2 = new Pago(pago2);
-                await newPago2.save({transaction: t});
-                ultimoPagoId = ultimoPagoId + 1;
-            }
-            for(let i= 1; i<=12; i++) {
-                if(i<=mesActual) {
-                    pago3 = {
-                        PagoId: ultimoPagoId + 1,
-                        PagoSaldo: servicio.ServicioPrecioUnitario, //precio mensual del servicio,
-                        PagoTotal: servicio.ServicioPrecioUnitario,
-                        PagoRecargo: 0,
-                        PagoAño: new Date().getFullYear()+2,
-                        PagoMes: i,
-                        createdAt: new Date(),
-                        createdBy: updatedBy,
-                        UserId: abonado.UserId,
-                        PagoConceptoId: 1
-                    }
-                    const newPago3 = new Pago(pago3);
-                    await newPago3.save({transaction: t});
-                    ultimoPagoId = ultimoPagoId + 1;
-                }
-            }
-            if(abonado.ServicioId !== 1) {
-                const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
-                onu.EstadoId = 4;
-                // await onu.save({transaction: t});
-                abonado.OnuId = onu.OnuId;
-                //Registramos los pagos vacíos de 1 año
-                for(let i= 1; i<=12; i++) {
-                    if(i==mesActual) {
+                    if(i==mesActual && diaActual >=15) {
                         pago1 = {
                             PagoId: ultimoPagoId + 1,
-                            PagoSaldo: (ultimoDiaDelMes - diaActual) * servicio.ServicioMultiplicadorPrimerMes,
+                            PagoSaldo: (ultimoDiaDelMes - diaActual) * servicio.ServicioMultiplicadorPrimerMes, //precio mensual del servicio,
                             PagoTotal: (ultimoDiaDelMes - diaActual) * servicio.ServicioMultiplicadorPrimerMes,
                             PagoRecargo: 0,
                             PagoAño: new Date().getFullYear(),
@@ -346,7 +265,7 @@ exports.OtFinalizar = async (req, res) => {
                             createdAt: new Date(),
                             createdBy: updatedBy,
                             UserId: abonado.UserId,
-                            PagoConceptoId: 1
+                            PagoConceptoId: VARIABLES.ID_CONCEPTO_COBRO_MENSUALIDAD
                         }
                         const newPago1 = new Pago(pago1);
                         await newPago1.save({transaction: t});
@@ -363,7 +282,7 @@ exports.OtFinalizar = async (req, res) => {
                             createdAt: new Date(),
                             createdBy: updatedBy,
                             UserId: abonado.UserId,
-                            PagoConceptoId: 1
+                            PagoConceptoId: VARIABLES.ID_CONCEPTO_COBRO_MENSUALIDAD
                         }
                         const newPago1 = new Pago(pago1);
                         await newPago1.save({transaction: t});
@@ -381,15 +300,40 @@ exports.OtFinalizar = async (req, res) => {
                         createdAt: new Date(),
                         createdBy: updatedBy,
                         UserId: abonado.UserId,
-                        PagoConceptoId: 1
+                        PagoConceptoId: VARIABLES.ID_CONCEPTO_COBRO_MENSUALIDAD
                     }
                     const newPago2 = new Pago(pago2);
                     await newPago2.save({transaction: t});
                     ultimoPagoId = ultimoPagoId + 1;
                 }
-            }
-            abonado.FechaVencimientoServicio = FechaVencimientoServicio;
-            await abonado.save({transaction: t});
+                for(let i= 1; i<=12; i++) {
+                    if(i<=mesActual) {
+                        pago3 = {
+                            PagoId: ultimoPagoId + 1,
+                            PagoSaldo: servicio.ServicioPrecioUnitario, //precio mensual del servicio,
+                            PagoTotal: servicio.ServicioPrecioUnitario,
+                            PagoRecargo: 0,
+                            PagoAño: new Date().getFullYear()+2,
+                            PagoMes: i,
+                            createdAt: new Date(),
+                            createdBy: updatedBy,
+                            UserId: abonado.UserId,
+                            PagoConceptoId: VARIABLES.ID_CONCEPTO_COBRO_MENSUALIDAD
+                        }
+                        const newPago3 = new Pago(pago3);
+                        await newPago3.save({transaction: t});
+                        ultimoPagoId = ultimoPagoId + 1;
+                    }
+                }
+                //si es combo o internet, asignamos ONU
+                if(abonado.ServicioId !== 1) {
+                    const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
+                    onu.EstadoId = 4;
+                    await onu.save({transaction: t});
+                    abonado.OnuId = onu.OnuId;
+                }
+                abonado.FechaVencimientoServicio = FechaVencimientoServicio;
+                await abonado.save({transaction: t});
             }
             await ot.save({transaction: t});
             //CAMBIO DE DOMICILIO
@@ -406,12 +350,20 @@ exports.OtFinalizar = async (req, res) => {
             }
             //CAMBIO DE SERVICIO
             if(ot.NuevoServicioId !== null) {
-                if(ot.NuevoServicioId !== 1) {
+                const nuevoServicio = await Servicio.findByPk(ot.NuevoServicioId, {transaction: t});
+                //si el abonado elije internet o combo, y no tiene onu, le asignamos una
+                if(ot.NuevoServicioId !== 1 && !abonado.OnuId) {
                     const onu = await Onu.findByPk(req.body.Onu.OnuId, {transaction: t});
                     onu.EstadoId = 4;
                     await onu.save({transaction: t});
-
                     abonado.OnuId = onu.OnuId;
+                }
+                //si el abonado elije cable y tiene ONU, se la desasignamos
+                if(ot.NuevoServicioId === 1 && abonado.OnuId){
+                    const onuAbonado = await Onu.findByPk(abonado.OnuId, {transaction: t});
+                    onuAbonado.EstadoId = 5;
+                    await onuAbonado.save({transaction: t});
+                    abonado.OnuId = null;
                 }
                 const userServicio = await UserServicio.findOne({
                     where: {
@@ -424,6 +376,22 @@ exports.OtFinalizar = async (req, res) => {
                 abonado.ServicioId = ot.NuevoServicioId;
                 await userServicio.save({transaction: t});
                 await abonado.save({transaction: t});
+                //CAMBIAR TODOS LOS MONTOS DE LOS PAGOS PENDIENTES
+                await Pago.update(
+                    {
+                        PagoTotal: nuevoServicio.ServicioPrecioUnitario,
+                        PagoSaldo: nuevoServicio.ServicioPrecioUnitario
+                    },
+                    {
+                        where: {
+                            UserId: abonado.UserId,
+                            PagoSaldo: {
+                                [Op.gt]: 0
+                            },
+                            PagoConceptoId: VARIABLES.ID_CONCEPTO_COBRO_MENSUALIDAD
+                        }
+                    },
+                {transaction: t});
             }
             if(Monto > 0) {
                 //buscamos el ultimo Movimiento

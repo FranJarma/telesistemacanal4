@@ -30,8 +30,7 @@ const ListaOtPendientes = () => {
     const [ModalEliminarOt, setModalEliminarOt] = useState(false);
 
     const [OtInfo, setOtInfo] = useState({})
-    const [Desde, setDesde] = useState(null);
-    const [Hasta, setHasta] = useState(null);
+
     const [OtObservacionesResponsableEjecucion, setOtObservacionesResponsableEjecucion] = useState("");
     const [FechaVisita, setFechaVisita] = useState(new Date());
     const [OtFechaInicio, setOtFechaInicio] = useState(new Date());
@@ -108,8 +107,16 @@ const ListaOtPendientes = () => {
             "width": "300px",
             "wrap": true,
             "sortable": true,
-            "selector": row => row["NuevoDomicilioId"] == "" ? row["DomicilioCalle"] + " " + row["DomicilioNumero"] + ", B° " + row["BarrioNombre"] + " " + row["MunicipioNombre"] :
+            "selector": row => !row["DomicilioCalleCambio"] ? row["DomicilioCalle"] + " " + row["DomicilioNumero"] + ", B° " + row["BarrioNombre"] + " " + row["MunicipioNombre"] :
             <DesdeHasta title1="Domicilio Viejo" title2="Domicilio Nuevo" proposito={"Cambio de Domicilio"} desde={row["DomicilioCalle"] + " " +  row["DomicilioNumero"] + ", B° " + row["BarrioNombre"] + " " + row["MunicipioNombre"]} hasta={row["DomicilioCalleCambio"] + " " +  row["DomicilioNumeroCambio"] + ", B° " + row["BarrioNombreCambio"] + " " + row["MunicipioNombreCambio"]}></DesdeHasta>
+        },
+        {
+            "name": "Servicio",
+            "width": "300px",
+            "wrap": true,
+            "sortable": true,
+            "selector": row => !row["NuevoServicioId"] ? row["ServicioViejo"]:
+            <DesdeHasta title1="Servicio Viejo" title2="Servicio Nuevo" proposito={"Cambio de Servicio"} desde={row["ServicioViejo"]} hasta={row["ServicioNuevo"]}></DesdeHasta>
         },
         {
             "name": <TooltipForTable name="Fecha de Emisión"/>,
@@ -300,7 +307,7 @@ const ListaOtPendientes = () => {
                         label="Fecha y hora de finalización"
                         ></KeyboardDateTimePicker>
                     </Grid>
-                    {OtInfo.ServicioId !== 1 ?
+                    {(OtInfo.ServicioNuevoId !== 1 && !OtInfo.OnuId) ?
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Autocomplete
                             value={Onu}

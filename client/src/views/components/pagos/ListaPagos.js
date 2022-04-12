@@ -88,6 +88,7 @@ const ListaPagos = () => {
     }
     const handleChangeModalPagoAdelantado = (data, edit = false) => {
         setPagoAdelantadoInfo({
+            ...PagoAdelantadoInfo,
             MunicipioId: MunicipioId,
             ServicioId: ServicioId,
             createdBy: localStorage.getItem('identity'),
@@ -253,6 +254,8 @@ const ListaPagos = () => {
         <main>
         <Typography variant="h6">Historial de pagos de: {location.state.Apellido}, {location.state.Nombre}</Typography>
         <br/>
+        <Card>
+            <CardContent>
             <Tabs>
                 <TabList>
                     <Tab onClick={() => {
@@ -322,6 +325,8 @@ const ListaPagos = () => {
                     )
                 }
             </Tabs>
+            </CardContent>
+        </Card>
             <Modal
             abrirModal={ModalPagoAdelantado}
             funcionCerrar={handleChangeModalPagoAdelantado}

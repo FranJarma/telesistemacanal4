@@ -53,10 +53,7 @@ const CambioServicio = () => {
     const [MedioPago, setMedioPago] = useState(null);
     const [OtObservacionesResponsableEmision, setOtObservacionesResponsableEmision] = useState(null);
     const [PagoInfo, setPagoInfo] = useState({
-        Interes: null,
-        Total: null,
-        Inscripcion: null,
-        Saldo: null
+        Total: null
     });
     const onInputChangeObservacionesOt = (e) => {
         setOtObservacionesResponsableEmision(e.target.value);
@@ -73,9 +70,8 @@ const CambioServicio = () => {
         setMedioPago(e.target.value);
         setPagoInfo({
             ...PagoInfo,
-            Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2),
-            Saldo: (Servicio.ServicioInscripcion/e.target.value.MedioPagoCantidadCuotas)
-        });
+            Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2)
+        })
     }
     const onSubmitAbonado = (e) => {
         e.preventDefault();
@@ -186,30 +182,27 @@ const CambioServicio = () => {
             </TabList>
             <TabPanel>
             <br/>
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <Card className={styles.cartaSecundaria}>
-                        <CardContent>
+            <Card className={styles.cartaSecundaria}>
+                <CardContent>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
                             <Typography variant="h6"><b>Domicilio actual: </b>{location.state.DomicilioCalle}, {location.state.DomicilioNumero}</Typography>
                             <Typography variant="h6"><b>Barrio: </b>{location.state.BarrioNombre}</Typography>
                             <Typography variant="h6"><b>Municipio: </b> {location.state.MunicipioNombre}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={6} lg={6} xl={6}>
-                    <Card className={styles.cartaSecundaria}>
-                        <CardContent>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={6} xl={6}>
                             <Typography variant="h6"><b>Servicio actual: </b> {location.state.ServicioNombre}</Typography>
                             <Typography variant="h6"><b>Fecha de contrato: </b> {convertirAFecha(location.state.FechaContrato)}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
+            <br/>
             </TabPanel>
             <TabPanel>
             <br/>
             <Grid container spacing={3}>
-                <Grid item xs={6} md={4} lg={4} xl={4}>
+                <Grid item xs={6} md={6} lg={6} xl={6}>
                     <TextField
                     variant="outlined"
                     onChange={handleChangeServicioSeleccionado}
@@ -251,21 +244,11 @@ const CambioServicio = () => {
                 { Servicio !== null && MedioPago !== null
                     ?
                     <>
-                    <Grid item xs={12} md={2} lg={2} xl={2}>
-                        <TextField
-                            variant="outlined"
-                            value={PagoInfo.Interes * Servicio.ServicioInscripcion}
-                            label={"Interés del total: (" + MedioPago.MedioPagoInteres +"%)"}
-                            fullWidth
-                            >
-                        </TextField>
-                    </Grid>
-                    <br/>
                     <Grid item xs={12} md={12} sm={12}>
                         <Typography variant="h2"><b>Precio Final (Precio Inscripción + Interés {MedioPago.MedioPagoInteres} %):</b> ${convertirAMoney(PagoInfo.Total)}</Typography>
                         {MedioPago.MedioPagoId === 10 ? 
-                        <Typography variant="h2"><b>Saldo restante por facilidad de pago:</b> ${PagoInfo.Saldo}</Typography> : "" }
-                    </Grid>
+                        <Typography variant="h2"><b>Saldo restante por facilidad de pago:</b> ${convertirAMoney((PagoInfo.Total / 2).toFixed(2))}</Typography> : "" }
+                        </Grid>
                     </>
                 :""}
                 

@@ -10,9 +10,9 @@ router.get('/tecnicos/:OtId', ValidarJWT, OtController.OtObtenerTecnicos);
 router.get('/tareas/:OtId', ValidarJWT, OtController.OtObtenerTareas);
 
 router.post('/create', ValidarJWT, [
-    check('OtFechaPrevistaVisita', 'La fecha prevista de visita es obligatoria').notEmpty(),
-    check('tecnicosOt', 'Seleccione el o los técnicos encargados').notEmpty(),
     check('abonado', 'El abonado es obligatorio').notEmpty(),
+    check('OtFechaPrevistaVisita', 'La fecha prevista de visita es obligatoria').notEmpty(),
+    check('OtResponsableEjecucion', 'Seleccione un técnico').notEmpty(),
     check('tareasOt', 'Seleccione el o las tareas a realizar').notEmpty()
 ], OtController.OtCreate);
 

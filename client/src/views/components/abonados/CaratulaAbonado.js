@@ -94,8 +94,7 @@ const CaratulaAbonado = () => {
         setMedioPago(e.target.value);
         setPagoInfo({
             ...PagoInfo,
-            Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2),
-            Saldo: (Servicio.ServicioInscripcion/e.target.value.MedioPagoCantidadCuotas)
+            Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2)
         })
     }
     useEffect(() => {
@@ -211,7 +210,7 @@ const CaratulaAbonado = () => {
             "name": "Domicilio",
             "wrap": true,
             "sortable": true,
-            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ', B° ' + row["BarrioNombre"] + ' ' +  row["MunicipioNombre"],
         }    
     ]
     return ( 
@@ -486,8 +485,8 @@ const CaratulaAbonado = () => {
                     <Grid item xs={12} md={12} sm={12}>
                         <Typography variant="h2"><b>Precio Final (Precio Inscripción + Interés {MedioPago.MedioPagoInteres} %):</b> ${convertirAMoney(PagoInfo.Total)}</Typography>
                         {MedioPago.MedioPagoId === 10 ? 
-                        <Typography variant="h2"><b>Saldo restante por facilidad de pago:</b> ${PagoInfo.Saldo}</Typography> : "" }
-                    </Grid>
+                        <Typography variant="h2"><b>Saldo restante por facilidad de pago:</b> ${convertirAMoney((PagoInfo.Total / 2).toFixed(2))}</Typography> : "" }
+                        </Grid>
                     </>
                     :""}
                 </Grid>

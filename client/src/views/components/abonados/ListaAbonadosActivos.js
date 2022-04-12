@@ -124,16 +124,25 @@ const ListaAbonadosActivos = () => {
                 state: data
                 }} style={{textDecoration: 'none', color: "#4D7F9E"}}>
                 <Typography style={{color: '#4D7F9E'}}>
-                <i className='bx bxs-home bx-xs'></i> Cambios de domicilio</Typography>
+                <i className='bx bxs-home bx-xs'></i> Cambio de domicilio</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
                 <Link to={{
                 pathname: `/cambio-servicio/${data.Nombre + "-" +  data.Apellido}`,
                 state: data
-                }} style={{textDecoration: 'none', color: "palevioletred"}}>
-                <Typography style={{color: 'palevioletred'}}>
-                <i className='bx bx-plug bx-xs'></i> Cambios de servicio</Typography>
+                }} style={{textDecoration: 'none', color: "teal"}}>
+                <Typography style={{color: 'teal'}}>
+                <i className='bx bx-plug bx-xs'></i> Cambio de servicio</Typography>
+                </Link> 
+            </MenuItem>
+            <MenuItem>
+                <Link to={{
+                pathname: `/cambio-titularidad/${data.Nombre + "-" +  data.Apellido}`,
+                state: data
+                }} style={{textDecoration: 'none', color: "navy"}}>
+                <Typography style={{color: 'navy'}}>
+                <i className='bx bxs-notepad bx-xs'></i> Cambio de titularidad</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
@@ -143,15 +152,6 @@ const ListaAbonadosActivos = () => {
                 }} style={{textDecoration: 'none', color: "navy"}}>
                 <Typography style={{color: 'navy'}}>
                 <i className='bx bx-money bx-xs'></i> Pagos</Typography>
-                </Link> 
-            </MenuItem>
-            <MenuItem>
-                <Link to={{
-                pathname: `/cambio-titularidad/${data.Nombre + "-" +  data.Apellido}`,
-                state: data
-                }} style={{textDecoration: 'none', color: "yellowgreen"}}>
-                <Typography style={{color: 'yellowgreen'}}>
-                <i className='bx bxs-notepad bx-xs'></i> Cambio de titularidad</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>

@@ -9,17 +9,19 @@ import { DatePicker, TimePicker } from '@material-ui/pickers';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import DataTable from 'react-data-table-component';
 import * as VARIABLES from './../../../types/variables';
+import Datatable from '../design/components/Datatable';
+import TooltipForTable from '../../../helpers/TooltipForTable';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
 
 const CaratulaOt = () => {
     const appContext = useContext(AppContext);
     const { tareas, abonado, abonados, municipios, barrios, usuarios, traerBarriosPorMunicipio, traerMunicipios,
     traerTareas, traerAbonados, traerAbonado, traerUsuariosPorRol, traerTareasOt, traerTecnicosOt, tecnicosOrdenDeTrabajo, tareasOrdenDeTrabajo,
-    crearOrdenDeTrabajo, modificarOrdenDeTrabajo } = appContext;
+    crearOrdenDeTrabajo, modificarOrdenDeTrabajo, ordenesDeTrabajoAsignadas, traerOrdenesDeTrabajoAsignadas } = appContext;
 
     const location = useLocation();
 
     const [cargando, setCargando] = useState(false);
-    const [tecnicosOt, setTecnicosOt] = useState([]);
     const [tareasOt, setTareasOt] = useState([]);
     const [abonadoOt, setAbonadoOt] = useState(null);
     const [barrio, setBarrio] = useState(null);
@@ -34,32 +36,50 @@ const CaratulaOt = () => {
         OtObservacionesResponsableEmision: null,
         createdBy: null,
         updatedBy: null
-    })
+    });
+    const [OtResponsableEjecucion, setOtResponsableEjecucion] = useState(null);
+
+    const [PrimerRender, setPrimerRender] = useState(true);
+    const [TareasTab, setTareasTab] = useState(false);
+    const [TecnicosTab, setTecnicosTab] = useState(false);
+
+    const handleChangeTabTareas = (e) => {
+        if(!TareasTab && location.state && PrimerRender) {
+            setTareasOt(tareasOrdenDeTrabajo);
+            setPrimerRender(false);
+        }
+        setTareasTab(!TareasTab);
+    }
 
     const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(new Date());
 
     useEffect(()=>{
         traerTareas();
         traerMunicipios();
-        traerAbonados();
+        traerAbonados(2); //TRAE ABONADOS ACTIVOS
         traerUsuariosPorRol(VARIABLES.ID_ROL_TECNICO);
     },[])
 
     useEffect(()=>{
         if(location.state){
+            console.log(location.state);
             setOtInfo(location.state);
             setMunicipioId(location.state.MunicipioId);
             setBarrio(location.state);
             setOtRetiraCable(location.state.OtRetiraCable);
             setOtRetiraOnu(location.state.OtRetiraOnu);
             traerTareasOt(location.state.OtId);
-            traerTecnicosOt(location.state.OtId);
             setTareasOt(tareasOrdenDeTrabajo);
-            setTecnicosOt(tecnicosOrdenDeTrabajo);
+            setOtResponsableEjecucion({
+                Nombre: location.state.NombreResponsableEjecucion,
+                Apellido: location.state.ApellidoResponsableEjecucion,
+                UserId: location.state.OtResponsableEjecucion,
+            });
+            traerOrdenesDeTrabajoAsignadas(location.state.OtResponsableEjecucion, 5);
         }
     },[])
 
-    const {OtId, DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision, createdBy, updatedBy} = OtInfo;
+    const {OtId, DomicilioCalle, DomicilioNumero, DomicilioPiso, OtObservacionesResponsableEmision} = OtInfo;
 
     const onInputChange = (e) => {
         setOtInfo({
@@ -79,29 +99,27 @@ const CaratulaOt = () => {
     const handleChangeRetiraCable = (e) => {
         e.target.checked ? setOtRetiraCable(1) : setOtRetiraCable(0);
     };
+
     const handleChangeTabOt = () => {
-        setAbonadoOt({
-            ...abonado
-        });
+        if(abonado && location.state) {
+            setAbonadoOt({
+                abonado
+            });
+        }
     }
-    const handleChangeTabTecnicos = () => {
-        setTecnicosOt(tecnicosOrdenDeTrabajo);
-    }
-    const handleChangeTabTareas = () => {
-        setTareasOt(tareasOrdenDeTrabajo);
-    }
+
     const onSubmitOT = (e) => {
         e.preventDefault();
         if(!location.state) {
             crearOrdenDeTrabajo({
                 DomicilioCalle, DomicilioNumero, DomicilioPiso,
+                OtResponsableEjecucion,
                 OtObservacionesResponsableEmision,
                 OtFechaPrevistaVisita,
                 OtRetiraCable,
                 OtRetiraOnu,
                 createdBy: localStorage.getItem('identity'),
                 abonado,
-                tecnicosOt,
                 tareasOt,
                 barrio
             });
@@ -114,7 +132,6 @@ const CaratulaOt = () => {
                 OtRetiraCable,
                 OtRetiraOnu,
                 updatedBy: localStorage.getItem('identity'),
-                tecnicosOt,
                 tareasOt
             });
         }
@@ -130,20 +147,28 @@ const CaratulaOt = () => {
             "selector": row => row["TareaNombre"],
         },
         {
-            "name": "Precio Unitario",
-            "selector": row => "$ " + row["TareaPrecioUnitario"],
+            "name": "Precio de OT",
+            "selector": row => "$ " + row["TareaPrecioOt"],
         }
     ]
-    const columnasTecnicos = [
+    const columnasOt = [
         {
             "name": "id",
-            "selector": row => row["UserId"],
+            "selector": row => row["OtId"],
             "omit": true
         },
         {
-            "name": "Nombre Completo",
-            "selector": row => row["Apellido"] + ", " +  row["Nombre"],
-        }
+            "name": <TooltipForTable name="Fecha prevista de visita" />,
+            "wrap": true,
+            "sortable": true,
+            "selector": row => convertirAFecha(row["OtFechaPrevistaVisita"]),
+        }  ,  
+        {
+            "name": "Domicilio",
+            "wrap": true,
+            "sortable": true,
+            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ', B° ' + row["BarrioNombre"] + ' ' +  row["MunicipioNombre"],
+        }    
     ]
 
     return ( 
@@ -152,20 +177,20 @@ const CaratulaOt = () => {
         <Aside/>
         <main>
         <form onSubmit={onSubmitOT}>
+        {location.state ? <Typography variant="h6">Editar Orden de Trabajo N°: {location.state.OtId}</Typography>
+        :<Typography variant="h6">Crear Orden de Trabajo</Typography>}
+        <br/>
         <Card>
             <CardContent>
                 <Tabs>
                     <TabList>
                         <Tab onClick={handleChangeTabOt}><i className="bx bx-task"></i> Datos de la OT</Tab>
-                        <Tab onClick={handleChangeTabTecnicos}><i className='bx bxs-wrench'></i> Técnicos</Tab>
+                        <Tab><i className='bx bxs-wrench'></i> Técnicos</Tab>
                         <Tab onClick={handleChangeTabTareas}><i className='bx bx-list-ol'></i> Tareas</Tab>
                     </TabList>
                 <TabPanel>
                     <Card>
                         <CardContent>
-                            <Typography variant="h1">Nueva Orden de Trabajo</Typography>
-                            <Typography variant="h2"><i className="bx bx-task"></i> Datos de la OT</Typography>
-                            <br/>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} md={3} lg={3} xl={3}>
                                     <TextField
@@ -194,7 +219,7 @@ const CaratulaOt = () => {
                                         label="Hora de emisión de OT"
                                     ></TimePicker>
                                 </Grid>
-                                <Grid item xs={12} md={3} lg={3} xl={3}>
+                                <Grid item xs={12} md={4} lg={4} xl={4}>
                                     <DatePicker
                                     inputVariant="outlined"
                                     value={OtFechaPrevistaVisita}
@@ -220,9 +245,6 @@ const CaratulaOt = () => {
                                     label="Observaciones registro de OT">
                                     </TextField>
                                 </Grid>
-                            </Grid>
-                            <Typography variant="h2"><i className="bx bx-user"></i> Datos del abonado</Typography>
-                            <Grid container spacing={3}>
                             <Grid item xs={12} md={4} lg={4} xl={4}>
                                 {location.state ?
                                 <TextField
@@ -288,21 +310,40 @@ const CaratulaOt = () => {
                     <TabPanel>
                         <Card>
                             <CardContent>
-                            <Typography variant="h2"><i className="bx bx-wrench"></i> Encargados de ejecución</Typography>
-                            <DataTable
-                                columns={columnasTecnicos}
-                                data={usuarios}
-                                onSelectedRowsChange={row => setTecnicosOt(row.selectedRows)}
-                                selectableRows
-                                selectableRowSelected={row => tecnicosOt.find((tecnico) => tecnico.UserId === row.UserId)}>
-                            </DataTable>
+                                <Grid item xs={12} md={12} lg={12} xl={12}>
+                                    <Autocomplete
+                                    value={OtResponsableEjecucion}
+                                    onChange={(_event, newTecnico) => {
+                                        traerOrdenesDeTrabajoAsignadas(newTecnico.UserId, 5);
+                                        setOtResponsableEjecucion(newTecnico);
+                                    }}
+                                    options={usuarios}
+                                    noOptionsText="No se encontraron técnicos"
+                                    getOptionLabel={(option) => option.Nombre +", "+ option.Apellido}
+                                    renderInput={(params) => <TextField {...params} value={OtResponsableEjecucion} variant ="outlined" fullWidth label="Técnico encargado de ejecución"/>}
+                                    />
+                                </Grid>
+                                <br/>
+                                { OtResponsableEjecucion !== null ?
+                                <Grid item xs={12} md={12} lg={12} xl={12}>
+                                    <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {OtResponsableEjecucion.Nombre}, {OtResponsableEjecucion.Apellido}</Typography>
+                                    <br/>
+                                    <Card>
+                                        <CardContent>
+                                        <Datatable
+                                            datos={ordenesDeTrabajoAsignadas}
+                                            columnas={columnasOt}>
+                                        </Datatable>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                                : ""}
                             </CardContent>
                         </Card>
                     </TabPanel>
                     <TabPanel>
                         <Card>
                             <CardContent>
-                                <Typography variant="h2"><i className="bx bx-task"></i> Tareas a realizar</Typography>
                                 <Grid container spacing={3}>
                                     <Grid item xs={12} md={12} lg={12} xl={12}>
                                     <DataTable
@@ -362,9 +403,9 @@ const CaratulaOt = () => {
                                         name="DomicilioNumero"
                                         onChange={onInputChange}
                                         onKeyPress={(e) => {
-                            if (!/[0-9]/.test(e.key)) {
-                            e.preventDefault();
-                            }}}
+                                            if (!/[0-9]/.test(e.key)) {
+                                            e.preventDefault();
+                                            }}}
                                         fullWidth
                                         label="Número nuevo domicilio">
                                         </TextField>
@@ -376,9 +417,9 @@ const CaratulaOt = () => {
                                         name="DomicilioPiso"
                                         onChange={onInputChange}
                                         onKeyPress={(e) => {
-                            if (!/[0-9]/.test(e.key)) {
-                            e.preventDefault();
-                            }}}
+                                            if (!/[0-9]/.test(e.key)) {
+                                            e.preventDefault();
+                                            }}}
                                         fullWidth
                                         label="Piso nuevo domicilio">
                                         </TextField>

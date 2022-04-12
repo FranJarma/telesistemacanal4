@@ -109,7 +109,7 @@ const Aside = () => {
           {
             usuarioLogueado.Roles.map((rol)=>(
               rol.RoleName === "Tecnico" ?
-                <MenuItem icon={<i className='bx bx-task'></i>}>Mis órdenes de trabajo<Link to="/mis-ot"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bx-task'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
             : rol.RoleName === "Mesa" ?
             <>
               <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>

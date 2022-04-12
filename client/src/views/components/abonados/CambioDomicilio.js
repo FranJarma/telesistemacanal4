@@ -185,7 +185,7 @@ const CambioDomicilio = () => {
             "name": "Domicilio",
             "wrap": true,
             "sortable": true,
-            "selector": row => row["DomicilioCalle"] + ', ' + row["DomicilioNumero"] + ' | ' +  "Barrio " + row["BarrioNombre"] + ' | ' +  row["MunicipioNombre"],
+            "selector": row => row["DomicilioCalle"] + ' ' + row["DomicilioNumero"] +  ", B° " + row["BarrioNombre"] + ' ' +  row["MunicipioNombre"],
         }    
     ]
     const ExpandedComponent = ({ data }) =>
@@ -194,8 +194,10 @@ const CambioDomicilio = () => {
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-home"></i> Barrio: {data.BarrioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-building-house"></i> Municipio: {data.MunicipioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Solicitud: {convertirAFecha(data.FechaPedidoCambio)}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Realización (Inicio): {convertirAFecha(data.FechaInicioOt)} - {convertirAHora(data.FechaInicioOt)}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Realización (Fin): {convertirAFecha(data.FechaFinalizacionOt)} - {convertirAHora(data.FechaFinalizacionOt)}</Typography>
+        { data.FechaInicioOt ?
+        <><Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Realización (Inicio): {convertirAFecha(data.FechaInicioOt)} - {convertirAHora(data.FechaInicioOt)}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Realización (Fin): {convertirAFecha(data.FechaFinalizacionOt)} - {convertirAHora(data.FechaFinalizacionOt)}</Typography></>
+        : ""}
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-clipboard"></i> Observaciones: {data.CambioDomicilioObservaciones}</Typography>
     </>;
     return ( 
@@ -241,211 +243,199 @@ const CambioDomicilio = () => {
             </TabList>
             <br/>
             <TabPanel>
-            <Card>
-                <CardContent>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={4} lg={4} xl={4}>
-                            <TextField
-                            variant="filled"
-                            disabled
-                            //onChange={handleChangeProvinciaSeleccionada}
-                            value={ProvinciaId}
-                            label="Provincia"
-                            fullWidth
-                            select
-                            >
-                            {provincias.map((provincia)=>(
-                                <MenuItem key={provincia.ProvinciaId} value={provincia.ProvinciaId}>{provincia.ProvinciaNombre}</MenuItem>
-                            ))}
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={12} md={4} lg={4} xl={4}>
-                            <TextField
-                            variant = "outlined"
-                            onChange={handleChangeMunicipioSeleccionado}
-                            value={Municipio}
-                            label="Municipio"
-                            fullWidth
-                            select
-                            >
-                            {municipios.length > 0 ? municipios.map((municipio)=>(
-                                <MenuItem key={municipio.MunicipioId} value={municipio}>{municipio.MunicipioNombre}</MenuItem>
-                            )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={12} md={4} lg={4} xl={4}>
-                            <Autocomplete
-                            value={Barrio}
-                            onChange={(_event, nuevoBarrio) => {
-                                setBarrio(nuevoBarrio);
-                            }}
-                            options={barrios}
-                            noOptionsText="No se encontraron barrios"
-                            getOptionLabel={(option) => option.BarrioNombre}
-                            renderInput={(params) => <TextField {...params} variant = "outlined" fullWidth label="Barrios"/>}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={6} xl={6}>
-                            <TextField
-                            variant = "outlined"
-                            value={DomicilioCalle}
-                            name="DomicilioCalle"
-                            onChange={onInputChange}
-                            fullWidth
-                            label="Calle">
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={12} md={3} lg={3} xl={3}>
-                            <TextField
-                            onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                event.preventDefault();
-                            }}}
-                            variant = "outlined"
-                            value={DomicilioNumero}
-                            name="DomicilioNumero"
-                            onChange={onInputChange}
-                            fullWidth
-                            label="Número">
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={12} md={3} lg={3} xl={3}>
-                            <TextField
-                            onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                event.preventDefault();
-                            }}}
-                            variant = "outlined"
-                            value={DomicilioPiso}
-                            name="DomicilioPiso"
-                            onChange={onInputChange}
-                            fullWidth
-                            label="Piso">
-                            </TextField>
-                        </Grid>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                        <TextField
+                        variant="filled"
+                        disabled
+                        //onChange={handleChangeProvinciaSeleccionada}
+                        value={ProvinciaId}
+                        label="Provincia"
+                        fullWidth
+                        select
+                        >
+                        {provincias.map((provincia)=>(
+                            <MenuItem key={provincia.ProvinciaId} value={provincia.ProvinciaId}>{provincia.ProvinciaNombre}</MenuItem>
+                        ))}
+                        </TextField>
                     </Grid>
-                </CardContent>
-            </Card>
+                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                        <TextField
+                        variant = "outlined"
+                        onChange={handleChangeMunicipioSeleccionado}
+                        value={Municipio}
+                        label="Municipio"
+                        fullWidth
+                        select
+                        >
+                        {municipios.length > 0 ? municipios.map((municipio)=>(
+                            <MenuItem key={municipio.MunicipioId} value={municipio}>{municipio.MunicipioNombre}</MenuItem>
+                        )): <MenuItem disabled>No se encontraron municipios</MenuItem>}
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                        <Autocomplete
+                        value={Barrio}
+                        onChange={(_event, nuevoBarrio) => {
+                            setBarrio(nuevoBarrio);
+                        }}
+                        options={barrios}
+                        noOptionsText="No se encontraron barrios"
+                        getOptionLabel={(option) => option.BarrioNombre}
+                        renderInput={(params) => <TextField {...params} variant = "outlined" fullWidth label="Barrios"/>}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                        <TextField
+                        variant = "outlined"
+                        value={DomicilioCalle}
+                        name="DomicilioCalle"
+                        onChange={onInputChange}
+                        fullWidth
+                        label="Calle">
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12} md={3} lg={3} xl={3}>
+                        <TextField
+                        onKeyPress={(event) => {
+                            if (!/[0-9]/.test(event.key)) {
+                            event.preventDefault();
+                        }}}
+                        variant = "outlined"
+                        value={DomicilioNumero}
+                        name="DomicilioNumero"
+                        onChange={onInputChange}
+                        fullWidth
+                        label="Número">
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12} md={3} lg={3} xl={3}>
+                        <TextField
+                        onKeyPress={(event) => {
+                            if (!/[0-9]/.test(event.key)) {
+                            event.preventDefault();
+                        }}}
+                        variant = "outlined"
+                        value={DomicilioPiso}
+                        name="DomicilioPiso"
+                        onChange={onInputChange}
+                        fullWidth
+                        label="Piso">
+                        </TextField>
+                    </Grid>
+                </Grid>
             </TabPanel>
             <TabPanel>
-                <Card>
-                    <CardContent>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={6} lg={6} xl={6}>
-                                <DatePicker
-                                inputVariant="outlined"
-                                value={OtFechaPrevistaVisita}
-                                onChange={(OtFechaPrevistaVisita)=> {
-                                    setOtFechaPrevistaVisita(OtFechaPrevistaVisita)
-                                }}
-                                format="dd/MM/yyyy"
-                                placeholder='dia/mes/año'
-                                fullWidth
-                                label="Fecha prevista de visita"
-                                >
-                                </DatePicker>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={6} xl={6}>
-                            <Autocomplete
-                                value={Tecnico}
-                                onChange={(_event, newTecnico) => {
-                                    traerOrdenesDeTrabajoAsignadas(newTecnico.UserId, 5);
-                                    setTecnico(newTecnico);
-                                }}
-                                options={usuarios}
-                                noOptionsText="No se encontraron técnicos"
-                                getOptionLabel={(option) => option.Nombre +", "+ option.Apellido}
-                                renderInput={(params) => <TextField {...params} variant ="outlined" fullWidth label="Técnico encargado de ejecución"/>}
-                            />
-                            </Grid>
-                            { Tecnico !== null?
-                            <Grid item xs={12} md={12} lg={12} xl={12}>
-                                <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {Tecnico.Nombre}, {Tecnico.Apellido}</Typography>
-                                <br/>
-                                <Card>
-                                    <CardContent>
-                                    <Datatable
-                                        datos={ordenesDeTrabajoAsignadas}
-                                        columnas={columnasOt}>
-                                    </Datatable>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                            : ""}
-                            <Grid item xs={12} md={4} lg={4} xl={4}>
-                                <TextField
-                                disabled
-                                variant="filled"
-                                value={localStorage.getItem('usr')}
-                                fullWidth
-                                label="Responsable de emisión de OT">
-                                </TextField>
-                            </Grid>
-                            <Grid item xs={6} md={4} lg={4} xl={4}>
-                                <DatePicker
-                                    disabled
-                                    value={new Date()}
-                                    format="dd/MM/yyyy"
-                                    inputVariant="filled"
-                                    fullWidth
-                                    label="Fecha de emisión de OT"
-                                ></DatePicker>
-                            </Grid>
-                            <Grid item xs={6} md={4} lg={4} xl={4}>
-                                <TimePicker
-                                    value={new Date()}
-                                    disabled
-                                    inputVariant="filled"
-                                    fullWidth
-                                    label="Hora de emisión de OT"
-                                ></TimePicker>
-                            </Grid>
-                            <Grid item xs={12} md={12} lg={12} xl={12}>
-                                <TextField
-                                variant = "outlined"
-                                multiline
-                                minRows={3}
-                                value={OtObservacionesResponsableEmision}
-                                name="OtObservacionesResponsableEmision"
-                                inputProps={{
-                                    maxLength: 1000
-                                }}
-                                onChange={onInputChangeObservacionesOt}
-                                fullWidth
-                                label="Observaciones registro de OT">
-                                </TextField>
-                            </Grid>
-                        </Grid>
-                    </CardContent>
-                </Card>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                        <DatePicker
+                        inputVariant="outlined"
+                        value={OtFechaPrevistaVisita}
+                        onChange={(OtFechaPrevistaVisita)=> {
+                            setOtFechaPrevistaVisita(OtFechaPrevistaVisita)
+                        }}
+                        format="dd/MM/yyyy"
+                        placeholder='dia/mes/año'
+                        fullWidth
+                        label="Fecha prevista de visita"
+                        >
+                        </DatePicker>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={6} xl={6}>
+                    <Autocomplete
+                        value={Tecnico}
+                        onChange={(_event, newTecnico) => {
+                            traerOrdenesDeTrabajoAsignadas(newTecnico.UserId, 5);
+                            setTecnico(newTecnico);
+                        }}
+                        options={usuarios}
+                        noOptionsText="No se encontraron técnicos"
+                        getOptionLabel={(option) => option.Nombre +", "+ option.Apellido}
+                        renderInput={(params) => <TextField {...params} variant ="outlined" fullWidth label="Técnico encargado de ejecución"/>}
+                    />
+                    </Grid>
+                    { Tecnico !== null?
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                        <Typography variant="h6">Órdenes de trabajo pendientes y asignadas a: {Tecnico.Nombre}, {Tecnico.Apellido}</Typography>
+                        <br/>
+                        <Card>
+                            <CardContent>
+                            <Datatable
+                                datos={ordenesDeTrabajoAsignadas}
+                                columnas={columnasOt}>
+                            </Datatable>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    : ""}
+                    <Grid item xs={12} md={4} lg={4} xl={4}>
+                        <TextField
+                        disabled
+                        variant="filled"
+                        value={localStorage.getItem('usr')}
+                        fullWidth
+                        label="Responsable de emisión de OT">
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={6} md={4} lg={4} xl={4}>
+                        <DatePicker
+                            disabled
+                            value={new Date()}
+                            format="dd/MM/yyyy"
+                            inputVariant="filled"
+                            fullWidth
+                            label="Fecha de emisión de OT"
+                        ></DatePicker>
+                    </Grid>
+                    <Grid item xs={6} md={4} lg={4} xl={4}>
+                        <TimePicker
+                            value={new Date()}
+                            disabled
+                            inputVariant="filled"
+                            fullWidth
+                            label="Hora de emisión de OT"
+                        ></TimePicker>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={12} xl={12}>
+                        <TextField
+                        variant = "outlined"
+                        multiline
+                        minRows={3}
+                        value={OtObservacionesResponsableEmision}
+                        name="OtObservacionesResponsableEmision"
+                        inputProps={{
+                            maxLength: 1000
+                        }}
+                        onChange={onInputChangeObservacionesOt}
+                        fullWidth
+                        label="Observaciones registro de OT">
+                        </TextField>
+                    </Grid>
+                </Grid>
                 </TabPanel>
                 <TabPanel>
-                    <Card>
-                        <CardContent>
-                            <Grid container spacing={3}>
-                                <Grid item xs={12} md={12} lg={12} xl={12}>
-                                    <TextField
-                                        variant = "outlined"
-                                        value={MedioPago}
-                                        onChange={handleChangeMedioPagoSeleccionado}
-                                        label="Medio de Pago"
-                                        fullWidth
-                                        select
-                                        >
-                                        {mediosPago.map((mp)=>(
-                                            <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
-                                        ))}
-                                    </TextField>
-                                    { MedioPago !== null && MedioPago.MedioPagoInteres > 0
-                                        ?
-                                        <Typography variant="h2"><b>Total (Precio Inscripción + Interés {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
-                                        :
-                                        <Typography variant="h2"><b>Total:</b> ${PagoInfo.Total}</Typography>
-                                    }
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={12} lg={12} xl={12}>
+                            <TextField
+                                variant = "outlined"
+                                value={MedioPago}
+                                onChange={handleChangeMedioPagoSeleccionado}
+                                label="Medio de Pago"
+                                fullWidth
+                                select
+                                >
+                                {mediosPago.map((mp)=>(
+                                    <MenuItem key={mp.MedioPagoId} value={mp}>{mp.MedioPagoNombre}</MenuItem>
+                                ))}
+                            </TextField>
+                            { MedioPago !== null && MedioPago.MedioPagoInteres > 0
+                                ?
+                                <Typography variant="h2"><b>Total (Precio Inscripción + Interés {MedioPago.MedioPagoInteres} %):</b> ${PagoInfo.Total}</Typography>
+                                :
+                                <Typography variant="h2"><b>Total:</b> ${PagoInfo.Total}</Typography>
+                            }
+                        </Grid>
+                    </Grid>
                 </TabPanel>
                 </Tabs>
             </>

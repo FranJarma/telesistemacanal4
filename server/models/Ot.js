@@ -78,7 +78,8 @@ const Ot = db.define('ot', {
         type: INTEGER,
     },
     AbonadoId: {
-        type: CHAR
+        type: CHAR,
+        allowNull: false
     },
     EstadoId: {
         type: INTEGER

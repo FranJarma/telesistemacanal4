@@ -169,8 +169,8 @@ const ListaMovimientos = () => {
                 <Card>
                     <CardContent>
                     <Chip style={{backgroundColor: "red", color: "white", marginBottom: 25}} label="LA CAJA SE ENCUENTRA CERRADA"></Chip>
-                        <Typography variant="h6"><b>Recibida por:</b> {cajas[0].CajaCerradaFullName}</Typography>
-                        <Typography variant="h6"><b>Cerrada por:</b> {cajas[0].CajaRecibeFullName}</Typography>
+                        <Typography variant="h6"><b>Recibida por:</b> {cajas[0].CajaRecibeFullName}</Typography>
+                        <Typography variant="h6"><b>Cerrada por:</b> {cajas[0].CajaCerradaFullName}</Typography>
                         <Typography variant="h6"><b>Fecha y hora de cierre:</b> {convertirAFecha(cajas[0].CajaCerradaFecha)}-{convertirAHora(cajas[0].CajaCerradaFecha)}</Typography>
                     </CardContent>
                 </Card>

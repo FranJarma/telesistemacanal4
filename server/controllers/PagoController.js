@@ -27,23 +27,12 @@ exports.PagosListarPorUsuario = async(req,res) => {
 }
 exports.PagosMensualesPendientes = async(req,res) => {
     try {
-        if(req.params.Cantidad) {
-            const cantidadPagos = await knex('pago as p')
-            .innerJoin('movimientoconcepto as mc', 'p.PagoConceptoId', '=', 'mc.MovimientoConceptoId')
-            .where(
-                {'p.UserId': req.params.UserId
-            })
-            .andWhere('p.PagoSaldo', '>', '0')
-            .count('p.PagoId', {as: 'pagos'})
-            .first();
-            res.json(cantidadPagos.pagos);
-        }
-
         if(req.params.top !== null) {
             const pagos = await knex.select('*').from('pago as p')
             .innerJoin('movimientoconcepto as mc', 'p.PagoConceptoId', '=', 'mc.MovimientoConceptoId')
             .where(
-                {'p.UserId': req.params.UserId
+                {'p.UserId': req.params.UserId,
+                'p.PagoConceptoId': req.params.Concepto
             })
             .andWhere('p.PagoSaldo', '>', '0')
             .limit(req.params.top)

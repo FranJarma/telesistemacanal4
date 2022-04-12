@@ -344,6 +344,7 @@ exports.AbonadoCreate = async(req, res) => {
             abonado.ServicioId = req.body.Servicio.ServicioId;
             abonado.EstadoId = VARIABLES.ESTADO_ID_ABONADO_INSCRIPTO;
             abonado.EsUsuarioDeSistema = 0;
+            await abonado.save({transaction: t});
             const domicilio = new Domicilio(req.body, {transaction: t});
             domicilio.DomicilioId = ultimoDomicilioId + 1;
             domicilio.BarrioId = req.body.Barrio.BarrioId;
@@ -358,12 +359,12 @@ exports.AbonadoCreate = async(req, res) => {
             //instanciamos un nuevo movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = req.body.MedioPago.MedioPagoId == 10 ? (req.body.Servicio.ServicioInscripcion / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.Servicio.ServicioInscripcion;
+            movimiento.MovimientoCantidad = req.body.MedioPago.MedioPagoId == VARIABLES.ID_MEDIO_PAGO_FACILIDAD ? (req.body.PagoInfo.Total / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.PagoInfo.Total;
             movimiento.createdBy = req.body.createdBy;
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = 2; //inscripción
+            movimiento.MovimientoConceptoId = VARIABLES.ID_CONCEPTO_INSCRIPCION_ABONADO; //inscripción
             movimiento.MunicipioId = req.body.MunicipioId;
             movimiento.AbonadoId = UserId;
             movimiento.MedioPagoId = req.body.MedioPago.MedioPagoId;
@@ -374,10 +375,10 @@ exports.AbonadoCreate = async(req, res) => {
             pago.UserId = UserId;
             pago.PagoAño = new Date().getFullYear();
             pago.PagoMes = new Date().getMonth() + 1;
-            pago.PagoTotal = req.body.Servicio.ServicioInscripcion;
+            pago.PagoTotal = req.body.PagoInfo.Total;
             pago.PagoRecargo = 0;
-            pago.PagoSaldo = req.body.MedioPago.MedioPagoId == 10 ? (req.body.Servicio.ServicioInscripcion / req.body.MedioPago.MedioPagoCantidadCuotas) : 0;
-            pago.PagoConceptoId = 2;
+            pago.PagoSaldo = req.body.MedioPago.MedioPagoId == VARIABLES.ID_MEDIO_PAGO_FACILIDAD ? (req.body.PagoInfo.Total / req.body.MedioPago.MedioPagoCantidadCuotas) : 0;
+            pago.PagoConceptoId = VARIABLES.ID_CONCEPTO_INSCRIPCION_ABONADO;
             pago.createdAt = new Date();
             pago.createdBy = req.body.createdBy;
             await pago.save({transaction: t});
@@ -387,10 +388,9 @@ exports.AbonadoCreate = async(req, res) => {
             detallePago.MedioPagoId = req.body.MedioPago.MedioPagoId;
             detallePago.createdAt = new Date();
             detallePago.createdBy = req.body.createdBy;
-            detallePago.DetallePagoMonto = req.body.MedioPago.MedioPagoId == 10 ? (req.body.Servicio.ServicioInscripcion / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.Servicio.ServicioInscripcion;
+            detallePago.DetallePagoMonto = req.body.MedioPago.MedioPagoId == VARIABLES.ID_MEDIO_PAGO_FACILIDAD ? (req.body.PagoInfo.Total / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.PagoInfo.Total;
             detallePago.MovimientoId = movimiento.MovimientoId;
             await domicilio.save({transaction: t});
-            await abonado.save({transaction: t});
             await abonadoRole.save({transaction: t});
             await abonadoEstado.save({transaction: t});
             await detallePago.save({transaction: t});
@@ -597,7 +597,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             pago.PagoMes = new Date().getMonth() + 1;
             pago.PagoTotal = req.body.PagoInfo.Total;
             pago.PagoRecargo = 0;
-            pago.PagoSaldo = req.body.PagoInfo.Saldo;
+            pago.PagoSaldo = 0;
             pago.PagoConceptoId = 5;
             pago.createdAt = new Date();
             pago.createdBy = req.body.createdBy;
@@ -712,7 +712,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
             // instanciamos un movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MovimientoCantidad = req.body.PagoInfo.Inscripcion;
+            movimiento.MovimientoCantidad = req.body.MedioPago.MedioPagoId == VARIABLES.ID_MEDIO_PAGO_FACILIDAD ? (req.body.PagoInfo.Total / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.PagoInfo.Total;
             movimiento.createdBy = req.body.createdBy;
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
@@ -729,7 +729,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
             pago.PagoMes = new Date().getMonth() + 1;
             pago.PagoTotal = req.body.PagoInfo.Total;
             pago.PagoRecargo = 0;
-            pago.PagoSaldo = req.body.PagoInfo.Saldo;
+            pago.PagoSaldo = req.body.MedioPago.MedioPagoId == VARIABLES.ID_MEDIO_PAGO_FACILIDAD ? (req.body.PagoInfo.Total / req.body.MedioPago.MedioPagoCantidadCuotas) : 0;
             pago.PagoConceptoId = 6;
             pago.createdAt = new Date();
             pago.createdBy = req.body.createdBy;
@@ -739,7 +739,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
             detallePago.MedioPagoId = req.body.MedioPago.MedioPagoId;
             detallePago.createdAt = new Date();
             detallePago.createdBy = req.body.createdBy;
-            detallePago.DetallePagoMonto = req.body.PagoInfo.Inscripcion;
+            detallePago.DetallePagoMonto = req.body.MedioPago.MedioPagoId == VARIABLES.ID_MEDIO_PAGO_FACILIDAD ? (req.body.PagoInfo.Total / req.body.MedioPago.MedioPagoCantidadCuotas) : req.body.PagoInfo.Total;
             detallePago.MovimientoId = movimiento.MovimientoId;
             const ot = new Ot(req.body);
             ot.OtId = ultimaOtRegistradaId + 1;

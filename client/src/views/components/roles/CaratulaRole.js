@@ -18,15 +18,15 @@ const CaratulaRole = () => {
         RoleDescription: null
     });
     const [PrimerRender, setPrimerRender] = useState(true);
-    const [ModalAsignarPermisos, setModalAsignarPermisos] = useState(false);
+    const [TabAsignarPermisos, setTabAsignarPermisos] = useState(false);
     const [PermisosSeleccionados, setPermisosSeleccionados] = useState([]);
 
     const handleChangeTabsPermisos = (e) => {
-        if(!ModalAsignarPermisos && location.state && PrimerRender) {
+        if(!TabAsignarPermisos && location.state && PrimerRender) {
             setPermisosSeleccionados(permisosRol);
             setPrimerRender(false);
         }
-        setModalAsignarPermisos(!ModalAsignarPermisos);
+        setTabAsignarPermisos(!TabAsignarPermisos);
     }
     const onInputChange = (e) => {
         setRoleInfo({
