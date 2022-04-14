@@ -412,9 +412,6 @@ const AppState = props => {
                 })
                 Swal('Operación completa', resOk.data.msg);
                 setModalNuevoServicio(false);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
         })
         .catch(err => {
             if(!err.response){

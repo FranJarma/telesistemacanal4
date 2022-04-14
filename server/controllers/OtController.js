@@ -340,7 +340,7 @@ exports.OtFinalizar = async (req, res) => {
             if(ot.NuevoDomicilioId !== null) {
                 const userDomicilio = await UserDomicilio.findOne({
                     where: {
-                        DomicilioId: ot.NuevoDomicilioId
+                        OtId: ot.OtId
                     }
                 }, {transaction: t});
                 userDomicilio.CambioDomicilioObservaciones = `Cambio correcto, ot n°:${ot.OtId}`;
@@ -367,8 +367,7 @@ exports.OtFinalizar = async (req, res) => {
                 }
                 const userServicio = await UserServicio.findOne({
                     where: {
-                        ServicioId: ot.NuevoServicioId,
-                        UserId: abonado.UserId
+                        OtId: ot.OtId
                     },
                     order: [ [ 'UserServicioId', 'DESC' ]],
                 }, {transaction: t});

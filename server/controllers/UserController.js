@@ -255,7 +255,11 @@ exports.AbonadoGetById = async(req, res) => {
 }
 exports.AbonadoListarDomicilios = async(req, res) => {
     try {
-        const domicilios = await knex.select('*','ud.createdAt as FechaPedidoCambio', 'ot.OtFechaInicio as FechaInicioOt', 'ot.OtFechaFinalizacion as FechaFinalizacionOt')
+        const domicilios = await knex.select('ud.UserDomicilioId', 'ot.OtId',
+        'ud.createdAt as FechaPedidoCambio', 'ot.OtFechaInicio as FechaInicioOt',
+        'ot.OtFechaPrevistaVisita', 'ot.OtResponsableEjecucion', 'ot.OtFechaFinalizacion',
+        'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioId',
+        'b.BarrioNombre', 'm.MunicipioId', 'm.MunicipioNombre', 'ud.CambioDomicilioObservaciones')
         .from('userdomicilio as ud')
         .innerJoin('_user as u', 'u.UserId', '=', 'ud.UserId')
         .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'ud.DomicilioId')
@@ -266,20 +270,25 @@ exports.AbonadoListarDomicilios = async(req, res) => {
         .orderBy('ud.createdAt', 'desc');
         res.json(domicilios);
     } catch (error) {
-        res.status(500).json({ msg: 'Hubo un error al encontrar los domicilios de los abonados'});
+        res.status(500).json({ msg: 'Hubo un error al encontrar el historial de domicilios del abonado'});
     }
 }
 
 exports.AbonadoListarServicios = async(req, res) => {
     try {
-        const servicios = await knex.select('us.createdAt', 'us.CambioServicioObservaciones', 's.ServicioNombre', 'o.OnuMac').from('userservicio as us')
+        const servicios = await knex.select('us.UserServicioId', 'ot.OtId',
+        'us.createdAt as FechaPedidoCambio', 'ot.OtFechaInicio as FechaInicioOt',
+        'ot.OtFechaPrevistaVisita', 'ot.OtResponsableEjecucion', 'ot.OtFechaFinalizacion',
+        'us.CambioServicioObservaciones','s.ServicioNombre', 'o.OnuMac')
+        .from('userservicio as us')
         .innerJoin('servicio as s', 's.ServicioId', '=', 'us.ServicioId')
+        .innerJoin('ot as ot', 'ot.OtId', '=', 'us.OtId')
         .leftJoin('onu as o', 'o.OnuId', '=','us.OnuId')
         .where('us.UserId', '=', req.params.id)
         .orderBy('us.createdAt', 'desc');
         res.json(servicios);
     } catch (error) {
-        res.status(500).json({ msg: 'Hubo un error al encontrar los servicios de los abonados'});
+        res.status(500).json({ msg: 'Hubo un error al encontrar el historial de servicios del abonado'});
     }
 }
 
@@ -571,12 +580,6 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             let ultimoUserDomicilio = await UserDomicilio.findOne({
                 order: [["UserDomicilioId", "DESC"]]
             })
-            const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
-            abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
-            abonadoDomicilio.createdAt = new Date();
-            abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
-            abonadoDomicilio.createdBy = req.body.createdBy;
-            abonadoDomicilio.CambioDomicilioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo domicilio del abonado';
             // instanciamos un movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
@@ -619,6 +622,13 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
             ot.NuevoDomicilioId = domicilio.DomicilioId;
             ot.createdBy = req.body.createdBy; 
             await ot.save({transaction: t});
+            const abonadoDomicilio = new UserDomicilio(req.body, {transaction: t});
+            abonadoDomicilio.UserDomicilioId = ultimoUserDomicilio.UserDomicilioId + 1;
+            abonadoDomicilio.createdAt = new Date();
+            abonadoDomicilio.DomicilioId = ultimoDomicilioId + 1;
+            abonadoDomicilio.OtId = ot.OtId;
+            abonadoDomicilio.createdBy = req.body.createdBy;
+            abonadoDomicilio.CambioDomicilioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo domicilio del abonado';
             for (let i=0; i<= req.body.Tecnico.length-1; i++){
                 let obj = {
                     TecnicoId: req.body.Tecnico[i].UserId,
@@ -705,10 +715,6 @@ exports.AbonadoCambioServicio = async(req, res) => {
                 order: [['MovimientoId', 'DESC']]
             }); 
             if (ultimoMovimiento) ultimoMovimientoId = ultimoMovimiento.MovimientoId;
-            const abonadoServicio = new UserServicio(req.body, {transaction: t});
-            abonadoServicio.UserServicioId = ultimoUserServicioId + 1;
-            abonadoServicio.ServicioId = req.body.Servicio.ServicioId;
-            abonadoServicio.CambioServicioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo servicio del abonado';
             // instanciamos un movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
@@ -751,6 +757,11 @@ exports.AbonadoCambioServicio = async(req, res) => {
             ot.NuevoServicioId = req.body.Servicio.ServicioId;
             ot.createdBy = req.body.createdBy; 
             await ot.save({transaction: t});
+            const abonadoServicio = new UserServicio(req.body, {transaction: t});
+            abonadoServicio.UserServicioId = ultimoUserServicioId + 1;
+            abonadoServicio.ServicioId = req.body.Servicio.ServicioId;
+            abonadoServicio.OtId = ot.OtId;
+            abonadoServicio.CambioServicioObservaciones = 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo servicio del abonado';
             for (let i=0; i<= req.body.Tecnico.length-1; i++){
                 let obj = {
                     TecnicoId: req.body.Tecnico[i].UserId,

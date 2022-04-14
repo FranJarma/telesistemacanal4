@@ -37,6 +37,11 @@ const ListaOtPendientes = () => {
     const [OtFechaFinalizacion, setOtFechaFinalizacion] = useState(new Date());
     const [Onu, setOnu] = useState(null);
     
+    const [FiltrosFecha, setFiltrosFecha] = useState({
+        Desde: new Date(),
+        Hasta: new Date()
+    });
+    const {Desde, Hasta} = FiltrosFecha;
     const onInputChange = (e) => {
         setOtObservacionesResponsableEjecucion(e.target.value);
     }
@@ -176,46 +181,47 @@ const ListaOtPendientes = () => {
         <div className="container">
         <Aside/>
         <main>
-        {/* <Typography variant="h6">Filtros</Typography>
+        <Typography variant="h6">Listado de Órdenes de Trabajo sin finalizar</Typography>
         <br/>
         <Card>
             <CardContent>
-                <Grid container spacing={3}>
-                    <Grid item xs={5} md={4} lg={4}>
+            <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary"> Nueva OT</Button></Link>}></CardHeader>
+            <Grid container spacing={3}>
+                    <Grid item xs={3} md={3} lg={3}>
                         <DatePicker
                             inputVariant="outlined"
                             format="dd/MM/yyyy"
-                            placeholder="dia/mes/año"
+                            placeholder="dd/mm/aaaa"
                             fullWidth
                             label="Desde"
                             value={Desde}
+                            onChange={(newDate) => setFiltrosFecha({
+                                ...FiltrosFecha,
+                                Desde: newDate
+                            })}
                         ></DatePicker>
                     </Grid>
-                    <Grid item xs={4} md={4} lg={4}>
+                    <Grid item xs={3} md={3} lg={3}>
                         <DatePicker
                             inputVariant="outlined"
                             format="dd/MM/yyyy"
-                            placeholder="dia/mes/año"
+                            placeholder="dd/mm/aaaa"
                             fullWidth
                             label="Hasta"
                             value={Hasta}
+                            onChange={(newDate) => setFiltrosFecha({
+                                ...FiltrosFecha,
+                                Hasta: newDate
+                            })}
                         ></DatePicker>
                     </Grid>
-                    <Grid item xs={4} md={4} lg={4}>
+                    <Grid item xs={3} md={3} lg={3}>
                         <Button
                         style={{marginTop: '10px'}}
                         variant="contained"
                         color="secondary">Buscar</Button>
                     </Grid>
                 </Grid>
-            </CardContent>
-        </Card>
-        <br/> */}
-        <Typography variant="h6">Listado de Órdenes de Trabajo sin finalizar</Typography>
-        <br/>
-        <Card>
-            <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary"> Nueva OT</Button></Link>}></CardHeader>
-            <CardContent>
                 <Datatable
                     loader={true}
                     datos={ordenesDeTrabajo}

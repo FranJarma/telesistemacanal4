@@ -7,10 +7,16 @@ const UserServicio = db.define('userservicio', {
         primaryKey: true
     },
     UserId: {
-        type: UUIDV4
+        type: UUIDV4,
+        allowNull: false
+    },
+    OtId: {
+        type: INTEGER,
+        allowNull: false
     },
     ServicioId: {
-        type: INTEGER
+        type: INTEGER,
+        allowNull: false
     },
     OnuId: {
         type: INTEGER

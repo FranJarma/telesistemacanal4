@@ -14,6 +14,8 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import convertirAMoney from '../../../helpers/ConvertirAMoney';
 import * as VARIABLES from './../../../types/variables';
+import BotonesDatatable from '../design/components/BotonesDatatable';
+import convertirAHora from '../../../helpers/ConvertirAHora';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
@@ -104,8 +106,14 @@ const CambioServicio = () => {
             "sortable": true
         },
         {
-            "name": "Fecha de Cambio",
-            "selector": row =>convertirAFecha(row["createdAt"]),
+            "name": "Fecha de solicitud",
+            "selector": row =>convertirAFecha(row["FechaPedidoCambio"]),
+            "sortable": true
+        },
+        {
+            "name": "Fecha de realización",
+            "selector": row => row["OtFechaFinalizacion"] ? convertirAFecha(row["OtFechaFinalizacion"]) +"-"+ convertirAHora(row["OtFechaFinalizacion"])
+            : "OT No Finalizada",
             "sortable": true
         },
         {
@@ -115,6 +123,22 @@ const CambioServicio = () => {
             "wrap": true,
             "sortable": true
         },
+        {
+            cell: (data) => 
+            !data.OtFechaFinalizacion ?
+            <>
+            <BotonesDatatable botones={
+                <>
+                <MenuItem>
+                <Typography style={{color: "#4D7F9E", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
+                </MenuItem>
+                <MenuItem>
+                <Typography style={{color: "navy", cursor: 'pointer'}}><i className='bx bxs-home bx-xs' ></i> Confirmar cambio de domicilio</Typography>
+                </MenuItem>
+                </>
+            }/>
+            </>:"",
+        }
     ]
     const columnasOt = [
         {
@@ -192,6 +216,7 @@ const CambioServicio = () => {
                         </Grid>
                         <Grid item xs={12} md={6} lg={6} xl={6}>
                             <Typography variant="h6"><b>Servicio actual: </b> {location.state.ServicioNombre}</Typography>
+                            {location.state.OnuMac ? <Typography variant="h6"><b>MAC ONU: </b> {location.state.OnuMac}</Typography>:""}
                             <Typography variant="h6"><b>Fecha de contrato: </b> {convertirAFecha(location.state.FechaContrato)}</Typography>
                         </Grid>
                     </Grid>

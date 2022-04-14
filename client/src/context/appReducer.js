@@ -88,7 +88,12 @@ export default (state, action) => {
         case TYPES.CAMBIO_SERVICIO_ABONADO: {
             return {
                 ...state,
-                historialServicios: [action.payload, ...state.historialServicios]
+                historialServicios: [{
+                    ServicioNombre: action.payload.Servicio.ServicioNombre,
+                    FechaPedidoCambio: new Date().toISOString(),
+                    OtFechaFinalizacion: null,
+                    CambioServicioObservaciones: 'Esperando finalización de OT. Una vez finalizada, este pasará a ser el nuevo servicio del abonado'
+                }, ...state.historialServicios]
             };
         }
         case TYPES.CAMBIAR_ESTADO_ABONADO: {

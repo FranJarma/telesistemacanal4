@@ -7,10 +7,16 @@ const UserDomicilio = db.define('userdomicilio', {
         primaryKey: true
     },
     UserId: {
-        type: UUIDV4
+        type: UUIDV4,
+        allowNull: false
+    },
+    OtId: {
+        type: INTEGER,
+        allowNull: false
     },
     DomicilioId: {
-        type: INTEGER
+        type: INTEGER,
+        allowNull: false
     },
     EstadoId: {
         type: INTEGER

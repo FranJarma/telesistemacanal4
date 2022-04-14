@@ -550,7 +550,7 @@ const CaratulaAbonado = () => {
                             setOtFechaPrevistaVisita(OtFechaPrevistaVisita)
                         }}
                         format="dd/MM/yyyy"
-                        placeholder='dia/mes/año'
+                        placeholder='dd/mm/aaaa'
                         fullWidth
                         label="Fecha prevista de visita"
                         >

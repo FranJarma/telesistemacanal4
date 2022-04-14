@@ -142,7 +142,7 @@ const CambioDomicilio = () => {
         },
         {
             "name": "Fecha de realización",
-            "selector": row => row["FechaFinalizacionOt"] ? convertirAFecha(row["FechaFinalizacionOt"]) +"-"+ convertirAHora(row["FechaFinalizacionOt"])
+            "selector": row => row["OtFechaFinalizacion"] ? convertirAFecha(row["OtFechaFinalizacion"]) +"-"+ convertirAHora(row["OtFechaFinalizacion"])
             : "OT No Finalizada",
             "hide": "sm",
             "wrap": true
@@ -155,6 +155,7 @@ const CambioDomicilio = () => {
         },
         {
             cell: (data) => 
+            !data.OtFechaFinalizacion ?
             <>
             <BotonesDatatable botones={
                 <>
@@ -166,7 +167,7 @@ const CambioDomicilio = () => {
                 </MenuItem>
                 </>
             }/>
-            </>,
+            </>:"",
         }
     ]
     const columnasOt = [
@@ -196,7 +197,7 @@ const CambioDomicilio = () => {
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Solicitud: {convertirAFecha(data.FechaPedidoCambio)}</Typography>
         { data.FechaInicioOt ?
         <><Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Realización (Inicio): {convertirAFecha(data.FechaInicioOt)} - {convertirAHora(data.FechaInicioOt)}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Realización (Fin): {convertirAFecha(data.FechaFinalizacionOt)} - {convertirAHora(data.FechaFinalizacionOt)}</Typography></>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Realización (Fin): {convertirAFecha(data.OtFechaFinalizacion)} - {convertirAHora(data.OtFechaFinalizacion)}</Typography></>
         : ""}
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-clipboard"></i> Observaciones: {data.CambioDomicilioObservaciones}</Typography>
     </>;
@@ -335,7 +336,7 @@ const CambioDomicilio = () => {
                             setOtFechaPrevistaVisita(OtFechaPrevistaVisita)
                         }}
                         format="dd/MM/yyyy"
-                        placeholder='dia/mes/año'
+                        placeholder='dd/mm/aaaa'
                         fullWidth
                         label="Fecha prevista de visita"
                         >
