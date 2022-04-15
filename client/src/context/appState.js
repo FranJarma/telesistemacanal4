@@ -459,6 +459,17 @@ const AppState = props => {
             console.log(error);
         }
     }
+    const traerAbonadosAtrasados = async (municipioId = 0) => {
+        try {
+            const resultado =  await clienteAxios.get(`/api/usuarios/abonados/atrasados/municipio=${municipioId}}`);
+            dispatch({
+                type: TYPES.LISTA_ABONADOS,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const traerAbonado = async (UserId) => {
         try {
             const resultado =  await clienteAxios.get(`/api/usuarios/abonados/UserId=${UserId}`);
@@ -1628,7 +1639,7 @@ const AppState = props => {
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
-            traerAbonados, traerAbonado, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado, cambioTitularidadAbonado,
+            traerAbonados, traerAbonadosAtrasados, traerAbonado, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado, cambioTitularidadAbonado,
             cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
             traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 
             traerCondicionesIva,

@@ -106,49 +106,49 @@ const Aside = () => {
             <Typography variant="h6">{localStorage.getItem('usr')}</Typography>
           </SidebarHeader>
           <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
-          {
-            usuarioLogueado.Roles.map((rol)=>(
-              rol.RoleName === "Tecnico" ?
-                <MenuItem icon={<i className='bx bx-task'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
-            : rol.RoleName === "Mesa" ?
-            <>
+
+          { usuarioLogueado.Roles.some((rol)=> rol.RoleName === "Tecnico") ? 
+              <MenuItem icon={<i className='bx bx-task'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
+          : usuarioLogueado.Roles.some((rol)=> rol.RoleName === "Mesa") ?
+              <>
+                <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
+                  <MenuItem  icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
+                  <MenuItem icon={<i className='bx bx-user-check' ></i>}>Activos<Link to="/abonados-activos"></Link></MenuItem>
+                  <MenuItem icon={<i className='bx bx-user-x' ></i>}>Inactivos<Link to="/abonados-inactivos"></Link></MenuItem>
+                  <MenuItem icon={<i className='bx bx-timer' ></i>}>Atrasados<Link to="/abonados-atrasados"></Link></MenuItem>
+                </SubMenu>
+                <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Órdenes de Trabajo" icon={<i className="bx bx-wrench"></i>}>
+                  <MenuItem icon={<i className='bx bx-clipboard'></i>}>OT Pendientes<Link to="/ot-pendientes"></Link></MenuItem>
+                  <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
+                </SubMenu>
+              </>
+          : usuarioLogueado.Roles.some((rol)=> rol.RoleName === "Jefe") || usuarioLogueado.Roles.some((rol)=> rol.RoleName === "Admin") ?
+              <>
               <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
-                <MenuItem  icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
                 <MenuItem icon={<i className='bx bx-user-check' ></i>}>Activos<Link to="/abonados-activos"></Link></MenuItem>
                 <MenuItem icon={<i className='bx bx-user-x' ></i>}>Inactivos<Link to="/abonados-inactivos"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bx-timer' ></i>}>Atrasados<Link to="/abonados-atrasados"></Link></MenuItem>
               </SubMenu>
               <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Órdenes de Trabajo" icon={<i className="bx bx-wrench"></i>}>
                 <MenuItem icon={<i className='bx bx-clipboard'></i>}>OT Pendientes<Link to="/ot-pendientes"></Link></MenuItem>
                 <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bx-user-pin'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
               </SubMenu>
-            </>
-            : rol.RoleName === "Jefe" || rol.RoleName === "Admin" ?
-            <>
-            <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
-              <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
-              <MenuItem icon={<i className='bx bx-user-check' ></i>}>Activos<Link to="/abonados-activos"></Link></MenuItem>
-              <MenuItem icon={<i className='bx bx-user-x' ></i>}>Inactivos<Link to="/abonados-inactivos"></Link></MenuItem>
-              <MenuItem icon={<i className='bx bx-timer' ></i>}>Atrasados<Link to="/abonados-inactivos"></Link></MenuItem>
-            </SubMenu>
-            <SubMenu onClick={onClickMenuTecnicos} open={SubMenuTecnicos} title="Órdenes de Trabajo" icon={<i className="bx bx-wrench"></i>}>
-              <MenuItem icon={<i className='bx bx-clipboard'></i>}>OT Pendientes<Link to="/ot-pendientes"></Link></MenuItem>
-              <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
-              <MenuItem icon={<i className='bx bx-user-pin'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
-            </SubMenu>
-            <MenuItem icon={<i className="bx bx-calculator"></i>}>Cierre de caja<Link to="/cierre-de-caja"></Link></MenuItem>
-            <SubMenu onClick={onClickMenuUsuarios} open={SubMenuUsuarios} title="Usuarios" icon={<i className="bx bx-group"></i>}>
-              <MenuItem icon={<i className='bx bxs-user'></i>}>Usuarios<Link to="/users"></Link></MenuItem>
-              <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
-            </SubMenu>
-            <SubMenu onClick={onClickMenuConfiguracion} open={subMenuConfiguracion} title="Configuración" icon={<i className="bx bxs-brightness"></i>}>
-              <MenuItem icon={<i className="bx bx-money"></i>}>Medios de Pago<Link to="/medios-de-pago"></Link></MenuItem>
-              <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
-              <MenuItem icon={<i className="bx bx-map"></i>}>Barrios y Municipios<Link to="/barrios-municipios"></Link></MenuItem>
-              <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus<Link to="/onus"></Link></MenuItem>
-              <MenuItem icon={<i className='bx bx-clipboard'></i>}>Tareas<Link to="/tareas"></Link></MenuItem>
-            </SubMenu>
-            </>
-          : "" ))}
+              <MenuItem icon={<i className="bx bx-calculator"></i>}>Cierre de caja<Link to="/cierre-de-caja"></Link></MenuItem>
+              <SubMenu onClick={onClickMenuUsuarios} open={SubMenuUsuarios} title="Usuarios" icon={<i className="bx bx-group"></i>}>
+                <MenuItem icon={<i className='bx bxs-user'></i>}>Usuarios<Link to="/users"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
+              </SubMenu>
+              <SubMenu onClick={onClickMenuConfiguracion} open={subMenuConfiguracion} title="Configuración" icon={<i className="bx bxs-brightness"></i>}>
+                <MenuItem icon={<i className="bx bx-money"></i>}>Medios de Pago<Link to="/medios-de-pago"></Link></MenuItem>
+                <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
+                <MenuItem icon={<i className="bx bx-map"></i>}>Barrios y Municipios<Link to="/barrios-municipios"></Link></MenuItem>
+                <MenuItem icon={<i className="bx bx-broadcast"></i>}>Onus<Link to="/onus"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bx-clipboard'></i>}>Tareas<Link to="/tareas"></Link></MenuItem>
+              </SubMenu>
+              </>
+          : ""}
           <SidebarFooter>
         </SidebarFooter>
         </Menu>

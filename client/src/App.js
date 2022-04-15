@@ -26,6 +26,7 @@ import ListaOtFinalizadas from './views/components/tecnicos/ListaOtFinalizadas';
 import ListaMovimientos from './views/components/caja/ListaMovimientos';
 import ListaMediosPago from './views/components/mediosPago/ListaMediosPago';
 import Error401 from './views/components/Error401';
+import ListaAbonadosAtrasados from './views/components/abonados/ListaAbonadosAtrasados';
 
 //revisamos si tenemos un token
 const token = localStorage.getItem('token');
@@ -150,6 +151,8 @@ function App() {
                   <PrivateRoute exact path="/abonados-activos" component={ListaAbonadosActivos}>
                   </PrivateRoute>
                   <PrivateRoute exact path="/abonados-inactivos" component={ListaAbonadosInactivos}>
+                  </PrivateRoute>
+                  <PrivateRoute exact path="/abonados-atrasados" component={ListaAbonadosAtrasados}>
                   </PrivateRoute>
                   <PrivateRoute path="/caratula-abonado" component={CaratulaAbonado}>
                   </PrivateRoute>

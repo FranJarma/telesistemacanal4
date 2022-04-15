@@ -239,6 +239,29 @@ exports.AbonadosGet = async(req, res) => {
         res.status(500).json({ msg: 'Hubo un error al encontrar los abonados'});
     }
 }
+
+exports.AbonadosAtrasadosGet = async(req, res) => {
+    try {
+        const abonadosAtrasados = await knex.select('u.Nombre','u.Apellido', 'u.Documento',
+        'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre',
+        knex.raw('GROUP_CONCAT(p.PagoMes, "/", p.PagoAño SEPARATOR ", ") as MesesDebe'))
+        .from('_user as u')
+        .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u.DomicilioId')
+        .innerJoin('barrio as b', 'b.BarrioId', 'd.BarrioId')
+        .innerJoin('municipio as m', 'm.MunicipioId', 'b.MunicipioId')
+        .innerJoin('pago as p', 'p.UserId', '=', 'u.UserId')
+        .where('p.PagoSaldo', '>', 0)
+        // .andWhere('p.PagoMes', '<=', new Date().getMonth()+1)
+        // .andWhere('p.PagoAño', '<=', new Date().getFullYear())
+        .andWhere('u.EstadoId', '!=', 3)
+        .groupBy('u.UserId')
+        res.json(abonadosAtrasados);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al encontrar los abonados atrasados'});
+    }
+}
+
 exports.AbonadoGetById = async(req, res) => {
     try {
         const abonado = await knex.select('u.UserId', 'u.Nombre', 'u.Apellido', 'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre').from('_user as u')
