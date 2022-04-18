@@ -251,8 +251,8 @@ exports.AbonadosAtrasadosGet = async(req, res) => {
         .innerJoin('municipio as m', 'm.MunicipioId', 'b.MunicipioId')
         .innerJoin('pago as p', 'p.UserId', '=', 'u.UserId')
         .where('p.PagoSaldo', '>', 0)
-        // .andWhere('p.PagoMes', '<=', new Date().getMonth()+1)
-        // .andWhere('p.PagoAño', '<=', new Date().getFullYear())
+        .andWhere('p.PagoMes', '<=', new Date().getMonth()+1)
+        .andWhere('p.PagoAño', '<=', new Date().getFullYear())
         .andWhere('u.EstadoId', '!=', 3)
         .groupBy('u.UserId')
         res.json(abonadosAtrasados);
