@@ -12,6 +12,7 @@ import BotonesDatatable  from './../design/components/BotonesDatatable';
 import convertirAFecha from './../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Spinner from '../design/components/Spinner';
+import * as VARIABLES from './../../../types/variables';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
@@ -475,12 +476,20 @@ const ListaPagos = () => {
                 </Grid>
                 <Grid item xs={6} md={6} sm={6} lg={6}>
                     <TextField
-                        variant="filled"
+                        variant={MedioPagoId === VARIABLES.ID_MEDIO_PAGO_EFECTIVO ? "outlined" : "filled"}
                         label="Total ($)"
                         value={DetallePagoMonto}
+                        onKeyPress={(e) => {
+                            if (!/^[,0-9]+$/.test(e.key)) {
+                                e.preventDefault();
+                        }}}
+                        inputProps={{
+                            maxLength: 4
+                        }}
+                        onChange={MedioPagoId === VARIABLES.ID_MEDIO_PAGO_EFECTIVO ? onInputChange : ''}
                         name="DetallePagoMonto"
                         fullWidth
-                        disabled
+                        disabled={MedioPagoId !== VARIABLES.ID_MEDIO_PAGO_EFECTIVO ? true : false}
                         >
                     </TextField>
                 </Grid>

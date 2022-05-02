@@ -80,7 +80,6 @@ const CambioDomicilio = () => {
         });
     }
     const handleChangeMedioPagoSeleccionado = (e) => {
-        console.log(e.target.value.MedioPagoInteres);
         setMedioPago(e.target.value);
         setPagoInfo({
             ...PagoInfo,
