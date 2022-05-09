@@ -833,6 +833,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
     }
 }
 exports.AbonadoCambioTitularidad = async(req, res) => {
+    console.log(req.body.BarrioId);
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
@@ -841,6 +842,7 @@ exports.AbonadoCambioTitularidad = async(req, res) => {
         await db.transaction(async(t)=>{
             let abonadoNuevoDomicilio = null;
             let nuevoDomicilio = null;
+            const añoFechaFinalizacion = parseInt(req.body.FechaContrato.split('-')[0]);
             //buscamos el abonado viejo
             const abonado = await User.findByPk( req.body.UserIdViejo, {transaction: t} );
             //cambiamos su estado a INACTIVO, le desasignamos la ONU si es que tiene y la fecha de bajada
@@ -852,6 +854,7 @@ exports.AbonadoCambioTitularidad = async(req, res) => {
             abonadoNuevo.UserId = uuidv4().toUpperCase();
             abonadoNuevo.EstadoId = VARIABLES.ESTADO_ID_ABONADO_ACTIVO;
             abonadoNuevo.EsUsuarioDeSistema = 0;
+            abonadoNuevo.FechaVencimientoServicio = req.body.FechaContrato.replace(añoFechaFinalizacion, añoFechaFinalizacion + 2);
             const abonadoNuevoRole = new UserRole();
             abonadoNuevoRole.UserId = abonadoNuevo.UserId;
             abonadoNuevoRole.RoleId = VARIABLES.ID_ROL_ABONADO;

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import logo from './../../../images/logo-ts.png';
 import AppContext from '../../../../context/appContext';
 import { Button, Dialog, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
+import * as VARIABLES from './../../../../types/variables';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
@@ -107,9 +108,9 @@ const Aside = () => {
           </SidebarHeader>
           <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
 
-          { usuarioLogueado.Roles.some((rol)=> rol.RoleName === "Tecnico") ? 
+          { usuarioLogueado.Roles.some((rol)=> rol.RoleId === VARIABLES.ID_ROL_TECNICO) ? 
               <MenuItem icon={<i className='bx bx-task'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
-          : usuarioLogueado.Roles.some((rol)=> rol.RoleName === "Mesa") ?
+          : usuarioLogueado.Roles.some((rol)=> rol.RoleId === VARIABLES.ID_ROL_SECRETARIO) ?
               <>
                 <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
                   <MenuItem  icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
@@ -122,7 +123,7 @@ const Aside = () => {
                   <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
                 </SubMenu>
               </>
-          : usuarioLogueado.Roles.some((rol)=> rol.RoleName === "Jefe") || usuarioLogueado.Roles.some((rol)=> rol.RoleName === "Admin") ?
+          : usuarioLogueado.Roles.some((rol)=> rol.RoleId === VARIABLES.ID_ROL_JEFE) || usuarioLogueado.Roles.some((rol)=> rol.RoleId === VARIABLES.ID_ROL_ADMIN) ?
               <>
               <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
                 <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
@@ -138,7 +139,7 @@ const Aside = () => {
               <MenuItem icon={<i className="bx bx-calculator"></i>}>Cierre de caja<Link to="/cierre-de-caja"></Link></MenuItem>
               <SubMenu onClick={onClickMenuUsuarios} open={SubMenuUsuarios} title="Usuarios" icon={<i className="bx bx-group"></i>}>
                 <MenuItem icon={<i className='bx bxs-user'></i>}>Usuarios<Link to="/users"></Link></MenuItem>
-                <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/Roles"></Link></MenuItem>
               </SubMenu>
               <SubMenu onClick={onClickMenuConfiguracion} open={subMenuConfiguracion} title="Configuración" icon={<i className="bx bxs-brightness"></i>}>
                 <MenuItem icon={<i className="bx bx-money"></i>}>Medios de Pago<Link to="/medios-de-pago"></Link></MenuItem>

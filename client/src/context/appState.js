@@ -72,7 +72,8 @@ const AppState = props => {
             console.log(error);
             dispatch({
                 type: TYPES.CERRAR_SESION
-            })
+            });
+            history.push('/');
             Toast(error.response.data.msg, 'warning');
         }
     };
@@ -580,6 +581,28 @@ const AppState = props => {
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
+        })
+        .catch(err => {
+            if(!err.response){
+                console.log(err);
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const generarFactura = async(datosFactura) => {
+        clienteAxios.post('/api/pagos/generarFactura', datosFactura)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.GENERAR_FACTURA,
+                    payload: datosFactura
+                });
         })
         .catch(err => {
             if(!err.response){
@@ -1657,7 +1680,8 @@ const AppState = props => {
             traerMovimientosPorFecha, crearMovimiento,
             traerConceptos,
             mostrarSpinner,
-            traerCaja, cerrarCaja
+            traerCaja, cerrarCaja,
+            generarFactura
         }}>{props.children}
         </AppContext.Provider>
     )

@@ -5,16 +5,16 @@ const { check } = require('express-validator');
 const { esDNIValido, esCUITValido, esUserValido, esEmailValido } =  require('./../helpers/db-validaciones');
 const ValidarJWT = require('../middlewares/ValidarJWT');
 
-router.get('/estado=:estadoId', ValidarJWT, UserController.UsersGet);
-router.get('/rol=:rolId', ValidarJWT, UserController.UsersGetByRole);
+router.get('/estado=:estadoId', [ValidarJWT], UserController.UsersGet);
+router.get('/rol=:rolId', [ValidarJWT], UserController.UsersGetByRole);
 
-router.get('/abonados/UserId=:UserId', ValidarJWT, UserController.AbonadoGetById);
-router.get('/abonados/municipio=:municipioId&estado=:estadoId', ValidarJWT, UserController.AbonadosGet);
-router.get('/abonados/atrasados/municipio=:municipioId', ValidarJWT, UserController.AbonadosAtrasadosGet);
-router.get('/abonados/domicilios/:id', ValidarJWT, UserController.AbonadoListarDomicilios);
-router.get('/abonados/servicios/:id', ValidarJWT, UserController.AbonadoListarServicios);
+router.get('/abonados/UserId=:UserId', [ValidarJWT], UserController.AbonadoGetById);
+router.get('/abonados/municipio=:municipioId&estado=:estadoId', [ValidarJWT], UserController.AbonadosGet);
+router.get('/abonados/atrasados/municipio=:municipioId', [ValidarJWT], UserController.AbonadosAtrasadosGet);
+router.get('/abonados/domicilios/:id', [ValidarJWT], UserController.AbonadoListarDomicilios);
+router.get('/abonados/servicios/:id', [ValidarJWT], UserController.AbonadoListarServicios);
 
-router.post('/create', ValidarJWT,
+router.post('/create', [ValidarJWT],
 [
     check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
@@ -32,7 +32,7 @@ router.post('/create', ValidarJWT,
     
 ], UserController.UserCreate);
 
-router.put('/update/:id', ValidarJWT,
+router.put('/update/:id', [ValidarJWT],
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
     check('Documento', 'El DNI es obligatorio').notEmpty(),
@@ -45,7 +45,7 @@ router.put('/update/:id', ValidarJWT,
 
 router.put('/delete/:id', UserController.UserDelete);
 
-router.post('/abonados/create', ValidarJWT,
+router.post('/abonados/create', [ValidarJWT],
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
     check('Documento', 'El DNI es obligatorio').notEmpty(),
@@ -56,7 +56,7 @@ router.post('/abonados/create', ValidarJWT,
     check('Cuit', 'El CUIT no tiene el formato correcto, debe tener solo números').isNumeric(),
     check('Cuit', 'El CUIT debe tener 10 dígitos como mínimo').isLength({min: 10}),
     check('Cuit').custom(esCUITValido),
-    check('CondicionIVAId', 'La condición IVA es obligatoria').not().contains(0),
+    check('CondicionIvaId', 'La condición IVA es obligatoria').not().contains(0),
     check('Municipio', 'El municipio es obligatorio').not().contains(0),
     check('Barrio', 'El barrio es obligatorio').not().contains(0),
     check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
@@ -67,7 +67,7 @@ router.post('/abonados/create', ValidarJWT,
     check('OtFechaPrevistaVisita', 'Le fecha prevista de visita es obligatoria').notEmpty()
 ], UserController.AbonadoCreate);
 
-router.put('/abonados/update/:id', ValidarJWT,
+router.put('/abonados/update/:id', [ValidarJWT],
 [   check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
     check('Documento', 'El DNI es obligatorio').notEmpty(),
@@ -76,12 +76,12 @@ router.put('/abonados/update/:id', ValidarJWT,
     check('Cuit', 'El CUIT es obligatorio').notEmpty(),
     check('Cuit', 'El CUIT no tiene el formato correcto, debe tener solo números').isNumeric(),
     check('Cuit', 'El CUIT debe tener 10 dígitos como mínimo').isLength({min: 10}),
-    check('CondicionIVAId', 'La condición IVA es obligatoria').not().contains(0),
+    check('CondicionIvaId', 'La condición IVA es obligatoria').not().contains(0),
 ],UserController.AbonadoUpdate);
 
-router.put('/abonados/cambiar-estado/:id', ValidarJWT, UserController.AbonadoCambiarEstado);
+router.put('/abonados/cambiar-estado/:id', [ValidarJWT], UserController.AbonadoCambiarEstado);
 
-router.put('/abonados/cambio-domicilio/:id', ValidarJWT,
+router.put('/abonados/cambio-domicilio/:id', [ValidarJWT],
 [
     check('Municipio', 'El municipio es obligatorio').notEmpty(),
     check('Barrio', 'El barrio es obligatorio').notEmpty(),
@@ -92,7 +92,7 @@ router.put('/abonados/cambio-domicilio/:id', ValidarJWT,
     check('MedioPago', 'El medio de pago es obligatorio').notEmpty()
 ],UserController.AbonadoCambioDomicilio);
 
-router.put('/abonados/cambio-servicio/:id', ValidarJWT,
+router.put('/abonados/cambio-servicio/:id', [ValidarJWT],
 [
     check('Servicio', 'El servicio es obligatorio').notEmpty(),
     check('MedioPago', 'El medio de pago es obligatorio').notEmpty(),
@@ -100,7 +100,7 @@ router.put('/abonados/cambio-servicio/:id', ValidarJWT,
     check('Tecnico', 'Seleccione un técnico').notEmpty(),
 ],UserController.AbonadoCambioServicio);
 
-router.put('/abonados/cambio-titularidad/:id', ValidarJWT,
+router.put('/abonados/cambio-titularidad/:id', [ValidarJWT],
 [
     check('Nombre', 'El nombre es obligatorio').notEmpty(),
     check('Apellido', 'El apellido es obligatorio').notEmpty(),
@@ -112,9 +112,9 @@ router.put('/abonados/cambio-titularidad/:id', ValidarJWT,
     check('Cuit', 'El CUIT no tiene el formato correcto, debe tener solo números').isNumeric(),
     check('Cuit', 'El CUIT debe tener 10 dígitos como mínimo').isLength({min: 10}),
     check('Cuit').custom(esCUITValido),
-    check('CondicionIVAId', 'La condición IVA es obligatoria').not().contains(0),
+    check('CondicionIvaId', 'La condición IVA es obligatoria').not().contains(0),
     check('MunicipioId', 'El municipio es obligatorio').not().contains(0),
-    check('BarrioId', 'El barrio es obligatorio').not().contains(0),
+    check('Barrio.BarrioId', 'El barrio es obligatorio').notEmpty(),
     check('DomicilioCalle', 'La calle del domicilio es obligatoria').notEmpty(),
     check('DomicilioNumero', 'El numero de domicilio es obligatorio').notEmpty(),
 ],UserController.AbonadoCambioTitularidad);

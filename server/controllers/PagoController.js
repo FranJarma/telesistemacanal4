@@ -6,6 +6,10 @@ const Pago = require('./../models/Pago');
 const DetallePago = require('./../models/DetallePago');
 const Movimiento = require('../models/Movimiento');
 const Servicio = require('../models/Servicio');
+const Afip = require('@afipsdk/afip.js');
+
+const date = new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+const afip = new Afip({ CUIT: 30687336506, cert: "tls_pem.pem", key: "tls_key.key", res_folder: './' });
 
 require('dotenv').config({path: 'variables.env'});
 
@@ -294,5 +298,38 @@ exports.PagosTraerInscripcion = async(req,res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
+    }
+}
+
+exports.GenerarFactura = async(req, res) => {
+    try {
+        console.log(req.body);
+        const {Nombre, Apellido, Cuit, Documento, DomicilioCalle, DomicilioNumero} = req.body;
+        const data = {
+            'CantReg' 		: 1, // Cantidad de comprobantes a registrar
+            'PtoVta' 		: 3, // Punto de venta
+            'CbteTipo' 		: 1, // Tipo de comprobante (ver tipos disponibles). (1)Factura A
+            'Concepto' 		: 2, // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
+            'DocTipo' 		: 80, // Tipo de documento del comprador (ver tipos disponibles). (80)CUIT
+            'DocNro' 		: Cuit, // Numero de documento del comprador
+            'CbteDesde' 	: 1, // Numero de comprobante o numero del primer comprobante en caso de ser mas de uno
+            'CbteHasta' 	: 1, // Numero de comprobante o numero del ultimo comprobante en caso de ser mas de uno
+            'CbteFch' 		: parseInt(date.replace(/-/g, '')), // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
+            'FchServDesde'  : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de inicio del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+            'FchServHasta'  : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de fin del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+            'FchVtoPago'    : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de vencimiento del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+            'ImpTotal' 		: 35, // Importe total del comprobante
+            'ImpTotConc' 	: 35, // Importe neto no gravado
+            'ImpNeto' 		: 0, // Importe neto gravado
+            'ImpOpEx' 		: 0, // Importe exento de IVA
+            'ImpIVA' 		: 0, //Importe total de IVA
+            'ImpTrib' 		: 0, //Importe total de tributos
+            'MonId' 		: 'PES', //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos) 
+            'MonCotiz' 		: 1, // Cotización de la moneda usada (1 para pesos argentinos)  
+        }
+        await afip.ElectronicBilling.createVoucher(data, true).then(res => {console.log(res);})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'Hubo un error al generar la factura'});
     }
 }

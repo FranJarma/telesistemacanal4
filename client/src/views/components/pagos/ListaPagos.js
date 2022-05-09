@@ -16,7 +16,7 @@ import * as VARIABLES from './../../../types/variables';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner } = appContext;
+    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner, generarFactura } = appContext;
 
     const location = useLocation();
     const [PagoAño, setPagoAño] = useState(new Date());
@@ -243,7 +243,8 @@ const ListaPagos = () => {
         {
             cell: (data) => 
             <>
-            <Typography onClick={()=>{handleChangeModalNuevoPago(data, true)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-pencil bx-xs"></i></Tooltip></Typography>
+            {/* <Typography onClick={()=>{handleChangeModalNuevoPago(data, true)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-pencil bx-xs"></i></Tooltip></Typography> */}
+            <Typography onClick={()=>{generarFactura(location.state, data)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Generar Factura"><i className='bx bxs-file-pdf'></i></Tooltip></Typography>
             </>,
         }
     ]

@@ -6,7 +6,7 @@ import { Button, Card, CardContent, FormControlLabel, FormGroup, Grid, MenuItem,
 import { DatePicker } from '@material-ui/pickers';
 import useStyles from '../Styles';
 import { useLocation } from 'react-router-dom';
-import { Alert } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
@@ -51,7 +51,10 @@ const CambioTitularidad = () => {
         traerMunicipiosPorProvincia(e.target.value);
     }*/
     const [MunicipioId, setMunicipioId] = useState(0);
-    const [BarrioId, setBarrioId] = useState(0);
+    const [Barrio, setBarrio] = useState({
+        BarrioId: null,
+        BarrioNombre: null
+    });
     const [CondicionIvaId, setCondicionIvaId] = useState(0);
     const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [FechaContrato, setFechaContrato] = useState(new Date());
@@ -64,7 +67,10 @@ const CambioTitularidad = () => {
         if(!MismoDomicilio){
             setProvinciaId(location.state.ProvinciaId);
             setMunicipioId(location.state.MunicipioId);
-            setBarrioId(location.state.BarrioId);
+            setBarrio({
+                BarrioId: location.state.BarrioId,
+                BarrioNombre: location.state.BarrioNombre
+            });
             setAbonadoInfo({
                 ...abonadoInfo,
                 DomicilioCalle: location.state.DomicilioCalle,
@@ -76,23 +82,26 @@ const CambioTitularidad = () => {
         }
         else {
             setMunicipioId(0);
-            setBarrioId(0);
+            setBarrio({
+                BarrioId: null,
+                BarrioNombre: null
+            });
+            setDomicilioId(0);
             setAbonadoInfo({
                 ...abonadoInfo,
                 DomicilioCalle: null,
                 DomicilioNumero: null,
                 DomicilioPiso: null
             });
-            setDomicilioId(0);
         }
     }
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipioId(e.target.value);
-        setBarrioId(0);
+        setBarrio(0);
         traerBarriosPorMunicipio(e.target.value);
     }
     const handleChangeBarrioSeleccionado = (e) => {
-        setBarrioId(e.target.value);
+        setBarrio(e.target.value);
     }
     const handleChangeCondicionIVASeleccionado = (e) => {
         setCondicionIvaId(e.target.value);
@@ -102,7 +111,6 @@ const CambioTitularidad = () => {
     useEffect(() => {
         traerProvincias();
         traerMunicipiosPorProvincia(ProvinciaId);
-        traerBarriosPorMunicipio(MunicipioId);
         traerCondicionesIva();
     }, [])
 
@@ -125,7 +133,7 @@ const CambioTitularidad = () => {
             CondicionIvaId,
             ProvinciaId,
             MunicipioId,
-            BarrioId,
+            Barrio,
             DomicilioId,
             OnuId,
             ServicioId,
@@ -335,19 +343,18 @@ const CambioTitularidad = () => {
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={4} lg={4} xl={4}>
-                        <TextField
-                            variant = {!MismoDomicilio ? "outlined" : "filled"}
-                            disabled ={!MismoDomicilio ? false : true}
-                            onChange={handleChangeBarrioSeleccionado}
-                            value={BarrioId}
-                            label="Barrio"
-                            fullWidth
-                            select
-                            >
-                            {barrios.length > 0 ? barrios.map((barrio)=>(
-                                <MenuItem key={barrio.BarrioId} value={barrio.BarrioId}>{barrio.BarrioNombre}</MenuItem>
-                            )): <MenuItem disabled>No se encontraron barrios</MenuItem>}
-                            </TextField>
+                        <Autocomplete
+                        disabled ={!MismoDomicilio ? false : true}
+                        disableClearable
+                        value={Barrio}
+                        onChange={(_event, newBarrioId) => {
+                            setBarrio(newBarrioId);
+                        }}
+                        options={barrios}
+                        noOptionsText="No se encontraron barrios"
+                        getOptionLabel={(option) => option.BarrioNombre}
+                        renderInput={(params) => <TextField {...params} value={Barrio.BarrioId} variant = {!MismoDomicilio ? "outlined" : "filled"} fullWidth label="Barrios"/>}
+                        />
                         </Grid>
                         <Grid item xs={12} md={4} lg={4} xl={4}>
                             <TextField

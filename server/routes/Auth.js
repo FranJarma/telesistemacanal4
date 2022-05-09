@@ -5,7 +5,6 @@ const router = express.Router();
 const AuthController = require('./../controllers/AuthController');
 
 router.post('/login', [
-    //validarJWT,
     check('NombreUsuario', 'El nombre de usuario es obligatorio').not().isEmpty(),
     check('Contraseña', 'La contraseña es obligatoria').not().isEmpty()
 ], AuthController.UserGet);

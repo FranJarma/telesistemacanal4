@@ -1,9 +1,8 @@
 const { validationResult } = require('express-validator');
 const User = require('./../models/User');
+const UserRole = require('./../models/UserRole');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const options =require('./../config/knex');
-const knex = require('knex')(options);
 
 exports.UserGet = async (req, res) => {
     const errors = validationResult(req);
@@ -26,7 +25,7 @@ exports.UserGet = async (req, res) => {
             }
         };
         jwt.sign(payload, process.env.SECRET_KEY,{
-            expiresIn: '24h' //expira en 30 minutos
+            expiresIn: '30m' //expira en 30 minutos
         },(error, token) =>{
             if (error) {
                 throw(error);
@@ -53,12 +52,14 @@ exports.UserAutenticate = async (req, res) => {
                 UserId: req.UserId
         }});
         let roles = "";
-        let permisos = "";
-        //si encuentra usuario, traemos los roles
+        //si encuentra usuario, traemos los roles y los permisos
         if (user) {
-            roles = await knex.select('*').from('_role as r')
-            .innerJoin('_userrole as ur', 'ur.RoleId', '=', 'r.RoleId')
-            .where('ur.UserId','=', user.UserId);
+            roles = await UserRole.findAll({
+                attributes: ['RoleId'],
+                where: {
+                    UserId: req.UserId
+                }
+            });
         }
         res.json({
             User: user,

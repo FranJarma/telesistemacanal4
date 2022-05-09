@@ -12,7 +12,7 @@ const UserServicio = db.define('userservicio', {
     },
     OtId: {
         type: INTEGER,
-        allowNull: false
+        allowNull: true
     },
     ServicioId: {
         type: INTEGER,
