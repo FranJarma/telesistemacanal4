@@ -12,8 +12,11 @@ const useStyles = makeStyles(theme =>({
         marginTop: '3rem',
         marginBottom: '3rem'
     },
-    cartaSecundaria: {
-        borderLeft: '3px solid #4D7F9E'
+    cartaEstadisticas: {
+        borderLeft: '3px solid #4D7F9E',
+        '&:hover': {
+            boxShadow: '1px 9px 49px 5px rgba(0,0,0,0.59)'
+        }
     },
     cartaIngresos: {
         background: 'linear-gradient(90deg, rgba(0,128,28,1) 25%, rgba(0,92,20,1) 75%, rgba(0,82,18,1) 100%)',
@@ -45,7 +48,6 @@ const useStyles = makeStyles(theme =>({
     cantidad: {
         color: "#4D7F9E",
         fontSize: "40px",
-        float: "right",
         fontFamily: 'Poppins, sans-serif'
     },
     cartaLogin: {

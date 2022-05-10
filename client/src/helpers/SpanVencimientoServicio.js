@@ -5,10 +5,10 @@ const SpanVencimientoServicio = (timestamp) => {
     const hoy = Date.parse(new Date());
 
     if(hoy > fecha) {
-        return <span title="Servicio vencido"><i style={{color: 'red'}} class='bx bxs-circle'></i> {convertirAFecha(timestamp.timestamp)}</span>
+        return <span title="Servicio vencido"><i style={{color: 'red'}} className='bx bxs-circle'></i> {convertirAFecha(timestamp.timestamp)}</span>
     }
     else {
-        return <span title="Servicio vigente"><i style={{color: 'green'}} class='bx bxs-circle'></i> {convertirAFecha(timestamp.timestamp)}</span>
+        return <span title="Servicio vigente"><i style={{color: 'green'}} className='bx bxs-circle'></i> {convertirAFecha(timestamp.timestamp)}</span>
     }
 }
 
