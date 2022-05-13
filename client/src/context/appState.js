@@ -73,8 +73,8 @@ const AppState = props => {
             dispatch({
                 type: TYPES.CERRAR_SESION
             });
-            history.push('/');
             Toast(error.response.data.msg, 'warning');
+            history.push('/');
         }
     };
     const iniciarSesion = async(usuario) => {
@@ -596,6 +596,7 @@ const AppState = props => {
         })
     }
     const generarFactura = async(datosFactura) => {
+        console.log(datosFactura);
         clienteAxios.post('/api/pagos/generarFactura', datosFactura)
         .then(resOk => {
             if (resOk.data)

@@ -13,6 +13,7 @@ import convertirAFecha from './../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Spinner from '../design/components/Spinner';
 import * as VARIABLES from './../../../types/variables';
+import Factura from '../design/components/Factura';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
@@ -243,8 +244,9 @@ const ListaPagos = () => {
         {
             cell: (data) => 
             <>
+            <Factura/>
             {/* <Typography onClick={()=>{handleChangeModalNuevoPago(data, true)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-pencil bx-xs"></i></Tooltip></Typography> */}
-            <Typography onClick={()=>{generarFactura(location.state, data)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Generar Factura"><i className='bx bxs-file-pdf'></i></Tooltip></Typography>
+            {/* <Typography onClick={()=>{generarFactura({datosFactura: location.state, datosMonto: data})}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Descargar Factura"><i className='bx bxs-file-pdf bx-sm'></i></Tooltip></Typography> */}
             </>,
         }
     ]
@@ -280,10 +282,6 @@ const ListaPagos = () => {
                         setPagoInfo({...PagoInfo, PagoConceptoId: 6});
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6);
                     }}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
-                    <Tab onClick={() => {;
-                    }}><i className='bx bxs-file'></i> Recibos</Tab>
-                    <Tab onClick={() => {;
-                    }}><i className='bx bxs-file-pdf'></i> Facturas</Tab>
                 </TabList>
                 <br/>
                 { //Nos permite renderizar 4 elementos iguales (4 Primeros Tabs)
