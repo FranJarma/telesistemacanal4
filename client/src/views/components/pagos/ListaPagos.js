@@ -9,7 +9,7 @@ import Modal from '../design/components/Modal';
 import { DatePicker } from '@material-ui/pickers';
 import AppContext from '../../../context/appContext';
 import BotonesDatatable  from './../design/components/BotonesDatatable';
-import convertirAFecha from '../../../fonts/helpers/ConvertirAFecha';
+import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Spinner from '../design/components/Spinner';
 import * as VARIABLES from './../../../types/variables';
@@ -262,7 +262,7 @@ const ListaPagos = () => {
         },
         {
             "name": "Fecha de emisión",
-            "selector": row => row["FacturaFechaEmision"],
+            "selector": row => row["FacturaFechaEmision"].split('-').reverse().join('/'),
             "wrap": true,
             "sortable": true,
         },
