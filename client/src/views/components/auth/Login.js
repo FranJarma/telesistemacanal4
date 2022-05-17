@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Button, Card, CardContent, Grid, InputAdornment, TextField, Typography } from '@material-ui/core';
-import logo from './../../images/logo-ts.png';
+import logo from './../../images/logo-ts-transparente.png';
 import olinet from './../../images/olinet.png';
 import useStyles from './../Styles';
 import AppContext from '../../../context/appContext';

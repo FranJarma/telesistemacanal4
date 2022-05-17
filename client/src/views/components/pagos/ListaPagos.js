@@ -282,6 +282,8 @@ const ListaPagos = () => {
                         setPagoInfo({...PagoInfo, PagoConceptoId: 6});
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6);
                     }}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
+                    <Tab onClick={() => {
+                    }}><i className='bx bxs-file-pdf'></i> Facturas</Tab>
                 </TabList>
                 <br/>
                 { //Nos permite renderizar 4 elementos iguales (4 Primeros Tabs)

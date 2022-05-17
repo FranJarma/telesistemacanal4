@@ -1,53 +1,59 @@
 
 import React from 'react';
-import { Font, PDFDownloadLink, Page, Document, StyleSheet, Image, Text, View } from '@react-pdf/renderer';
+import { PDFDownloadLink, Page, Document, StyleSheet, Image, Text, View, Font } from '@react-pdf/renderer';
 import { Tooltip } from '@material-ui/core';
-import logo from './../../../images/logo-byn.png';
-import logo2 from './../../../images/olinet-byn.png';
-
+import logo from './../../../images/logo-ts-transparente.png';
+import logo2 from './../../../images/olinet.png';
 import { QRCodeCanvas } from 'qrcode.react';
+import FacturaItemsTable from './FacturaItemsTable';
 
-Font.register({ family: 'SourceSansPro', fonts: [
-  { src: 'https://fonts.gstatic.com/s/sourcesanspro/v14/6xK3dSBYKcSV-LCoeQqfX1RYOo3aPw.ttf' }, // font-style: normal, font-weight: normal
-  { src: 'https://fonts.gstatic.com/s/sourcesanspro/v14/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rAkA.ttf', fontWeight: 600 },
- ]});
+import OpenSans from '../../../../fonts/OpenSans.ttf'
+import OpenSansBold from '../../../../fonts/OpenSansBold.ttf'
+
+Font.register({
+  family: 'OpenSans',
+  src: OpenSans
+});
+
+Font.register({
+  family: 'OpenSansBold',
+  src: OpenSansBold
+});
 
 const styles = StyleSheet.create({
   page: {
-    fontFamily: 'SourceSansPro',
+    fontFamily: 'OpenSans',
     fontSize: 12,
     paddingTop: 30,
-    paddingLeft:50,
-    paddingRight:50,
-    lineHeight: 1.5,
-    flexDirection: 'column',
-    border: '#000'
+    paddingLeft: 30,
+    paddingRight: 30,
+    flexDirection: 'column'
   }, 
   logo: {
       width: 100,
       height: 100,
-      position: 'relative',
-      bottom: 35
+      padding: 0,
   },
   qr: {
-    width: 100,
-    height: 100,
-    padding: 10
+    width: 80,
+    height: 80,
   },
   title: {
     textTransform: 'uppercase',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontFamily: 'OpenSansBold',
+    textAlign: 'center',
+    paddingTop: 40
   },
   subtitle: {
-    fontWeight: 'bold',
+    fontFamily: 'OpenSansBold',
     fontSize: 10,
-    padding: 5
+    padding: 5,
+    display: 'inline'
   },
-  verticalLine: {
-    borderLeft: '2px solid black',
-    height: 30,
-    marginLeft: 15
+  subtitleSpan: {
+    fontFamily: 'OpenSans',
+    fontSize: 10
   },
   column: {
     display: 'flex',
@@ -58,8 +64,23 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row'
   },
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
+  },
+  footer: {
+    marginTop: 'auto',
+    marginBottom: '10'
+  },
   divisor: {
-    borderTop: '1px solid black'
+    borderTop: '1px solid #e2e2e2',
+    padding: 10
+  },
+  tipoComprobante: {
+    fontFamily: 'OpenSansBold',
+    fontSize: 22,
+    marginLeft: 'auto'
   }
 });
 
@@ -69,52 +90,89 @@ const QrBase64 = () => {
   return qrCodeDataUri;
 }
 
-const MyDoc = (tipo) => (
+const invoiceData = {
+  id: "5df3180a09ea16dc4b95f910",
+  invoice_no: "201906-28",
+  balance: "$2,283.74",
+  company: "MANTRIX",
+  email: "susanafuentes@mantrix.com",
+  phone: "+1 (872) 588-3809",
+  address: "922 Campus Road, Drytown, Wisconsin, 1986",
+  trans_date: "2019-09-12",
+  due_date: "2019-10-12",
+  items: [
+    {
+      id: 1,
+      Codigo: 3,
+      Producto: "ABONA CUOTA MENSUAL DEL MES DE MARZO POR EL AÑO 2022",
+      Cantidad: 1,
+      UnidadMedida: "Otras Unidades",
+      PrecioUnitario: "1100,00",
+      PorcentajeBonificacion: "0,00",
+      ImporteBonificacion: "0,00",
+      Subtotal: "1100,00",
+    }
+  ],
+};
+const MyDoc = () => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <View style={styles.row} fixed>
-        <Text style={styles.title}>Tele sistema SRL - Factura B</Text>
-        <View style={styles.verticalLine}></View>
-        <Image style={styles.logo} src={logo}/>
-        <Image style={styles.logo} src={logo2}/>
+      <View style={styles.header} fixed>
+          <Image style={styles.logo} src={logo}/>
+          <Text style={styles.title}>Factura B (Cod N° 006)</Text>
+          <Image style={styles.logo} src={logo2}/>
       </View>
       <View style={styles.divisor}></View>
       <View style={styles.row}>
         <View style={styles.column}>
-          <Text style={styles.subtitle}>Razón social: TELE SISTEMA SRL</Text>
-          <Text style={styles.subtitle}>Domicilio Comercial: Av Jujuy 428 - Perico, Jujuy</Text>
-          <Text style={styles.subtitle}>Condición frente al IVA: IVA Responsable Inscripto</Text>
-          <Text style={styles.subtitle}>CUIT: 30687336506</Text>
-          <Text style={styles.subtitle}>Ingresos brutos: B-2-2784</Text>
+          <Text style={styles.subtitle}>Razón social: <Text style={styles.subtitleSpan}>TELE SISTEMA SRL</Text></Text>
+          <Text style={styles.subtitle}>Domicilio Comercial: <Text style={styles.subtitleSpan}> Av Jujuy 428 - Perico, Jujuy</Text></Text>
+          <Text style={styles.subtitle}>Condición frente al IVA: <Text style={styles.subtitleSpan}>IVA Responsable Inscripto</Text></Text>
+          <Text style={styles.subtitle}>CUIT: <Text style={styles.subtitleSpan}>30687336506</Text></Text>
+          <Text style={styles.subtitle}>Ingresos brutos: <Text style={styles.subtitleSpan}>B-2-2784</Text></Text>
         </View>
         <View style={styles.column}>
-          <Text style={styles.subtitle}>Punto de venta: 00002</Text>
-          <Text style={styles.subtitle}>Comp N°: 0011983</Text>
-          <Text style={styles.subtitle}>Fecha de Emisión: 13/05/2022</Text>
-          <Text style={styles.subtitle}>Fecha de Inicio de Actividades: 01/03/1996</Text>
+          <Text style={styles.subtitle}>Punto de venta: <Text style={styles.subtitleSpan}>00002</Text></Text>
+          <Text style={styles.subtitle}>Comp N°: <Text style={styles.subtitleSpan}>0011983</Text></Text>
+          <Text style={styles.subtitle}>Fecha de Emisión: <Text style={styles.subtitleSpan}>13/05/2022</Text></Text>
+          <Text style={styles.subtitle}>Fecha de Inicio de Actividades: <Text style={styles.subtitleSpan}>01/03/1996</Text></Text>
         </View>
       </View>
       <View style={styles.divisor}></View>
       <View style={styles.row}>
-        <Text style={styles.subtitle}>Desde: 13/05/2022</Text>
-        <Text style={styles.subtitle}>Hasta: 13/05/2022</Text>
-        <Text style={styles.subtitle}>Vencimiento del pago: 13/05/2022</Text>
+        <View style={styles.column}>
+          <Text style={styles.subtitle}>Desde: <Text style={styles.subtitleSpan}>13/05/2022</Text></Text>
+          <Text style={styles.subtitle}>Hasta: <Text style={styles.subtitleSpan}>13/05/2022</Text></Text>
+        </View>
+        <View style={styles.column}>
+          <Text style={styles.subtitle}>Vencimiento del pago: <Text style={styles.subtitleSpan}>13/05/2022</Text></Text>
+        </View>
       </View>
       <View style={styles.divisor}></View>
       <View style={styles.row}>
         <View style={styles.column}>
-          <Text style={styles.subtitle}>Doc: - </Text>
-          <Text style={styles.subtitle}>Condición frente al IVA: Consumidor Final</Text>
-          <Text style={styles.subtitle}>Condición de venta: Contado</Text>
+          <Text style={styles.subtitle}>Doc: <Text style={styles.subtitleSpan}>-</Text></Text>
+          <Text style={styles.subtitle}>Condición frente al IVA: <Text style={styles.subtitleSpan}>Consumidor Final</Text></Text>
+          <Text style={styles.subtitle}>Condición de venta: <Text style={styles.subtitleSpan}>Contado</Text></Text>
         </View>
         <View style={styles.column}>
-          <Text style={styles.subtitle}>Apellido y Nombre / Razón Social: Test, Test</Text>
-          <Text style={styles.subtitle}>Domicilio: Calle Falsa 123</Text>
+          <Text style={styles.subtitle}>Apellido y Nombre / Razón Social: <Text style={styles.subtitleSpan}>Test, Test</Text></Text>
+          <Text style={styles.subtitle}>Domicilio: <Text style={styles.subtitleSpan}>Calle Falsa 123</Text></Text>
         </View>
       </View>
       <View style={styles.divisor}></View>
-      <Image style={styles.qr} src={QrBase64}/>
-      <View style={styles.divisor}></View>
+      <FacturaItemsTable invoice={invoiceData} />
+      <View style={styles.footer}>
+        <View style={styles.row}>
+          <View style={styles.column}>
+            <Image style={styles.qr} src={QrBase64}/>
+          </View>
+          <View style={styles.column}>
+            <Text style={styles.subtitle}>CAE N°: <Text style={styles.subtitleSpan}>12345678910111213</Text></Text>
+            <Text style={styles.subtitle}>Fecha de Vto. de CAE: <Text style={styles.subtitleSpan}>23/05/2022</Text></Text>
+          </View>
+        </View>
+      </View>
     </Page>
   </Document>
 );
@@ -123,10 +181,11 @@ const MyDoc = (tipo) => (
 const Factura = () => {
   return (
     <>
-    <QRCodeCanvas style={{display: 'none'}} value = {'https://erikmartinjordan.com'}/>
+    <QRCodeCanvas style={{display: 'none'}} value ="https://www.afip.gob.ar/fe/qr/?p="/>
     <PDFDownloadLink document={<MyDoc />} fileName="Factura.pdf">
     {({ blob, url, loading, error }) => loading ? 'Cargando...' : <Tooltip title="Descargar factura"><i style={{color: "teal"}} className='bx bxs-file-pdf bx-sm'></i></Tooltip>}
-    </PDFDownloadLink></>
+    </PDFDownloadLink>
+    </>
   );
 }
 
