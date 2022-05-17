@@ -48,7 +48,8 @@ const AppState = props => {
         conceptos: [],
         cargando: false,
         mensaje: '',
-        cajas: []
+        cajas: [],
+        facturas: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -509,6 +510,17 @@ const AppState = props => {
             const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Periodo=${Periodo}&Concepto=${Concepto}`);
             dispatch({
                 type: TYPES.LISTA_PAGOS_ABONADO,
+                payload: resultado.data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const traerFacturasPorAbonado = async (UserId, Periodo = null) => {
+        try {
+            const resultado = await clienteAxios.get(`/api/facturas/UserId=${UserId}&Periodo=${Periodo}`);
+            dispatch({
+                type: TYPES.LISTA_FACTURAS_ABONADO,
                 payload: resultado.data
             })
         } catch (error) {
@@ -1660,6 +1672,7 @@ const AppState = props => {
             cargando: state.cargando,
             mensaje: state.mensaje,
             cajas: state.cajas,
+            facturas: state.facturas,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
@@ -1682,7 +1695,7 @@ const AppState = props => {
             traerConceptos,
             mostrarSpinner,
             traerCaja, cerrarCaja,
-            generarFactura
+            generarFactura, traerFacturasPorAbonado
         }}>{props.children}
         </AppContext.Provider>
     )

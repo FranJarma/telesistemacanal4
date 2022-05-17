@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Chip, Grid,  MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Checkbox, Chip, FormControl, FormControlLabel, Grid,  MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
@@ -9,7 +9,7 @@ import Modal from '../design/components/Modal';
 import { DatePicker } from '@material-ui/pickers';
 import AppContext from '../../../context/appContext';
 import BotonesDatatable  from './../design/components/BotonesDatatable';
-import convertirAFecha from './../../../helpers/ConvertirAFecha';
+import convertirAFecha from '../../../fonts/helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Spinner from '../design/components/Spinner';
 import * as VARIABLES from './../../../types/variables';
@@ -17,7 +17,7 @@ import Factura from '../design/components/Factura';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner, generarFactura } = appContext;
+    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner, facturas, traerFacturasPorAbonado } = appContext;
 
     const location = useLocation();
     const [PagoAño, setPagoAño] = useState(new Date());
@@ -57,6 +57,7 @@ const ListaPagos = () => {
     const [ModalDetallesPago, setModalDetallesPago] = useState(false);
     const [ModalEliminarDetallePago, setModalEliminarDetallePago] = useState(false);
     const [ServicioId, setServicioId] = useState(null);
+    const [RequiereFactura, setRequiereFactura] = useState(false);
 
     useEffect(()=>{
         setMunicipioId(location.state.MunicipioId);
@@ -107,6 +108,7 @@ const ListaPagos = () => {
             Mes: data.PagoMes,
             DetallePagoMonto: data.PagoSaldo,
         });
+        setRequiereFactura(false);
     }
     const handleChangeModalRecargoPago = (data) => {
         setPagoInfo({...data, updatedBy: localStorage.getItem('identity')});
@@ -122,6 +124,10 @@ const ListaPagos = () => {
     const handleChangeModalEliminarDetallePago = (data) => {
         setPagoInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
         setModalEliminarDetallePago(!ModalEliminarDetallePago);
+    }
+    
+    const handleChangeRequiereFactura = () => {
+        setRequiereFactura(!RequiereFactura)
     }
     
     const columnasPagos = [
@@ -240,13 +246,36 @@ const ListaPagos = () => {
             "selector": row => row["MovimientoConceptoNombre"],
             "wrap": true,
             "sortable": true,
+        }
+    ]
+    const columnasFacturas = [
+        {
+            "name": "N°",
+            "selector": row =>row["FacturaId"],
+            "omit": true
+        },
+        {
+            "name": "CAE",
+            "selector": row => row["FacturaCodigoAutorizacion"],
+            "sortable": true,
+            "wrap": true
+        },
+        {
+            "name": "Fecha de emisión",
+            "selector": row => row["FacturaFechaEmision"],
+            "wrap": true,
+            "sortable": true,
+        },
+        {
+            "name": "Importe",
+            "selector": row => "$ " + row["FacturaImporte"],
+            "wrap": true,
+            "sortable": true,
         },
         {
             cell: (data) => 
             <>
-            <Factura/>
-            {/* <Typography onClick={()=>{handleChangeModalNuevoPago(data, true)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Editar"><i className="bx bxs-pencil bx-xs"></i></Tooltip></Typography> */}
-            {/* <Typography onClick={()=>{generarFactura({datosFactura: location.state, datosMonto: data})}} style={{color: "#4D7F9E", cursor: 'pointer'}}><Tooltip title="Descargar Factura"><i className='bx bxs-file-pdf bx-sm'></i></Tooltip></Typography> */}
+            <Factura data={data}/>
             </>,
         }
     ]
@@ -283,6 +312,7 @@ const ListaPagos = () => {
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6);
                     }}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
                     <Tab onClick={() => {
+                        traerFacturasPorAbonado(location.state.UserId, PagoAño.getFullYear());
                     }}><i className='bx bxs-file-pdf'></i> Facturas</Tab>
                 </TabList>
                 <br/>
@@ -326,6 +356,37 @@ const ListaPagos = () => {
                     </TabPanel>
                     )
                 }
+                <TabPanel>
+                    <Card>
+                        <CardContent>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={2} lg={2}>
+                                <DatePicker
+                                    color="primary"
+                                    inputVariant="outlined"
+                                    format="yyyy"
+                                    views={["year"]}
+                                    fullWidth
+                                    label="Año"
+                                    onChange={nuevoAño => {
+                                        setPagoAño(nuevoAño);
+                                        traerFacturasPorAbonado(location.state.UserId, nuevoAño.getFullYear());
+                                    }}
+                                    value={PagoAño}
+                                ></DatePicker>
+                            </Grid>
+                        </Grid>
+                        <Datatable
+                            // loader={true}
+                            columnas={columnasFacturas}
+                            datos={facturas}
+                            paginacion={true}
+                            buscar={true}
+                            paginacionPorDefecto={15}
+                        />
+                        </CardContent>
+                    </Card>
+                </TabPanel>
             </Tabs>
             </CardContent>
         </Card>
@@ -336,7 +397,7 @@ const ListaPagos = () => {
             <>
             <Button onClick={()=>
                 {
-                crearPagoAdelantado({MesesAPagar: pagosPendientesTop, PagoAdelantadoInfo})}}
+                crearPagoAdelantado({MesesAPagar: pagosPendientesTop, PagoAdelantadoInfo, RequiereFactura: RequiereFactura})}}
                 variant="contained"
                 color="primary">
                 Aceptar</Button>
@@ -440,7 +501,8 @@ const ListaPagos = () => {
                 crearPago(
                     {PagoInfo,
                     MedioPagoId,
-                    MunicipioId
+                    MunicipioId,
+                    RequiereFactura
                 }, handleChangeModalNuevoPago)}}
                 variant="contained"
                 color="primary">
@@ -526,6 +588,12 @@ const ListaPagos = () => {
                         onChange={onInputChange}
                         >
                     </TextField>
+                </Grid>
+                <Grid item xs={12} md={12} sm={12} lg={12}>
+                    <FormControl>
+                        <FormControlLabel label="Requiere factura" control={<Checkbox onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
+                    </FormControl>
+                    {RequiereFactura ? <Alert severity='info'>La factura se generará en la sección "Facturas" del historial de pagos del abonado</Alert> : ""}
                 </Grid>
             </Grid>
             <br/>

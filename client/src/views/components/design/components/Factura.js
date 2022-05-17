@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { PDFDownloadLink, Page, Document, StyleSheet, Image, Text, View, Font } from '@react-pdf/renderer';
+import { Page, Document, StyleSheet, Image, Text, View, Font, BlobProvider } from '@react-pdf/renderer';
 import { Tooltip } from '@material-ui/core';
 import logo from './../../../images/logo-ts-transparente.png';
 import logo2 from './../../../images/olinet.png';
@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingLeft: 30,
     paddingRight: 30,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    border: '1px solid #e2e2e2'
   }, 
   logo: {
       width: 100,
@@ -67,7 +68,8 @@ const styles = StyleSheet.create({
   header: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
+    backgroundColor: '#e2e2e2'
   },
   footer: {
     marginTop: 'auto',
@@ -114,7 +116,7 @@ const invoiceData = {
     }
   ],
 };
-const MyDoc = () => (
+const MyDoc = ({data}) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.header} fixed>
@@ -128,13 +130,13 @@ const MyDoc = () => (
           <Text style={styles.subtitle}>Razón social: <Text style={styles.subtitleSpan}>TELE SISTEMA SRL</Text></Text>
           <Text style={styles.subtitle}>Domicilio Comercial: <Text style={styles.subtitleSpan}> Av Jujuy 428 - Perico, Jujuy</Text></Text>
           <Text style={styles.subtitle}>Condición frente al IVA: <Text style={styles.subtitleSpan}>IVA Responsable Inscripto</Text></Text>
-          <Text style={styles.subtitle}>CUIT: <Text style={styles.subtitleSpan}>30687336506</Text></Text>
+          <Text style={styles.subtitle}>CUIT: <Text style={styles.subtitleSpan}>{data.FacturaCuitEmisor}</Text></Text>
           <Text style={styles.subtitle}>Ingresos brutos: <Text style={styles.subtitleSpan}>B-2-2784</Text></Text>
         </View>
         <View style={styles.column}>
           <Text style={styles.subtitle}>Punto de venta: <Text style={styles.subtitleSpan}>00002</Text></Text>
-          <Text style={styles.subtitle}>Comp N°: <Text style={styles.subtitleSpan}>0011983</Text></Text>
-          <Text style={styles.subtitle}>Fecha de Emisión: <Text style={styles.subtitleSpan}>13/05/2022</Text></Text>
+          <Text style={styles.subtitle}>Comp N°: <Text style={styles.subtitleSpan}>{data.FacturaNumeroComprobante}</Text></Text>
+          <Text style={styles.subtitle}>Fecha de Emisión: <Text style={styles.subtitleSpan}>{data.FacturaFechaEmision.split('-').reverse().join('/')}</Text></Text>
           <Text style={styles.subtitle}>Fecha de Inicio de Actividades: <Text style={styles.subtitleSpan}>01/03/1996</Text></Text>
         </View>
       </View>
@@ -151,13 +153,13 @@ const MyDoc = () => (
       <View style={styles.divisor}></View>
       <View style={styles.row}>
         <View style={styles.column}>
-          <Text style={styles.subtitle}>Doc: <Text style={styles.subtitleSpan}>-</Text></Text>
+          <Text style={styles.subtitle}>Doc: <Text style={styles.subtitleSpan}>{data.FacturaNroDocReceptor}</Text></Text>
           <Text style={styles.subtitle}>Condición frente al IVA: <Text style={styles.subtitleSpan}>Consumidor Final</Text></Text>
           <Text style={styles.subtitle}>Condición de venta: <Text style={styles.subtitleSpan}>Contado</Text></Text>
         </View>
         <View style={styles.column}>
-          <Text style={styles.subtitle}>Apellido y Nombre / Razón Social: <Text style={styles.subtitleSpan}>Test, Test</Text></Text>
-          <Text style={styles.subtitle}>Domicilio: <Text style={styles.subtitleSpan}>Calle Falsa 123</Text></Text>
+          <Text style={styles.subtitle}>Apellido y Nombre / Razón Social: <Text style={styles.subtitleSpan}>{data.ApellidoAbonado}, {data.NombreAbonado}</Text></Text>
+          <Text style={styles.subtitle}>Domicilio: <Text style={styles.subtitleSpan}>{data.DomicilioCalle} {data.DomicilioNumero} B°{data.BarrioNombre}</Text></Text>
         </View>
       </View>
       <View style={styles.divisor}></View>
@@ -168,8 +170,8 @@ const MyDoc = () => (
             <Image style={styles.qr} src={QrBase64}/>
           </View>
           <View style={styles.column}>
-            <Text style={styles.subtitle}>CAE N°: <Text style={styles.subtitleSpan}>12345678910111213</Text></Text>
-            <Text style={styles.subtitle}>Fecha de Vto. de CAE: <Text style={styles.subtitleSpan}>23/05/2022</Text></Text>
+            <Text style={styles.subtitle}>CAE N°: <Text style={styles.subtitleSpan}>{data.FacturaCodigoAutorizacion}</Text></Text>
+            <Text style={styles.subtitle}>Fecha de Vto. de CAE: <Text style={styles.subtitleSpan}>{data.FacturaFechaVencimientoCodigoAutorizacion}</Text></Text>
           </View>
         </View>
       </View>
@@ -178,13 +180,28 @@ const MyDoc = () => (
 );
 
 
-const Factura = () => {
+const Factura = ({data}) => {
+  const dataObject = {"ver":data.FacturaVersion,"fecha":data.FacturaFechaEmision,"cuit":data.FacturaCuitEmisor,"ptoVta":data.FacturaPuntoVenta,"tipoCmp":data.FacturaTipoComprobante,"nroCmp":data.FacturaNumeroComprobante,"importe":data.FacturaImporte,"moneda":data.FacturaMoneda,"ctz":data.FacturaCotizacion,"tipoDocRec":data.FacturaTipoDocReceptor,"nroDocRec":data.FacturaNroDocReceptor,"tipoCodAut":data.FacturaTipoCodigoAutorizacion,"codAut":data.FacturaCodigoAutorizacion}
+  const jsonDataObject = JSON.stringify(dataObject);
+  const encodedBase64 = Buffer.from(jsonDataObject).toString('base64');
+  const afipUrl = `https://www.afip.gob.ar/fe/qr/?p=${encodedBase64}`;
   return (
     <>
-    <QRCodeCanvas style={{display: 'none'}} value ="https://www.afip.gob.ar/fe/qr/?p="/>
-    <PDFDownloadLink document={<MyDoc />} fileName="Factura.pdf">
-    {({ blob, url, loading, error }) => loading ? 'Cargando...' : <Tooltip title="Descargar factura"><i style={{color: "teal"}} className='bx bxs-file-pdf bx-sm'></i></Tooltip>}
-    </PDFDownloadLink>
+    <QRCodeCanvas style={{display: 'none'}} value ={afipUrl}/>
+    <BlobProvider
+      document={
+        <MyDoc data={data}/>
+      }
+    >
+      {({ url, blob, loading }) => {
+        return (
+          loading ? 'Cargando...' :
+          <a href={url} target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
+            <Tooltip title="Ver factura"><i style={{color: "teal"}} className='bx bxs-file-pdf bx-sm'></i></Tooltip>
+          </a>
+        );
+      }}
+  </BlobProvider>
     </>
   );
 }

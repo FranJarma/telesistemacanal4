@@ -1,4 +1,4 @@
-const { STRING, INTEGER, FLOAT, DATE, UUIDV4 } = require('sequelize');
+const { BIGINT, STRING, INTEGER, FLOAT, DATE, UUIDV4 } = require('sequelize');
 const db = require('../config/connection');
 
 const Factura = db.define('factura', {
@@ -7,23 +7,35 @@ const Factura = db.define('factura', {
         primaryKey: true
     },
     FacturaNumeroComprobante: {
-        type: FLOAT,
-        allowNull: true
+        type: BIGINT,
+        allowNull: false
     },
-    FacturaCae: {
-        type: FLOAT,
-        allowNull: true
+    FacturaCodigoAutorizacion: {
+        type: BIGINT,
+        allowNull: false
+    },
+    FacturaFechaVencimientoCodigoAutorizacion: {
+        type: STRING,
+        allowNull: false
+    },
+    FacturaTipoCodigoAutorizacion: {
+        type: STRING,
+        allowNull: false
     },
     FacturaImporte: {
         type: FLOAT,
         allowNull: false
     },
-    FacturaCodAut: {
+    FacturaVersion: {
         type: INTEGER,
         allowNull: false
     },
+    FacturaCuitEmisor: {
+        type: BIGINT,
+        allowNull: false
+    },
     FacturaPuntoVenta: {
-        type: INTEGER,
+        type: STRING,
         allowNull: false
     },
     FacturaFechaEmision: {
@@ -31,24 +43,44 @@ const Factura = db.define('factura', {
         allowNull: true
     },
     FacturaTipoComprobante: {
-        type: DATE,
+        type: INTEGER,
         allowNull: true,
     },
     FacturaMoneda: {
-        type: UUIDV4,
+        type: STRING,
         allowNull: true
     },
     FacturaCotizacion: {
-        type: DATE,
+        type: INTEGER,
         allowNull: true,
     },
     FacturaTipoDocReceptor: {
-        type: UUIDV4,
+        type: INTEGER,
         allowNull: true
     },
     FacturaNroDocReceptor: {
+        type: BIGINT,
+        allowNull: true,
+    },
+    FacturaAño: {
+        type: INTEGER,
+        allowNull: false
+    },
+    FacturaMes: {
+        type: INTEGER,
+        allowNull: false
+    },
+    AbonadoId: {
+        type: STRING(38),
+        allowNull: false
+    },
+    createdAt: {
         type: DATE,
         allowNull: true,
+    },
+    createdBy: {
+        type: UUIDV4,
+        allowNull: true
     }
 });
 

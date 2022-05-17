@@ -3,9 +3,11 @@ const options =require('./../config/knex');
 const knex = require('knex')(options);
 const { validationResult } = require('express-validator');
 const Pago = require('./../models/Pago');
+const User = require('./../models/User');
 const DetallePago = require('./../models/DetallePago');
 const Movimiento = require('../models/Movimiento');
 const Servicio = require('../models/Servicio');
+const Factura = require('./../models/Factura');
 const Afip = require('@afipsdk/afip.js');
 
 const date = new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString().split('T')[0];
@@ -104,11 +106,64 @@ exports.PagoCreate = async(req,res) => {
                     PagoId: req.body.PagoInfo.PagoId
                 }
             })
+            const abonado = await User.findOne({
+                where: {
+                    UserId: req.body.PagoInfo.UserId
+                }
+            })
+            //si requiere factura, instanciamos un nuevo objeto Factura
+            if(req.body.RequiereFactura){
+                let ultimaFacturaId = 0;
+                //Buscamos la ultima Factura
+                const ultimaFactura = await Factura.findOne({
+                    order: [['FacturaId', 'DESC']]
+                });
+                if (ultimaFactura) ultimaFacturaId = ultimaFacturaId.FacturaId;
+                const data  = {
+                    'CantReg' 		: 1, // Cantidad de comprobantes a registrar
+                    'PtoVta' 		: 3, // Punto de venta
+                    'CbteTipo' 		: 6, // Tipo de comprobante (ver tipos disponibles). (6)Factura B
+                    'Concepto' 		: 2, // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
+                    'DocTipo' 		: 80, // Tipo de documento del comprador (ver tipos disponibles). (80)CUIT
+                    'DocNro' 		: 20405245125, // Numero de documento del comprador
+                    'CbteFch' 		: parseInt(date.replace(/-/g, '')), // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
+                    'FchServDesde'  : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de inicio del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+                    'FchServHasta'  : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de fin del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+                    'FchVtoPago'    : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de vencimiento del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+                    'ImpTotal' 		: req.body.PagoInfo.DetallePagoMonto, // Importe total del comprobante
+                    'ImpTotConc' 	: req.body.PagoInfo.DetallePagoMonto, // Importe neto no gravado
+                    'MonId' 		: 'PES', //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos) 
+                    'MonCotiz' 		: 1, // Cotización de la moneda usada (1 para pesos argentinos)  
+                }
+                const nuevoComprobante = await afip.ElectronicBilling.createNextVoucher(data, true);
+                const factura = new Factura({transaction: t});
+                factura.FacturaId = ultimaFacturaId + 1;
+                factura.FacturaNumeroComprobante = nuevoComprobante.voucherNumber;
+                factura.FacturaCodigoAutorizacion = nuevoComprobante.CAE;
+                factura.FacturaFechaVencimientoCodigoAutorizacion = nuevoComprobante.CAEFchVto;
+                factura.FacturaTipoCodigoAutorizacion = "E";
+                factura.FacturaImporte = req.body.PagoInfo.DetallePagoMonto;
+                factura.FacturaVersion = 1;
+                factura.FacturaCuitEmisor = afip.CUIT;
+                factura.FacturaPuntoVenta = 1;
+                factura.FacturaFechaEmision = date;
+                factura.FacturaTipoComprobante = 6;
+                factura.FacturaMoneda = "PES";
+                factura.FacturaCotizacion = 1;
+                factura.FacturaTipoDocReceptor = 80;
+                factura.FacturaNroDocReceptor = 20405245125;
+                factura.FacturaAño = new Date().getFullYear();
+                factura.FacturaMes = new Date().getMonth() + 1;
+                factura.AbonadoId = req.body.PagoInfo.UserId;
+                factura.createdAt = new Date();
+                factura.createdBy = req.body.PagoInfo.createdBy;
+                await factura.save({transaction: t});
+            }
             //instanciamos un nuevo movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
             movimiento.MunicipioId = req.body.MunicipioId;
-            movimiento.MovimientoCantidad = parseInt(req.body.PagoInfo.DetallePagoMonto);
+            movimiento.MovimientoCantidad = req.body.PagoInfo.DetallePagoMonto;
             movimiento.createdBy = req.body.PagoInfo.createdBy;
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
@@ -120,7 +175,7 @@ exports.PagoCreate = async(req,res) => {
             if(pagoBuscar) {
                 //verificamos que el monto ingresado no supere el saldo restante
                 if(req.body.DetallePagoMonto > pagoBuscar.PagoSaldo) return res.status(400).json({msg: `El monto no puede ser mayor al saldo restante de: $ ${pagoBuscar.PagoSaldo}`})
-                pagoBuscar.PagoSaldo = parseInt(pagoBuscar.PagoSaldo) - parseInt(req.body.PagoInfo.DetallePagoMonto);
+                pagoBuscar.PagoSaldo = pagoBuscar.PagoSaldo - req.body.PagoInfo.DetallePagoMonto;
                 pagoBuscar.updatedBy = req.body.PagoInfo.updatedBy;
                 const detallePago = new DetallePago(req.body, {transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
@@ -298,43 +353,5 @@ exports.PagosTraerInscripcion = async(req,res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
-    }
-}
-
-exports.GenerarFactura = async(req, res) => {
-    try {
-        const { Apellido, Cuit, DomicilioCalle,
-        DomicilioNumero, BarrioNombre, Nombre }  = req.body.datosFactura;
-        const { DetallePagoMonto }               = req.body.datosMonto;
-        console.log(Cuit, DetallePagoMonto);
-        const data  = {
-            'CantReg' 		: 1, // Cantidad de comprobantes a registrar
-            'PtoVta' 		: 3, // Punto de venta
-            'CbteTipo' 		: 6, // Tipo de comprobante (ver tipos disponibles). (6)Factura B
-            'Concepto' 		: 2, // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
-            'DocTipo' 		: 80, // Tipo de documento del comprador (ver tipos disponibles). (80)CUIT
-            'DocNro' 		: Cuit, // Numero de documento del comprador
-            // 'CbteDesde' 	: ultimoComprobante + 1, // Numero de comprobante o numero del primer comprobante en caso de ser mas de uno
-            // 'CbteHasta' 	: ultimoComprobante + 1, // Numero de comprobante o numero del ultimo comprobante en caso de ser mas de uno
-            'CbteFch' 		: parseInt(date.replace(/-/g, '')), // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
-            'FchServDesde'   : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de inicio del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
-            'FchServHasta'   : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de fin del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
-            'FchVtoPago'     : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de vencimiento del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
-            'ImpTotal' 		: DetallePagoMonto, // Importe total del comprobante
-            'ImpTotConc' 	: DetallePagoMonto, // Importe neto no gravado
-            // 'ImpNeto' 		: 0, // Importe neto gravado
-            // 'ImpOpEx' 		: 0, // Importe exento de IVA
-            // 'ImpIVA' 		: 0, //Importe total de IVA
-            // 'ImpTrib' 		: 0, //Importe total de tributos
-            'MonId' 		    : 'PES', //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos) 
-            'MonCotiz' 		: 1, // Cotización de la moneda usada (1 para pesos argentinos)  
-        }
-        // const nuevoComprobante = await afip.ElectronicBilling.createNextVoucher(data, true);
-        // const nuevoComprobanteInfo = await afip.ElectronicBilling.getVoucherInfo(nuevoComprobante.voucherNumber, 3, 1);
-        // console.log(nuevoComprobanteInfo);
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ msg: 'Hubo un error al generar la factura'});
     }
 }
