@@ -616,7 +616,7 @@ const AppState = props => {
         })
     }
     //PAGOS
-    const crearPago = async(pago) => {
+    const crearPago = async(pago, setModalCrearPago) => {
         clienteAxios.post('/api/pagos/create', pago)
         .then(resOk => {
             if (resOk.data)
@@ -625,9 +625,7 @@ const AppState = props => {
                     payload: pago
                 });
                 Swal('Operación completa', resOk.data.msg);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+                setModalCrearPago(false);
         })
         .catch(err => {
             if(!err.response){
@@ -649,7 +647,7 @@ const AppState = props => {
             mostrarSpinner();
             const blob = await pdf(caratula).toBlob();
             if(tipo === "Factura") saveAs(blob, data.FacturaCodigoAutorizacion)
-            else if(tipo === "Recibo") saveAs(blob, "Recibo");
+            else if(tipo === "Recibo") saveAs(blob, `Recibo N°:${data.DetallePagoId}-CUIT:${data.Cuit}`);
         } catch (error) {
             if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }

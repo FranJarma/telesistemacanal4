@@ -159,7 +159,7 @@ const FacturaCaratula = ({data}) => (
 
 const Factura = ({data}) => {
   const appContext = useContext(AppContext);
-  const { cargando, descargarComprobante } = appContext;
+  const { descargarComprobante } = appContext;
   const dataObject = {"ver":data.FacturaVersion,"fecha":data.FacturaFechaEmision,"cuit":data.FacturaCuitEmisor,"ptoVta":data.FacturaPuntoVenta,"tipoCmp":data.FacturaTipoComprobante,"nroCmp":data.FacturaNumeroComprobante,"importe":data.FacturaImporte,"moneda":data.FacturaMoneda,"ctz":data.FacturaCotizacion,"tipoDocRec":data.FacturaTipoDocReceptor,"nroDocRec":data.FacturaNroDocReceptor,"tipoCodAut":data.FacturaTipoCodigoAutorizacion,"codAut":data.FacturaCodigoAutorizacion}
   const jsonDataObject = JSON.stringify(dataObject);
   const encodedBase64 = Buffer.from(jsonDataObject).toString('base64');
@@ -167,8 +167,8 @@ const Factura = ({data}) => {
   return (
     <>
       <QRCodeCanvas style={{display: 'none'}} value ={afipUrl}/>
-        <Tooltip title="Descargar">
-          <i style={{color: "teal"}} className='bx bxs-download bx-xs' onClick={() => {
+        <Tooltip title="Descargar factura">
+          <i style={{color: "teal"}} className='bx bxs-file-pdf bx-xs' onClick={() => {
             descargarComprobante("Factura", <FacturaCaratula data={data}/>, data);
           } }></i>
         </Tooltip>

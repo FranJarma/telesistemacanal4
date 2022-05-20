@@ -8,12 +8,25 @@ require('dotenv').config({path: 'variables.env'});
 
 exports.DetallesPagoListar = async(req,res) => {
     try {
-        const detallesPagos = await knex.select('dp.DetallePagoMonto','dp.createdAt','mc.MovimientoConceptoNombre',
-        'mp.MedioPagoNombre', 'u.Nombre', 'u.Apellido').from('detallepago as dp')
+        const detallesPagos = await knex.select('dp.DetallePagoId','dp.DetallePagoMonto','dp.createdAt', 'mc.MovimientoConceptoId',
+        'mc.MovimientoConceptoNombre', 'mp.MedioPagoNombre', 'u.Nombre as NombreCarga', 'u.Apellido as ApellidoCarga',
+        'm.FacturaId', 'u1.Nombre as NombreAbonado', 'u1.Cuit', 'u1.Apellido as ApellidoAbonado', 'd.DomicilioCalle',
+        'd.DomicilioNumero', 'b.BarrioNombre', 'mu.MunicipioNombre', 'm.MovimientoCantidad',
+        'f.FacturaNumeroComprobante', 'f.FacturaCodigoAutorizacion', 'f.FacturaTipoCodigoAutorizacion',
+        'f.FacturaImporte', 'f.FacturaVersion', 'f.FacturaCuitEmisor', 'f.FacturaPuntoVenta', 'f.FacturaFechaEmision',
+        'f.FacturaTipoComprobante', 'f.FacturaMoneda', 'f.FacturaCotizacion', 'f.FacturaTipoDocReceptor',
+        'f.FacturaNroDocReceptor', 'f.FacturaFechaVencimientoCodigoAutorizacion')
+        .from('detallepago as dp')
         .innerJoin('mediopago as mp','dp.MedioPagoId', '=', 'mp.MedioPagoId')
         .innerJoin('_user as u', 'u.UserId', '=', 'dp.createdBy')
         .innerJoin('movimiento as m', 'dp.MovimientoId', '=', 'm.MovimientoId')
         .innerJoin('movimientoConcepto as mc', 'mc.MovimientoConceptoId', '=', 'm.MovimientoConceptoId')
+        .innerJoin('_user as u1', 'u1.UserId', 'm.AbonadoId')
+        .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u1.DomicilioId')
+        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .innerJoin('municipio as mu', 'mu.MunicipioId', '=', 'b.MunicipioId')
+        .leftJoin('factura as f', 'f.FacturaId', '=', 'm.FacturaId')
+
         .where({
             'dp.PagoId': req.params.id,
             'dp.deletedAt': null

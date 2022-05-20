@@ -118,7 +118,7 @@ const ReciboCaratula = ({data}) => (
             </View>
           </View>
           <View style={styles.column}>
-            <Text style={styles.subtitle}>Recibo N°: <Text style={styles.subtitleSpan}>{data.MovimientoId}</Text></Text>
+            <Text style={styles.subtitle}>Recibo N°: <Text style={styles.subtitleSpan}>{data.DetallePagoId}</Text></Text>
             <Text style={styles.subtitle}>Fecha de emisión: <Text style={styles.subtitleSpan}>{convertirAFecha(data.createdAt)}</Text></Text>
           </View>
         </View>
@@ -167,7 +167,7 @@ const ReciboCaratula = ({data}) => (
             </View>
           </View>
           <View style={styles.column}>
-            <Text style={styles.subtitle}>Recibo N°: <Text style={styles.subtitleSpan}>{data.MovimientoId}</Text></Text>
+            <Text style={styles.subtitle}>Recibo N°: <Text style={styles.subtitleSpan}>{data.DetallePagoId}</Text></Text>
             <Text style={styles.subtitle}>Fecha de emisión: <Text style={styles.subtitleSpan}>{convertirAFecha(data.createdAt)}</Text></Text>
           </View>
         </View>
@@ -207,8 +207,8 @@ const Recibo = ({data}) => {
 
   return (
     <>
-    <Tooltip title="Descargar">
-      <i style={{color: "teal"}} className='bx bxs-download bx-xs' onClick={() => descargarComprobante("Recibo", <ReciboCaratula data={data}/>, data)}></i>
+    <Tooltip title="Descargar recibo">
+      <i style={{color: "teal"}} className='bx bx-file bx-xs' onClick={() => descargarComprobante("Recibo", <ReciboCaratula data={data}/>, data)}></i>
     </Tooltip>
     </>
   );

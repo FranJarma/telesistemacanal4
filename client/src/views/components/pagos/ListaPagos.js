@@ -169,26 +169,21 @@ const ListaPagos = () => {
         {
             cell: (data) =>
             <>
-            <BotonesDatatable botones={
-                <>
-                {data.PagoSaldo > 0 ?
-                <>
-                    <MenuItem>
-                        <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "#4D7F9E", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago</Typography>
-                    </MenuItem>
-                    <MenuItem>
-                        <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
-                    </MenuItem>
-                    <MenuItem>
-                        <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-trash bx-xs'></i> Eliminar recargo</Typography>
-                    </MenuItem>
-                </>
-                :""}
-                <MenuItem>
-                    <Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i> Detalles</Typography>
-                </MenuItem>
-                </>
-            }/>
+            {data.PagoSaldo > 0 ?
+                <BotonesDatatable botones={
+                    <>
+                        <MenuItem>
+                            <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "#4D7F9E", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago</Typography>
+                        </MenuItem>
+                        <MenuItem>
+                            <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
+                        </MenuItem>
+                        <MenuItem>
+                            <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-trash bx-xs'></i> Eliminar recargo</Typography>
+                        </MenuItem>
+                    </>
+                }/>
+            : <Tooltip title="Detalles"><Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i></Typography></Tooltip>}
             </>,
         }
     ]
@@ -232,7 +227,7 @@ const ListaPagos = () => {
         },
         {
             "name": "Registrado por ",
-            "selector": row =>row["Nombre"] + ', ' + row["Apellido"],
+            "selector": row =>row["NombreCarga"] + ', ' + row["ApellidoCarga"],
             "wrap": true,
             "sortable": true,
         },
@@ -247,72 +242,12 @@ const ListaPagos = () => {
             "selector": row => row["MovimientoConceptoNombre"],
             "wrap": true,
             "sortable": true,
-        }
-    ]
-    const columnasFacturas = [
-        {
-            "name": "N°",
-            "selector": row =>row["FacturaId"],
-            "omit": true
-        },
-        {
-            "name": "CAE",
-            "selector": row => row["FacturaCodigoAutorizacion"],
-            "sortable": true,
-            "wrap": true
-        },
-        {
-            "name": "Fecha de emisión",
-            "selector": row => row["FacturaFechaEmision"].split('-').reverse().join('/'),
-            "wrap": true,
-            "sortable": true,
-        },
-        {
-            "name": "Importe",
-            "selector": row => "$ " + row["FacturaImporte"],
-            "wrap": true,
-            "sortable": true,
         },
         {
             cell: (data) => 
             <>
-            <Factura data={data}/>
-            </>,
-        }
-    ]
-    const columnasRecibos = [
-        {
-            "name": "N°",
-            "selector": row =>row["MovimientoId"],
-        },
-        {
-            "name": "Fecha de emisión",
-            "selector": row => convertirAFecha(row["createdAt"]),
-            "wrap": true,
-            "sortable": true,
-        },
-        {
-            "name": "Importe",
-            "selector": row => "$ " + row["MovimientoCantidad"],
-            "wrap": true,
-            "sortable": true,
-        },
-        {
-            "name": "Medio de Pago",
-            "selector": row => row["MedioPagoNombre"],
-            "wrap": true,
-            "sortable": true,
-        },
-        {
-            "name": "Usuario de carga",
-            "selector": row => row["ApellidoCarga"] + ", " + row["NombreCarga"],
-            "wrap": true,
-            "sortable": true,
-        },
-        {
-            cell: (data) => 
-            <>
-            <Recibo data={data}/>
+            {data.FacturaId ? <><Recibo data={data}/> <Factura data={data}/></>
+            : <Recibo data={data}/>}
             </>,
         }
     ]
@@ -348,12 +283,12 @@ const ListaPagos = () => {
                         setPagoInfo({...PagoInfo, PagoConceptoId: 6});
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6);
                     }}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
-                    <Tab onClick={() => {
+                    {/* <Tab onClick={() => {
                         traerFacturasPorAbonado(location.state.UserId, PagoAño.getFullYear());
                     }}><i className='bx bxs-file-pdf'></i> Facturas</Tab>
                     <Tab onClick={() => {
                         traerRecibosPorAbonado(location.state.UserId, PagoAño.getFullYear());
-                    }}><i className='bx bxs-file'></i> Recibos</Tab>
+                    }}><i className='bx bxs-file'></i> Recibos</Tab> */}
                 </TabList>
                 <br/>
                 { //Nos permite renderizar 4 elementos iguales (4 Primeros Tabs)
@@ -391,75 +326,12 @@ const ListaPagos = () => {
                             buscar={true}
                             paginacionPorDefecto={15}
                             />
+                            <Modal tamaño={'sm'} mensaje={'Descargando comprobante...'} abrirModal={cargando}></Modal>
                             </CardContent>
                         </Card>
                     </TabPanel>
                     )
                 }
-                <TabPanel>
-                    <Card>
-                        <CardContent>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={2} lg={2}>
-                                <DatePicker
-                                    color="primary"
-                                    inputVariant="outlined"
-                                    format="yyyy"
-                                    views={["year"]}
-                                    fullWidth
-                                    label="Año"
-                                    onChange={nuevoAño => {
-                                        setPagoAño(nuevoAño);
-                                        traerFacturasPorAbonado(location.state.UserId, nuevoAño.getFullYear());
-                                    }}
-                                    value={PagoAño}
-                                ></DatePicker>
-                            </Grid>
-                        </Grid>
-                        <Datatable
-                            loader={true}
-                            columnas={columnasFacturas}
-                            datos={facturas}
-                            paginacion={true}
-                            buscar={true}
-                            paginacionPorDefecto={15}
-                        />
-                        <Modal tamaño={'sm'} mensaje={'Descargando comprobante...'} abrirModal={cargando}></Modal>
-                        </CardContent>
-                    </Card>
-                </TabPanel>
-                <TabPanel>
-                    <Card>
-                        <CardContent>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={2} lg={2}>
-                                <DatePicker
-                                    color="primary"
-                                    inputVariant="outlined"
-                                    format="yyyy"
-                                    views={["year"]}
-                                    fullWidth
-                                    label="Año"
-                                    onChange={nuevoAño => {
-                                        setPagoAño(nuevoAño);
-                                        traerRecibosPorAbonado(location.state.UserId, nuevoAño.getFullYear());
-                                    }}
-                                    value={PagoAño}
-                                ></DatePicker>
-                            </Grid>
-                        </Grid>
-                        <Datatable
-                            loader={true}
-                            columnas={columnasRecibos}
-                            datos={recibos}
-                            paginacion={true}
-                            buscar={true}
-                            paginacionPorDefecto={15}
-                        />
-                        <Modal tamaño={'sm'} mensaje={'Descargando comprobante...'} abrirModal={cargando}></Modal>
-                        </CardContent>
-                    </Card>
-                </TabPanel>
             </Tabs>
             </CardContent>
         </Card>

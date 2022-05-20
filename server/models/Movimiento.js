@@ -40,7 +40,7 @@ const Movimiento = db.define('movimiento', {
     },
     FacturaId: {
         type: INTEGER,
-        allowNull: false
+        allowNull: true
     },
     createdAt: {
         type: DATE,
