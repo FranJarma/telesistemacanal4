@@ -12,7 +12,7 @@ exports.FacturasListarPorUsuario = async(req,res) => {
         'f.FacturaTipoComprobante', 'f.FacturaMoneda', 'f.FacturaCotizacion', 'f.FacturaTipoDocReceptor',
         'f.FacturaNroDocReceptor', 'f.FacturaFechaVencimientoCodigoAutorizacion', 'u.Nombre', 'u.Apellido',
         'u1.Nombre as NombreAbonado', 'u1.Apellido as ApellidoAbonado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre',
-        'mc.MovimientoConceptoNombre', 'mc.MovimientoConceptoId', 'm.MovimientoCantidad', 'dp.DetallePagoMonto', 'dp.DetallePagoObservaciones')
+        'mc.MovimientoConceptoNombre', 'mc.MovimientoConceptoId', 'm.MovimientoCantidad', 'dp.DetallePagoMonto')
         // ['str.id', knex.raw('ARRAY_AGG(att.*) as attachments')])
         .from('factura as f')
         .innerJoin('_user as u', 'u.UserId', '=', 'f.createdBy')

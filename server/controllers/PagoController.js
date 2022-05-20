@@ -178,6 +178,7 @@ exports.PagoCreate = async(req,res) => {
                 if(req.body.DetallePagoMonto > pagoBuscar.PagoSaldo) return res.status(400).json({msg: `El monto no puede ser mayor al saldo restante de: $ ${pagoBuscar.PagoSaldo}`})
                 pagoBuscar.PagoSaldo = pagoBuscar.PagoSaldo - req.body.PagoInfo.DetallePagoMonto;
                 pagoBuscar.updatedBy = req.body.PagoInfo.updatedBy;
+                pagoBuscar.PagoObservaciones = req.body.PagoInfo.PagoObservaciones;
                 const detallePago = new DetallePago(req.body, {transaction: t});
                 detallePago.DetallePagoId = ultimoDetallePagoId + 1;
                 detallePago.PagoId = req.body.PagoInfo.PagoId;
@@ -265,7 +266,6 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 detallePago.PagoId = pago.PagoId;
                 detallePago.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
                 detallePago.DetallePagoMonto = pago.PagoTotal;
-                detallePago.DetallePagoObservaciones = pagoAdelantadoObservaciones;
                 detallePago.createdAt = new Date();
                 detallePago.createdBy = req.body.PagoAdelantadoInfo.createdBy;
                 detallePago.MovimientoId = movimiento.MovimientoId;

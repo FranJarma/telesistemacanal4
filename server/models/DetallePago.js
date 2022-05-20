@@ -10,10 +10,6 @@ const DetallePago = db.define('detallepago', {
         type: FLOAT,
         allowNull: false
     },
-    DetallePagoObservaciones: {
-        type: STRING,
-        allowNull: true
-    },
     createdAt: {
         type: DATE,
         allowNull: true,

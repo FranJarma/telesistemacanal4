@@ -37,7 +37,7 @@ const ListaPagos = () => {
         DetallePagoId: '',
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
-        DetallePagoObservaciones: '',
+        PagoObservaciones: '',
         createdBy: localStorage.getItem('identity'),
         updatedAt: null,
         updatedBy: localStorage.getItem('identity'),
@@ -50,7 +50,7 @@ const ListaPagos = () => {
         UserId: location.state.UserId
     });
 
-    const { DetallePagoMonto, DetallePagoObservaciones } = PagoInfo;
+    const { DetallePagoMonto, PagoObservaciones } = PagoInfo;
 
     const [ModalPagoAdelantado, setModalPagoAdelantado] = useState(false);
     const [ModalNuevoPago, setModalNuevoPago] = useState(false);
@@ -168,23 +168,25 @@ const ListaPagos = () => {
         },
         {
             cell: (data) =>
-            <>
-            {data.PagoSaldo > 0 ?
                 <BotonesDatatable botones={
                     <>
                         <MenuItem>
-                            <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "#4D7F9E", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago</Typography>
-                        </MenuItem>
-                        <MenuItem>
-                            <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
-                        </MenuItem>
-                        <MenuItem>
-                            <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-trash bx-xs'></i> Eliminar recargo</Typography>
-                        </MenuItem>
+                            <Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i> Detalles</Typography></MenuItem>
+                        {data.PagoSaldo > 0 ?
+                        <>
+                            <MenuItem>
+                                <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "#4D7F9E", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago</Typography>
+                            </MenuItem>
+                            <MenuItem>
+                                <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
+                            </MenuItem>
+                            <MenuItem>
+                                <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-trash bx-xs'></i> Eliminar recargo</Typography>
+                            </MenuItem>
+                        </> :"" }
                     </>
                 }/>
-            : <Tooltip title="Detalles"><Typography onClick={()=>handleChangeModalDetallesPago(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-list-ol bx-xs'></i></Typography></Tooltip>}
-            </>,
+
         }
     ]
     const columnasPagosPendientes = [
@@ -518,8 +520,8 @@ const ListaPagos = () => {
                         multiline
                         minRows={3}
                         label="Observaciones"
-                        value={DetallePagoObservaciones}
-                        name="DetallePagoObservaciones"
+                        value={PagoObservaciones}
+                        name="PagoObservaciones"
                         fullWidth
                         inputProps={{
                             maxLength: 100

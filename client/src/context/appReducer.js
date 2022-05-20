@@ -293,6 +293,7 @@ export default (state, action) => {
         case TYPES.CREAR_PAGO: 
             pago = state.pagos.find(pago => pago.PagoId === action.payload.PagoInfo.PagoId);
             pago.PagoSaldo = pago.PagoSaldo - parseInt(action.payload.PagoInfo.DetallePagoMonto);
+            pago.PagoObservaciones=  action.payload.PagoInfo.PagoObservaciones;
             return {
                 ...state,
                 pagos: [...state.pagos]
