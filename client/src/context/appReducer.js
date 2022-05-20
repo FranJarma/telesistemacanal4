@@ -270,6 +270,11 @@ export default (state, action) => {
                 ...state, 
                 facturas: action.payload
         }
+        case TYPES.LISTA_RECIBOS_ABONADO:
+            return {
+                ...state, 
+                recibos: action.payload
+        }
         case TYPES.LISTA_PAGOS_PENDIENTES_ABONADO:
             return {
                 ...state,

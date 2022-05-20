@@ -70,16 +70,15 @@ const styles = StyleSheet.create({
   });
 
 
-const FacturaTableRow = ({items}) => {
-    const rows = items.map( item => 
-        <View style={styles.row} key={item.id}>
-            <Text style={styles.codigo}>{item.Codigo}</Text>
-            <Text style={styles.producto}>{item.Producto}</Text>
-            <Text style={styles.cantidad}>{item.Cantidad}</Text>
-            <Text style={styles.precioUnitario}>{item.PrecioUnitario}</Text>
-            <Text style={styles.subtotal}>{item.Subtotal}</Text>
-        </View>
-    )
+const FacturaTableRow = ({data}) => {
+    const rows =
+    <View style={styles.row} key={data.MovimientoConceptoId}>
+        <Text style={styles.codigo}>{data.MovimientoConceptoId}</Text>
+        <Text style={styles.producto}>{data.MovimientoConceptoNombre}</Text>
+        <Text style={styles.cantidad}>1</Text>
+        <Text style={styles.precioUnitario}>{data.MovimientoCantidad}</Text>
+        <Text style={styles.subtotal}>{data.MovimientoCantidad}</Text>
+    </View>
     return (<Fragment>{rows}</Fragment> )
 };
   

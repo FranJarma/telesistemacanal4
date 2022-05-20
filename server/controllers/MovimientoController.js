@@ -180,3 +180,30 @@ exports.MovimientoCreate = async(req, res) => {
         res.status(400).json({msg: 'Hubo un error al registrar el movimiento'});
     }
 }
+
+exports.RecibosGetByAbonado = async (req, res) => {
+    try {
+        const recibos = await knex.
+        select('m.MovimientoId', 'm.MovimientoCantidad', 'm.MovimientoDia',
+        'm.MovimientoMes', 'm.MovimientoAño', 'm.createdAt', 'u.Nombre as NombreCarga',
+        'u.Apellido as ApellidoCarga', 'mc.MovimientoConceptoNombre as Concepto',
+        'mc.MovimientoConceptoNombre', 'mp.MedioPagoNombre', 'u1.Nombre as NombreAbonado', 'u1.Cuit',
+        'u1.Apellido as ApellidoAbonado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre', 'mu.MunicipioNombre')
+        .from('movimiento as m')
+        .innerJoin('_user as u','u.UserId','=','m.createdBy')
+        .innerJoin('_user as u1','u1.UserId','=','m.AbonadoId')
+        .innerJoin('movimientoconcepto as mc', 'm.MovimientoConceptoId','=','mc.MovimientoConceptoId')
+        .innerJoin('mediopago as mp', 'mp.MedioPagoId', '=', 'm.MedioPagoId')
+        .innerJoin('domicilio as d', 'd.DomicilioId', '=', 'u1.DomicilioId')
+        .innerJoin('barrio as b', 'b.BarrioId', '=', 'd.BarrioId')
+        .innerJoin('municipio as mu', 'mu.MunicipioId', '=', 'b.MunicipioId')
+        .where({
+            'm.MovimientoAño': req.query.Periodo,
+            'm.AbonadoId': req.query.UserId,
+            'm.FacturaId': null
+        });
+        res.json(recibos);
+    } catch (error) {
+        res.status(500).json({ msg: 'Hubo un error al encontrar los recibos del día'});
+    }
+}

@@ -29,10 +29,10 @@ const styles = StyleSheet.create({
     <>
     <View style={styles.tableContainer}>
         <FacturaTableHeader />
-        <FacturaTableRow items={invoice.items} />
+        <FacturaTableRow data={invoice} />
     </View>
     <View style={styles.cooterContainer}>
-        <FacturaTableFooter items={invoice.items} />
+        <FacturaTableFooter data={invoice} />
     </View>
     </>
   );

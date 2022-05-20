@@ -36,14 +36,14 @@ const styles = StyleSheet.create({
   });
 
 
-const InvoiceTableFooter = ({items}) => {
-    const total = items.map(item => Number.parseFloat(item.Cantidad) * Number.parseFloat(item.PrecioUnitario))
-        .reduce((accumulator, currentValue) => accumulator + currentValue , 0)
+const InvoiceTableFooter = ({data}) => {
+    // const total = data.map(item => Number.parseFloat(item.Cantidad) * Number.parseFloat(item.PrecioUnitario))
+    //     .reduce((accumulator, currentValue) => accumulator + currentValue , 0)
     return(
         <>
-            <Text style={styles.subtitle}>Subtotal: <Text style={styles.subtitleSpan}> ${total.toFixed(2)}</Text></Text>
+            <Text style={styles.subtitle}>Subtotal: <Text style={styles.subtitleSpan}> ${data.MovimientoCantidad}</Text></Text>
             <Text style={styles.subtitle}>Importe Otros Tributos: <Text style={styles.subtitleSpan}> $0,00 </Text></Text>
-            <Text style={styles.subtitle}>Importe Total: <Text style={styles.subtitleSpan}> ${total.toFixed(2)}</Text></Text>
+            <Text style={styles.subtitle}>Importe Total: <Text style={styles.subtitleSpan}> ${data.MovimientoCantidad}</Text></Text>
         </>
     )
 };

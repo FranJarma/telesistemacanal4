@@ -111,6 +111,18 @@ exports.PagoCreate = async(req,res) => {
                     UserId: req.body.PagoInfo.UserId
                 }
             })
+            //instanciamos un nuevo movimiento
+            const movimiento = new Movimiento({transaction: t});
+            movimiento.MovimientoId = ultimoMovimientoId + 1;
+            movimiento.MunicipioId = req.body.MunicipioId;
+            movimiento.MovimientoCantidad = req.body.PagoInfo.DetallePagoMonto;
+            movimiento.createdBy = req.body.PagoInfo.createdBy;
+            movimiento.MovimientoDia = new Date().getDate();
+            movimiento.MovimientoMes = new Date().getMonth()+1;
+            movimiento.MovimientoAño = new Date().getFullYear();
+            movimiento.MovimientoConceptoId = req.body.PagoInfo.PagoConceptoId;
+            movimiento.AbonadoId = req.body.PagoInfo.UserId;
+            movimiento.MedioPagoId = req.body.MedioPagoId;
             //si requiere factura, instanciamos un nuevo objeto Factura
             if(req.body.RequiereFactura){
                 let ultimaFacturaId = 0;
@@ -118,7 +130,7 @@ exports.PagoCreate = async(req,res) => {
                 const ultimaFactura = await Factura.findOne({
                     order: [['FacturaId', 'DESC']]
                 });
-                if (ultimaFactura) ultimaFacturaId = ultimaFacturaId.FacturaId;
+                if (ultimaFactura) ultimaFacturaId = ultimaFactura.FacturaId;
                 const data  = {
                     'CantReg' 		: 1, // Cantidad de comprobantes a registrar
                     'PtoVta' 		: 3, // Punto de venta
@@ -157,20 +169,9 @@ exports.PagoCreate = async(req,res) => {
                 factura.AbonadoId = req.body.PagoInfo.UserId;
                 factura.createdAt = new Date();
                 factura.createdBy = req.body.PagoInfo.createdBy;
+                movimiento.FacturaId = factura.FacturaId;
                 await factura.save({transaction: t});
             }
-            //instanciamos un nuevo movimiento
-            const movimiento = new Movimiento({transaction: t});
-            movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MunicipioId = req.body.MunicipioId;
-            movimiento.MovimientoCantidad = req.body.PagoInfo.DetallePagoMonto;
-            movimiento.createdBy = req.body.PagoInfo.createdBy;
-            movimiento.MovimientoDia = new Date().getDate();
-            movimiento.MovimientoMes = new Date().getMonth()+1;
-            movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = req.body.PagoInfo.PagoConceptoId;
-            movimiento.AbonadoId = req.body.PagoInfo.UserId;
-            movimiento.MedioPagoId = req.body.MedioPagoId;
             //si encuentra el pago, NO se lo registra de nuevo, sino que solo se registra un nuevo detalle de pago y se actualiza el saldo
             if(pagoBuscar) {
                 //verificamos que el monto ingresado no supere el saldo restante

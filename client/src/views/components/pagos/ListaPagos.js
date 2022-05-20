@@ -14,10 +14,11 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Spinner from '../design/components/Spinner';
 import * as VARIABLES from './../../../types/variables';
 import Factura from '../design/components/Factura';
+import Recibo from '../design/components/Recibo';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner, facturas, traerFacturasPorAbonado } = appContext;
+    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner, facturas, traerFacturasPorAbonado, recibos, traerRecibosPorAbonado } = appContext;
 
     const location = useLocation();
     const [PagoAño, setPagoAño] = useState(new Date());
@@ -279,6 +280,42 @@ const ListaPagos = () => {
             </>,
         }
     ]
+    const columnasRecibos = [
+        {
+            "name": "N°",
+            "selector": row =>row["MovimientoId"],
+        },
+        {
+            "name": "Fecha de emisión",
+            "selector": row => convertirAFecha(row["createdAt"]),
+            "wrap": true,
+            "sortable": true,
+        },
+        {
+            "name": "Importe",
+            "selector": row => "$ " + row["MovimientoCantidad"],
+            "wrap": true,
+            "sortable": true,
+        },
+        {
+            "name": "Medio de Pago",
+            "selector": row => row["MedioPagoNombre"],
+            "wrap": true,
+            "sortable": true,
+        },
+        {
+            "name": "Usuario de carga",
+            "selector": row => row["ApellidoCarga"] + ", " + row["NombreCarga"],
+            "wrap": true,
+            "sortable": true,
+        },
+        {
+            cell: (data) => 
+            <>
+            <Recibo data={data}/>
+            </>,
+        }
+    ]
     const mesesAPagar = [{key: 2,value: 2},{key: 3,value: 3},{key: 4,value: 4},{key: 5,value: 5},{key: 6,value: 6},{key: 12,value: 12},{key: 18,value: 18},{key: 24,value: 24}];
     return (
         <>
@@ -314,6 +351,9 @@ const ListaPagos = () => {
                     <Tab onClick={() => {
                         traerFacturasPorAbonado(location.state.UserId, PagoAño.getFullYear());
                     }}><i className='bx bxs-file-pdf'></i> Facturas</Tab>
+                    <Tab onClick={() => {
+                        traerRecibosPorAbonado(location.state.UserId, PagoAño.getFullYear());
+                    }}><i className='bx bxs-file'></i> Recibos</Tab>
                 </TabList>
                 <br/>
                 { //Nos permite renderizar 4 elementos iguales (4 Primeros Tabs)
@@ -377,13 +417,46 @@ const ListaPagos = () => {
                             </Grid>
                         </Grid>
                         <Datatable
-                            // loader={true}
+                            loader={true}
                             columnas={columnasFacturas}
                             datos={facturas}
                             paginacion={true}
                             buscar={true}
                             paginacionPorDefecto={15}
                         />
+                        <Modal tamaño={'sm'} mensaje={'Descargando comprobante...'} abrirModal={cargando}></Modal>
+                        </CardContent>
+                    </Card>
+                </TabPanel>
+                <TabPanel>
+                    <Card>
+                        <CardContent>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={2} lg={2}>
+                                <DatePicker
+                                    color="primary"
+                                    inputVariant="outlined"
+                                    format="yyyy"
+                                    views={["year"]}
+                                    fullWidth
+                                    label="Año"
+                                    onChange={nuevoAño => {
+                                        setPagoAño(nuevoAño);
+                                        traerRecibosPorAbonado(location.state.UserId, nuevoAño.getFullYear());
+                                    }}
+                                    value={PagoAño}
+                                ></DatePicker>
+                            </Grid>
+                        </Grid>
+                        <Datatable
+                            loader={true}
+                            columnas={columnasRecibos}
+                            datos={recibos}
+                            paginacion={true}
+                            buscar={true}
+                            paginacionPorDefecto={15}
+                        />
+                        <Modal tamaño={'sm'} mensaje={'Descargando comprobante...'} abrirModal={cargando}></Modal>
                         </CardContent>
                     </Card>
                 </TabPanel>

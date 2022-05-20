@@ -7,6 +7,9 @@ import Toast from './../views/components/design/components/Toast';
 import Swal from './../views/components/design/components/Swal';
 import * as TYPES from '../types';
 import tokenAuthHeaders from '../config/token';
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
+import * as VARIABLES from './../types/variables';
 
 const AppState = props => {
     const initialState = {
@@ -49,7 +52,8 @@ const AppState = props => {
         cargando: false,
         mensaje: '',
         cajas: [],
-        facturas: []
+        facturas: [],
+        recibos: []
     }
     const history = useHistory();
     const [state, dispatch] = useReducer(AppReducer, initialState);
@@ -92,6 +96,7 @@ const AppState = props => {
             }
             else if(error.response.data.msg){
                 Toast(error.response.data.msg, 'warning');
+                history.push('/');
             }
             else if(error.response.data.errors){
                 Toast(error.response.data.errors[0].msg, 'warning');
@@ -106,6 +111,7 @@ const AppState = props => {
             history.push('/');
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const crearUsuario = async (usuario) => {
@@ -125,6 +131,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -148,6 +155,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -170,6 +178,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -193,6 +202,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -216,6 +226,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -238,6 +249,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -253,6 +265,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerUsuariosPorRol = async (rolId) => {
@@ -264,6 +277,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerRoles = async (estadoId = 0) => {
@@ -275,6 +289,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerRolesPorUsuario = async (UserId) => {
@@ -286,6 +301,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerPermisos = async (estadoId = 0) => {
@@ -297,6 +313,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerPermisosPorRol = async (RoleId) => {
@@ -308,6 +325,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
 
@@ -329,6 +347,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -352,6 +371,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -375,6 +395,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -398,6 +419,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -421,6 +443,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -444,6 +467,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -459,6 +483,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerAbonadosAtrasados = async (municipioId = 0) => {
@@ -470,6 +495,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerAbonado = async (UserId) => {
@@ -481,6 +507,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerDomiciliosAbonado = async (id) => {
@@ -492,6 +519,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     const traerServiciosAbonado = async (id) => {
@@ -503,6 +531,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     const traerPagosPorAbonado = async (UserId, Periodo = null, Concepto) => {
@@ -514,6 +543,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerFacturasPorAbonado = async (UserId, Periodo = null) => {
@@ -525,8 +555,10 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
+
     const traerPagosMensualesPendientes = async (UserId, Concepto, top) => {
         try {
             const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Concepto=${Concepto}&top=${top}`);
@@ -544,6 +576,7 @@ const AppState = props => {
             }
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerDetallesPago = async (id) => {
@@ -555,6 +588,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const eliminarDetallePago = async(detallePago, cerrarModal) => {
@@ -574,6 +608,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -601,35 +636,25 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
             }
         })
     }
-    const generarFactura = async(datosFactura) => {
-        console.log(datosFactura);
-        clienteAxios.post('/api/pagos/generarFactura', datosFactura)
-        .then(resOk => {
-            if (resOk.data)
-                dispatch({
-                    type: TYPES.GENERAR_FACTURA,
-                    payload: datosFactura
-                });
-        })
-        .catch(err => {
-            if(!err.response){
-                console.log(err);
-                Toast('Error de conexión con el servidor', 'error');
-            }
-            else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'warning');
-            }
-            else if(err.response.data.errors){
-                Toast(err.response.data.errors[0].msg, 'warning');
-            }
-        })
+
+    const descargarComprobante = async(tipo, caratula, data) => {
+        try {
+            mostrarSpinner();
+            const blob = await pdf(caratula).toBlob();
+            if(tipo === "Factura") saveAs(blob, data.FacturaCodigoAutorizacion)
+            else if(tipo === "Recibo") saveAs(blob, "Recibo");
+        } catch (error) {
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
+        }
     }
+
     const crearPagoAdelantado = async(pagoAdelantadoInfo) => {
         clienteAxios.post('/api/pagos/createPagoAdelantado', pagoAdelantadoInfo)
         .then(resOk => {
@@ -650,6 +675,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -674,6 +700,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -697,6 +724,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -712,7 +740,7 @@ const AppState = props => {
                 payload: resultado.data
             })
         } catch (error) {
-            console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     //BARRIOS
@@ -734,6 +762,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -757,6 +786,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -780,6 +810,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -796,6 +827,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     //CONDICIONES IVA
@@ -808,6 +840,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     //MUNICIPIOS
@@ -829,6 +862,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -855,6 +889,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -878,6 +913,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -894,6 +930,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     const traerMunicipios = async () => {
@@ -905,6 +942,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     //PROVINCIAS
@@ -917,6 +955,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     //SERVICIOS
@@ -929,6 +968,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     const crearServicio = async(servicio, cerrarModal) => {
@@ -948,6 +988,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -971,6 +1012,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -994,6 +1036,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1010,6 +1053,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     const traerONUPorId = async (id) => {
@@ -1021,6 +1065,7 @@ const AppState = props => {
             });
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     };
     const crearONU = async(onu, cerrarModal) => {
@@ -1043,6 +1088,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1066,6 +1112,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1089,6 +1136,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1105,6 +1153,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const crearModeloONU = async(modeloONU, cerrarModal) => {
@@ -1124,6 +1173,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1147,6 +1197,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1170,6 +1221,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1186,6 +1238,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const crearMedioPago = async(medioPago, cerrarModal) => {
@@ -1205,6 +1258,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1228,6 +1282,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1251,6 +1306,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1267,6 +1323,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const crearTarea = async(tarea, cerrarModal) => {
@@ -1286,6 +1343,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1309,6 +1367,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1332,6 +1391,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1348,6 +1408,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerOrdenesDeTrabajoAsignadas = async (tecnicoId, estadoId) => {
@@ -1359,6 +1420,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerTecnicosOt = async (ot) => {
@@ -1370,6 +1432,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const traerTareasOt = async (ot) => {
@@ -1381,6 +1444,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const crearOrdenDeTrabajo = async (ot) => {
@@ -1399,6 +1463,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1423,6 +1488,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1447,6 +1513,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1470,6 +1537,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1492,6 +1560,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1517,6 +1586,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1540,22 +1610,24 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
-    const traerMovimientosPorAbonado = async (Mes, Abonado) => {
+    const traerRecibosPorAbonado = async (UserId, Periodo= null) => {
         try {
             const resultado = await clienteAxios.get('/api/movimientos/abonado', {
                 params: {
-                    Mes: Mes,
-                    Abonado: Abonado
+                    UserId: UserId,
+                    Periodo: Periodo
                 }
-            })
+            });
             dispatch({
-                type: TYPES.LISTA_MOVIMIENTOS,
+                type: TYPES.LISTA_RECIBOS_ABONADO,
                 payload: resultado.data
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     //conceptos de movimientos
@@ -1568,6 +1640,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     //spinner
@@ -1579,7 +1652,7 @@ const AppState = props => {
             dispatch({
                 type: TYPES.OCULTAR_SPINNER,
             });
-        },2000)
+        },3000)
     };
     //caja
     const traerCaja = async (municipio, fecha, turno) => {
@@ -1604,6 +1677,7 @@ const AppState = props => {
             })
         } catch (error) {
             console.log(error);
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }
     }
     const cerrarCaja = async (caja, cerrarModal) => {
@@ -1624,6 +1698,7 @@ const AppState = props => {
             }
             else if(err.response.data.msg){
                 Toast(err.response.data.msg, 'warning');
+
             }
             else if(err.response.data.errors){
                 Toast(err.response.data.errors[0].msg, 'warning');
@@ -1673,6 +1748,7 @@ const AppState = props => {
             mensaje: state.mensaje,
             cajas: state.cajas,
             facturas: state.facturas,
+            recibos: state.recibos,
             iniciarSesion, cerrarSesion, obtenerUsuarioAutenticado, traerUsuarios, traerUsuariosPorRol, crearUsuario, modificarUsuario, eliminarUsuario,
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
@@ -1695,7 +1771,7 @@ const AppState = props => {
             traerConceptos,
             mostrarSpinner,
             traerCaja, cerrarCaja,
-            generarFactura, traerFacturasPorAbonado
+            descargarComprobante, traerFacturasPorAbonado, traerRecibosPorAbonado
         }}>{props.children}
         </AppContext.Provider>
     )

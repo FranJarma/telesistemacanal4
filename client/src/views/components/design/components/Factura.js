@@ -1,7 +1,7 @@
 
-import React from 'react';
-import { Page, Document, StyleSheet, Image, Text, View, Font, BlobProvider } from '@react-pdf/renderer';
-import { Tooltip } from '@material-ui/core';
+import React, { useContext } from 'react';
+import { Page, Document, StyleSheet, Image, Text, View, Font, pdf } from '@react-pdf/renderer';
+import { Backdrop, CircularProgress, Tooltip } from '@material-ui/core';
 import logo from './../../../images/logo-ts-transparente.png';
 import logo2 from './../../../images/olinet.png';
 import { QRCodeCanvas } from 'qrcode.react';
@@ -9,6 +9,8 @@ import FacturaItemsTable from './FacturaItemsTable';
 
 import OpenSans from '../../../../fonts/OpenSans.ttf'
 import OpenSansBold from '../../../../fonts/OpenSansBold.ttf'
+import AppContext from './../../../../context/appContext';
+import Spinner from './Spinner';
 
 Font.register({
   family: 'OpenSans',
@@ -86,37 +88,13 @@ const styles = StyleSheet.create({
   }
 });
 
-const QrBase64 = () => {
+const qrBase64 = () => {
   const qrCodeCanvas = document.querySelector('canvas');
   const qrCodeDataUri = qrCodeCanvas.toDataURL('image/jpg', 0.3);
   return qrCodeDataUri;
 }
 
-const invoiceData = {
-  id: "5df3180a09ea16dc4b95f910",
-  invoice_no: "201906-28",
-  balance: "$2,283.74",
-  company: "MANTRIX",
-  email: "susanafuentes@mantrix.com",
-  phone: "+1 (872) 588-3809",
-  address: "922 Campus Road, Drytown, Wisconsin, 1986",
-  trans_date: "2019-09-12",
-  due_date: "2019-10-12",
-  items: [
-    {
-      id: 1,
-      Codigo: 3,
-      Producto: "ABONA CUOTA MENSUAL DEL MES DE MARZO POR EL AÑO 2022",
-      Cantidad: 1,
-      UnidadMedida: "Otras Unidades",
-      PrecioUnitario: "1100,00",
-      PorcentajeBonificacion: "0,00",
-      ImporteBonificacion: "0,00",
-      Subtotal: "1100,00",
-    }
-  ],
-};
-const MyDoc = ({data}) => (
+const FacturaCaratula = ({data}) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.header} fixed>
@@ -143,11 +121,11 @@ const MyDoc = ({data}) => (
       <View style={styles.divisor}></View>
       <View style={styles.row}>
         <View style={styles.column}>
-          <Text style={styles.subtitle}>Desde: <Text style={styles.subtitleSpan}>13/05/2022</Text></Text>
-          <Text style={styles.subtitle}>Hasta: <Text style={styles.subtitleSpan}>13/05/2022</Text></Text>
+          <Text style={styles.subtitle}>Desde: <Text style={styles.subtitleSpan}>{data.FacturaFechaEmision.split('-').reverse().join('/')}</Text></Text>
+          <Text style={styles.subtitle}>Hasta: <Text style={styles.subtitleSpan}>{data.FacturaFechaEmision.split('-').reverse().join('/')}</Text></Text>
         </View>
         <View style={styles.column}>
-          <Text style={styles.subtitle}>Vencimiento del pago: <Text style={styles.subtitleSpan}>13/05/2022</Text></Text>
+          <Text style={styles.subtitle}>Vencimiento del pago: <Text style={styles.subtitleSpan}>{data.FacturaFechaEmision.split('-').reverse().join('/')}</Text></Text>
         </View>
       </View>
       <View style={styles.divisor}></View>
@@ -163,15 +141,15 @@ const MyDoc = ({data}) => (
         </View>
       </View>
       <View style={styles.divisor}></View>
-      <FacturaItemsTable invoice={invoiceData} />
+      <FacturaItemsTable invoice={data} />
       <View style={styles.footer}>
         <View style={styles.row}>
           <View style={styles.column}>
-            <Image style={styles.qr} src={QrBase64}/>
+            <Image style={styles.qr} src={qrBase64}/>
           </View>
           <View style={styles.column}>
             <Text style={styles.subtitle}>CAE N°: <Text style={styles.subtitleSpan}>{data.FacturaCodigoAutorizacion}</Text></Text>
-            <Text style={styles.subtitle}>Fecha de Vto. de CAE: <Text style={styles.subtitleSpan}>{data.FacturaFechaVencimientoCodigoAutorizacion}</Text></Text>
+            <Text style={styles.subtitle}>Fecha de Vto. de CAE: <Text style={styles.subtitleSpan}>{data.FacturaFechaVencimientoCodigoAutorizacion.split('-').reverse().join('/')}</Text></Text>
           </View>
         </View>
       </View>
@@ -179,29 +157,21 @@ const MyDoc = ({data}) => (
   </Document>
 );
 
-
 const Factura = ({data}) => {
+  const appContext = useContext(AppContext);
+  const { cargando, descargarComprobante } = appContext;
   const dataObject = {"ver":data.FacturaVersion,"fecha":data.FacturaFechaEmision,"cuit":data.FacturaCuitEmisor,"ptoVta":data.FacturaPuntoVenta,"tipoCmp":data.FacturaTipoComprobante,"nroCmp":data.FacturaNumeroComprobante,"importe":data.FacturaImporte,"moneda":data.FacturaMoneda,"ctz":data.FacturaCotizacion,"tipoDocRec":data.FacturaTipoDocReceptor,"nroDocRec":data.FacturaNroDocReceptor,"tipoCodAut":data.FacturaTipoCodigoAutorizacion,"codAut":data.FacturaCodigoAutorizacion}
   const jsonDataObject = JSON.stringify(dataObject);
   const encodedBase64 = Buffer.from(jsonDataObject).toString('base64');
   const afipUrl = `https://www.afip.gob.ar/fe/qr/?p=${encodedBase64}`;
   return (
     <>
-    <QRCodeCanvas style={{display: 'none'}} value ={afipUrl}/>
-    <BlobProvider
-      document={
-        <MyDoc data={data}/>
-      }
-    >
-      {({ url, blob, loading }) => {
-        return (
-          loading ? 'Cargando...' :
-          <a href={url} target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
-            <Tooltip title="Ver factura"><i style={{color: "teal"}} className='bx bxs-file-pdf bx-sm'></i></Tooltip>
-          </a>
-        );
-      }}
-  </BlobProvider>
+      <QRCodeCanvas style={{display: 'none'}} value ={afipUrl}/>
+        <Tooltip title="Descargar">
+          <i style={{color: "teal"}} className='bx bxs-download bx-xs' onClick={() => {
+            descargarComprobante("Factura", <FacturaCaratula data={data}/>, data);
+          } }></i>
+        </Tooltip>
     </>
   );
 }
