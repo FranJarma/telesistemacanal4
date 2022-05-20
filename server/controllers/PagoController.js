@@ -204,6 +204,8 @@ exports.PagoCreate = async(req,res) => {
 }
 
 exports.PagoAdelantadoCreate = async(req,res) => {
+    const mesesAPagar = parseInt(req.body.PagoAdelantadoInfo.CantidadMesesAPagar)-1;
+    const pagoAdelantadoObservaciones = `Pago Adelantado desde: ${req.body.MesesAPagar[0].PagoMes}/${req.body.MesesAPagar[0].PagoAño} hasta:${req.body.MesesAPagar[mesesAPagar].PagoMes}/${req.body.MesesAPagar[mesesAPagar].PagoAño}`
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
@@ -212,7 +214,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
         await db.transaction(async(t)=>{
             const servicio = await Servicio.findByPk(req.body.PagoAdelantadoInfo.ServicioId, {transaction: t});
             let totalSinDescuento = req.body.MesesAPagar.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0);
-            let total = null;
+            let total = totalSinDescuento;
             if(req.body.PagoAdelantadoInfo.CantidadMesesAPagar === 6){
                 total = totalSinDescuento - (totalSinDescuento * servicio.ServicioBonificacionPagoSeisMeses/100);
             }
@@ -242,7 +244,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
             movimiento.MunicipioId = req.body.PagoAdelantadoInfo.MunicipioId;
-            movimiento.MovimientoCantidad = parseInt(total);
+            movimiento.MovimientoCantidad = total;
             movimiento.createdAt = new Date();
             movimiento.createdBy = req.body.PagoAdelantadoInfo.createdBy;
             movimiento.MovimientoDia = new Date().getDate();
@@ -251,10 +253,10 @@ exports.PagoAdelantadoCreate = async(req,res) => {
             movimiento.MovimientoConceptoId = 8; //Pago Adelantado
             movimiento.AbonadoId = req.body.PagoAdelantadoInfo.UserId;
             movimiento.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
-            for(let i=0; i<=req.body.PagoAdelantadoInfo.CantidadMesesAPagar-1; i++){
+            for(let i=0; i<=mesesAPagar; i++){
                 const pago = await Pago.findByPk(req.body.MesesAPagar[i].PagoId, {transaction: t});
                 pago.PagoSaldo = 0;
-                pago.PagoObservaciones = `Pago Adelantado: ${req.body.PagoAdelantadoInfo.CantidadMesesAPagar} meses`;
+                pago.PagoObservaciones = pagoAdelantadoObservaciones;
                 pago.updatedAt = new Date();
                 pago.updatedBy = req.body.PagoAdelantadoInfo.updatedBy;
                 await pago.save({transaction: t});
@@ -263,7 +265,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 detallePago.PagoId = pago.PagoId;
                 detallePago.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
                 detallePago.DetallePagoMonto = pago.PagoTotal;
-                detallePago.DetallePagoObservaciones = `Pago Adelantado: ${req.body.PagoAdelantadoInfo.CantidadMesesAPagar} meses`;
+                detallePago.DetallePagoObservaciones = pagoAdelantadoObservaciones;
                 detallePago.createdAt = new Date();
                 detallePago.createdBy = req.body.PagoAdelantadoInfo.createdBy;
                 detallePago.MovimientoId = movimiento.MovimientoId;

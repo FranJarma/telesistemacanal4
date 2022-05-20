@@ -18,7 +18,7 @@ import Recibo from '../design/components/Recibo';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, cargando, mostrarSpinner, facturas, traerFacturasPorAbonado, recibos, traerRecibosPorAbonado } = appContext;
+    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, descargando, cargando, mostrarSpinner, facturas, traerFacturasPorAbonado, recibos, traerRecibosPorAbonado } = appContext;
 
     const location = useLocation();
     const [PagoAño, setPagoAño] = useState(new Date());
@@ -283,12 +283,6 @@ const ListaPagos = () => {
                         setPagoInfo({...PagoInfo, PagoConceptoId: 6});
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6);
                     }}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
-                    {/* <Tab onClick={() => {
-                        traerFacturasPorAbonado(location.state.UserId, PagoAño.getFullYear());
-                    }}><i className='bx bxs-file-pdf'></i> Facturas</Tab>
-                    <Tab onClick={() => {
-                        traerRecibosPorAbonado(location.state.UserId, PagoAño.getFullYear());
-                    }}><i className='bx bxs-file'></i> Recibos</Tab> */}
                 </TabList>
                 <br/>
                 { //Nos permite renderizar 4 elementos iguales (4 Primeros Tabs)
@@ -326,7 +320,7 @@ const ListaPagos = () => {
                             buscar={true}
                             paginacionPorDefecto={15}
                             />
-                            <Modal tamaño={'sm'} mensaje={'Descargando comprobante...'} abrirModal={cargando}></Modal>
+                            <Modal tamaño={'sm'} mensaje={'Descargando comprobante...'} abrirModal={descargando}></Modal>
                             </CardContent>
                         </Card>
                     </TabPanel>
@@ -342,7 +336,7 @@ const ListaPagos = () => {
             <>
             <Button onClick={()=>
                 {
-                crearPagoAdelantado({MesesAPagar: pagosPendientesTop, PagoAdelantadoInfo, RequiereFactura: RequiereFactura})}}
+                crearPagoAdelantado({MesesAPagar: pagosPendientesTop, PagoAdelantadoInfo, RequiereFactura: RequiereFactura}, handleChangeModalPagoAdelantado)}}
                 variant="contained"
                 color="primary">
                 Aceptar</Button>
@@ -357,10 +351,10 @@ const ListaPagos = () => {
                                 <CardContent>
                                 <Typography variant="h2">Meses que debe({pagosPendientes.length})</Typography>
                                 <Datatable
-                                        loader={true}
-                                        columnas={columnasPagosPendientes}
-                                        datos={pagosPendientes}
-                                        paginacion
+                                    loader={true}
+                                    columnas={columnasPagosPendientes}
+                                    datos={pagosPendientes}
+                                    paginacion
                                 />
                                 </CardContent>
                             </Card>

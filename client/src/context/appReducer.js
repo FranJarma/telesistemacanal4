@@ -297,6 +297,16 @@ export default (state, action) => {
                 ...state,
                 pagos: [...state.pagos]
         }
+        case TYPES.CREAR_PAGO_ADELANTADO:
+            for(let i=0; i<=action.payload.PagoAdelantadoInfo.CantidadMesesAPagar-1; i++){
+                pago = state.pagos.find(pago => pago.PagoId === action.payload.MesesAPagar[i].PagoId);
+                pago.PagoSaldo = 0;
+                pago.PagoObservaciones = `Pago Adelantado desde: ${action.payload.MesesAPagar[0].PagoMes}/${action.payload.MesesAPagar[0].PagoAño} hasta: ${action.payload.MesesAPagar[action.payload.PagoAdelantadoInfo.CantidadMesesAPagar-1].PagoMes}/${action.payload.MesesAPagar[action.payload.PagoAdelantadoInfo.CantidadMesesAPagar-1].PagoAño}`;
+            } 
+            return {
+                ...state,
+                pagos: [...state.pagos]
+    }
         case TYPES.AGREGAR_RECARGO:
             pago = state.pagos.find(pago => pago.PagoId === action.payload.PagoId);
             pago.PagoRecargo = pago.PagoRecargo + parseInt(action.payload.PagoRecargo);
@@ -413,6 +423,16 @@ export default (state, action) => {
             return {
                 ...state,
                 cargando: false,
+            }
+        case TYPES.MOSTRAR_SPINNER_DESCARGA:
+            return {
+                ...state,
+                descargando: true
+            }
+        case TYPES.OCULTAR_SPINNER_DESCARGA:
+            return {
+                ...state,
+                descargando: false,
             }
         case TYPES.TRAER_CAJA:
             return {

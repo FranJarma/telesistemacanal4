@@ -50,6 +50,7 @@ const AppState = props => {
         movimientos: [],
         conceptos: [],
         cargando: false,
+        descargando: false,
         mensaje: '',
         cajas: [],
         facturas: [],
@@ -644,7 +645,7 @@ const AppState = props => {
 
     const descargarComprobante = async(tipo, caratula, data) => {
         try {
-            mostrarSpinner();
+            mostrarSpinnerDescarga();
             const blob = await pdf(caratula).toBlob();
             if(tipo === "Factura") saveAs(blob, data.FacturaCodigoAutorizacion)
             else if(tipo === "Recibo") saveAs(blob, `Recibo N°:${data.DetallePagoId}-CUIT:${data.Cuit}`);
@@ -653,7 +654,7 @@ const AppState = props => {
         }
     }
 
-    const crearPagoAdelantado = async(pagoAdelantadoInfo) => {
+    const crearPagoAdelantado = async(pagoAdelantadoInfo, setModalPagoAdelantado) => {
         clienteAxios.post('/api/pagos/createPagoAdelantado', pagoAdelantadoInfo)
         .then(resOk => {
             if (resOk.data)
@@ -662,9 +663,7 @@ const AppState = props => {
                     payload: pagoAdelantadoInfo
                 });
                 Swal('Operación completa', resOk.data.msg);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+                setModalPagoAdelantado(false);
         })
         .catch(err => {
             if(!err.response){
@@ -1652,6 +1651,17 @@ const AppState = props => {
             });
         },3000)
     };
+    //spinner
+    const mostrarSpinnerDescarga = () => {
+        dispatch({
+            type: TYPES.MOSTRAR_SPINNER_DESCARGA
+        });
+        setTimeout(()=>{
+            dispatch({
+                type: TYPES.OCULTAR_SPINNER_DESCARGA,
+            });
+        },3000)
+    };
     //caja
     const traerCaja = async (municipio, fecha, turno) => {
         try {
@@ -1743,6 +1753,7 @@ const AppState = props => {
             movimientos: state.movimientos,
             conceptos: state.conceptos,
             cargando: state.cargando,
+            descargando: state.descargando,
             mensaje: state.mensaje,
             cajas: state.cajas,
             facturas: state.facturas,
@@ -1767,7 +1778,7 @@ const AppState = props => {
             finalizarOrdenDeTrabajo, registrarVisitaOrdenDeTrabajo, eliminarOrdenDeTrabajo,
             traerMovimientosPorFecha, crearMovimiento,
             traerConceptos,
-            mostrarSpinner,
+            mostrarSpinner, mostrarSpinnerDescarga,
             traerCaja, cerrarCaja,
             descargarComprobante, traerFacturasPorAbonado, traerRecibosPorAbonado
         }}>{props.children}
