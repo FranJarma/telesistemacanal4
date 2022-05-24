@@ -18,7 +18,7 @@ import BotonesDatatable from '../design/components/BotonesDatatable';
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
     const { tareas, barrios, historialDomicilios, mediosPago, municipios, provincias, usuarios, ordenesDeTrabajoAsignadas, traerBarriosPorMunicipio, traerDomiciliosAbonado, traerMunicipiosPorProvincia, traerOrdenesDeTrabajoAsignadas,
-    traerProvincias, cambioDomicilioAbonado, traerTareas, traerUsuariosPorRol, traerMediosPago } = appContext;
+    traerProvincias, cambioDomicilioAbonado, traerTareas, traerUsuariosPorRol, traerMediosPago, descargando } = appContext;
     const location = useLocation();
     //Observables
     useEffect(() => {
@@ -228,6 +228,7 @@ const CambioDomicilio = () => {
             <FormHelperText>Los domicilios están ordenados por fecha más reciente</FormHelperText>
             <br/>
         </CardContent>
+        <Modal tamaño={'sm'} mensaje={'Generando comprobante...'} abrirModal={descargando}></Modal>
         <Modal
         abrirModal={ModalNuevoDomicilio}
         funcionCerrar={handleChangeModalNuevoDomicilio}

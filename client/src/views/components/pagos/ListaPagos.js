@@ -322,7 +322,7 @@ const ListaPagos = () => {
                             buscar={true}
                             paginacionPorDefecto={15}
                             />
-                            <Modal tamaño={'sm'} mensaje={'Descargando comprobante...'} abrirModal={descargando}></Modal>
+                            <Modal tamaño={'sm'} mensaje={'Generando comprobante...'} abrirModal={descargando}></Modal>
                             </CardContent>
                         </Card>
                     </TabPanel>

@@ -423,12 +423,12 @@ const AppState = props => {
             setModalNuevoDomicilio(false);
             if(domicilio.RequiereFactura){
                 descargarComprobante("Factura", <FacturaCaratula data={respuesta.data.factura}/>, respuesta.data.factura).then(()=> {
-                    Swal('Operación completa', VARIABLES.CAMBIO_DOMICILIO_ABONADO);
+                    Swal('Operación completa', VARIABLES.CAMBIO_DOMICILIO_CORRECTO);
                 })
             }
             else{
                 descargarComprobante("Recibo", <ReciboCaratula data={respuesta.data.recibo}/>, respuesta.data.recibo).then(()=> {
-                    Swal('Operación completa', VARIABLES.CAMBIO_DOMICILIO_ABONADO);
+                    Swal('Operación completa', VARIABLES.CAMBIO_DOMICILIO_CORRECTO);
                 })
             }
         } catch (error) {
@@ -455,12 +455,12 @@ const AppState = props => {
             setModalNuevoServicio(false);
             if(servicio.RequiereFactura){
                 descargarComprobante("Factura", <FacturaCaratula data={respuesta.data.factura}/>, respuesta.data.factura).then(()=> {
-                    Swal('Operación completa', VARIABLES.CAMBIO_SERVICIO_ABONADO);
+                    Swal('Operación completa', VARIABLES.CAMBIO_SERVICIO_CORRECTO);
                 })
             }
             else{
                 descargarComprobante("Recibo", <ReciboCaratula data={respuesta.data.recibo}/>, respuesta.data.recibo).then(()=> {
-                    Swal('Operación completa', VARIABLES.CAMBIO_SERVICIO_ABONADO);
+                    Swal('Operación completa', VARIABLES.CAMBIO_SERVICIO_CORRECTO);
                 })
             }
 

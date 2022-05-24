@@ -186,7 +186,7 @@ const ListaOtPendientes = () => {
         <Card>
             <CardContent>
             <CardHeader action={<Link style={{textDecoration: 'none'}} to="/caratula-ot"><Button variant="contained" startIcon={<i className="bx bx-plus"></i>} color="primary"> Nueva OT</Button></Link>}></CardHeader>
-            <Grid container spacing={3}>
+            {/* <Grid container spacing={3}>
                     <Grid item xs={3} md={3} lg={3}>
                         <DatePicker
                             inputVariant="outlined"
@@ -221,7 +221,7 @@ const ListaOtPendientes = () => {
                         variant="contained"
                         color="secondary">Buscar</Button>
                     </Grid>
-                </Grid>
+                </Grid> */}
                 <Datatable
                     loader={true}
                     datos={ordenesDeTrabajo}

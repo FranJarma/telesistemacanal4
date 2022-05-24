@@ -20,7 +20,7 @@ import convertirAHora from '../../../helpers/ConvertirAHora';
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
     const { historialServicios, mediosPago, ordenesDeTrabajoAsignadas, servicios, usuarios, cambioServicioAbonado, traerTareas, traerServicios, traerServiciosAbonado, traerOnus, traerONUPorId,
-    traerUsuariosPorRol, traerOrdenesDeTrabajoAsignadas, traerMediosPago } = appContext;
+    traerUsuariosPorRol, traerOrdenesDeTrabajoAsignadas, traerMediosPago, descargando } = appContext;
 
     const location = useLocation();
     const styles = useStyles();
@@ -185,6 +185,7 @@ const CambioServicio = () => {
             <FormHelperText>Los servicios están ordenados por fecha más reciente</FormHelperText>
             <br/>
         </CardContent>
+        <Modal tamaño={'sm'} mensaje={'Generando comprobante...'} abrirModal={descargando}></Modal>
         <Modal
         abrirModal={ModalNuevoServicio}
         funcionCerrar={handleChangeModalNuevoServicio}

@@ -180,7 +180,12 @@ exports.AbonadosGet = async(req, res) => {
     let abonados = '';
     try {
         req.params.municipioId != 0 && req.params.estadoId != 0 ?
-        abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
+        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 
+        'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
+        'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
+        ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
+        .from('_user as u')
+        .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
         .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
         .leftJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
@@ -197,7 +202,12 @@ exports.AbonadosGet = async(req, res) => {
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId == 0 && req.params.estadoId != 0 ?
-        abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
+        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 
+        'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
+        'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
+        ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
+        .from('_user as u')
+        .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
         .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
         .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
@@ -213,7 +223,12 @@ exports.AbonadosGet = async(req, res) => {
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId != 0 && req.params.estadoId == 0 ?
-        abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
+        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 
+        'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
+        'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
+        ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
+        .from('_user as u')
+        .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
         .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
         .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
@@ -228,7 +243,12 @@ exports.AbonadosGet = async(req, res) => {
             'r.RoleId': VARIABLES.ID_ROL_ABONADO,
             'm.MunicipioId': req.params.municipioId,
         })
-        : abonados = await knex.select('*').select('u.ServicioId').from('_user as u')
+        : abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 
+        'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
+        'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
+        ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
+        .from('_user as u')
+        .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
         .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
         .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')

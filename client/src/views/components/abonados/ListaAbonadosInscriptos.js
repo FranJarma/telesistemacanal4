@@ -49,7 +49,9 @@ const ListaAbonadosInscriptos = () => {
         if(!modalDarDeBaja){
             setAbonadoInfo({
                 EstadoId: 3,
-                UserId: data.UserId
+                UserId: data.UserId,
+                deletedAt: new Date(),
+                deletedBy: localStorage.getItem('identity')
             })
         }
         else {
