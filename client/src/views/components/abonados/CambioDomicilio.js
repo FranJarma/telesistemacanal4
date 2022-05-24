@@ -3,10 +3,10 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
-import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, CardHeader, Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
 import Datatable from '../design/components/Datatable';
-import { Autocomplete } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import { DatePicker, TimePicker } from '@material-ui/pickers';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import convertirAHora from '../../../helpers/ConvertirAHora';
@@ -66,6 +66,8 @@ const CambioDomicilio = () => {
         Interes: null,
         Saldo: null
     });
+    const [RequiereFactura, setRequiereFactura] = useState(false);
+
     const handleChangeMunicipioSeleccionado = (e) => {
         setMunicipio(e.target.value);
         setBarrio(null);
@@ -78,6 +80,7 @@ const CambioDomicilio = () => {
             ...DomicilioInfo,
             UserId: location.state.UserId
         });
+        setRequiereFactura(false);
     }
     const handleChangeMedioPagoSeleccionado = (e) => {
         setMedioPago(e.target.value);
@@ -90,7 +93,9 @@ const CambioDomicilio = () => {
             tareas.filter((tarea)=>tarea.TareaId === VARIABLES.ID_CAMBIO_DOMICILIO_INTERNET)[0].TareaPrecioUnitario + (tareas.filter((tarea)=>tarea.TareaId === VARIABLES.ID_CAMBIO_DOMICILIO_INTERNET)[0].TareaPrecioUnitario * e.target.value.MedioPagoInteres / 100)
         })
     }
-
+    const handleChangeRequiereFactura = () => {
+        setRequiereFactura(!RequiereFactura)
+    }
     const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(null);
     const [Tecnico, setTecnico] = useState(null);
     const [OtObservacionesResponsableEmision, setOtObservacionesResponsableEmision] = useState(null);
@@ -117,7 +122,8 @@ const CambioDomicilio = () => {
                 Tecnico,
                 OtObservacionesResponsableEmision,
                 MedioPago,
-                PagoInfo
+                PagoInfo,
+                RequiereFactura
             }, setModalNuevoDomicilio)
     }
 }
@@ -436,6 +442,12 @@ const CambioDomicilio = () => {
                                 <Typography variant="h2"><b>Total:</b> ${PagoInfo.Total}</Typography>
                             }
                         </Grid>
+                        <Grid item xs={12} md={12} sm={12} lg={12}>
+                        <FormControl>
+                            <FormControlLabel label="Requiere factura" control={<Checkbox onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
+                        </FormControl>
+                        {RequiereFactura ? <Alert severity='info'>La factura se generará en la sección "Facturas" del historial de pagos del abonado</Alert> : ""}
+                    </Grid>
                     </Grid>
                 </TabPanel>
                 </Tabs>

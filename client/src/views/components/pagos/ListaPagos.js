@@ -18,7 +18,7 @@ import Recibo from '../design/components/Recibo';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
-    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, descargando, cargando, mostrarSpinner, facturas, traerFacturasPorAbonado, recibos, traerRecibosPorAbonado } = appContext;
+    const { pagos, pagosPendientes, pagosPendientesTop, detallesPago, mediosPago, conceptos, crearPago, crearPagoAdelantado, agregarRecargo, eliminarRecargo, eliminarDetallePago, traerPagosPorAbonado, traerDetallesPago, traerMediosPago, traerConceptos, traerPagosMensualesPendientes, descargando, cargando, mostrarSpinner} = appContext;
 
     const location = useLocation();
     const [PagoAño, setPagoAño] = useState(new Date());

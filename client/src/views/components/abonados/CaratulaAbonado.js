@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
-import { Button, Card, CardContent, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
+import { Button, Card, CardContent, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
 import { DatePicker, TimePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
-import { Autocomplete } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Datatable from '../design/components/Datatable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
@@ -69,6 +69,7 @@ const CaratulaAbonado = () => {
     const [OtFechaPrevistaVisita, setOtFechaPrevistaVisita] = useState(null);
     const [Tecnico, setTecnico] = useState(null);
     const [OtObservacionesResponsableEmision, setOtObservacionesResponsableEmision] = useState(null);
+    const [RequiereFactura, setRequiereFactura] = useState(false);
 
     const onInputChangeObservacionesOt = (e) => {
         setOtObservacionesResponsableEmision(e.target.value);
@@ -96,6 +97,9 @@ const CaratulaAbonado = () => {
             ...PagoInfo,
             Total: (Servicio.ServicioInscripcion + (Servicio.ServicioInscripcion*e.target.value.MedioPagoInteres / 100)).toFixed(2)
         })
+    }
+    const handleChangeRequiereFactura = () => {
+        setRequiereFactura(!RequiereFactura)
     }
     useEffect(() => {
         traerProvincias();
@@ -167,7 +171,9 @@ const CaratulaAbonado = () => {
                 createdBy,
                 MedioPago,
                 Tecnico,
-                OtObservacionesResponsableEmision
+                OtObservacionesResponsableEmision,
+                RequiereFactura,
+                PagoInfo
             });
         }
         else {
@@ -489,6 +495,12 @@ const CaratulaAbonado = () => {
                         </Grid>
                     </>
                     :""}
+                    <Grid item xs={12} md={12} sm={12} lg={12}>
+                        <FormControl>
+                            <FormControlLabel label="Requiere factura" control={<Checkbox onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
+                        </FormControl>
+                        {RequiereFactura ? <Alert severity='info'>La factura se generará en la sección "Facturas" del historial de pagos del abonado</Alert> : ""}
+                    </Grid>
                 </Grid>
                 <br/>
             </CardContent>

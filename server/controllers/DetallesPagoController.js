@@ -10,7 +10,7 @@ exports.DetallesPagoListar = async(req,res) => {
     try {
         const detallesPagos = await knex.select('dp.DetallePagoId','dp.DetallePagoMonto','dp.createdAt', 'mc.MovimientoConceptoId',
         'mc.MovimientoConceptoNombre', 'mp.MedioPagoNombre', 'u.Nombre as NombreCarga', 'u.Apellido as ApellidoCarga',
-        'm.FacturaId', 'u1.Nombre as NombreAbonado', 'u1.Cuit', 'u1.Apellido as ApellidoAbonado', 'd.DomicilioCalle',
+        'm.FacturaId', 'm.ReciboId', 'u1.Nombre as NombreAbonado', 'u1.Cuit', 'u1.Apellido as ApellidoAbonado', 'd.DomicilioCalle',
         'd.DomicilioNumero', 'b.BarrioNombre', 'mu.MunicipioNombre', 'm.MovimientoCantidad',
         'f.FacturaNumeroComprobante', 'f.FacturaCodigoAutorizacion', 'f.FacturaTipoCodigoAutorizacion',
         'f.FacturaImporte', 'f.FacturaVersion', 'f.FacturaCuitEmisor', 'f.FacturaPuntoVenta', 'f.FacturaFechaEmision',

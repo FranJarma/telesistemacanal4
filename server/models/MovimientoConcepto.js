@@ -7,7 +7,7 @@ const MovimientoConcepto = db.define('movimientoconcepto', {
         primaryKey: true
     },
     MovimientoConceptoNombre: {
-        type: FLOAT,
+        type: STRING,
         allowNull: false
     },
     MovimientoConceptoTipo: {

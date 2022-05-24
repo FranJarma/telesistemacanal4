@@ -13,10 +13,10 @@ exports.UserGet = async (req, res) => {
         const {NombreUsuario, Contraseña} = req.body;
         const usuario = await User.findOne({
             where: {
-                NombreUsuario: NombreUsuario
+                NombreUsuario: NombreUsuario.trim()
         }});
         if(!usuario || usuario.EstadoId !== 2) return res.status(400).json({msg: 'Nombre de usuario o contraseña incorrectos'});
-        const contraseñaValida = bcrypt.compareSync(Contraseña, usuario.Contraseña);
+        const contraseñaValida = bcrypt.compareSync(Contraseña, usuario.Contraseña.trim());
         if(!contraseñaValida) return res.status(400).json({msg: 'Nombre de usuario o contraseña incorrectos'});
         //aumentar contador de inicio de sesión fallidos
         const payload = {

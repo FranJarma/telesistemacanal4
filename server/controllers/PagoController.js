@@ -9,6 +9,11 @@ const Movimiento = require('../models/Movimiento');
 const Servicio = require('../models/Servicio');
 const Factura = require('./../models/Factura');
 const Afip = require('@afipsdk/afip.js');
+const Recibo = require('../models/Recibo');
+const Domicilio = require('../models/Domicilio');
+const Barrio = require('../models/Barrio');
+const Municipio = require('../models/Municipio');
+const MovimientoConcepto = require('../models/MovimientoConcepto');
 
 const date = new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 const afip = new Afip({ CUIT: 30687336506, cert: "tls_pem.pem", key: "tls_key.key", res_folder: './', production: 'false' });
@@ -106,11 +111,6 @@ exports.PagoCreate = async(req,res) => {
                     PagoId: req.body.PagoInfo.PagoId
                 }
             })
-            const abonado = await User.findOne({
-                where: {
-                    UserId: req.body.PagoInfo.UserId
-                }
-            })
             //instanciamos un nuevo movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
@@ -123,6 +123,35 @@ exports.PagoCreate = async(req,res) => {
             movimiento.MovimientoConceptoId = req.body.PagoInfo.PagoConceptoId;
             movimiento.AbonadoId = req.body.PagoInfo.UserId;
             movimiento.MedioPagoId = req.body.MedioPagoId;
+            const abonado = await User.findOne({
+                where: {
+                    UserId: req.body.PagoInfo.UserId
+                }
+            })
+            const domicilioAbonado = await Domicilio.findOne({
+                where: {
+                    DomicilioId: abonado.DomicilioId
+                }
+            })
+            const barrioAbonado = await Barrio.findOne({
+                where: {
+                    BarrioId: domicilioAbonado.BarrioId
+                }
+            })
+            const municipioAbonado = await Municipio.findOne({
+                where: {
+                    MunicipioId: barrioAbonado.MunicipioId
+                }
+            })
+            const movimientoConceptoNombre = await MovimientoConcepto.findOne({
+                where: {
+                    MovimientoConceptoId: movimiento.MovimientoConceptoId
+                }
+            })
+            let factura = null;
+            let recibo = null;
+            let datosFactura = null;
+            let datosRecibo = null;
             //si requiere factura, instanciamos un nuevo objeto Factura
             if(req.body.RequiereFactura){
                 let ultimaFacturaId = 0;
@@ -148,7 +177,7 @@ exports.PagoCreate = async(req,res) => {
                     'MonCotiz' 		: 1, // Cotización de la moneda usada (1 para pesos argentinos)  
                 }
                 const nuevoComprobante = await afip.ElectronicBilling.createNextVoucher(data, true);
-                const factura = new Factura({transaction: t});
+                factura = new Factura({transaction: t});
                 factura.FacturaId = ultimaFacturaId + 1;
                 factura.FacturaNumeroComprobante = nuevoComprobante.voucherNumber;
                 factura.FacturaCodigoAutorizacion = nuevoComprobante.CAE;
@@ -170,7 +199,41 @@ exports.PagoCreate = async(req,res) => {
                 factura.createdAt = new Date();
                 factura.createdBy = req.body.PagoInfo.createdBy;
                 movimiento.FacturaId = factura.FacturaId;
+                datosFactura = {FacturaId: factura.FacturaId, FacturaNumeroComprobante: factura.FacturaNumeroComprobante,
+                    FacturaCodigoAutorizacion: factura.FacturaCodigoAutorizacion, FacturaFechaVencimientoCodigoAutorizacion: factura.FacturaFechaVencimientoCodigoAutorizacion,
+                    FacturaTipoCodigoAutorizacion: factura.FacturaTipoCodigoAutorizacion, FacturaImporte: factura.FacturaImporte,
+                    FacturaVersion: factura.FacturaVersion, FacturaCuitEmisor: factura.FacturaCuitEmisor, FacturaPuntoVenta: factura.FacturaPuntoVenta,
+                    FacturaFechaEmision: factura.FacturaFechaEmision, FacturaTipoComprobante: factura.FacturaTipoComprobante,
+                    FacturaMoneda: factura.FacturaMoneda, FacturaCotizacion: factura.FacturaCotizacion, FacturaTipoDocReceptor: factura.FacturaTipoDocReceptor,
+                    FacturaNroDocReceptor: factura.FacturaNroDocReceptor, FacturaAño: factura.FacturaAño, FacturaMes: factura.FacturaMes,
+                    AbonadoId: factura.AbonadoId, createdAt: factura.createdAt, createdBy: factura.createdBy,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre,
+                    DomicilioCalle: domicilioAbonado.DomicilioCalle, DomicilioNumero: domicilioAbonado.DomicilioNumero,
+                    BarrioNombre: barrioAbonado.BarrioNombre, MunicipioNombre: municipioAbonado.MunicipioNombre,
+                    MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
+                }
                 await factura.save({transaction: t});
+            }
+            else {
+                let ultimoReciboId = 0;
+                //Buscamos el ultimo Recibo
+                const ultimoRecibo = await Recibo.findOne({
+                    order: [['ReciboId', 'DESC']]
+                });
+                if (ultimoRecibo) ultimoReciboId = ultimoRecibo.ReciboId;
+                recibo = new Recibo({transaction: t});
+                recibo.ReciboId = ultimoReciboId + 1;
+                recibo.ReciboImporte = req.body.PagoInfo.DetallePagoMonto;
+                recibo.createdAt = new Date();
+                recibo.createdBy = req.body.PagoInfo.createdBy;
+                await recibo.save({transaction: t});
+                movimiento.ReciboId = recibo.ReciboId;
+                datosRecibo = {ReciboId: recibo.ReciboId, createdAt: recibo.createdAt,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
+                    DomicilioCalle: domicilioAbonado.DomicilioCalle, DomicilioNumero: domicilioAbonado.DomicilioNumero,
+                    BarrioNombre: barrioAbonado.BarrioNombre, MunicipioNombre: municipioAbonado.MunicipioNombre,
+                    MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
+                }
             }
             //si encuentra el pago, NO se lo registra de nuevo, sino que solo se registra un nuevo detalle de pago y se actualiza el saldo
             if(pagoBuscar) {
@@ -195,7 +258,7 @@ exports.PagoCreate = async(req,res) => {
             //si no encuentra el pago
                 res.status(400).json({msg: 'No se encontró el pago correspondiente'});
             }
-            return res.status(200).json({msg: 'El Pago ha sido registrado correctamente'})
+            return res.status(200).json({msg: 'El Pago ha sido registrado correctamente', factura: datosFactura, recibo: datosRecibo})
         })
         }   
     catch (error) {
@@ -214,6 +277,11 @@ exports.PagoAdelantadoCreate = async(req,res) => {
     try {
         await db.transaction(async(t)=>{
             const servicio = await Servicio.findByPk(req.body.PagoAdelantadoInfo.ServicioId, {transaction: t});
+            const abonado = await User.findByPk(req.body.PagoAdelantadoInfo.UserId, {transaction: t});
+            const domicilio = await Domicilio.findByPk(abonado.DomicilioId, {transaction: t});
+            const barrio = await Barrio.findByPk(domicilio.BarrioId, {transaction: t});
+            const municipio = await User.findByPk(barrio.MunicipioId, {transaction: t});
+
             let totalSinDescuento = req.body.MesesAPagar.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0);
             let total = totalSinDescuento;
             if(req.body.PagoAdelantadoInfo.CantidadMesesAPagar === 6){
@@ -252,11 +320,12 @@ exports.PagoAdelantadoCreate = async(req,res) => {
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
             movimiento.MovimientoConceptoId = 8; //Pago Adelantado
-            movimiento.AbonadoId = req.body.PagoAdelantadoInfo.UserId;
+            movimiento.AbonadoId = abonado.UserId;
             movimiento.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
             for(let i=0; i<=mesesAPagar; i++){
                 const pago = await Pago.findByPk(req.body.MesesAPagar[i].PagoId, {transaction: t});
                 pago.PagoSaldo = 0;
+                pago.PagoConceptoId = 8;
                 pago.PagoObservaciones = pagoAdelantadoObservaciones;
                 pago.updatedAt = new Date();
                 pago.updatedBy = req.body.PagoAdelantadoInfo.updatedBy;
@@ -272,8 +341,98 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 ultimoDetallePagoId++;
                 await detallePago.save({transaction: t});
             }
+            let factura = null;
+            let datosFactura = null;
+            let recibo = null;
+            const movimientoConceptoNombre = await MovimientoConcepto.findOne({
+                where: {
+                    MovimientoConceptoId: movimiento.MovimientoConceptoId
+                }
+            })
+            if(req.body.RequiereFactura){
+                let ultimaFacturaId = 0;
+                //Buscamos la ultima Factura
+                const ultimaFactura = await Factura.findOne({
+                    order: [['FacturaId', 'DESC']]
+                });
+                if (ultimaFactura) ultimaFacturaId = ultimaFactura.FacturaId;
+                const data  = {
+                    'CantReg' 		: 1, // Cantidad de comprobantes a registrar
+                    'PtoVta' 		: 3, // Punto de venta
+                    'CbteTipo' 		: 6, // Tipo de comprobante (ver tipos disponibles). (6)Factura B
+                    'Concepto' 		: 2, // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
+                    'DocTipo' 		: 80, // Tipo de documento del comprador (ver tipos disponibles). (80)CUIT
+                    'DocNro' 		: 20405245125, // Numero de documento del comprador
+                    'CbteFch' 		: parseInt(date.replace(/-/g, '')), // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
+                    'FchServDesde'  : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de inicio del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+                    'FchServHasta'  : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de fin del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+                    'FchVtoPago'    : parseInt(date.replace(/-/g, '')), // (Opcional) Fecha de vencimiento del servicio (yyyymmdd), obligatorio para Concepto 2 y 3
+                    'ImpTotal' 		: total, // Importe total del comprobante
+                    'ImpTotConc' 	: total, // Importe neto no gravado
+                    'MonId' 		: 'PES', //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos) 
+                    'MonCotiz' 		: 1, // Cotización de la moneda usada (1 para pesos argentinos)  
+                }
+                const nuevoComprobante = await afip.ElectronicBilling.createNextVoucher(data, true);
+                factura = new Factura({transaction: t});
+                factura.FacturaId = ultimaFacturaId + 1;
+                factura.FacturaNumeroComprobante = nuevoComprobante.voucherNumber;
+                factura.FacturaCodigoAutorizacion = nuevoComprobante.CAE;
+                factura.FacturaFechaVencimientoCodigoAutorizacion = nuevoComprobante.CAEFchVto;
+                factura.FacturaTipoCodigoAutorizacion = "E";
+                factura.FacturaImporte = req.body.PagoInfo.Total;
+                factura.FacturaVersion = 1;
+                factura.FacturaCuitEmisor = afip.CUIT;
+                factura.FacturaPuntoVenta = 1;
+                factura.FacturaFechaEmision = date;
+                factura.FacturaTipoComprobante = 6;
+                factura.FacturaMoneda = "PES";
+                factura.FacturaCotizacion = 1;
+                factura.FacturaTipoDocReceptor = 80;
+                factura.FacturaNroDocReceptor = 20405245125;
+                factura.FacturaAño = new Date().getFullYear();
+                factura.FacturaMes = new Date().getMonth() + 1;
+                factura.AbonadoId = abonado.UserId;
+                factura.createdAt = new Date();
+                factura.createdBy = req.body.createdBy;
+                movimiento.FacturaId = factura.FacturaId;
+                await factura.save({transaction: t});
+                datosFactura = {FacturaId: factura.FacturaId, FacturaNumeroComprobante: factura.FacturaNumeroComprobante,
+                    FacturaCodigoAutorizacion: factura.FacturaCodigoAutorizacion, FacturaFechaVencimientoCodigoAutorizacion: factura.FacturaFechaVencimientoCodigoAutorizacion,
+                    FacturaTipoCodigoAutorizacion: factura.FacturaTipoCodigoAutorizacion, FacturaImporte: factura.FacturaImporte,
+                    FacturaVersion: factura.FacturaVersion, FacturaCuitEmisor: factura.FacturaCuitEmisor, FacturaPuntoVenta: factura.FacturaPuntoVenta,
+                    FacturaFechaEmision: factura.FacturaFechaEmision, FacturaTipoComprobante: factura.FacturaTipoComprobante,
+                    FacturaMoneda: factura.FacturaMoneda, FacturaCotizacion: factura.FacturaCotizacion, FacturaTipoDocReceptor: factura.FacturaTipoDocReceptor,
+                    FacturaNroDocReceptor: factura.FacturaNroDocReceptor, FacturaAño: factura.FacturaAño, FacturaMes: factura.FacturaMes,
+                    AbonadoId: factura.AbonadoId, createdAt: factura.createdAt, createdBy: factura.createdBy,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre,
+                    DomicilioCalle: domicilio.DomicilioCalle, DomicilioNumero: domicilio.DomicilioNumero,
+                    BarrioNombre: barrio.BarrioNombre, MunicipioNombre: municipio.MunicipioNombre,
+                    MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
+                }
+            }
+            else {
+                let ultimoReciboId = 0;
+                //Buscamos el ultimo Recibo
+                const ultimoRecibo = await Recibo.findOne({
+                    order: [['ReciboId', 'DESC']]
+                });
+                if (ultimoRecibo) ultimoReciboId = ultimoRecibo.ReciboId;
+                recibo = new Recibo({transaction: t});
+                recibo.ReciboId = ultimoReciboId + 1;
+                recibo.ReciboImporte = req.body.PagoInfo.DetallePagoMonto;
+                recibo.createdAt = new Date();
+                recibo.createdBy = req.body.PagoInfo.createdBy;
+                await recibo.save({transaction: t});
+                movimiento.ReciboId = recibo.ReciboId;
+                datosRecibo = {ReciboId: recibo.ReciboId, createdAt: recibo.createdAt,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
+                    DomicilioCalle: domicilioAbonado.DomicilioCalle, DomicilioNumero: domicilioAbonado.DomicilioNumero,
+                    BarrioNombre: barrioAbonado.BarrioNombre, MunicipioNombre: municipioAbonado.MunicipioNombre,
+                    MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
+                }
+            }
             await movimiento.save({transaction: t});
-            return res.status(200).json({msg: 'El Pago Adelantado ha sido registrado correctamente'})
+            return res.status(200).json({msg: 'El Pago Adelantado ha sido registrado correctamente', factura: factura, recibo: recibo})
         })
         }   
     catch (error) {

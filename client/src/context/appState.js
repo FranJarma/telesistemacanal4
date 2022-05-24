@@ -10,6 +10,8 @@ import tokenAuthHeaders from '../config/token';
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import * as VARIABLES from './../types/variables';
+import FacturaCaratula from '../views/components/design/components/FacturaCaratula';
+import ReciboCaratula from '../views/components/design/components/ReciboCaratula';
 
 const AppState = props => {
     const initialState = {
@@ -97,7 +99,6 @@ const AppState = props => {
             }
             else if(error.response.data.msg){
                 Toast(error.response.data.msg, 'warning');
-                history.push('/');
             }
             else if(error.response.data.errors){
                 Toast(error.response.data.errors[0].msg, 'warning');
@@ -332,28 +333,37 @@ const AppState = props => {
 
     //ABONADOS
     const crearAbonado = async (abonado) => {
-        clienteAxios.post('/api/usuarios/abonados/create', abonado)
-        .then(resOk => {
-            if (resOk.data)
-                dispatch({
-                    type: TYPES.CREAR_ABONADO,
-                    payload: abonado
-                });
-                Swal('Operación completa', resOk.data.msg);
-                history.push('/abonados-inscriptos');
-        })
-        .catch(err => {
-            if(!err.response){
+        try {
+            const respuesta = await clienteAxios.post('/api/usuarios/abonados/create', abonado);
+            dispatch({
+                type: TYPES.CREAR_ABONADO,
+                payload: respuesta.data
+            })
+            if(abonado.RequiereFactura){
+                descargarComprobante("Factura", <FacturaCaratula data={respuesta.data.factura}/>, respuesta.data.factura).then(()=> {
+                    Swal('Operación completa', VARIABLES.ABONADO_CREADO_CORRECTAMENTE);
+                })
+            }
+            else{
+                descargarComprobante("Recibo", <ReciboCaratula data={respuesta.data.recibo}/>, respuesta.data.recibo).then(()=> {
+                    Swal('Operación completa', VARIABLES.ABONADO_CREADO_CORRECTAMENTE);
+                })
+            }
+            history.push('/abonados-inscriptos');
+
+        } catch (error) {
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
+            if(!error.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
-            else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'warning');
+            else if(error.response.data.msg){
+                Toast(error.response.data.msg, 'warning');
 
             }
-            else if(err.response.data.errors){
-                Toast(err.response.data.errors[0].msg, 'warning');
+            else if(error.response.data.errors){
+                Toast(error.response.data.errors[0].msg, 'warning');
             }
-        })
+        }
     }
     const modificarAbonado = async (abonado) => {
         clienteAxios.put(`/api/usuarios/abonados/update/${abonado.UserId}`, abonado)
@@ -404,52 +414,69 @@ const AppState = props => {
         })
     }
     const cambioDomicilioAbonado = async(domicilio, setModalNuevoDomicilio) => {
-        clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${domicilio.UserId}`, domicilio)
-        .then(resOk => {
-            if (resOk.data)
-                dispatch({
-                    type: TYPES.CAMBIO_DOMICILIO_ABONADO,
-                    payload: domicilio
+        try {
+            const respuesta = await clienteAxios.put(`/api/usuarios/abonados/cambio-domicilio/${domicilio.UserId}`, domicilio);
+            dispatch({
+                type: TYPES.CAMBIO_DOMICILIO_ABONADO,
+                payload: domicilio
+            })
+            setModalNuevoDomicilio(false);
+            if(domicilio.RequiereFactura){
+                descargarComprobante("Factura", <FacturaCaratula data={respuesta.data.factura}/>, respuesta.data.factura).then(()=> {
+                    Swal('Operación completa', VARIABLES.CAMBIO_DOMICILIO_ABONADO);
                 })
-                Swal('Operación completa', resOk.data.msg);
-                setModalNuevoDomicilio(false);
-        })
-        .catch(err => {
-            if(!err.response){
+            }
+            else{
+                descargarComprobante("Recibo", <ReciboCaratula data={respuesta.data.recibo}/>, respuesta.data.recibo).then(()=> {
+                    Swal('Operación completa', VARIABLES.CAMBIO_DOMICILIO_ABONADO);
+                })
+            }
+        } catch (error) {
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
+            if(!error.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
-            else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'warning');
+            else if(error.response.data.msg){
+                Toast(error.response.data.msg, 'warning');
 
             }
-            else if(err.response.data.errors){
-                Toast(err.response.data.errors[0].msg, 'warning');
+            else if(error.response.data.errors){
+                Toast(error.response.data.errors[0].msg, 'warning');
             }
-        })
+        }
     }
     const cambioServicioAbonado = async(servicio, setModalNuevoServicio) => {
-        clienteAxios.put(`/api/usuarios/abonados/cambio-servicio/${servicio.UserId}`, servicio)
-        .then(resOk => {
-            if (resOk.data)
-                dispatch({
-                    type: TYPES.CAMBIO_SERVICIO_ABONADO,
-                    payload: servicio
+        try {
+            const respuesta = await clienteAxios.put(`/api/usuarios/abonados/cambio-servicio/${servicio.UserId}`, servicio);
+            dispatch({
+                type: TYPES.CAMBIO_SERVICIO_ABONADO,
+                payload: servicio
+            })
+            setModalNuevoServicio(false);
+            if(servicio.RequiereFactura){
+                descargarComprobante("Factura", <FacturaCaratula data={respuesta.data.factura}/>, respuesta.data.factura).then(()=> {
+                    Swal('Operación completa', VARIABLES.CAMBIO_SERVICIO_ABONADO);
                 })
-                Swal('Operación completa', resOk.data.msg);
-                setModalNuevoServicio(false);
-        })
-        .catch(err => {
-            if(!err.response){
+            }
+            else{
+                descargarComprobante("Recibo", <ReciboCaratula data={respuesta.data.recibo}/>, respuesta.data.recibo).then(()=> {
+                    Swal('Operación completa', VARIABLES.CAMBIO_SERVICIO_ABONADO);
+                })
+            }
+
+        } catch (error) {
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
+            if(!error.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
-            else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'warning');
+            else if(error.response.data.msg){
+                Toast(error.response.data.msg, 'warning');
 
             }
-            else if(err.response.data.errors){
-                Toast(err.response.data.errors[0].msg, 'warning');
+            else if(error.response.data.errors){
+                Toast(error.response.data.errors[0].msg, 'warning');
             }
-        })
+        }
     }
     const cambioTitularidadAbonado = async(abonado) => {
         clienteAxios.put(`/api/usuarios/abonados/cambio-titularidad/${abonado.UserIdViejo}`, abonado)
@@ -618,29 +645,36 @@ const AppState = props => {
     }
     //PAGOS
     const crearPago = async(pago, setModalCrearPago) => {
-        clienteAxios.post('/api/pagos/create', pago)
-        .then(resOk => {
-            if (resOk.data)
-                dispatch({
-                    type: TYPES.CREAR_PAGO,
-                    payload: pago
-                });
-                Swal('Operación completa', resOk.data.msg);
-                setModalCrearPago(false);
-        })
-        .catch(err => {
-            if(!err.response){
-                console.log(err);
+        try {
+            const respuesta = await clienteAxios.post('/api/pagos/create', pago);
+            dispatch({
+                type: TYPES.CREAR_PAGO,
+                payload: pago
+            })
+            setModalCrearPago(false);
+            if(pago.RequiereFactura){
+                descargarComprobante("Factura", <FacturaCaratula data={respuesta.data.factura}/>, respuesta.data.factura).then(()=> {
+                    Swal('Operación completa', VARIABLES.PAGO_CREADO_CORRECTAMENTE);
+                })
+            }
+            else{
+                descargarComprobante("Recibo", <ReciboCaratula data={respuesta.data.recibo}/>, respuesta.data.recibo).then(()=> {
+                    Swal('Operación completa', VARIABLES.PAGO_CREADO_CORRECTAMENTE);
+                })
+            }
+        } catch (error) {
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
+            if(!error.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
-            else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'warning');
+            else if(error.response.data.msg){
+                Toast(error.response.data.msg, 'warning');
 
             }
-            else if(err.response.data.errors){
-                Toast(err.response.data.errors[0].msg, 'warning');
+            else if(error.response.data.errors){
+                Toast(error.response.data.errors[0].msg, 'warning');
             }
-        })
+        }
     }
 
     const descargarComprobante = async(tipo, caratula, data) => {
@@ -648,7 +682,7 @@ const AppState = props => {
             mostrarSpinnerDescarga();
             const blob = await pdf(caratula).toBlob();
             if(tipo === "Factura") saveAs(blob, data.FacturaCodigoAutorizacion)
-            else if(tipo === "Recibo") saveAs(blob, `Recibo N°:${data.DetallePagoId}-CUIT:${data.Cuit}`);
+            else if(tipo === "Recibo") saveAs(blob, `Recibo N°:${data.ReciboId}-CUIT:${data.Cuit}`);
         } catch (error) {
             if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
         }

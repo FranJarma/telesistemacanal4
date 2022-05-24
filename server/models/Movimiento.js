@@ -42,6 +42,10 @@ const Movimiento = db.define('movimiento', {
         type: INTEGER,
         allowNull: true
     },
+    ReciboId: {
+        type: INTEGER,
+        allowNull: true
+    },
     createdAt: {
         type: DATE,
         allowNull: true,
