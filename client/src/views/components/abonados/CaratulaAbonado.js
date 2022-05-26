@@ -3,7 +3,7 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import { Button, Card, CardContent, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@material-ui/core'; 
-import { DatePicker, TimePicker } from '@material-ui/pickers';
+import { DatePicker, KeyboardDatePicker, TimePicker } from '@material-ui/pickers';
 import { useLocation } from 'react-router-dom';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -60,7 +60,7 @@ const CaratulaAbonado = () => {
     const [Servicio, setServicio] = useState(null);
     const [CondicionIvaId, setCondicionIvaId] = useState(null);
     const [MedioPago, setMedioPago] = useState(null);
-    const [FechaNacimiento, setFechaNacimiento] = useState(new Date());
+    const [FechaNacimiento, setFechaNacimiento] = useState(null);
     const [FechaContrato, setFechaContrato] = useState(new Date());
     const [PagoInfo, setPagoInfo] = useState({
         Total: null,
@@ -317,17 +317,16 @@ const CaratulaAbonado = () => {
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={6} lg={6} xl={6}>
-                            <DatePicker 
+                            <KeyboardDatePicker
                             inputVariant="outlined"
                             value={FechaNacimiento}
-                            onChange={(fecha)=>setFechaNacimiento(fecha)}
-                            disableFuture
                             format="dd/MM/yyyy"
+                            invalidDateMessage="Ingrese una fecha válida"
+                            onChange={(fecha)=>setFechaNacimiento(fecha)}
                             fullWidth
+                            disableFuture
                             label="Fecha de nacimiento"
-                            openTo="year"
-                            views={["year", "month", "date"]}>
-                            </DatePicker >
+                            />
                         </Grid>
                         <Grid item xs={12} md={6} lg={6} xl={6}>
                             <TextField

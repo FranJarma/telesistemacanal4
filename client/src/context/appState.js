@@ -128,6 +128,7 @@ const AppState = props => {
                 history.push('/users');
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -152,6 +153,7 @@ const AppState = props => {
                 if (!desdePerfilUser) history.push('/users');
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -175,6 +177,7 @@ const AppState = props => {
                 Swal('Operación completa', resOk.data.msg);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -199,6 +202,7 @@ const AppState = props => {
                 history.push('/users');
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -223,6 +227,7 @@ const AppState = props => {
                 history.push('/roles');
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -246,6 +251,7 @@ const AppState = props => {
                 Swal('Operación completa', resOk.data.msg);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -377,6 +383,7 @@ const AppState = props => {
                 history.goBack();
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -400,7 +407,7 @@ const AppState = props => {
                 Swal('Operación completa', resOk.data.msg);
         })
         .catch(err => {
-            console.log(err.response.data.msg);
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -490,6 +497,7 @@ const AppState = props => {
                 history.push('/abonados-activos');
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -631,6 +639,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -700,6 +709,7 @@ const AppState = props => {
                 setModalPagoAdelantado(false);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 console.log(err);
                 Toast('Error de conexión con el servidor', 'error');
@@ -725,6 +735,7 @@ const AppState = props => {
                 setModalRecargo(false);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 console.log(err);
                 Toast('Error de conexión con el servidor', 'error');
@@ -749,6 +760,7 @@ const AppState = props => {
                 Swal('Operación completa', resOk.data.msg);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 console.log(err);
                 Toast('Error de conexión con el servidor', 'error');
@@ -787,7 +799,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
-            console.log(err);
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -812,6 +824,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -836,6 +849,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -887,7 +901,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
-            console.log(err);
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -915,6 +929,7 @@ const AppState = props => {
                 }, 1000);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -939,6 +954,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1014,6 +1030,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1038,6 +1055,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1062,6 +1080,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1114,6 +1133,7 @@ const AppState = props => {
                 }, 1000);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1138,6 +1158,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1162,6 +1183,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1199,6 +1221,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1223,6 +1246,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1247,6 +1271,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1284,6 +1309,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1308,6 +1334,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1332,6 +1359,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1369,6 +1397,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1393,6 +1422,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1417,6 +1447,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1489,6 +1520,7 @@ const AppState = props => {
                 history.push('/ot-pendientes');
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1510,10 +1542,10 @@ const AppState = props => {
                     type: TYPES.REGISTRAR_VISITA_OT
                 });
                 Swal('Operación completa', resOk.data.msg);
-                // cerrarModal(true);
-                // window.location.reload();
+                cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1539,6 +1571,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1563,6 +1596,7 @@ const AppState = props => {
                 history.push('/ot-pendientes')
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1586,6 +1620,7 @@ const AppState = props => {
                 Swal('Operación completa', resOk.data.msg);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
@@ -1611,6 +1646,7 @@ const AppState = props => {
                 window.location.reload();
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 console.log(err);
                 Toast('Error de conexión con el servidor', 'error');
@@ -1734,6 +1770,7 @@ const AppState = props => {
                 cerrarModal(true);
         })
         .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
             if(!err.response){
                 console.log(err);
                 Toast('Error de conexión con el servidor', 'error');

@@ -21,6 +21,7 @@ const Municipio = require('../models/Municipio');
 const Ot = require('../models/Ot');
 const OtTecnico = require('../models/OtTecnico');
 const OtTarea = require('../models/OtTarea');
+const Onu = require('../models/Onu');
 const { Op } = require('sequelize');
 const VARIABLES = require('./../config/variables');
 
@@ -180,7 +181,7 @@ exports.AbonadosGet = async(req, res) => {
     let abonados = '';
     try {
         req.params.municipioId != 0 && req.params.estadoId != 0 ?
-        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 
+        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 'u.UserId', 
         'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
         'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
         ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
@@ -202,12 +203,12 @@ exports.AbonadosGet = async(req, res) => {
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId == 0 && req.params.estadoId != 0 ?
-        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 
+        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 'u.UserId', 
         'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
         'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
         ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
         .from('_user as u')
-        .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
+        .leftJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
         .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
         .innerJoin('servicio as s', 'u.ServicioId', '=', 's.ServicioId')
@@ -223,7 +224,7 @@ exports.AbonadosGet = async(req, res) => {
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId != 0 && req.params.estadoId == 0 ?
-        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 
+        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 'u.UserId', 
         'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
         'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
         ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
@@ -243,7 +244,7 @@ exports.AbonadosGet = async(req, res) => {
             'r.RoleId': VARIABLES.ID_ROL_ABONADO,
             'm.MunicipioId': req.params.municipioId,
         })
-        : abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 
+        : abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 'u.UserId', 
         'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
         'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
         ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
@@ -651,6 +652,18 @@ exports.AbonadoCambiarEstado = async(req, res) => {
             //buscamos el abonado por su Id
             const abonado = await User.findByPk( req.body.UserId, {transaction: t});
             const abonadoEstado = new UserEstado( req.body, {transaction: t});
+            console.log(req.body);
+            //Si el abonado tiene ONU asignada y lo damos de baja, desasignamos su ONU
+            if(abonado.OnuId && req.body.EstadoId === 3){
+                const onu = await Onu.findOne({
+                    where: {
+                        OnuId: abonado.OnuId
+                    }
+                }, { transaction: t});
+                abonado.OnuId = null;
+                onu.EstadoId = 5;
+                await onu.save({transaction: t});
+            }
             await abonado.update(req.body, {transaction: t});
             await abonadoEstado.save({transaction: t});
             if(req.body.EstadoId === 1) {
@@ -665,6 +678,7 @@ exports.AbonadoCambiarEstado = async(req, res) => {
         })
         }   
     catch (error) {
+        console.log(error);
         res.status(400).json({msg: 'Hubo un error al dar de baja el abonado'});
     }
 }

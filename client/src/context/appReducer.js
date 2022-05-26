@@ -2,6 +2,7 @@ import * as TYPES from '../types';
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
     let pago = null;
+    let ot = null;
     switch (action.type) {
         case TYPES.LOGIN_EXITOSO:
             localStorage.setItem('token',action.payload.token);
@@ -370,9 +371,15 @@ export default (state, action) => {
             }
         }
         case TYPES.REGISTRAR_VISITA_OT:
+            ot = state.ordenesDeTrabajo.find(ot => ot.OtId === action.payload.OtId);
+            if(ot.OtPrimeraVisita === null) ot.OtPrimeraVisita = action.payload.FechaVisita.toISOString();
+            else if(ot.OtPrimeraVisita !== null && ot.OtSegundaVisita === null) ot.OtSegundaVisita = action.payload.FechaVisita.toISOString();
+            else if(ot.OtPrimeraVisita !== null && ot.OtSegundaVisita !== null && ot.OtTerceraVisita === null) ot.OtTerceraVisita = action.payload.FechaVisita.toISOString();
+            else if(ot.OtPrimeraVisita !== null && ot.OtSegundaVisita !== null && ot.OtTerceraVisita !== null && ot.OtCuartaVisita === null) ot.OtCuartaVisita = action.payload.FechaVisita.toISOString();
+
             return {
                 ...state,
-                ordenesDeTrabajo: state.ordenesDeTrabajo.map(ordenDeTrabajo => ordenDeTrabajo.OtId === action.payload.OtId ? action.payload : ordenDeTrabajo),
+                ordenesDeTrabajo: [...state.ordenesDeTrabajo]
         } 
         case TYPES.FINALIZAR_OT: {
             return {

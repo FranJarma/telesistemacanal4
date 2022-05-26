@@ -194,6 +194,14 @@ exports.OtRegistrarVisita = async (req, res) => {
         await db.transaction(async (t)=> {
             const { OtId, FechaVisita } = req.body;
             const ot = await Ot.findByPk(OtId, {transaction: t});
+            const dateFechaVisita = new Date(FechaVisita);
+            const dateOtPrimeraVisita = new Date(ot.OtPrimeraVisita);
+            const dateOtSegundaVisita = new Date(ot.OtSegundaVisita);
+            const dateOtTerceraVisita = new Date(ot.OtTerceraVisita);
+            const dateOtCuartaVisita = new Date(ot.OtCuartaVisita);
+
+            if(dateFechaVisita < dateOtPrimeraVisita || dateFechaVisita < dateOtSegundaVisita || dateFechaVisita < dateOtTerceraVisita || dateFechaVisita < dateOtCuartaVisita) return res.status(400).json({msg: 'La fecha de visita no puede ser menor que la última visita registrada'});
+            
             if(ot.OtPrimeraVisita === null){
                 ot.OtPrimeraVisita = FechaVisita;
                 await ot.save({transaction: t});

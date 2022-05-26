@@ -7,13 +7,14 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Link } from 'react-router-dom';
 import CaratulaImpresionOt from './CaratulaImpresionOt';
-import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
+import { DatePicker, DateTimePicker } from "@material-ui/pickers";
 
 import { Alert, Autocomplete } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import DesdeHasta from '../../../helpers/DesdeHasta';
+import convertirAHora from '../../../helpers/ConvertirAHora';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
@@ -59,10 +60,10 @@ const ListaOtPendientes = () => {
     const handleChangeModalRegistrarVisitaOt = (data = '') => {
         if(!ModalRegistrarVisitaOt) {
             setOtInfo({...data, 
-            OtPrimeraVisita: data.OtPrimeraVisita ? data.OtPrimeraVisita.split('T')[0].split('-').reverse().join('/') : "",
-            OtSegundaVisita: data.OtSegundaVisita ? data.OtSegundaVisita.split('T')[0].split('-').reverse().join('/') : "",
-            OtTerceraVisita: data.OtTerceraVisita ? data.OtTerceraVisita.split('T')[0].split('-').reverse().join('/') : "",
-            OtCuartaVisita: data.OtCuartaVisita ? data.OtCuartaVisita.split('T')[0].split('-').reverse().join('/') : ""
+            OtPrimeraVisita: data.OtPrimeraVisita,
+            OtSegundaVisita: data.OtSegundaVisita,
+            OtTerceraVisita: data.OtTerceraVisita,
+            OtCuartaVisita: data.OtCuartaVisita
         });
             setModalRegistrarVisitaOt(true);
         }
@@ -256,22 +257,24 @@ const ListaOtPendientes = () => {
                 ></DatePicker>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12} xl={12}>
-                    <DatePicker
+                    <DateTimePicker
+                    disableToolbar
+                    ampm={false}
                     inputVariant="outlined"
                     value={FechaVisita}
                     onChange={(fecha)=>setFechaVisita(fecha)}
-                    format="dd/MM/yyyy"
+                    format="dd/MM/yyyy - HH:mm"
                     fullWidth
                     label="Fecha de Visita"
-                    ></DatePicker>
+                    ></DateTimePicker>
                 </Grid>
             </Grid>
             <Typography variant="h2">Visitas realizadas por el técnico:</Typography>
             <List>
-                <ListItem>{OtInfo.OtPrimeraVisita ? convertirAFecha(OtInfo.OtPrimeraVisita) : "-"}</ListItem>
-                <ListItem>{OtInfo.OtSegundaVisita ? convertirAFecha(OtInfo.OtSegundaVisita) : "-"}</ListItem>
-                <ListItem>{OtInfo.OtTerceraVisita ? convertirAFecha(OtInfo.OtTerceraVisita) : "-"}</ListItem>
-                <ListItem>{OtInfo.OtCuartaVisita ? convertirAFecha(OtInfo.OtCuartaVisita) : "-"}</ListItem>
+                <ListItem>{OtInfo.OtPrimeraVisita ? convertirAFecha(OtInfo.OtPrimeraVisita) +"-"+ convertirAHora(OtInfo.OtPrimeraVisita) : "-"}</ListItem>
+                <ListItem>{OtInfo.OtSegundaVisita ? convertirAFecha(OtInfo.OtSegundaVisita) +"-"+ convertirAHora(OtInfo.OtSegundaVisita) : "-"}</ListItem>
+                <ListItem>{OtInfo.OtTerceraVisita ? convertirAFecha(OtInfo.OtTerceraVisita) +"-"+ convertirAHora(OtInfo.OtTerceraVisita) : "-"}</ListItem>
+                <ListItem>{OtInfo.OtCuartaVisita ? convertirAFecha(OtInfo.OtCuartaVisita) +"-"+ convertirAHora(OtInfo.OtCuartaVisita) : "-"}</ListItem>
             </List>
             {OtInfo.OtTerceraVisita ? <Alert severity="info">La OT ya tiene 3 visitas realizadas por el técnico, se tiene que cobrar un monto adicional que se actualizará al monto de la OT</Alert> : ""}
             </>}
@@ -290,28 +293,28 @@ const ListaOtPendientes = () => {
                     {OtInfo.OtEsPrimeraBajada && tareasOrdenDeTrabajo.length > 0 && tareasOrdenDeTrabajo.find((tareasOt => tareasOt.TareaId === 1 || tareasOt.TareaId === 5 )) ?
                     <><Alert severity='info'>Al finalizar esta órden de trabajo el abonado: <b>{OtInfo.ApellidoAbonado}, {OtInfo.NombreAbonado}</b> pasará a estar <b>Activo</b></Alert><br/></>
                     : ""}
-                        <KeyboardDateTimePicker
+                        <DateTimePicker
                         disableToolbar
+                        ampm={false}
                         inputVariant="outlined"
                         value={OtFechaInicio}
-                        format="dd/MM/yyyy HH:mm"
-                        invalidDateMessage="Seleccione una fecha y hora válido"
                         onChange={(fecha)=>setOtFechaInicio(fecha)}
+                        format="dd/MM/yyyy - HH:mm"
                         fullWidth
                         label="Fecha y hora de inicio"
-                        />
+                        ></DateTimePicker>
                     </Grid>
                     <Grid item xs={12} md={12} lg={12} xl={12}>
-                        <KeyboardDateTimePicker
+                        <DateTimePicker
                         disableToolbar
+                        ampm={false}
                         inputVariant="outlined"
                         value={OtFechaFinalizacion}
-                        format="dd/MM/yyyy HH:mm"
-                        invalidDateMessage="Seleccione una fecha y hora válido"
                         onChange={(fecha)=>setOtFechaFinalizacion(fecha)}
+                        format="dd/MM/yyyy - HH:mm"
                         fullWidth
                         label="Fecha y hora de finalización"
-                        ></KeyboardDateTimePicker>
+                        ></DateTimePicker>
                     </Grid>
                     {(OtInfo.ServicioNuevoId !== 1 && !OtInfo.OnuId) ?
                         <Grid item xs={12} sm={12} md={12} lg={12}>
