@@ -24,7 +24,7 @@ exports.MunicipioCreate = async(req, res) => {
             });
             const municipio = new Municipio(req.body);
             municipio.MunicipioId = ultimoMunicipio.MunicipioId + 1;
-            municipio.createdBy = req.body.localStorage.getItem('identity');
+            municipio.createdBy = req.body.GetUserId();
             const provinciaMunicipio = new ProvinciaMunicipio(req.body);
             provinciaMunicipio.MunicipioId = ultimoMunicipio.MunicipioId + 1;
             provinciaMunicipio.ProvinciaId = req.body.ProvinciaIdModal;

@@ -15,6 +15,7 @@ import Spinner from '../design/components/Spinner';
 import * as VARIABLES from './../../../types/variables';
 import Factura from '../design/components/Factura';
 import Recibo from '../design/components/Recibo';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaPagos = () => {
     const appContext = useContext(AppContext);
@@ -38,9 +39,9 @@ const ListaPagos = () => {
         DetallePagoFecha: new Date(),
         DetallePagoMonto: '',
         PagoObservaciones: '',
-        createdBy: localStorage.getItem('identity'),
+        createdBy: GetUserId(),
         updatedAt: null,
-        updatedBy: localStorage.getItem('identity'),
+        updatedBy: GetUserId(),
         deletedBy: null,
         deletedAt: null,
         PagoConceptoId: 2 //por defecto
@@ -90,13 +91,13 @@ const ListaPagos = () => {
             CantidadMesesAPagar: e.target.value
         })
     }
-    const handleChangeModalPagoAdelantado = (data, edit = false) => {
+    const handleChangeModalPagoAdelantado = () => {
         setPagoAdelantadoInfo({
             ...PagoAdelantadoInfo,
             MunicipioId: MunicipioId,
             ServicioId: ServicioId,
-            createdBy: localStorage.getItem('identity'),
-            updatedBy: localStorage.getItem('identity')
+            createdBy: GetUserId(),
+            updatedBy: GetUserId()
         })
         setModalPagoAdelantado(!ModalPagoAdelantado);
         traerPagosMensualesPendientes(location.state.UserId, 1);
@@ -109,21 +110,20 @@ const ListaPagos = () => {
             Mes: data.PagoMes,
             DetallePagoMonto: data.PagoSaldo,
         });
-        setRequiereFactura(false);
     }
     const handleChangeModalRecargoPago = (data) => {
-        setPagoInfo({...data, updatedBy: localStorage.getItem('identity')});
+        setPagoInfo({...data, updatedBy: GetUserId()});
         setModalRecargo(!ModalRecargo);
 
     }
     const handleChangeModalDetallesPago = (data) => {
         traerDetallesPago(data.PagoId);
-        setPagoInfo({...data, updatedBy: localStorage.getItem('identity')});
+        setPagoInfo({...data, updatedBy: GetUserId()});
         setModalDetallesPago(!ModalDetallesPago);
     }
 
     const handleChangeModalEliminarDetallePago = (data) => {
-        setPagoInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
+        setPagoInfo({...data, deletedBy: GetUserId(), deletedAt: new Date() });
         setModalEliminarDetallePago(!ModalEliminarDetallePago);
     }
     
@@ -248,7 +248,7 @@ const ListaPagos = () => {
         {
             cell: (data) => 
             <>
-            {data.FacturaId ? <><Recibo data={data}/> <Factura data={data}/></>
+            {data.FacturaId ? <><Factura data={data}/></>
             : <Recibo data={data}/>}
             </>,
         }
@@ -341,7 +341,7 @@ const ListaPagos = () => {
                 crearPagoAdelantado({MesesAPagar: pagosPendientesTop, PagoAdelantadoInfo, RequiereFactura: RequiereFactura}, handleChangeModalPagoAdelantado)}}
                 variant="contained"
                 color="primary">
-                Aceptar</Button>
+                Registrar pago</Button>
             <Button onClick={handleChangeModalPagoAdelantado}>Cancelar</Button></>}
             formulario={
             <>
@@ -398,10 +398,14 @@ const ListaPagos = () => {
                                             <MenuItem key={mp.MedioPagoId} value={mp.MedioPagoId}>{mp.MedioPagoNombre}</MenuItem>
                                         ))}
                                     </TextField>
+                                    <FormControl>
+                                        <FormControlLabel label="Requiere factura" control={<Checkbox checked={RequiereFactura} onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
+                                    </FormControl>
+                                    {RequiereFactura ? <Alert severity='info'>La factura se generará en la sección "Facturas" del historial de pagos del abonado</Alert> : ""}
                                 </CardContent>
                             </Card>
                             <br/>
-                            {pagosPendientesTop.length > 0 && !cargando ?
+                            {pagosPendientesTop.length > 0 && CantidadMesesAPagar !== 0 && !cargando ?
                             <Card>
                                 <CardContent>
                                     <Typography variant="h2">Datos del pago</Typography>
@@ -447,7 +451,7 @@ const ListaPagos = () => {
                 }, handleChangeModalNuevoPago)}}
                 variant="contained"
                 color="primary">
-                Aceptar</Button>
+                Registrar pago</Button>
             <Button onClick={handleChangeModalNuevoPago}>Cancelar</Button></>}
             formulario={
             <>
@@ -532,7 +536,7 @@ const ListaPagos = () => {
                 </Grid>
                 <Grid item xs={12} md={12} sm={12} lg={12}>
                     <FormControl>
-                        <FormControlLabel label="Requiere factura" control={<Checkbox onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
+                        <FormControlLabel label="Requiere factura" control={<Checkbox checked={RequiereFactura} onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
                     </FormControl>
                     {RequiereFactura ? <Alert severity='info'>La factura se generará en la sección "Facturas" del historial de pagos del abonado</Alert> : ""}
                 </Grid>
@@ -552,7 +556,7 @@ const ListaPagos = () => {
                 agregarRecargo(PagoInfo, handleChangeModalRecargoPago)}}
                 variant="contained"
                 color="primary">
-                Aceptar</Button>
+                Agregar recargo</Button>
             <Button onClick={handleChangeModalRecargoPago}>Cancelar</Button></>}
             formulario={
             <>

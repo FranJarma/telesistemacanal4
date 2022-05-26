@@ -16,6 +16,8 @@ import convertirAMoney from '../../../helpers/ConvertirAMoney';
 import * as VARIABLES from './../../../types/variables';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import convertirAHora from '../../../helpers/ConvertirAHora';
+import GetFullName from './../../../helpers/GetFullName';
+import GetUserId from './../../../helpers/GetUserId';
 
 const CambioServicio = () => {
     const appContext = useContext(AppContext);
@@ -38,7 +40,7 @@ const CambioServicio = () => {
     const [CambioServicioInfo, setCambioServicioInfo] = useState({
         UserId: location.state.UserId,
         CambioServicioObservaciones: null,
-        createdBy: localStorage.getItem('identity')
+        createdBy: GetUserId()
     })
     const [MunicipioId, setMunicipioId] = useState(null);
     const onInputChange = (e) => {
@@ -344,7 +346,7 @@ const CambioServicio = () => {
                             <TextField
                             disabled
                             variant="filled"
-                            value={localStorage.getItem('usr')}
+                            value={GetFullName()}
                             fullWidth
                             label="Responsable de emisión de OT">
                             </TextField>

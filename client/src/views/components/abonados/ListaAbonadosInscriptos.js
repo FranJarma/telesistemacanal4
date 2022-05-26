@@ -15,6 +15,7 @@ import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import generarRecibo from '../../../helpers/GenerarRecibo';
 import SpanServicio from '../../../helpers/SpanServicio';
 import formatDocumento from '../../../helpers/FormatDocumento';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaAbonadosInscriptos = () => {
     const appContext = useContext(AppContext);
@@ -51,7 +52,7 @@ const ListaAbonadosInscriptos = () => {
                 EstadoId: 3,
                 UserId: data.UserId,
                 deletedAt: new Date(),
-                deletedBy: localStorage.getItem('identity')
+                deletedBy: GetUserId()
             })
         }
         else {

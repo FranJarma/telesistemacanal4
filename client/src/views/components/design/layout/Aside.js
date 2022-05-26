@@ -7,10 +7,11 @@ import logo from './../../../images/logo-ts.png';
 import AppContext from '../../../../context/appContext';
 import { Button, Dialog, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
 import * as VARIABLES from './../../../../types/variables';
+import GetFullName from './../../../../helpers/GetFullName';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
-    const { obtenerUsuarioAutenticado, usuarioLogueado, push, cerrarSesion } = appContext;
+    const { obtenerUsuarioAutenticado, push, cerrarSesion } = appContext;
     
     const [width, setWidth] = useState('0px');
     const [SubMenuAbonados, setSubMenuAbonados] = useState(false);
@@ -104,13 +105,13 @@ const Aside = () => {
     <div className="menu" ref={wrapperRef}>
         <Menu iconShape="round">
           <SidebarHeader style={{marginLeft: '1rem'}}>
-            <Typography variant="h6">{localStorage.getItem('usr')}</Typography>
+            <Typography variant="h6">{GetFullName()}</Typography>
           </SidebarHeader>
           <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
 
-          { usuarioLogueado.Roles.some((rol)=> rol.RoleId === VARIABLES.ID_ROL_TECNICO) ? 
+          { JSON.parse(localStorage.getItem('u_roles')).some((rol)=> rol.RoleId === VARIABLES.ID_ROL_TECNICO) ? 
               <MenuItem icon={<i className='bx bx-task'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
-          : usuarioLogueado.Roles.some((rol)=> rol.RoleId === VARIABLES.ID_ROL_SECRETARIO) ?
+          : JSON.parse(localStorage.getItem('u_roles')).some((rol)=> rol.RoleId === VARIABLES.ID_ROL_SECRETARIO) ?
               <>
                 <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
                   <MenuItem  icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
@@ -123,7 +124,7 @@ const Aside = () => {
                   <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
                 </SubMenu>
               </>
-          : usuarioLogueado.Roles.some((rol)=> rol.RoleId === VARIABLES.ID_ROL_JEFE) || usuarioLogueado.Roles.some((rol)=> rol.RoleId === VARIABLES.ID_ROL_ADMIN) ?
+          : JSON.parse(localStorage.getItem('u_roles')).some((rol)=> rol.RoleId === VARIABLES.ID_ROL_JEFE) || JSON.parse(localStorage.getItem('u_roles')).some((rol)=> rol.RoleId === VARIABLES.ID_ROL_ADMIN) ?
               <>
               <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
                 <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
@@ -158,7 +159,7 @@ const Aside = () => {
 
     <div className="header">
         <i style={{display: width === '280px' ? "none" : "unset"}} onClick={onClickWidth} className="bx bx-menu"/>
-        <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{localStorage.getItem('usr')}</Button>
+        <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{GetFullName()}</Button>
         <Popover 
           id={id}
           open={open}
@@ -176,7 +177,7 @@ const Aside = () => {
           <List style={{ cursor: 'pointer'}}>
             <Link style={{textDecoration: 'none', color: '#000'}} to={{
               pathname: '/perfil-user',
-              state: usuarioLogueado
+              state: JSON.parse(localStorage.getItem('u_info'))
             }
             }>
             <ListItem>

@@ -5,13 +5,15 @@ import Footer from '../design/layout/Footer';
 import AppContext from '../../../context/appContext';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import { useLocation } from 'react-router';
-import { DatePicker, TimePicker } from '@material-ui/pickers';
+import { DatePicker } from '@material-ui/pickers';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import DataTable from 'react-data-table-component';
 import * as VARIABLES from './../../../types/variables';
 import Datatable from '../design/components/Datatable';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
+import GetFullName from './../../../helpers/GetFullName';
+import GetUserId from './../../../helpers/GetUserId';
 
 const CaratulaOt = () => {
     const appContext = useContext(AppContext);
@@ -118,7 +120,7 @@ const CaratulaOt = () => {
                 OtFechaPrevistaVisita,
                 OtRetiraCable,
                 OtRetiraOnu,
-                createdBy: localStorage.getItem('identity'),
+                createdBy: GetUserId(),
                 abonado,
                 tareasOt,
                 barrio
@@ -131,7 +133,7 @@ const CaratulaOt = () => {
                 OtFechaPrevistaVisita,
                 OtRetiraCable,
                 OtRetiraOnu,
-                updatedBy: localStorage.getItem('identity'),
+                updatedBy: GetUserId(),
                 tareasOt
             });
         }
@@ -195,7 +197,7 @@ const CaratulaOt = () => {
                                 <Grid item xs={12} md={3} lg={3} xl={3}>
                                     <TextField
                                     variant="outlined"
-                                    value={localStorage.getItem('usr')}
+                                    value={GetFullName()}
                                     fullWidth
                                     label="Responsable de emisión de OT">
                                     </TextField>

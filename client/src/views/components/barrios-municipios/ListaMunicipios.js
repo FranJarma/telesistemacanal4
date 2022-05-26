@@ -5,10 +5,11 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaMunicipios = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, municipios, provincias, traerProvincias, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio } = appContext;
+    const { municipios, provincias, traerProvincias, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio } = appContext;
     useEffect(()=>{
         traerProvincias();
         traerMunicipiosPorProvincia(10);
@@ -60,20 +61,20 @@ const ListaMunicipios = () => {
         if(data !== '') {
             setProvinciaIdVieja(data.ProvinciaId);
             setEditMode(true);
-            setMunicipioInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
+            setMunicipioInfo({...data, updatedBy: GetUserId(), updatedAt: new Date() });
             setProvinciaIdModal(data.ProvinciaId); //para que cargue JUJUY por defecto
             setProvinciaNombreModal(data.ProvinciaNombre);
         }
         else {
             setEditMode(false);
-            setMunicipioInfo({...data, createdBy: localStorage.getItem('identity')});
+            setMunicipioInfo({...data, createdBy: GetUserId()});
         }
     }
 
     const handleChangeModalEliminarMunicipio = (data = '') => {
         setModalEliminarMunicipio(!ModalEliminarMunicipio);
         setModalMunicipio(false);
-        setMunicipioInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
+        setMunicipioInfo({...data, deletedBy: GetUserId(), deletedAt: new Date() });
     }
 
     const columnasMunicipios = [

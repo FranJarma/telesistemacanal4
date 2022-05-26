@@ -13,6 +13,8 @@ import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import Toast from '../design/components/Toast';
 import * as VARIABLES from './../../../types/variables';
 import Spinner from '../design/components/Spinner';
+import GetFullName from './../../../helpers/GetFullName';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaMovimientos = () => {
     const appContext = useContext(AppContext);
@@ -52,8 +54,8 @@ const ListaMovimientos = () => {
         CajaDia: new Date().getDate(),
         CajaMes: new Date().getMonth() + 1,
         CajaAño: new Date().getFullYear(),
-        CajaCerradaUser: localStorage.getItem('identity'),
-        CajaCerradaFullName: localStorage.getItem('usr'),
+        CajaCerradaUser: GetUserId(),
+        CajaCerradaFullName: GetFullName(),
         CajaRecibeUser: null,
         CajaRecibeFullName: null,
         CajaPesos: null,
@@ -279,7 +281,7 @@ const ListaMovimientos = () => {
         botones={
             <>
             <Button
-            onClick={() => crearMovimiento({MovimientoCantidad: MovimientoCantidad, MovimientoConcepto: MovimientoConcepto, Municipio, MedioPagoId, createdBy: localStorage.getItem('identity')})}
+            onClick={() => crearMovimiento({MovimientoCantidad: MovimientoCantidad, MovimientoConcepto: MovimientoConcepto, Municipio, MedioPagoId, createdBy: GetUserId()})}
             variant="contained"
             color="primary">Registrar</Button>
             <Button onClick={handleChangeModalMovimiento}>Cancelar</Button>
@@ -452,7 +454,7 @@ const ListaMovimientos = () => {
                         <Grid item xs={12} md={4} lg={4} xl={4}>
                             <TextField
                             variant="filled"
-                            value={localStorage.getItem('usr')}
+                            value={GetFullName()}
                             label="Usuario que cierra caja"
                             fullWidth
                             >

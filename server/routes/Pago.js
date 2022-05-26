@@ -4,7 +4,7 @@ const PagoController = require('../controllers/PagoController');
 const { check } = require('express-validator');
 const ValidarJWT = require('../middlewares/ValidarJWT');
 
-router.get('/UserId=:UserId&Periodo=:Periodo', ValidarJWT, PagoController.PagosListarPorUsuario);
+router.get('/', ValidarJWT, PagoController.PagosListarPorUsuario);
 router.get('/UserId=:UserId&Concepto=:Concepto&top=:top', ValidarJWT, PagoController.PagosMensualesPendientes);
 router.get('/UserId=:UserId&Periodo=:PagoAño&PagoMes=:PagoMes', ValidarJWT, PagoController.PagoGet);
 router.get('/UserId=:UserId&Inscripcion=:Inscripcion', ValidarJWT, PagoController.PagosTraerInscripcion);

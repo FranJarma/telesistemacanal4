@@ -6,13 +6,14 @@ import { Button, Card, CardContent, FormControlLabel, Grid, FormGroup, Switch, T
 import { useLocation } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import GetUserId from './../../../helpers/GetUserId';
 
 const CaratulaUser = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, roles, rolesUser, traerRoles, traerRolesPorUsuario, crearUsuario, modificarUsuario } = appContext;
+    const { roles, rolesUser, traerRoles, traerRolesPorUsuario, crearUsuario, modificarUsuario } = appContext;
     const location = useLocation();
     const [UserInfo, setUserInfo] = useState({
-        UserIdLogueado: localStorage.getItem('identity'),
+        UserIdLogueado: GetUserId(),
         UserId: null,
         Nombre: null,
         Apellido: null,

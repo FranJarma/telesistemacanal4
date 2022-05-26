@@ -4,6 +4,8 @@ import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import { Button, Card, CardContent, Grid, TextField, Typography} from '@material-ui/core'; 
 import { useLocation } from 'react-router-dom';
+import GetFullName from './../../../helpers/GetFullName';
+import GetUserId from './../../../helpers/GetUserId';
 
 const PerfilUser = () => {
     const appContext = useContext(AppContext);
@@ -11,7 +13,7 @@ const PerfilUser = () => {
     const location = useLocation();
 
     const [UserInfo, setUserInfo] = useState({
-        UserIdLogueado: localStorage.getItem('identity'),
+        UserIdLogueado: GetUserId(),
         UserId: null,
         Nombre: null,
         Apellido: null,
@@ -68,7 +70,7 @@ const PerfilUser = () => {
     <div className="container">
     <Aside/>
     <main>
-    <Typography variant="h6">Editar usuario: {localStorage.getItem('usr')}</Typography>
+    <Typography variant="h6">Editar usuario: {GetFullName()}</Typography>
     <br/>
     <form onSubmit={onSubmitUsuario}>
         <Card>

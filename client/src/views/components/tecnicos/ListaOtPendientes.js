@@ -15,6 +15,7 @@ import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import DesdeHasta from '../../../helpers/DesdeHasta';
 import convertirAHora from '../../../helpers/ConvertirAHora';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaOtPendientes = () => {
     const appContext = useContext(AppContext);
@@ -284,7 +285,7 @@ const ListaOtPendientes = () => {
             funcionCerrar={handleChangeModalFinalizarOt}
             titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
             botones={<><Button variant='contained' color="primary"
-            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: localStorage.getItem('identity'), Onu},
+            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: GetUserId(), Onu},
             handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cancelar</Button></>}
             formulario={
                 <>

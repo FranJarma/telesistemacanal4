@@ -14,6 +14,8 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import * as VARIABLES from './../../../types/variables';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import GetFullName from './../../../helpers/GetFullName';
+import GetUserId from './../../../helpers/GetUserId';
 
 const CambioDomicilio = () => {
     const appContext = useContext(AppContext);
@@ -37,7 +39,7 @@ const CambioDomicilio = () => {
         DomicilioNumero: null,
         DomicilioPiso: null,
         CambioDomicilioObservaciones: null,
-        createdBy: localStorage.getItem('identity')
+        createdBy: GetUserId()
     })
 
     const onInputChange = (e) => {
@@ -80,7 +82,6 @@ const CambioDomicilio = () => {
             ...DomicilioInfo,
             UserId: location.state.UserId
         });
-        setRequiereFactura(false);
     }
     const handleChangeMedioPagoSeleccionado = (e) => {
         setMedioPago(e.target.value);
@@ -380,7 +381,7 @@ const CambioDomicilio = () => {
                         <TextField
                         disabled
                         variant="filled"
-                        value={localStorage.getItem('usr')}
+                        value={GetFullName()}
                         fullWidth
                         label="Responsable de emisión de OT">
                         </TextField>
@@ -445,7 +446,7 @@ const CambioDomicilio = () => {
                         </Grid>
                         <Grid item xs={12} md={12} sm={12} lg={12}>
                         <FormControl>
-                            <FormControlLabel label="Requiere factura" control={<Checkbox onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
+                            <FormControlLabel label="Requiere factura" control={<Checkbox checked={RequiereFactura} onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
                         </FormControl>
                         {RequiereFactura ? <Alert severity='info'>La factura se generará en la sección "Facturas" del historial de pagos del abonado</Alert> : ""}
                     </Grid>

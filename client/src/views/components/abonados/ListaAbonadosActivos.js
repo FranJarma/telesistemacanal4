@@ -14,6 +14,7 @@ import TooltipForTable from '../../../helpers/TooltipForTable';
 import SpanVencimientoServicio from '../../../helpers/SpanVencimientoServicio';
 import SpanServicio from '../../../helpers/SpanServicio';
 import formatDocumento from '../../../helpers/FormatDocumento';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
@@ -48,7 +49,7 @@ const ListaAbonadosActivos = () => {
                 EstadoId: 3,
                 UserId: data.UserId,
                 deletedAt: new Date(),
-                deletedBy: localStorage.getItem('identity')
+                deletedBy: GetUserId()
             })
         }
         else {

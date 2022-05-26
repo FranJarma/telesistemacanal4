@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
@@ -7,6 +7,7 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaServicios = () => {
     const appContext = useContext(AppContext);
@@ -44,18 +45,18 @@ const ListaServicios = () => {
         setModalEliminarServicio(false);
         if(data !== '') {
             setEditMode(true);
-            setServicioInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
+            setServicioInfo({...data, updatedBy: GetUserId(), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setServicioInfo({...data, createdBy: localStorage.getItem('identity')});
+            setServicioInfo({...data, createdBy: GetUserId()});
         }
     }
 
     const handleChangeModalEliminarServicio = (data = '') => {
         setModalEliminarServicio(!ModalEliminarServicio);
         setModalServicio(false);
-        setServicioInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
+        setServicioInfo({...data, deletedBy: GetUserId(), deletedAt: new Date() });
     }
 
     const columnasServicios = [

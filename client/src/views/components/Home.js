@@ -15,8 +15,6 @@ const Home = () => {
     
     let cantidadOrdenesDeTrabajo = encontrarCoincidencias(ordenesDeTrabajo, "OtResponsableEjecucion", "NombreResponsableEjecucion", "ApellidoResponsableEjecucion");
 
-    console.log(cantidadOrdenesDeTrabajo);
-
     useEffect(()=> {
         traerMovimientosPorFecha(new Date(), 0, 'Todos');
         traerOrdenesDeTrabajo(5);

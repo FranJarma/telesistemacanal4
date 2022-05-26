@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import GetUserId from './../../../helpers/GetUserId';
 
 const CambioTitularidad = () => {
     const appContext = useContext(AppContext);
@@ -76,7 +77,7 @@ const CambioTitularidad = () => {
                 DomicilioCalle: location.state.DomicilioCalle,
                 DomicilioNumero: location.state.DomicilioNumero,
                 DomicilioPiso: location.state.DomicilioPiso,
-                createdBy: localStorage.getItem('identity')
+                createdBy: GetUserId()
             });
             setDomicilioId(location.state.DomicilioId);
         }

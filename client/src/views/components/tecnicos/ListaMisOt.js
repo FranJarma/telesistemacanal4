@@ -5,9 +5,9 @@ import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
-import { Link } from 'react-router-dom';
 import CaratulaVerOt from './CaratulaVerOt';
 import { DatePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
+import GetUserId from './../../../helpers/GetUserId';
 
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
@@ -17,7 +17,7 @@ const ListaMisOt = () => {
     const { ordenesDeTrabajoAsignadas, traerOrdenesDeTrabajoAsignadas, registrarVisitaOrdenDeTrabajo, finalizarOrdenDeTrabajo} = appContext;
 
     useEffect(()=>{
-        traerOrdenesDeTrabajoAsignadas(localStorage.getItem('identity'), 5);
+        traerOrdenesDeTrabajoAsignadas(GetUserId(), 5);
     },[]);
 
     const [ModalVerOt, setModalVerOt] = useState(false);
@@ -192,7 +192,7 @@ const ListaMisOt = () => {
             funcionCerrar={handleChangeModalFinalizarOt}
             titulo ={<Typography variant="h2"><i className="bx bx-calendar-check"></i> Finalizar OT</Typography>}
             botones={<><Button variant='contained' color="primary"
-            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: localStorage.getItem('identity')},
+            onClick={() =>finalizarOrdenDeTrabajo({...OtInfo, OtFechaInicio, OtFechaFinalizacion, OtObservacionesResponsableEjecucion, updatedBy: GetUserId()},
             handleChangeModalFinalizarOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalFinalizarOt}>Cancelar</Button></>}
             formulario={
                 <>

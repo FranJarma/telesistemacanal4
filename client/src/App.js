@@ -140,7 +140,7 @@ function App() {
                   <Route exact path="/Error-401">
                     <Error401/>
                   </Route>
-                  <PrivateRoute exact path="/home" component={Home}>
+                  <PrivateRoute exact path="/home" component={Home} role="jefe">
                   </PrivateRoute>
                   <PrivateRoute exact path="/users" component={ListaUsers}>
                   </PrivateRoute>

@@ -3,22 +3,14 @@ import AppContext from '../../../context/appContext';
 import Aside from '../design/layout/Aside';
 import Footer from '../design/layout/Footer';
 import './../design/layout/styles/styles.css';
-import { Button, Card, CardContent, CardHeader, FormHelperText, Grid, MenuItem, TextField, Tooltip, Typography } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Card, CardContent, Tooltip, Typography } from '@material-ui/core';
 import Datatable from '../design/components/Datatable';
-import Modal from '../design/components/Modal';
-import { Link } from 'react-router-dom';
-import useStyles from '../Styles';
-import BotonesDatatable from '../design/components/BotonesDatatable';
 import TooltipForTable from '../../../helpers/TooltipForTable';
-import convertirAFecha from '../../../helpers/ConvertirAFecha';
-import generarRecibo from '../../../helpers/GenerarRecibo';
-import SpanServicio from '../../../helpers/SpanServicio';
 import formatDocumento from '../../../helpers/FormatDocumento';
 
 const ListaAbonadosAtrasados = () => {
     const appContext = useContext(AppContext);
-    const { abonados, municipios, traerAbonadosAtrasados, traerMunicipiosPorProvincia} = appContext;
+    const { abonados, traerAbonadosAtrasados, traerMunicipiosPorProvincia} = appContext;
 
     useEffect(() => {
         traerAbonadosAtrasados();

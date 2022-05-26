@@ -7,10 +7,11 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaTiposTareas = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, tareas, traerTareas, crearTarea, modificarTarea, eliminarTarea } = appContext;
+    const { tareas, traerTareas, crearTarea, modificarTarea, eliminarTarea } = appContext;
 
     useEffect(()=>{
         traerTareas();
@@ -193,9 +194,9 @@ const ListaTiposTareas = () => {
         botones={
             <>
             <Button variant="contained" color="primary" onClick={()=>{EditMode ? modificarTarea({...TareaInfo, updatedAt: new Date(),
-            updatedBy: localStorage.getItem('identity')}, handleChangeModalTarea)
+            updatedBy: GetUserId()}, handleChangeModalTarea)
             : crearTarea({...TareaInfo,
-            createdBy: localStorage.getItem('identity')}, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
+            createdBy: GetUserId()}, handleChangeModalTarea)}}>{EditMode ? "Editar" : "Confirmar"}</Button>
             <Button variant="text" color="inherit" >Cancelar</Button>
             </>
         }
@@ -207,7 +208,7 @@ const ListaTiposTareas = () => {
         botones={
             <>
             <Button variant="contained" color="secondary" onClick={()=>{eliminarTarea({...TareaInfo, deletedAt: new Date(),
-            deletedBy: localStorage.getItem('identity')}, handleChangeModalEliminarTarea)}}>Eliminar</Button>
+            deletedBy: GetUserId()}, handleChangeModalEliminarTarea)}}>Eliminar</Button>
             <Button variant="text" color="inherit" onClick={handleChangeModalEliminarTarea}>Cancelar</Button>
             </>
         }

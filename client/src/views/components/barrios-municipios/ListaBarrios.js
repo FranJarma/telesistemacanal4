@@ -5,10 +5,11 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaBarrios = () => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, barrios, municipios, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, crearBarrio, modificarBarrio, eliminarBarrio } = appContext;
+    const { barrios, municipios, traerBarriosPorMunicipio, traerMunicipiosPorProvincia, crearBarrio, modificarBarrio, eliminarBarrio } = appContext;
     useEffect(()=>{
         traerMunicipiosPorProvincia(10);
         traerBarriosPorMunicipio(0);
@@ -43,20 +44,20 @@ const ListaBarrios = () => {
         setModalEliminarBarrio(false);
         if(data !== '') {
             setEditMode(true);
-            setBarrioInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
+            setBarrioInfo({...data, updatedBy: GetUserId(), updatedAt: new Date() });
             setMunicipioIdModal(data.MunicipioId);
             setMunicipioNombre(data.MunicipioNombre);
         }
         else {
             setEditMode(false);
-            setBarrioInfo({...data, createdBy: localStorage.getItem('identity')});
+            setBarrioInfo({...data, createdBy: GetUserId()});
         }
     }
 
     const handleChangeModalEliminarBarrio = (data = '') => {
         setModalEliminarBarrio(!ModalEliminarBarrio);
         setModalBarrio(false);
-        setBarrioInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
+        setBarrioInfo({...data, deletedBy: GetUserId(), deletedAt: new Date() });
     }
 
     const handleChangeMunicipioSeleccionado = (e) => {

@@ -16,7 +16,6 @@ import ReciboCaratula from '../views/components/design/components/ReciboCaratula
 const AppState = props => {
     const initialState = {
         token: localStorage.getItem('token'),
-        usuarioLogueado: null,
         usuarioAutenticado: false,
         push: false,
         mostrarSpinner: false,
@@ -572,7 +571,13 @@ const AppState = props => {
     };
     const traerPagosPorAbonado = async (UserId, Periodo = null, Concepto) => {
         try {
-            const resultado = await clienteAxios.get(`/api/pagos/UserId=${UserId}&Periodo=${Periodo}&Concepto=${Concepto}`);
+            const resultado = await clienteAxios.get('/api/pagos', {
+                params: {
+                    UserId: UserId,
+                    Periodo: Periodo,
+                    Concepto: Concepto
+                }
+            });
             dispatch({
                 type: TYPES.LISTA_PAGOS_ABONADO,
                 payload: resultado.data
@@ -698,30 +703,36 @@ const AppState = props => {
     }
 
     const crearPagoAdelantado = async(pagoAdelantadoInfo, setModalPagoAdelantado) => {
-        clienteAxios.post('/api/pagos/createPagoAdelantado', pagoAdelantadoInfo)
-        .then(resOk => {
-            if (resOk.data)
-                dispatch({
-                    type: TYPES.CREAR_PAGO_ADELANTADO,
-                    payload: pagoAdelantadoInfo
-                });
-                Swal('Operación completa', resOk.data.msg);
-                setModalPagoAdelantado(false);
-        })
-        .catch(err => {
-            if(err == VARIABLES.ERROR_AUTENTICACION) history.push('/');
-            if(!err.response){
-                console.log(err);
+        try {
+            const respuesta = await clienteAxios.post('/api/pagos/createPagoAdelantado', pagoAdelantadoInfo);
+            dispatch({
+                type: TYPES.CREAR_PAGO_ADELANTADO,
+                payload: pagoAdelantadoInfo
+            })
+            setModalPagoAdelantado(false);
+            if(pagoAdelantadoInfo.RequiereFactura){
+                descargarComprobante("Factura", <FacturaCaratula data={respuesta.data.factura}/>, respuesta.data.factura).then(()=> {
+                    Swal('Operación completa', VARIABLES.PAGO_CREADO_CORRECTAMENTE);
+                })
+            }
+            else{
+                descargarComprobante("Recibo", <ReciboCaratula data={respuesta.data.recibo}/>, respuesta.data.recibo).then(()=> {
+                    Swal('Operación completa', VARIABLES.PAGO_CREADO_CORRECTAMENTE);
+                })
+            }
+        } catch (error) {
+            if(error == VARIABLES.ERROR_AUTENTICACION) history.push('/');
+            if(!error.response){
                 Toast('Error de conexión con el servidor', 'error');
             }
-            else if(err.response.data.msg){
-                Toast(err.response.data.msg, 'warning');
+            else if(error.response.data.msg){
+                Toast(error.response.data.msg, 'warning');
 
             }
-            else if(err.response.data.errors){
-                Toast(err.response.data.errors[0].msg, 'warning');
+            else if(error.response.data.errors){
+                Toast(error.response.data.errors[0].msg, 'warning');
             }
-        })
+        }
     }
     const agregarRecargo = async(pago, setModalRecargo) => {
         clienteAxios.put('/api/pagos/recargo', pago)
@@ -1789,7 +1800,6 @@ const AppState = props => {
         value={{
             token: state.token,
             usuario: state.usuario,
-            usuarioLogueado: state.usuarioLogueado,
             usuarioAutenticado: state.usuarioAutenticado,
             push: state.push,
             usuarios: state.usuarios,

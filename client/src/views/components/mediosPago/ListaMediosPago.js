@@ -7,6 +7,7 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaMediosPago = () => {
     const appContext = useContext(AppContext);
@@ -42,18 +43,18 @@ const ListaMediosPago = () => {
         setModalEliminarMedioPago(false);
         if(data !== '') {
             setEditMode(true);
-            setMedioPagoInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
+            setMedioPagoInfo({...data, updatedBy: GetUserId(), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setMedioPagoInfo({...data, createdBy: localStorage.getItem('identity')});
+            setMedioPagoInfo({...data, createdBy: GetUserId()});
         }
     }
 
     const handleChangeModalEliminarMedioPago = (data = '') => {
         setModalEliminarMedioPago(!ModalEliminarMedioPago);
         setModalMedioPago(false);
-        setMedioPagoInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
+        setMedioPagoInfo({...data, deletedBy: GetUserId(), deletedAt: new Date() });
     }
 
     const columnasMedioPago = [

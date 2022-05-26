@@ -6,6 +6,7 @@ import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import InputMask from 'react-input-mask';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaOnus = ({location}) => {
     const appContext = useContext(AppContext);
@@ -51,19 +52,19 @@ const ListaOnus = ({location}) => {
         setModalEliminarOnu(false);
         if(data !== '') {
             setEditMode(true);
-            setOnuInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
+            setOnuInfo({...data, updatedBy: GetUserId(), updatedAt: new Date() });
             setModeloOnuId(data.ModeloOnuId);
         }
         else {
             setEditMode(false);
-            setOnuInfo({...data, createdBy: localStorage.getItem('identity')});
+            setOnuInfo({...data, createdBy: GetUserId()});
         }
     }
 
     const handleChangeModalEliminarOnu = (data = '') => {
         setModalEliminarOnu(!ModalEliminarOnu);
         setModalOnu(false);
-        setOnuInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
+        setOnuInfo({...data, deletedBy: GetUserId(), deletedAt: new Date() });
     }
 
     const columnasONUS = [

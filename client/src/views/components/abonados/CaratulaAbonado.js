@@ -12,6 +12,8 @@ import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import convertirAMoney from '../../../helpers/ConvertirAMoney';
 import TooltipForTable from '../../../helpers/TooltipForTable';
 import * as VARIABLES from './../../../types/variables';
+import GetFullName from './../../../helpers/GetFullName';
+import GetUserId from './../../../helpers/GetUserId';
 
 const CaratulaAbonado = () => {
     const appContext = useContext(AppContext);
@@ -30,9 +32,9 @@ const CaratulaAbonado = () => {
         DomicilioCalle: null,
         DomicilioNumero: null,
         DomicilioPiso: null,
-        createdBy: localStorage.getItem('identity'),
+        createdBy: GetUserId(),
         updatedAt: null,
-        updatedBy: localStorage.getItem('identity')
+        updatedBy: GetUserId()
     })
     const onInputChange = (e) => {
         setAbonadoInfo({
@@ -126,7 +128,7 @@ const CaratulaAbonado = () => {
                 DomicilioNumero: location.state.DomicilioNumero,
                 DomicilioPiso: location.state.DomicilioPiso,
                 updatedAt: new Date(),
-                updatedBy: localStorage.getItem('identity')
+                updatedBy: GetUserId()
             });
             setMunicipioId(location.state.MunicipioId);
             traerBarriosPorMunicipio(location.state.MunicipioId);
@@ -496,7 +498,7 @@ const CaratulaAbonado = () => {
                     :""}
                     <Grid item xs={12} md={12} sm={12} lg={12}>
                         <FormControl>
-                            <FormControlLabel label="Requiere factura" control={<Checkbox onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
+                            <FormControlLabel label="Requiere factura" control={<Checkbox checked={RequiereFactura} onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
                         </FormControl>
                         {RequiereFactura ? <Alert severity='info'>La factura se generará en la sección "Facturas" del historial de pagos del abonado</Alert> : ""}
                     </Grid>
@@ -571,7 +573,7 @@ const CaratulaAbonado = () => {
                             <TextField
                             disabled
                             variant="filled"
-                            value={localStorage.getItem('usr')}
+                            value={GetFullName()}
                             fullWidth
                             label="Responsable de emisión de OT">
                             </TextField>

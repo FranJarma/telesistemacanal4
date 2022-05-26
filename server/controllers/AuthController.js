@@ -1,8 +1,9 @@
 const { validationResult } = require('express-validator');
 const User = require('./../models/User');
-const UserRole = require('./../models/UserRole');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const options =require('./../config/knex');
+const knex = require('knex')(options);
 
 exports.UserGet = async (req, res) => {
     const errors = validationResult(req);
@@ -44,22 +45,16 @@ exports.UserAutenticate = async (req, res) => {
     try {
         /* consultamos si existe un usuario en la BD por su id que está en el cuerpo de la request,
         no vamos a traer la contraseña del usuario para garantizar seguridad */
-        const user = await User.findOne({
-            attributes: {
-                exclude: ['Contraseña']
-            },
-            where: {
-                UserId: req.UserId
-        }});
-        let roles = "";
+        const user = await knex.select('u.UserId', 'u.NombreUsuario', 'U.Nombre', 'u.Apellido', 'u.Email')
+        .from('_user as u')
+        .where('u.UserId', '=', req.UserId)
+        let roles = null;
         //si encuentra usuario, traemos los roles y los permisos
         if (user) {
-            roles = await UserRole.findAll({
-                attributes: ['RoleId'],
-                where: {
-                    UserId: req.UserId
-                }
-            });
+            roles =  await knex.select('r.RoleName', 'r.RoleId')
+            .from('_userrole as ur')
+            .innerJoin('_role as r', 'r.RoleId', '=', 'ur.RoleId')
+            .where('ur.UserId', '=', req.UserId);
         }
         res.json({
             User: user,

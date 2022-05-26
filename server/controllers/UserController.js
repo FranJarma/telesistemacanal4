@@ -40,7 +40,7 @@ exports.UserCreate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
-            if(req.body.Contraseña !== req.body.RContraseña) return res.status(400).json({msg: 'Las contraseñas no coinciden'});
+            if(req.body.Contraseña && (req.body.Contraseña !== req.body.RContraseña)) return res.status(400).json({msg: 'Las contraseñas no coinciden'});
             let userRoleVec = [];
             // creamos un nuevo user pasandole lo que traemos de la vista
             const user = new User(req.body);
@@ -80,6 +80,7 @@ exports.UserUpdate = async(req, res) => {
     }
     try {
         await db.transaction(async(t)=>{
+            if(req.body.Contraseña && (req.body.Contraseña !== req.body.RContraseña)) return res.status(400).json({msg: 'Las contraseñas no coinciden'});
             let userRoleVec = [];
             //buscamos el user por su Id
             const user = await User.findByPk( req.body.UserId, {transaction: t} );
@@ -134,7 +135,7 @@ exports.UserDelete = async(req, res) => {
             //buscamos el user por su Id
             const user = await User.findByPk( req.body.UserId, {transaction: t} );
             user.DeletedAt = new Date();
-            user.DeletedBy = localStorage.getItem('identity');
+            user.DeletedBy = GetUserId();
             await user.save({transaction: t});
             return res.status(200).json({msg: 'El Usuario ha sido eliminado correctamente'})
         })

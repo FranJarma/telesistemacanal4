@@ -12,22 +12,20 @@ export default (state, action) => {
                 usuarioAutenticado: true
         }
         case TYPES.OBTENER_INFO_USUARIO:
-            localStorage.setItem('usr', action.payload.User.Apellido + ", "+ action.payload.User.Nombre);
-            localStorage.setItem('identity', action.payload.User.UserId);
+            localStorage.setItem('u_info', JSON.stringify(action.payload.User));
+            localStorage.setItem('u_roles', JSON.stringify(action.payload.Roles));
             return {
                 ...state,
-                usuarioLogueado: action.payload,
                 usuarioAutenticado: true,
                 push: true
         }
         case TYPES.CERRAR_SESION:
             localStorage.removeItem('token');
-            localStorage.removeItem('usr');
-            localStorage.removeItem('identity');
+            localStorage.removeItem('u_info');
+            localStorage.removeItem('u_roles');
             return {
                 ...state,
                 usuarioAutenticado: false,
-                usuarioLogueado: {},
                 token: null,
                 push: false
         }

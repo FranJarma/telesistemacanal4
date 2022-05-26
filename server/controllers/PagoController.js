@@ -25,9 +25,9 @@ exports.PagosListarPorUsuario = async(req,res) => {
         const pagos = await knex.select('*').from('pago as p')
         .innerJoin('movimientoconcepto as mc', 'p.PagoConceptoId', '=', 'mc.MovimientoConceptoId')
         .where(
-            {'p.UserId': req.params.UserId,
-            'p.PagoAño': req.params.Periodo,
-            'p.PagoConceptoId': req.params.Periodo.split('=')[1]
+            {'p.UserId': req.query.UserId,
+            'p.PagoAño': req.query.Periodo,
+            'p.PagoConceptoId': req.query.Concepto,
         })
         .orderBy([{ column: 'PagoAño', order: 'desc' }, { column: 'PagoMes', order: 'asc' }])
         res.json(pagos);
@@ -280,8 +280,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
             const abonado = await User.findByPk(req.body.PagoAdelantadoInfo.UserId, {transaction: t});
             const domicilio = await Domicilio.findByPk(abonado.DomicilioId, {transaction: t});
             const barrio = await Barrio.findByPk(domicilio.BarrioId, {transaction: t});
-            const municipio = await User.findByPk(barrio.MunicipioId, {transaction: t});
-
+            const municipio = await Municipio.findByPk(barrio.MunicipioId, {transaction: t});
             let totalSinDescuento = req.body.MesesAPagar.map(item => item.PagoTotal).reduce((prev, curr) => prev + curr, 0);
             let total = totalSinDescuento;
             if(req.body.PagoAdelantadoInfo.CantidadMesesAPagar === 6){
@@ -312,20 +311,20 @@ exports.PagoAdelantadoCreate = async(req,res) => {
             //instanciamos un unico movimiento
             const movimiento = new Movimiento({transaction: t});
             movimiento.MovimientoId = ultimoMovimientoId + 1;
-            movimiento.MunicipioId = req.body.PagoAdelantadoInfo.MunicipioId;
+            movimiento.MunicipioId = municipio.MunicipioId;
             movimiento.MovimientoCantidad = total;
             movimiento.createdAt = new Date();
             movimiento.createdBy = req.body.PagoAdelantadoInfo.createdBy;
             movimiento.MovimientoDia = new Date().getDate();
             movimiento.MovimientoMes = new Date().getMonth()+1;
             movimiento.MovimientoAño = new Date().getFullYear();
-            movimiento.MovimientoConceptoId = 8; //Pago Adelantado
+            movimiento.MovimientoConceptoId = 1;
             movimiento.AbonadoId = abonado.UserId;
             movimiento.MedioPagoId = req.body.PagoAdelantadoInfo.MedioPagoId;
             for(let i=0; i<=mesesAPagar; i++){
                 const pago = await Pago.findByPk(req.body.MesesAPagar[i].PagoId, {transaction: t});
                 pago.PagoSaldo = 0;
-                pago.PagoConceptoId = 8;
+                pago.PagoConceptoId = 1;
                 pago.PagoObservaciones = pagoAdelantadoObservaciones;
                 pago.updatedAt = new Date();
                 pago.updatedBy = req.body.PagoAdelantadoInfo.updatedBy;
@@ -343,6 +342,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
             }
             let factura = null;
             let datosFactura = null;
+            let datosRecibo = null;
             let recibo = null;
             const movimientoConceptoNombre = await MovimientoConcepto.findOne({
                 where: {
@@ -379,7 +379,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 factura.FacturaCodigoAutorizacion = nuevoComprobante.CAE;
                 factura.FacturaFechaVencimientoCodigoAutorizacion = nuevoComprobante.CAEFchVto;
                 factura.FacturaTipoCodigoAutorizacion = "E";
-                factura.FacturaImporte = req.body.PagoInfo.Total;
+                factura.FacturaImporte = total;
                 factura.FacturaVersion = 1;
                 factura.FacturaCuitEmisor = afip.CUIT;
                 factura.FacturaPuntoVenta = 1;
@@ -419,20 +419,21 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 if (ultimoRecibo) ultimoReciboId = ultimoRecibo.ReciboId;
                 recibo = new Recibo({transaction: t});
                 recibo.ReciboId = ultimoReciboId + 1;
-                recibo.ReciboImporte = req.body.PagoInfo.DetallePagoMonto;
+                recibo.ReciboImporte = req.body.PagoAdelantadoInfo.DetallePagoMonto;
                 recibo.createdAt = new Date();
-                recibo.createdBy = req.body.PagoInfo.createdBy;
+                recibo.createdBy = req.body.PagoAdelantadoInfo.createdBy;
                 await recibo.save({transaction: t});
                 movimiento.ReciboId = recibo.ReciboId;
                 datosRecibo = {ReciboId: recibo.ReciboId, createdAt: recibo.createdAt,
                     ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
-                    DomicilioCalle: domicilioAbonado.DomicilioCalle, DomicilioNumero: domicilioAbonado.DomicilioNumero,
-                    BarrioNombre: barrioAbonado.BarrioNombre, MunicipioNombre: municipioAbonado.MunicipioNombre,
-                    MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
+                    DomicilioCalle: domicilio.DomicilioCalle, DomicilioNumero: domicilio.DomicilioNumero,
+                    BarrioNombre: barrio.BarrioNombre, MunicipioNombre: municipio.MunicipioNombre,
+                    MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad,
+                    mesesAPagar: req.body.MesesAPagar
                 }
             }
             await movimiento.save({transaction: t});
-            return res.status(200).json({msg: 'El Pago Adelantado ha sido registrado correctamente', factura: factura, recibo: recibo})
+            return res.status(200).json({msg: 'El Pago Adelantado ha sido registrado correctamente', factura: datosFactura, recibo: datosRecibo})
         })
         }   
     catch (error) {

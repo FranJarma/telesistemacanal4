@@ -5,10 +5,11 @@ import Modal from '../design/components/Modal';
 import AppContext from '../../../context/appContext';
 import { Alert } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
+import GetUserId from './../../../helpers/GetUserId';
 
 const ListaModelosOnus = ({location}) => {
     const appContext = useContext(AppContext);
-    const { usuarioLogueado, modelosONU, traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU } = appContext;
+    const { modelosONU, traerModelosONU, crearModeloONU, modificarModeloONU, eliminarModeloONU } = appContext;
     useEffect(()=>{
         //para abrir el modal directamente cuando se quiere dar de alta una ONU desde otra vista 
         location.state ? setModalModeloOnu(true) : setModalModeloOnu(false);
@@ -41,18 +42,18 @@ const ListaModelosOnus = ({location}) => {
         setModalEliminarModeloOnu(false);
         if(data !== '') {
             setEditMode(true);
-            setModeloOnuInfo({...data, updatedBy: localStorage.getItem('identity'), updatedAt: new Date() });
+            setModeloOnuInfo({...data, updatedBy: GetUserId(), updatedAt: new Date() });
         }
         else {
             setEditMode(false);
-            setModeloOnuInfo({...data, createdBy: localStorage.getItem('identity')});
+            setModeloOnuInfo({...data, createdBy: GetUserId()});
         }
     }
 
     const handleChangeModalEliminarModeloOnu = (data = '') => {
         setModalEliminarModeloOnu(!ModalEliminarModeloOnu);
         setModalModeloOnu(false);
-        setModeloOnuInfo({...data, deletedBy: localStorage.getItem('identity'), deletedAt: new Date() });
+        setModeloOnuInfo({...data, deletedBy: GetUserId(), deletedAt: new Date() });
     }
 
     const columnasModelosONUS = [
