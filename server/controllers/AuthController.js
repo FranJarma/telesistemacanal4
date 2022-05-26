@@ -45,7 +45,8 @@ exports.UserAutenticate = async (req, res) => {
     try {
         /* consultamos si existe un usuario en la BD por su id que está en el cuerpo de la request,
         no vamos a traer la contraseña del usuario para garantizar seguridad */
-        const user = await knex.select('u.UserId', 'u.NombreUsuario', 'U.Nombre', 'u.Apellido', 'u.Email')
+        const user = await knex.select('u.UserId', 'u.NombreUsuario', 'U.Nombre',
+        'u.Apellido', 'u.Email', 'u.Telefono', 'u.Documento')
         .from('_user as u')
         .where('u.UserId', '=', req.UserId)
         let roles = null;

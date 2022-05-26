@@ -8,11 +8,11 @@ import AppContext from '../../../../context/appContext';
 import { Button, Dialog, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
 import * as VARIABLES from './../../../../types/variables';
 import GetFullName from './../../../../helpers/GetFullName';
+import GetUserInfo from './../../../../helpers/GetUserInfo';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
     const { obtenerUsuarioAutenticado, push, cerrarSesion } = appContext;
-    
     const [width, setWidth] = useState('0px');
     const [SubMenuAbonados, setSubMenuAbonados] = useState(false);
     const [SubMenuTecnicos, setSubMenuTecnicos] = useState(false);
@@ -177,7 +177,7 @@ const Aside = () => {
           <List style={{ cursor: 'pointer'}}>
             <Link style={{textDecoration: 'none', color: '#000'}} to={{
               pathname: '/perfil-user',
-              state: JSON.parse(localStorage.getItem('u_info'))
+              state: GetUserInfo()
             }
             }>
             <ListItem>

@@ -36,13 +36,13 @@ const PerfilUser = () => {
     useEffect(()=> {
         if(location.state){
             setUserInfo({
-                UserId: location.state.User.UserId,
-                Nombre: location.state.User.Nombre,
-                Apellido: location.state.User.Apellido,
-                Documento: location.state.User.Documento,
-                Email: location.state.User.Email,
-                Telefono: location.state.User.Telefono,
-                NombreUsuario: location.state.User.NombreUsuario,
+                UserId: location.state.UserId,
+                Nombre: location.state.Nombre,
+                Apellido: location.state.Apellido,
+                Documento: location.state.Documento,
+                Email: location.state.Email,
+                Telefono: location.state.Telefono,
+                NombreUsuario: location.state.NombreUsuario,
                 Contraseña: "",
                 RContraseña: ""
             });
