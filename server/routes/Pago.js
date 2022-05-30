@@ -22,4 +22,6 @@ router.put('/recargo', ValidarJWT,
     check('PagoRecargo', 'El monto del recargo no puede ser $ 0').notEmpty()
 ], PagoController.PagoAñadirRecargo);
 
+router.put('/recargo/delete', ValidarJWT, PagoController.PagoEliminarRecargo);
+
 module.exports = router;

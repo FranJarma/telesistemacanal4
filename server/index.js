@@ -1,6 +1,8 @@
 const express = require('express');
 const db = require('./config/connection');
 const cors = require('cors');
+const cron = require('node-cron');
+const PagoController = require('./controllers/PagoController');
 //creamos el server
 
 const app = express();
@@ -56,6 +58,9 @@ app.use('/api/caja', require('./routes/Caja.js'));
 //FACTURAS
 app.use('/api/facturas', require('./routes/Factura.js'));
 
+cron.schedule('* * * * *', function() {
+    PagoController.PagosAñadirRecargosAutomaticos();
+});
 
 //pág principal
 app.get('/', (req, res)=>{

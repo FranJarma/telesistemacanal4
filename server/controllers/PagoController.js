@@ -14,6 +14,7 @@ const Domicilio = require('../models/Domicilio');
 const Barrio = require('../models/Barrio');
 const Municipio = require('../models/Municipio');
 const MovimientoConcepto = require('../models/MovimientoConcepto');
+const { Op, literal } = require('sequelize');
 
 const date = new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 const afip = new Afip({ CUIT: 30687336506, cert: "tls_pem.pem", key: "tls_key.key", res_folder: './', production: 'false' });
@@ -516,5 +517,37 @@ exports.PagosTraerInscripcion = async(req,res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'Hubo un error al encontrar los pagos del abonado'});
+    }
+}
+
+exports.PagosAñadirRecargosAutomaticos = async (req, res) => {
+    try {
+        const mesActual = new Date().getMonth() + 1;
+        const añoActual = new Date().getFullYear();
+        await db.transaction(async (t)=> {
+            await Pago.update(
+                {
+                    PagoSaldo: literal('PagoSaldo + 50'),
+                    PagoRecargo: literal('PagoRecargo + 50'),
+                    PagoObservaciones: `Recargo agregado automáticamente el día: ${new Date().toLocaleDateString()}`
+                },
+                {
+                    where: {
+                        PagoSaldo: {
+                            [Op.gt]: 0
+                        },
+                        PagoAño: {
+                            [Op.lte]: añoActual
+                        },
+                        PagoMes: {
+                            [Op.lte]: mesActual
+                        }
+                    }
+                },
+            {transaction: t});
+            console.log('Recargos actualizados...')
+        })
+    } catch (error) {
+        console.log('Error:', error)
     }
 }
