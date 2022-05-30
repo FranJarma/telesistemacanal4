@@ -95,6 +95,14 @@ export default (state, action) => {
                 }, ...state.historialServicios]
             };
         }
+        case TYPES.RENOVAR_CONTRATO_ABONADO: {
+            let abonado = state.abonados.find(abonado => abonado.UserId === action.payload.UserId);
+            abonado.FechaVencimientoServicio = new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString();
+            return {
+                ...state,
+                abonados: [...state.abonados]
+            }
+        }
         case TYPES.CAMBIAR_ESTADO_ABONADO: {
             return {
                 ...state,

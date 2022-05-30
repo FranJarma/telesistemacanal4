@@ -229,7 +229,7 @@ exports.PagoCreate = async(req,res) => {
                 await recibo.save({transaction: t});
                 movimiento.ReciboId = recibo.ReciboId;
                 datosRecibo = {ReciboId: recibo.ReciboId, createdAt: recibo.createdAt,
-                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit, AbonadoNumero: abonado.AbonadoNumero,
                     DomicilioCalle: domicilioAbonado.DomicilioCalle, DomicilioNumero: domicilioAbonado.DomicilioNumero,
                     BarrioNombre: barrioAbonado.BarrioNombre, MunicipioNombre: municipioAbonado.MunicipioNombre,
                     MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
@@ -425,7 +425,7 @@ exports.PagoAdelantadoCreate = async(req,res) => {
                 await recibo.save({transaction: t});
                 movimiento.ReciboId = recibo.ReciboId;
                 datosRecibo = {ReciboId: recibo.ReciboId, createdAt: recibo.createdAt,
-                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit, AbonadoNumero: abonado.AbonadoNumero,
                     DomicilioCalle: domicilio.DomicilioCalle, DomicilioNumero: domicilio.DomicilioNumero,
                     BarrioNombre: barrio.BarrioNombre, MunicipioNombre: municipio.MunicipioNombre,
                     MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad,

@@ -32,6 +32,11 @@ const ListaAbonadosAtrasados = () => {
         "omit": true,
     },
     {
+        "name": "N°",
+        "selector": row =>row["AbonadoNumero"],
+        "width": '50px'
+    },
+    {
         "name": <TooltipForTable name="Nombre Completo" />,
         "selector": row => row["Apellido"] + ', ' + row["Nombre"],
         "wrap": true,

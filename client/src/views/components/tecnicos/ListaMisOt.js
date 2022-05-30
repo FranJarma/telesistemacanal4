@@ -107,10 +107,10 @@ const ListaMisOt = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                <Typography onClick={()=>{handleChangeModalVerOt(data)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><i className="bx bx-show-alt bx-xs"></i> Ver OT</Typography>
+                <Typography onClick={()=>{handleChangeModalVerOt(data)}} style={{color: "navy", cursor: 'pointer'}}><i className="bx bx-show-alt bx-xs"></i> Ver OT</Typography>
                 </MenuItem>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "palevioletred", cursor: 'pointer'}}><i className='bx bxs-calendar bx-xs'> </i> Registrar visita</Typography>
+                    <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "palevioletred", cursor: 'pointer'}}><i className='bx bx-calendar bx-xs'> </i> Registrar visita</Typography>
                 </MenuItem>
                 <MenuItem>
                     <Typography onClick={()=>{handleChangeModalFinalizarOt(data)}} style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-calendar-check bx-xs' ></i> Finalizar OT</Typography>
@@ -147,7 +147,7 @@ const ListaMisOt = () => {
             <Modal
             abrirModal={ModalRegistrarVisitaOt}
             funcionCerrar={handleChangeModalRegistrarVisitaOt}
-            titulo ={<Typography variant="h2"><i className="bx bxs-calendar"></i> Registrar Visita OT</Typography>}
+            titulo ={<Typography variant="h2"><i className="bx bx-calendar"></i> Registrar Visita OT</Typography>}
             botones={<><Button variant='contained' color="primary" onClick={() =>
                 registrarVisitaOrdenDeTrabajo({...OtInfo, FechaVisita}, handleChangeModalRegistrarVisitaOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalRegistrarVisitaOt}>Cancelar</Button></>}
             formulario={

@@ -6,6 +6,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import esLocale from 'date-fns/locale/es';
 import AppState from './context/appState';
 import Login from'./views/components/auth/Login';
+import Home from'./views/components/Home';
 import ListaPagos from './views/components/pagos/ListaPagos';
 import ListaServicios from './views/components/servicios/ListaServicios';
 import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
@@ -34,11 +35,11 @@ if (token) {
   tokenAuthHeaders(token);
 }
 
-const Home = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 4000)).then(
-    () => import('./views/components/Home')
-  );  
-});
+// const Home = lazy(() => {
+//   return new Promise(resolve => setTimeout(resolve, 4000)).then(
+//     () => import('./views/components/Home')
+//   );  
+// });
 
 const CaratulaAbonado = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 4000)).then(
@@ -219,7 +220,7 @@ function App() {
               </Route>
 
               <Route
-              path="/caratula-user"
+              path="/caratula-user/:UserId"
               element={
                 <AuthRoute roles={["Jefe", "Admin"]}>
                   <Suspense fallback={<Cargando/>}>
@@ -288,7 +289,7 @@ function App() {
               </Route>
 
               <Route
-              path="/caratula-abonado/:UserId"
+              path="/caratula-abonado/:AbonadoNumero"
               element={
                 <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
                   <Suspense fallback={<Cargando/>}>
@@ -299,7 +300,7 @@ function App() {
               </Route>
 
               <Route
-              path="/cambio-domicilio/:UserId"
+              path="/cambio-domicilio/:AbonadoNumero"
               element={
                 <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
                   <CambioDomicilio/>
@@ -308,7 +309,7 @@ function App() {
               </Route>
 
               <Route
-              path="/cambio-servicio/:UserId"
+              path="/cambio-servicio/:AbonadoNumero"
               element={
                 <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
                   <CambioServicio/>
@@ -317,7 +318,7 @@ function App() {
               </Route>
 
               <Route
-              path="/cambio-titularidad/:UserId"
+              path="/cambio-titularidad/:AbonadoNumero"
               element={
                 <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
                   <Suspense fallback={<Cargando/>}>
@@ -328,7 +329,7 @@ function App() {
               </Route>
 
               <Route
-              path="/historial-de-pagos/:UserId"
+              path="/historial-de-pagos/:AbonadoNumero"
               element={
                 <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
                   <ListaPagos/>

@@ -67,8 +67,8 @@ const Roles = () => {
             <>
             <MenuItem>
                 <Link to={`/caratula-role/edit/RoleId=${data.RoleId}`} state={data}
-                style={{textDecoration: 'none', color: "#4D7F9E"}}>
-                <Typography><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
+                style={{textDecoration: 'none', color: "navy"}}>
+                <Typography><i className='bx bx-pencil bx-xs' ></i> Editar</Typography>
                 </Link>
             </MenuItem>
             <MenuItem>
@@ -94,15 +94,16 @@ const Roles = () => {
                 <Modal
                 abrirModal={modalDarDeBaja}
                 funcionCerrar={handleChangeModalDarDeBaja}
-                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>¿Está seguro que quiere dar de baja el rol?</Alert>}
+                titulo={<Alert severity="error" icon={<i className="bx bx-user-x bx-sm"></i>}>¿Está seguro que quiere dar de baja el rol?</Alert>}
                 botones={
                 <>
                 <Button onClick={()=>
                     {eliminarRol(RoleInfo)
                     setModalDarDeBaja(false)}}
+                    style={{backgroundColor: "#EF5350", color:"white"}}
                     variant="contained"
-                    color="secondary">
-                    Aceptar</Button>
+                    >
+                Dar de baja</Button>
                 <Button onClick={handleChangeModalDarDeBaja}>Cancelar</Button></>}
                 >
                 </Modal>

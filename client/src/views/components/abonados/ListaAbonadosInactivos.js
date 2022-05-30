@@ -72,6 +72,11 @@ const ListaAbonadosInactivos = () => {
             "selector": row =>row["UserId"]
         },
         {
+            "name": "N°",
+            "selector": row =>row["AbonadoNumero"],
+            "width": '50px'
+        },
+        {
             "name": "Nombre Completo",
             "selector": row => row["Apellido"] + ', ' + row["Nombre"],
             "wrap": true,
@@ -106,13 +111,13 @@ const ListaAbonadosInactivos = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Link to={`/historial-de-pagos/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                    <Link to={`/historial-de-pagos/${data.AbonadoNumero}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
                     <Typography style={{color: 'navy'}}>
                     <i className='bx bx-money bx-xs'></i> Pagos</Typography>
                     </Link> 
                 </MenuItem>
                 <MenuItem>
-                    <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "darkgreen", cursor: "pointer"}}><i className='bx bxs-user-check bx-xs'></i> Dar de alta</Typography>
+                    <Typography onClick={()=>handleChangeModalDarDeAlta(data)} style={{textDecoration: 'none', color: "darkgreen", cursor: "pointer"}}><i className='bx bx-user-check bx-xs'></i> Dar de alta</Typography>
                 </MenuItem>
                 </>
             }/>
@@ -153,7 +158,7 @@ const ExpandedComponent = ({ data }) =>
                 <Modal
                 abrirModal={modalDarDeAlta}
                 funcionCerrar={handleChangeModalDarDeAlta}
-                titulo={<Alert severity="success" icon={<i className="bx bxs-user-check bx-sm"></i>}>Si usted da de alta al abonado, pasará al listado de <b>Abonados Inscriptos</b></Alert>}
+                titulo={<Alert severity="success" icon={<i className="bx bx-user-check bx-sm"></i>}>Si usted da de alta al abonado, pasará al listado de <b>Abonados Inscriptos</b></Alert>}
                 botones={
                 <>
                 <Button onClick={()=>

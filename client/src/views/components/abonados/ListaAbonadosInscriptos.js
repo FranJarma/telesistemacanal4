@@ -114,6 +114,11 @@ const ListaAbonadosInscriptos = () => {
         "omit": true,
     },
     {
+        "name": "N°",
+        "selector": row =>row["AbonadoNumero"],
+        "width": '50px'
+    },
+    {
         "name": <TooltipForTable name="Nombre Completo" />,
         "selector": row => row["Apellido"] + ', ' + row["Nombre"],
         "wrap": true,
@@ -152,16 +157,16 @@ const ListaAbonadosInscriptos = () => {
         <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Link to={`/caratula-abonado/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "#4D7F9E"}}>
-                <Typography style={{color: '#4D7F9E'}}>
-                <i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
+                <Link to={`/caratula-abonado/${data.AbonadoNumero}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                <Typography style={{color: 'navy'}}>
+                <i className='bx bx-pencil bx-xs'></i> Editar</Typography>
                 </Link>
             </MenuItem>
             <MenuItem>
                 <Typography onClick={()=>handleChangeModalDatosInscripcion(data)} style={{textDecoration: 'none', color: 'navy', cursor: "pointer"}}><i className='bx bx-money bx-xs'></i> Inscripción</Typography>
             </MenuItem>
             <MenuItem>
-                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: 'red', cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> Dar de baja</Typography>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: 'red', cursor: "pointer"}}><i className='bx bx-user-x bx-xs'></i> Dar de baja</Typography>
             </MenuItem>
             </>
         }/>
@@ -201,7 +206,7 @@ const columnasInscripcion = [
         cell: (data) =>
         <Tooltip title="Generar Recibo">
         <Typography onClick={() => generarRecibo(data)} style={{color: 'grey'}}>
-        <i className='bx bxs-file bx-xs'></i>
+        <i className='bx bx-file bx-xs'></i>
         </Typography>
         </Tooltip>
     }
@@ -245,15 +250,16 @@ const columnasInscripcion = [
                 <Modal
                 abrirModal={modalDarDeBaja}
                 funcionCerrar={handleChangeModalDarDeBaja}
-                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
+                titulo={<Alert severity="error" icon={<i className="bx bx-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
                 botones={
                 <>
                 <Button onClick={()=>
                     {cambiarEstadoAbonado(AbonadoInfo)
                     setModalDarDeBaja(false)}}
+                    style={{backgroundColor: "#EF5350", color:"white"}}
                     variant="contained"
-                    color="secondary">
-                    Aceptar</Button>
+                    >
+                Dar de baja</Button>
                 <Button onClick={handleChangeModalDarDeBaja}>Cancelar</Button></>}
                 formulario={
                 <>
@@ -274,7 +280,7 @@ const columnasInscripcion = [
                 <Modal
                 abrirModal={modalConfirmarInstalacion}
                 funcionCerrar={handleChangeModalConfirmarInstalacion}
-                titulo={<Alert severity="info" icon={<i className="bx bxs-user-check bx-sm"></i>}>Si confirma la instalación, el abonado pasará al listado de <b>Abonados Activos</b></Alert>}
+                titulo={<Alert severity="info" icon={<i className="bx bx-user-check bx-sm"></i>}>Si confirma la instalación, el abonado pasará al listado de <b>Abonados Activos</b></Alert>}
                 botones={
                 <>
                 <Button onClick={()=>

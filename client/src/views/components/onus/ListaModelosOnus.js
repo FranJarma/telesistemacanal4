@@ -80,7 +80,7 @@ const ListaModelosOnus = ({location}) => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalModeloOnu(data)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
+                    <Typography onClick={()=>{handleChangeModalModeloOnu(data)}} style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-pencil bx-xs' ></i> Editar</Typography>
                 </MenuItem>
                 <MenuItem>
                     <Typography onClick={()=>{handleChangeModalEliminarModeloOnu(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>
@@ -109,7 +109,7 @@ const ListaModelosOnus = ({location}) => {
         <Modal
         abrirModal={ModalModeloOnu}
         funcionCerrar={handleChangeModalModeloOnu}
-        titulo={<Typography variant="h2"><i className="bx bxs-hdd"></i>{EditMode ? " Editar Modelo ONU" : "Nuevo Modelo ONU"}</Typography>}
+        titulo={<Typography variant="h2"><i className="bx bx-hdd"></i>{EditMode ? " Editar Modelo ONU" : "Nuevo Modelo ONU"}</Typography>}
         formulario={
             <Grid container spacing={3}>
                 <Grid item xs={12} md={12} sm={12} xl={12}>

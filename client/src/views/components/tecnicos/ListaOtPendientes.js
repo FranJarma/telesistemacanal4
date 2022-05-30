@@ -8,7 +8,6 @@ import AppContext from '../../../context/appContext';
 import { Link } from 'react-router-dom';
 import CaratulaImpresionOt from './CaratulaImpresionOt';
 import { DatePicker, DateTimePicker } from "@material-ui/pickers";
-
 import { Alert, Autocomplete } from '@material-ui/lab';
 import BotonesDatatable from '../design/components/BotonesDatatable';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
@@ -119,7 +118,7 @@ const ListaOtPendientes = () => {
         },
         {
             "name": "Servicio",
-            "width": "300px",
+            "width": "200px",
             "wrap": true,
             "sortable": true,
             "selector": row => !row["NuevoServicioId"] ? row["ServicioViejo"]:
@@ -135,7 +134,7 @@ const ListaOtPendientes = () => {
             "name": "Monto",
             "wrap": true,
             "sortable": true,
-            "selector": row => "$ " + row["Monto"]
+            "selector": row => row["Monto"] > 0 ? "$ " + row["Monto"] : "-"
         },
         {
             "name": <TooltipForTable name="Técnico responsable"/>,
@@ -155,18 +154,18 @@ const ListaOtPendientes = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Link to={`/caratula-ot/${data.OtId}`} state={data} style={{textDecoration: 'none', color: "#4D7F9E"}}>
-                    <Typography><i className='bx bxs-pencil bx-xs' ></i>  Editar</Typography>
+                    <Link to={`/caratula-ot/${data.OtId}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                    <Typography><i className='bx bx-pencil bx-xs' ></i>  Editar</Typography>
                     </Link>
                 </MenuItem>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "palevioletred", cursor: 'pointer'}}><i className='bx bxs-calendar bx-xs'> </i> Registrar visita</Typography>
+                    <Typography onClick={()=>{handleChangeModalRegistrarVisitaOt(data)}} style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-calendar bx-xs'> </i> Registrar visita</Typography>
                 </MenuItem>
                 <MenuItem>
                     <Typography onClick={()=>{handleChangeModalFinalizarOt(data)}} style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-calendar-check bx-xs' ></i> Finalizar OT</Typography>
                 </MenuItem>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalImprimirOt(data)}} style={{color: "orange", cursor: 'pointer'}}><i className="bx bx-printer bx-xs"></i> Imprimir</Typography>
+                    <Typography onClick={()=>{handleChangeModalImprimirOt(data)}} style={{color: "navy", cursor: 'pointer'}}><i className="bx bx-printer bx-xs"></i> Imprimir</Typography>
                 </MenuItem>
                 </>
             }/>
@@ -236,7 +235,7 @@ const ListaOtPendientes = () => {
             <Modal
             abrirModal={ModalRegistrarVisitaOt}
             funcionCerrar={handleChangeModalRegistrarVisitaOt}
-            titulo ={<Typography variant="h2"><i className="bx bxs-calendar"></i> Registrar Visita OT</Typography>}
+            titulo ={<Typography variant="h2"><i className="bx bx-calendar"></i> Registrar Visita OT</Typography>}
             botones={<><Button variant='contained' color="primary" onClick={() =>
                 registrarVisitaOrdenDeTrabajo({...OtInfo, FechaVisita}, handleChangeModalRegistrarVisitaOt)}>Registrar</Button><Button variant="text" color="inherit" onClick={handleChangeModalRegistrarVisitaOt}>Cancelar</Button></>}
             formulario={
@@ -312,7 +311,7 @@ const ListaOtPendientes = () => {
                         label="Fecha y hora de finalización"
                         ></DateTimePicker>
                     </Grid>
-                    {(OtInfo.ServicioNuevoId !== 1 && !OtInfo.OnuId) ?
+                    {(OtInfo.ServicioViejoId !== 1 && !OtInfo.NuevoServicioId) || (OtInfo.NuevoServicioId === 1) ?
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Autocomplete
                             value={Onu}

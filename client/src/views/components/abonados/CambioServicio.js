@@ -132,10 +132,10 @@ const CambioServicio = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                <Typography style={{color: "#4D7F9E", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
+                <Typography style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-pencil bx-xs' ></i> Editar</Typography>
                 </MenuItem>
                 <MenuItem>
-                <Typography style={{color: "navy", cursor: 'pointer'}}><i className='bx bxs-home bx-xs' ></i> Confirmar cambio de domicilio</Typography>
+                <Typography style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-home bx-xs' ></i> Confirmar cambio de domicilio</Typography>
                 </MenuItem>
                 </>
             }/>

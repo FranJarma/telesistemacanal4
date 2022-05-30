@@ -96,8 +96,8 @@ const Users = () => {
         <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Link to={`/caratula-user/edit/UserId=${data.UserId}`} state={data} style={{textDecoration: 'none', color: "#4D7F9E"}}>
-                <Typography ><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
+                <Link to={`/caratula-user/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                <Typography ><i className='bx bx-pencil bx-xs' ></i> Editar</Typography>
                 </Link>
             </MenuItem>
             <MenuItem>
@@ -124,15 +124,16 @@ const Users = () => {
                 <Modal
                 abrirModal={modalDarDeBaja}
                 funcionCerrar={handleChangeModalDarDeBaja}
-                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>¿Está seguro que quiere dar de baja al usuario?</Alert>}
+                titulo={<Alert severity="error" icon={<i className="bx bx-user-x bx-sm"></i>}>¿Está seguro que quiere dar de baja al usuario?</Alert>}
                 botones={
                 <>
                 <Button onClick={()=>
                     {eliminarUsuario(UserInfo)
                     setModalDarDeBaja(false)}}
+                    style={{backgroundColor: "#EF5350", color:"white"}}
                     variant="contained"
-                    color="secondary">
-                    Aceptar</Button>
+                    >
+                Dar de baja</Button>
                 <Button onClick={handleChangeModalDarDeBaja}>Cancelar</Button></>}
                 >
                 </Modal>

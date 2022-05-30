@@ -187,7 +187,7 @@ const CaratulaOt = () => {
                 <Tabs>
                     <TabList>
                         <Tab onClick={handleChangeTabOt}><i className="bx bx-task"></i> Datos de la OT</Tab>
-                        <Tab><i className='bx bxs-wrench'></i> Técnicos</Tab>
+                        <Tab><i className='bx bx-wrench'></i> Técnicos</Tab>
                         <Tab onClick={handleChangeTabTareas}><i className='bx bx-list-ol'></i> Tareas</Tab>
                     </TabList>
                 <TabPanel>

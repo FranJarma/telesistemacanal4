@@ -7,12 +7,12 @@ import { Link } from 'react-router-dom';
 import AppContext from '../../context/appContext';
 import {CartesianGrid, BarChart, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer} from 'recharts';
 import encontrarCoincidencias from '../../helpers/EncontrarCoincidencias';
+import GetRoles from '../../helpers/GetRoles';
 
 const Home = () => {
     const styles = useStyles();
     const appContext = useContext(AppContext);
-    const {traerMovimientosPorFecha, movimientos, ordenesDeTrabajo, traerOrdenesDeTrabajo, traerAbonados, abonados, traerBarriosPorMunicipio, barrios} = appContext;
-    
+    const { traerMovimientosPorFecha, movimientos, ordenesDeTrabajo, traerOrdenesDeTrabajo, traerAbonados, abonados, traerBarriosPorMunicipio, barrios} = appContext;
     let cantidadOrdenesDeTrabajo = encontrarCoincidencias(ordenesDeTrabajo, "OtResponsableEjecucion", "NombreResponsableEjecucion", "ApellidoResponsableEjecucion");
 
     useEffect(()=> {
@@ -28,6 +28,7 @@ const Home = () => {
             <main>
                 <Typography variant="h1">Bienvenido a Telesistema Canal 4</Typography>
                 <br/>
+                {GetRoles() && (GetRoles().some((rol)=> rol.RoleName === "Admin") || GetRoles().some((rol)=> rol.RoleName === "Jefe")) ? 
                 <Grid container spacing={3}>
                     <Grid item lg={6} md={6} xs={12}>
                         <Link style={{textDecoration: 'none'}} to="/cierre-de-caja">
@@ -90,6 +91,7 @@ const Home = () => {
                         </Link>
                     </Grid>
                 </Grid>
+                : ""}
             </main>
             <Footer/>
         </div>

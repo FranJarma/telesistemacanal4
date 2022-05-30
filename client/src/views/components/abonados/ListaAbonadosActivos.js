@@ -18,7 +18,7 @@ import GetUserId from './../../../helpers/GetUserId';
 
 const ListaAbonadosActivos = () => {
     const appContext = useContext(AppContext);
-    const { abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado } = appContext;
+    const { abonados, municipios, traerAbonados, traerMunicipiosPorProvincia, cambiarEstadoAbonado, renovarContratoAbonado } = appContext;
 
     useEffect(() => {
         traerAbonados(2);
@@ -28,6 +28,7 @@ const ListaAbonadosActivos = () => {
 
     const [MunicipioId, setMunicipioId] = useState(0);
     const [modalDarDeBaja, setModalDarDeBaja] = useState(false);
+    const [modalRenovarContrato, setModalRenovarContrato] = useState(false);
 
     const [AbonadoInfo, setAbonadoInfo] = useState({
         UserId: null,
@@ -59,6 +60,20 @@ const ListaAbonadosActivos = () => {
         }
     }
 
+    const handleChangeModalRenovarContrato = (data) => {
+        setModalRenovarContrato(!modalRenovarContrato)
+        if(!modalRenovarContrato){
+            setAbonadoInfo({
+                UserId: data.UserId,
+            })
+        }
+        else {
+            setAbonadoInfo({
+                UserId: null
+            })
+        }
+    }
+
     const onChangeInputEstadoObservaciones = (e) => {
         setAbonadoInfo({
             ...AbonadoInfo,
@@ -76,6 +91,11 @@ const ListaAbonadosActivos = () => {
         "name": "id",
         "selector": row =>row["UserId"],
         "omit": true,
+    },
+    {
+        "name": "N°",
+        "selector": row =>row["AbonadoNumero"],
+        "width": '50px'
     },
     {
         "name": <TooltipForTable name="Nombre Completo" />,
@@ -113,37 +133,42 @@ const ListaAbonadosActivos = () => {
         <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Link to={`/caratula-abonado/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "#4D7F9E"}}>
-                <Typography style={{color: '#4D7F9E'}}>
-                <i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
+                <Link to={`/caratula-abonado/${data.AbonadoNumero}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                <Typography style={{color: 'navy'}}>
+                <i className='bx bx-pencil bx-xs'></i> Editar</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Link to={`/cambio-domicilio/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "#4D7F9E"}}>
-                <Typography style={{color: '#4D7F9E'}}>
-                <i className='bx bxs-home bx-xs'></i> Cambio de domicilio</Typography>
+                <Link to={`/cambio-domicilio/${data.AbonadoNumero}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                <Typography style={{color: 'navy'}}>
+                <i className='bx bx-home bx-xs'></i> Cambio de domicilio</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Link to={`/cambio-servicio/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "teal"}}>
-                <Typography style={{color: 'teal'}}>
+                <Link to={`/cambio-servicio/${data.AbonadoNumero}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                <Typography style={{color: 'navy'}}>
                 <i className='bx bx-plug bx-xs'></i> Cambio de servicio</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Link to={`/cambio-titularidad/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                <Link to={`/cambio-titularidad/${data.AbonadoNumero}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
                 <Typography style={{color: 'navy'}}>
-                <i className='bx bxs-notepad bx-xs'></i> Cambio de titularidad</Typography>
+                <i className='bx bx-user bx-xs'></i> Cambio de titularidad</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Link to={`/historial-de-pagos/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
+                <Link to={`/historial-de-pagos/${data.AbonadoNumero}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
                 <Typography style={{color: 'navy'}}>
-                <i className='bx bx-money bx-xs'></i> Pagos</Typography>
+                <i className='bx bx-money bx-xs'></i> Historial de pagos</Typography>
                 </Link> 
             </MenuItem>
+            {Date.parse(data.FechaVencimientoServicio) <= Date.parse(new Date()) ?
             <MenuItem>
-                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-user-x bx-xs'></i> Dar de baja</Typography>
+                <Typography onClick={()=>handleChangeModalRenovarContrato(data)} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-receipt bx-xs'></i> Renovar contrato</Typography>
+            </MenuItem>
+            : ""}
+            <MenuItem>
+                <Typography onClick={()=>handleChangeModalDarDeBaja(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bx-user-x bx-xs'></i> Dar de baja</Typography>
             </MenuItem>
             </>
         }/>
@@ -183,17 +208,37 @@ const ListaAbonadosActivos = () => {
                     </TextField>
                 </Grid>
                 <Modal
+                abrirModal={modalRenovarContrato}
+                funcionCerrar={handleChangeModalRenovarContrato}
+                titulo={<Typography variant="h2"><i className='bx bx-receipt bx-xs'></i> Renovar contrato de abonado</Typography>}
+                botones={
+                <>
+                <Button onClick={()=>
+                    {renovarContratoAbonado(AbonadoInfo)
+                    setModalRenovarContrato(false)}}
+                    variant="contained"
+                    color="secondary">
+                    Renovar contrato</Button>
+                <Button onClick={handleChangeModalRenovarContrato}>Cancelar</Button></>}
+                formulario={
+                <>
+                Al renovar el contrato del abonado, el mismo tendrá vigencia por 2 años, hasta el día: {new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toLocaleDateString()}
+                </>}
+                >
+                </Modal>
+                <Modal
                 abrirModal={modalDarDeBaja}
                 funcionCerrar={handleChangeModalDarDeBaja}
-                titulo={<Alert severity="error" icon={<i className="bx bxs-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
+                titulo={<Alert severity="error" icon={<i className="bx bx-user-x bx-sm"></i>}>Si usted da de baja al abonado, pasará al listado de <b>Abonados Inactivos</b></Alert>}
                 botones={
                 <>
                 <Button onClick={()=>
                     {cambiarEstadoAbonado(AbonadoInfo)
                     setModalDarDeBaja(false)}}
+                    style={{backgroundColor: "#EF5350", color:"white"}}
                     variant="contained"
-                    color="secondary">
-                    Aceptar</Button>
+                    >
+                Dar de baja</Button>
                 <Button onClick={handleChangeModalDarDeBaja}>Cancelar</Button></>}
                 formulario={
                 <>

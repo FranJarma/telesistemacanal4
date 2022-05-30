@@ -6,6 +6,9 @@ const User = db.define('_user', {
         type: UUIDV4,
         primaryKey: true
     },
+    AbonadoNumero: {
+        type: INTEGER
+    },
     NombreUsuario: {
         type: STRING(256),
         unique: true,

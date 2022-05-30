@@ -346,15 +346,14 @@ const AppState = props => {
             })
             if(abonado.RequiereFactura){
                 descargarComprobante("Factura", <FacturaCaratula data={respuesta.data.factura}/>, respuesta.data.factura).then(()=> {
-                    Swal('Operación completa', VARIABLES.ABONADO_CREADO_CORRECTAMENTE);
+                    Swal('Operación completa', VARIABLES.ABONADO_CREADO_CORRECTAMENTE).then(()=> navigate(-1));
                 })
             }
             else{
                 descargarComprobante("Recibo", <ReciboCaratula data={respuesta.data.recibo}/>, respuesta.data.recibo).then(()=> {
-                    Swal('Operación completa', VARIABLES.ABONADO_CREADO_CORRECTAMENTE);
+                    Swal('Operación completa', VARIABLES.ABONADO_CREADO_CORRECTAMENTE).then(()=> navigate(-1));
                 })
             }
-            navigate('/abonados-inscriptos');
 
         } catch (error) {
             if(error == VARIABLES.ERROR_AUTENTICACION) navigate("/");
@@ -401,6 +400,30 @@ const AppState = props => {
             if (resOk.data)
                 dispatch({
                     type: TYPES.CAMBIAR_ESTADO_ABONADO,
+                    payload: abonado
+                })
+                Swal('Operación completa', resOk.data.msg);
+        })
+        .catch(err => {
+            if(err == VARIABLES.ERROR_AUTENTICACION) navigate("/");
+            if(!err.response){
+                Toast('Error de conexión con el servidor', 'error');
+            }
+            else if(err.response.data.msg){
+                Toast(err.response.data.msg, 'warning');
+
+            }
+            else if(err.response.data.errors){
+                Toast(err.response.data.errors[0].msg, 'warning');
+            }
+        })
+    }
+    const renovarContratoAbonado = async(abonado) => {
+        clienteAxios.put(`/api/usuarios/abonados/renovar-contrato/${abonado.UserId}`, abonado)
+        .then(resOk => {
+            if (resOk.data)
+                dispatch({
+                    type: TYPES.RENOVAR_CONTRATO_ABONADO,
                     payload: abonado
                 })
                 Swal('Operación completa', resOk.data.msg);
@@ -1843,7 +1866,7 @@ const AppState = props => {
             traerRoles, traerRolesPorUsuario, crearRol, modificarRol, eliminarRol,
             traerPermisos, traerPermisosPorRol,
             traerAbonados, traerAbonadosAtrasados, traerAbonado, traerDomiciliosAbonado, traerServiciosAbonado, crearAbonado, modificarAbonado, cambioTitularidadAbonado,
-            cambioDomicilioAbonado, cambiarEstadoAbonado, cambioServicioAbonado,
+            cambioDomicilioAbonado, cambiarEstadoAbonado, renovarContratoAbonado, cambioServicioAbonado,
             traerBarriosPorMunicipio, crearBarrio, modificarBarrio, eliminarBarrio, 
             traerCondicionesIva,
             traerMunicipios, traerMunicipiosPorProvincia, crearMunicipio, modificarMunicipio, eliminarMunicipio,

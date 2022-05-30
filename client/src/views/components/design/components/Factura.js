@@ -16,7 +16,7 @@ const Factura = ({data}) => {
     <>
       <QRCodeCanvas style={{display: 'none'}} value ={afipUrl}/>
         <Tooltip title="Descargar factura">
-          <i style={{color: "teal"}} className='bx bxs-file-pdf bx-xs' onClick={() => {
+          <i style={{color: "navy"}} className='bx bx-file-pdf bx-xs' onClick={() => {
             descargarComprobante("Factura", <FacturaCaratula data={data}/>, data);
           } }></i>
         </Tooltip>

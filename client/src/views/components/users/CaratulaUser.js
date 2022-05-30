@@ -135,7 +135,7 @@ const CaratulaUser = () => {
             <Tabs>
                 <TabList>
                     <Tab><i className="bx bx-user"></i> Usuario</Tab>
-                    <Tab onClick={handleChangeTabRoles}><i className='bx bxs-user'></i> Roles</Tab>
+                    <Tab onClick={handleChangeTabRoles}><i className='bx bx-user'></i> Roles</Tab>
                 </TabList>
                 <TabPanel>
                 <Card>

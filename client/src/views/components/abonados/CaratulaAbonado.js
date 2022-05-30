@@ -233,10 +233,10 @@ const CaratulaAbonado = () => {
         <CardContent>
     <Tabs>
         <TabList>
-            <Tab><i className="bx bxs-user"></i> Abonado</Tab>
-            <Tab><i className='bx bxs-home'></i> Domicilio</Tab>
+            <Tab><i className="bx bx-user"></i> Abonado</Tab>
+            <Tab><i className='bx bx-home'></i> Domicilio</Tab>
             <Tab><i className='bx bx-money'></i> Servicio</Tab>
-            <Tab><i className='bx bxs-plug'></i> Instalación y OT</Tab>
+            <Tab><i className='bx bx-plug'></i> Instalación y OT</Tab>
         </TabList>
     <TabPanel>
         <Card>
@@ -496,12 +496,14 @@ const CaratulaAbonado = () => {
                         </Grid>
                     </>
                     :""}
+                    {!location.state ? 
                     <Grid item xs={12} md={12} sm={12} lg={12}>
                         <FormControl>
                             <FormControlLabel label="Requiere factura" control={<Checkbox checked={RequiereFactura} onChange={handleChangeRequiereFactura} value={RequiereFactura}></Checkbox>}></FormControlLabel>
                         </FormControl>
                         {RequiereFactura ? <Alert severity='info'>La factura se generará en la sección "Facturas" del historial de pagos del abonado</Alert> : ""}
                     </Grid>
+                    : ""}
                 </Grid>
                 <br/>
             </CardContent>

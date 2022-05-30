@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import logo from './../../../images/logo-ts.png';
 import AppContext from '../../../../context/appContext';
 import { Button, Dialog, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
-import * as VARIABLES from './../../../../types/variables';
 import GetFullName from './../../../../helpers/GetFullName';
 import GetUserInfo from './../../../../helpers/GetUserInfo';
+import GetRoles from './../../../../helpers/GetRoles';
 
 const Aside = () => {
     const appContext = useContext(AppContext);
@@ -109,9 +109,9 @@ const Aside = () => {
           </SidebarHeader>
           <MenuItem icon={<i className="bx bx-home"></i>}>Inicio<Link to="/home"></Link></MenuItem>
 
-          { JSON.parse(localStorage.getItem('u_roles')).some((rol)=> rol.RoleId === VARIABLES.ID_ROL_TECNICO) ? 
+          { GetRoles().some((rol)=> rol.RoleName === "Tecnico") ? 
               <MenuItem icon={<i className='bx bx-task'></i>}>Mis OT<Link to="/mis-ot"></Link></MenuItem>
-          : JSON.parse(localStorage.getItem('u_roles')).some((rol)=> rol.RoleId === VARIABLES.ID_ROL_SECRETARIO) ?
+          : GetRoles().some((rol)=> rol.RoleName === "Mesa") ?
               <>
                 <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
                   <MenuItem  icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
@@ -124,7 +124,7 @@ const Aside = () => {
                   <MenuItem icon={<i className='bx bx-calendar-check'></i>}>OT Finalizadas<Link to="/ot-finalizadas"></Link></MenuItem>
                 </SubMenu>
               </>
-          : JSON.parse(localStorage.getItem('u_roles')).some((rol)=> rol.RoleId === VARIABLES.ID_ROL_JEFE) || JSON.parse(localStorage.getItem('u_roles')).some((rol)=> rol.RoleId === VARIABLES.ID_ROL_ADMIN) ?
+          : GetRoles().some((rol)=> rol.RoleName === "Jefe") || GetRoles().some((rol)=> rol.RoleName === "Admin") ?
               <>
               <SubMenu onClick={onClickMenuAbonados} open={SubMenuAbonados} title="Abonados" icon={<i className="bx bx-user"></i>}>
                 <MenuItem icon={<i className='bx bxs-user-detail' ></i>}>Inscriptos<Link to="/abonados-inscriptos"></Link></MenuItem>
@@ -139,10 +139,10 @@ const Aside = () => {
               </SubMenu>
               <MenuItem icon={<i className="bx bx-calculator"></i>}>Cierre de caja<Link to="/cierre-de-caja"></Link></MenuItem>
               <SubMenu onClick={onClickMenuUsuarios} open={SubMenuUsuarios} title="Usuarios" icon={<i className="bx bx-group"></i>}>
-                <MenuItem icon={<i className='bx bxs-user'></i>}>Usuarios<Link to="/users"></Link></MenuItem>
-                <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/Roles"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bx-user'></i>}>Usuarios<Link to="/users"></Link></MenuItem>
+                <MenuItem icon={<i className='bx bxs-user-account'></i>}>Roles<Link to="/roles"></Link></MenuItem>
               </SubMenu>
-              <SubMenu onClick={onClickMenuConfiguracion} open={subMenuConfiguracion} title="Configuración" icon={<i className="bx bxs-brightness"></i>}>
+              <SubMenu onClick={onClickMenuConfiguracion} open={subMenuConfiguracion} title="Configuración" icon={<i className="bx bx-brightness"></i>}>
                 <MenuItem icon={<i className="bx bx-money"></i>}>Medios de Pago<Link to="/medios-de-pago"></Link></MenuItem>
                 <MenuItem icon={<i className="bx bx-plug"></i>}>Servicios<Link to="/servicios"></Link></MenuItem>
                 <MenuItem icon={<i className="bx bx-map"></i>}>Barrios y Municipios<Link to="/barrios-municipios"></Link></MenuItem>
@@ -159,7 +159,7 @@ const Aside = () => {
 
     <div className="header">
         <i style={{display: width === '280px' ? "none" : "unset"}} onClick={onClickWidth} className="bx bx-menu"/>
-        <Button startIcon={<i className="bx bxs-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{GetFullName()}</Button>
+        <Button startIcon={<i className="bx bx-user-circle bx-md"></i>} style={{float: 'right', color: '#FFFFFF'}} onClick={handleClick}>{GetFullName()}</Button>
         <Popover 
           id={id}
           open={open}

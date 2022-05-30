@@ -95,8 +95,8 @@ const CaratulaRole = () => {
         <CardContent>
             <Tabs>
                 <TabList>
-                    <Tab><i className="bx bxs-user"></i> Rol</Tab>
-                    <Tab onClick={handleChangeTabsPermisos}><i className='bx bxs-lock'></i> Permisos</Tab>
+                    <Tab><i className="bx bx-user"></i> Rol</Tab>
+                    <Tab onClick={handleChangeTabsPermisos}><i className='bx bx-lock'></i> Permisos</Tab>
                 </TabList>
                 <TabPanel>
                 <Card>

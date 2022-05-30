@@ -166,10 +166,10 @@ const CambioDomicilio = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                <Typography style={{color: "#4D7F9E", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
+                <Typography style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-pencil bx-xs' ></i> Editar</Typography>
                 </MenuItem>
                 <MenuItem>
-                <Typography style={{color: "navy", cursor: 'pointer'}}><i className='bx bxs-home bx-xs' ></i> Confirmar cambio de domicilio</Typography>
+                <Typography style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-home bx-xs' ></i> Confirmar cambio de domicilio</Typography>
                 </MenuItem>
                 </>
             }/>
@@ -198,7 +198,7 @@ const CambioDomicilio = () => {
     const ExpandedComponent = ({ data }) =>
     <>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Dirección: {data.DomicilioCalle} {data.DomicilioNumero}</Typography>
-        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bxs-home"></i> Barrio: {data.BarrioNombre}</Typography>
+        <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-home"></i> Barrio: {data.BarrioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-building-house"></i> Municipio: {data.MunicipioNombre}</Typography>
         <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Fecha de Solicitud: {convertirAFecha(data.FechaPedidoCambio)}</Typography>
         { data.FechaInicioOt ?
@@ -245,7 +245,7 @@ const CambioDomicilio = () => {
             <>
             <Tabs>
             <TabList>
-                <Tab><i className="bx bxs-home"></i> Datos del nuevo domicilio</Tab>
+                <Tab><i className="bx bx-home"></i> Datos del nuevo domicilio</Tab>
                 <Tab><i className="bx bx-task"></i> Datos de la OT</Tab>
                 <Tab><i className="bx bx-money"></i> Datos del pago</Tab>
             </TabList>

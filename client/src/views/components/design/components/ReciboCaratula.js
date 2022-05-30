@@ -127,7 +127,7 @@ const ReciboCaratula = ({data}) => (
             <Text style={styles.subtitle}>Municipio: <Text style={styles.subtitleSpan}>{data.MunicipioNombre}</Text></Text>
           </View>
           <View style={styles.column}>
-            <Text style={styles.subtitle}>N°: <Text style={styles.subtitleSpan}>adsads</Text></Text>
+            <Text style={styles.subtitle}>N°: <Text style={styles.subtitleSpan}>{data.AbonadoNumero}</Text></Text>
             <Text style={styles.subtitle}>Domicilio: <Text style={styles.subtitleSpan}>{data.DomicilioCalle}, {data.DomicilioNumero}</Text></Text>
             <Text style={styles.subtitle}>Barrio: <Text style={styles.subtitleSpan}>{data.BarrioNombre}</Text></Text>
           </View>
@@ -176,7 +176,7 @@ const ReciboCaratula = ({data}) => (
             <Text style={styles.subtitle}>Municipio: <Text style={styles.subtitleSpan}>{data.MunicipioNombre}</Text></Text>
           </View>
           <View style={styles.column}>
-            <Text style={styles.subtitle}>N°: <Text style={styles.subtitleSpan}>adsads</Text></Text>
+            <Text style={styles.subtitle}>N°: <Text style={styles.subtitleSpan}>{data.AbonadoNumero}</Text></Text>
             <Text style={styles.subtitle}>Domicilio: <Text style={styles.subtitleSpan}>{data.DomicilioCalle}, {data.DomicilioNumero}</Text></Text>
             <Text style={styles.subtitle}>Barrio: <Text style={styles.subtitleSpan}>{data.BarrioNombre}</Text></Text>
           </View>

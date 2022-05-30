@@ -182,7 +182,7 @@ exports.AbonadosGet = async(req, res) => {
     let abonados = '';
     try {
         req.params.municipioId != 0 && req.params.estadoId != 0 ?
-        abonados = await knex.select('u.UserId','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
+        abonados = await knex.select('u.UserId', 'u.AbonadoNumero','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
         .from('_user as u')
         .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
@@ -201,7 +201,7 @@ exports.AbonadosGet = async(req, res) => {
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId == 0 && req.params.estadoId != 0 ?
-        abonados = await knex.select('u.UserId','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
+        abonados = await knex.select('u.UserId', 'u.AbonadoNumero','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
         .from('_user as u')
         .leftJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
@@ -219,7 +219,7 @@ exports.AbonadosGet = async(req, res) => {
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId != 0 && req.params.estadoId == 0 ?
-        abonados = await knex.select('u.UserId','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
+        abonados = await knex.select('u.UserId', 'u.AbonadoNumero','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
         .from('_user as u')
         .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
@@ -236,7 +236,7 @@ exports.AbonadosGet = async(req, res) => {
             'r.RoleId': VARIABLES.ID_ROL_ABONADO,
             'm.MunicipioId': req.params.municipioId,
         })
-        : abonados = await knex.select('u.UserId','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
+        : abonados = await knex.select('u.UserId', 'u.AbonadoNumero','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
         .from('_user as u')
         .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
@@ -386,9 +386,21 @@ exports.AbonadoCreate = async(req, res) => {
                 order: [['DetallePagoId', 'DESC']]
             }); 
             if (ultimoDetallePago) ultimoDetallePagoId = ultimoDetallePago.DetallePagoId;
-            const UserId = uuidv4().toUpperCase()
+            //buscamos el ultimo numero de abonado
+            let ultimoAbonadoNumero = 0;
+            const ultimoAbonado = await User.findOne({
+                order: [['AbonadoNumero', 'DESC']],
+                where: {
+                    AbonadoNumero: {
+                        [Op.ne]: null
+                    }
+                }
+            }); 
+            if (ultimoAbonado) ultimoAbonadoNumero = ultimoAbonado.AbonadoNumero;
+            const UserId = uuidv4().toUpperCase();
             // creamos un nuevo abonado pasándole como info todo lo que traemos de la vista
             const abonado = new User(req.body, {transaction: t});
+            abonado.AbonadoNumero = ultimoAbonadoNumero + 1;
             abonado.FechaBajada = req.body.OtFechaPrevistaVisita;
             abonado.UserId = UserId;
             abonado.DomicilioId = ultimoDomicilioId + 1;
@@ -583,7 +595,7 @@ exports.AbonadoCreate = async(req, res) => {
                 await recibo.save({transaction: t});
                 movimiento.ReciboId = recibo.ReciboId;
                 datosRecibo = {ReciboId: recibo.ReciboId, createdAt: recibo.createdAt,
-                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit, AbonadoNumero: abonado.AbonadoNumero,
                     DomicilioCalle: domicilio.DomicilioCalle, DomicilioNumero: domicilio.DomicilioNumero,
                     BarrioNombre: req.body.Barrio.BarrioNombre, MunicipioNombre: municipio.MunicipioNombre, 
                     MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
@@ -641,7 +653,6 @@ exports.AbonadoCambiarEstado = async(req, res) => {
             //buscamos el abonado por su Id
             const abonado = await User.findByPk( req.body.UserId, {transaction: t});
             const abonadoEstado = new UserEstado( req.body, {transaction: t});
-            console.log(req.body);
             //Si el abonado tiene ONU asignada y lo damos de baja, desasignamos su ONU
             if(abonado.OnuId && req.body.EstadoId === 3){
                 const onu = await Onu.findOne({
@@ -653,7 +664,8 @@ exports.AbonadoCambiarEstado = async(req, res) => {
                 onu.EstadoId = 5;
                 await onu.save({transaction: t});
             }
-            await abonado.update(req.body, {transaction: t});
+            abonado.EstadoId = req.body.AbonadoId;
+            await abonado.save({transaction: t});
             await abonadoEstado.save({transaction: t});
             if(req.body.EstadoId === 1) {
                 return res.status(200).json({msg: 'El Abonado ha sido inscripto correctamente'})
@@ -669,6 +681,23 @@ exports.AbonadoCambiarEstado = async(req, res) => {
     catch (error) {
         console.log(error);
         res.status(400).json({msg: 'Hubo un error al dar de baja el abonado'});
+    }
+}
+
+exports.AbonadoRenovarContrato = async(req, res) => {
+    try {
+        await db.transaction(async(t)=>{
+            //buscamos el abonado por su Id
+            const abonado = await User.findByPk( req.body.UserId, {transaction: t});
+            abonado.FechaContrato = new Date();
+            abonado.FechaVencimientoServicio = new Date(new Date().setFullYear(new Date().getFullYear() + 2));
+            await abonado.save({transaction: t});
+            return res.status(200).json({msg: 'El contrato del abonado ha sido renovado correctamente'})
+        })
+        }   
+    catch (error) {
+        console.log(error);
+        res.status(400).json({msg: 'Hubo un error al renovar el contrato del abonado'});
     }
 }
 
@@ -899,7 +928,7 @@ exports.AbonadoCambioDomicilio = async(req, res) => {
                 await recibo.save({transaction: t});
                 movimiento.ReciboId = recibo.ReciboId;
                 datosRecibo = {ReciboId: recibo.ReciboId, createdAt: recibo.createdAt,
-                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit, AbonadoNumero: abonado.AbonadoNumero,
                     DomicilioCalle: abonadoDomicilioViejo.DomicilioCalle, DomicilioNumero: abonadoDomicilioViejo.DomicilioNumero,
                     BarrioNombre: barrioDomicilioViejo.BarrioNombre, MunicipioNombre: municipioDomicilioViejo.MunicipioNombre,
                     MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
@@ -1136,7 +1165,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
                     FacturaMoneda: factura.FacturaMoneda, FacturaCotizacion: factura.FacturaCotizacion, FacturaTipoDocReceptor: factura.FacturaTipoDocReceptor,
                     FacturaNroDocReceptor: factura.FacturaNroDocReceptor, FacturaAño: factura.FacturaAño, FacturaMes: factura.FacturaMes,
                     AbonadoId: factura.AbonadoId, createdAt: factura.createdAt, createdBy: factura.createdBy,
-                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit, AbonadoNumero: abonado.AbonadoNumero,
                     DomicilioCalle: domicilioAbonado.DomicilioCalle, DomicilioNumero: domicilioAbonado.DomicilioNumero,
                     BarrioNombre: barrioAbonado.BarrioNombre, MunicipioNombre: municipioAbonado.MunicipioNombre,
                     MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    
@@ -1157,7 +1186,7 @@ exports.AbonadoCambioServicio = async(req, res) => {
                 await recibo.save({transaction: t});
                 movimiento.ReciboId = recibo.ReciboId;
                 datosRecibo = {ReciboId: recibo.ReciboId, createdAt: recibo.createdAt,
-                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit,
+                    ApellidoAbonado: abonado.Apellido, NombreAbonado: abonado.Nombre, Cuit: abonado.Cuit, AbonadoNumero: abonado.AbonadoNumero,
                     DomicilioCalle: domicilioAbonado.DomicilioCalle, DomicilioNumero: domicilioAbonado.DomicilioNumero,
                     BarrioNombre: barrioAbonado.BarrioNombre, MunicipioNombre: municipioAbonado.MunicipioNombre,
                     MovimientoConceptoId: movimiento.MovimientoConceptoId, MovimientoConceptoNombre: movimientoConceptoNombre.MovimientoConceptoNombre, MovimientoCantidad: movimiento.MovimientoCantidad    

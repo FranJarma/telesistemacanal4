@@ -8,7 +8,7 @@ const spanServicio = ({servicioId, servicioNombre, onuMac}) => {
         return <span style={{color: '#4D7F9E'}}><i className='bx bx-wifi bx-xs'></i> {servicioNombre} - <b>MAC: </b> {onuMac}</span>
     }
     else {
-        return <span style={{color: 'orange'}}><i className='bx bxs-offer bx-xs'></i> {servicioNombre} - {onuMac}</span>
+        return <span style={{color: 'orange'}}><i className='bx bx-offer bx-xs'></i> {servicioNombre} - {onuMac}</span>
     }
 }
 

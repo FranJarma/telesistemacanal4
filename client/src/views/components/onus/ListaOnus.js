@@ -103,7 +103,7 @@ const ListaOnus = ({location}) => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Typography onClick={()=>{handleChangeModalOnu(data)}} style={{color: "#4D7F9E", cursor: 'pointer'}}><i className='bx bxs-pencil bx-xs' ></i> Editar</Typography>
+                    <Typography onClick={()=>{handleChangeModalOnu(data)}} style={{color: "navy", cursor: 'pointer'}}><i className='bx bx-pencil bx-xs' ></i> Editar</Typography>
                 </MenuItem>
                 <MenuItem>
                     <Typography onClick={()=>{handleChangeModalEliminarOnu(data)}} style={{color: "red", cursor: 'pointer'}}><i className="bx bx-trash bx-xs"></i> Eliminar</Typography>

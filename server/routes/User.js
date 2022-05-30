@@ -80,6 +80,8 @@ router.put('/abonados/update/:id', [ValidarJWT],
     check('CondicionIvaId', 'La condición IVA es obligatoria').not().contains(0),
 ],UserController.AbonadoUpdate);
 
+router.put('/abonados/renovar-contrato/:id', [ValidarJWT],UserController.AbonadoRenovarContrato);
+
 router.put('/abonados/cambiar-estado/:id', [ValidarJWT], UserController.AbonadoCambiarEstado);
 
 router.put('/abonados/cambio-domicilio/:id', [ValidarJWT],

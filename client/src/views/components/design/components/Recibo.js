@@ -12,7 +12,7 @@ const Recibo = ({data}) => {
   return (
     <>
     <Tooltip title="Descargar recibo">
-      <i style={{color: "teal"}} className='bx bx-file bx-xs' onClick={() => descargarComprobante("Recibo", <ReciboCaratula data={data}/>, data)}></i>
+      <i style={{color: "navy"}} className='bx bx-file bx-xs' onClick={() => descargarComprobante("Recibo", <ReciboCaratula data={data}/>, data)}></i>
     </Tooltip>
     </>
   );

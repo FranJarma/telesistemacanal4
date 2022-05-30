@@ -19,8 +19,8 @@ const OnusModelosOnus = () => {
                 <CardContent>
                 <Tabs>
                     <TabList>
-                    <Tab><i className='bx bxs-hdd'></i> ONUS</Tab>
-                    <Tab><i className="bx bxs-category"></i> Modelos ONUS</Tab>
+                    <Tab><i className='bx bx-hdd'></i> ONUS</Tab>
+                    <Tab><i className="bx bx-category"></i> Modelos ONUS</Tab>
                     </TabList>
                     <TabPanel>
                     <ListaOnus location={location}/>

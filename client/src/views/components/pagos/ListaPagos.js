@@ -175,13 +175,13 @@ const ListaPagos = () => {
                         {data.PagoSaldo > 0 ?
                         <>
                             <MenuItem>
-                                <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "#4D7F9E", cursor: "pointer"}}><i className='bx bxs-credit-card bx-xs'></i> Agregar Pago</Typography>
+                                <Typography onClick={()=>{handleChangeModalNuevoPago(data)}} style={{textDecoration: 'none', color: "navy", cursor: "pointer"}}><i className='bx bx-credit-card bx-xs'></i> Agregar Pago</Typography>
                             </MenuItem>
                             <MenuItem>
-                                <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bxs-error-alt bx-xs'></i> Añadir recargo</Typography>
+                                <Typography onClick={()=>handleChangeModalRecargoPago(data)} style={{textDecoration: 'none', color: "darkorange", cursor: "pointer"}}><i className='bx bx-error-alt bx-xs'></i> Añadir recargo</Typography>
                             </MenuItem>
                             <MenuItem>
-                                <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bxs-trash bx-xs'></i> Eliminar recargo</Typography>
+                                <Typography onClick={()=>eliminarRecargo(data)} style={{textDecoration: 'none', color: "red", cursor: "pointer"}}><i className='bx bx-trash bx-xs'></i> Eliminar recargo</Typography>
                             </MenuItem>
                         </> :"" }
                     </>
@@ -269,22 +269,22 @@ const ListaPagos = () => {
                         setConceptoId(2);
                         setPagoInfo({...PagoInfo, PagoConceptoId: 2});
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 2)
-                    }}><i className="bx bxs-notepad"></i> Inscripciones y reinscripciones</Tab>
+                    }}><i className="bx bx-notepad"></i> Inscripciones y reinscripciones</Tab>
                     <Tab onClick={() => {
                         setConceptoId(1);
                         setPagoInfo({...PagoInfo, PagoConceptoId: 1});
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 1);
-                    }}><i className='bx bxs-calendar'></i> Mensualidades</Tab>
+                    }}><i className='bx bx-calendar'></i> Mensualidades</Tab>
                     <Tab onClick={() => {
                         setConceptoId(5);
                         setPagoInfo({...PagoInfo, PagoConceptoId: 5});
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 5);
-                    }}><i className='bx bxs-home'></i> Cambios de domicilio</Tab>
+                    }}><i className='bx bx-home'></i> Cambios de domicilio</Tab>
                     <Tab onClick={() => {
                         setConceptoId(6);
                         setPagoInfo({...PagoInfo, PagoConceptoId: 6});
                         traerPagosPorAbonado(location.state.UserId, PagoAño.getFullYear(), 6);
-                    }}><i className='bx bxs-plug'></i> Cambios de servicio</Tab>
+                    }}><i className='bx bx-plug'></i> Cambios de servicio</Tab>
                 </TabList>
                 <br/>
                 { //Nos permite renderizar 4 elementos iguales (4 Primeros Tabs)
