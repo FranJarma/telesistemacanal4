@@ -155,13 +155,8 @@ const ListaOtPendientes = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Link to={{
-                    pathname: `/caratula-ot/edit/OtId=${data.OtId}`,
-                    state: data
-                    }}
-                    style={{textDecoration: 'none', color: "#4D7F9E"}}>
+                    <Link to={`/caratula-ot/${data.OtId}`} state={data} style={{textDecoration: 'none', color: "#4D7F9E"}}>
                     <Typography><i className='bx bxs-pencil bx-xs' ></i>  Editar</Typography>
-                    
                     </Link>
                 </MenuItem>
                 <MenuItem>

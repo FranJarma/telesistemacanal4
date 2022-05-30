@@ -1,7 +1,7 @@
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ErrorBoundary = () => {
-  const history = useHistory();
+  const history = useNavigate();
 
   return (
     <div role="alert">

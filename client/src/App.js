@@ -1,10 +1,11 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import esLocale from 'date-fns/locale/es';
 import AppState from './context/appState';
+import Login from'./views/components/auth/Login';
 import ListaPagos from './views/components/pagos/ListaPagos';
 import ListaServicios from './views/components/servicios/ListaServicios';
 import ListaAbonadosActivos from './views/components/abonados/ListaAbonadosActivos';
@@ -18,27 +19,20 @@ import OnusModelosOnus from './views/components/onus/OnusModelosOnus';
 import ListaUsers from './views/components/users/ListaUsers';
 import ListaRoles from './views/components/roles/ListaRoles';
 import tokenAuthHeaders from './config/token';
-import PrivateRoute from './routes/PrivateRoute';
 import ListaMisOt from './views/components/tecnicos/ListaMisOt';
 import ListaTareas from './views/components/tecnicos/ListaTareas';
 import ListaOtPendientes from './views/components/tecnicos/ListaOtPendientes';
 import ListaOtFinalizadas from './views/components/tecnicos/ListaOtFinalizadas';
 import ListaMovimientos from './views/components/caja/ListaMovimientos';
 import ListaMediosPago from './views/components/mediosPago/ListaMediosPago';
-import Error401 from './views/components/Error401';
 import ListaAbonadosAtrasados from './views/components/abonados/ListaAbonadosAtrasados';
+import { AuthRoute } from './routes/AuthRoute';
 
 //revisamos si tenemos un token
 const token = localStorage.getItem('token');
 if (token) {
   tokenAuthHeaders(token);
 }
-
-const Login = lazy(() => {
-  return new Promise(resolve => setTimeout(resolve, 4000)).then(
-    () => import('./views/components/auth/Login')
-  );
-});
 
 const Home = lazy(() => {
   return new Promise(resolve => setTimeout(resolve, 4000)).then(
@@ -130,70 +124,281 @@ function App() {
     <>
     <ThemeProvider theme={theme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
-        <Router>
+        <BrowserRouter>
           <AppState>
-            <Switch>
+            <Routes>
+
+              <Route exact
+              path="/"
+              element={
                 <Suspense fallback={<Cargando/>}>
-                  <Route exact path="/">
-                    <Login/>
-                  </Route>
-                  <Route exact path="/Error-401">
-                    <Error401/>
-                  </Route>
-                  <PrivateRoute exact path="/home" component={Home} role="jefe">
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/users" component={ListaUsers}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/roles" component={ListaRoles}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/abonados-inscriptos" component={ListaAbonadosInscriptos}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/abonados-activos" component={ListaAbonadosActivos}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/abonados-inactivos" component={ListaAbonadosInactivos}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/abonados-atrasados" component={ListaAbonadosAtrasados}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/caratula-abonado" component={CaratulaAbonado}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/caratula-user" component={CaratulaUser}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/perfil-user" component={PerfilUser}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/caratula-role" component={CaratulaRole}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/cambio-domicilio" component={CambioDomicilio}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/cambio-servicio" component={CambioServicio}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/cambio-titularidad" component={CambioTitularidad}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/historial-de-pagos" component={ListaPagos}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/servicios" component={ListaServicios}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/barrios-municipios" component={BarriosMunicipios}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/onus" component={OnusModelosOnus}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/medios-de-pago" component={ListaMediosPago}>
-                  </PrivateRoute>
-                  <PrivateRoute path="/caratula-ot" component={CaratulaOT}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/ot-pendientes" component={ListaOtPendientes}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/ot-finalizadas" component={ListaOtFinalizadas}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/mis-ot" component={ListaMisOt}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/tareas" component={ListaTareas}>
-                  </PrivateRoute>
-                  <PrivateRoute exact path="/cierre-de-caja" component={ListaMovimientos}>
-                  </PrivateRoute>
+                  <Login/>
                 </Suspense>
-            </Switch>
+              }>
+              </Route>
+
+              <Route exact
+              path="/home"
+              element={
+                <Suspense fallback={<Cargando/>}>
+                  <Home/>
+                </Suspense>
+              }>
+              </Route>
+
+              <Route exact
+              path="/barrios-municipios"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <BarriosMunicipios/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/servicios"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <ListaServicios/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/medios-de-pago"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <ListaMediosPago/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/onus"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <OnusModelosOnus/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/tareas"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <ListaTareas/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/users"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <ListaUsers/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/roles"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <ListaRoles/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/cierre-de-caja"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <ListaMovimientos/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/caratula-user"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <Suspense fallback={<Cargando/>}>
+                    <CaratulaUser/>
+                  </Suspense>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/caratula-role"
+              element={
+                <AuthRoute roles={["Jefe", "Admin"]}>
+                  <Suspense fallback={<Cargando/>}>
+                    <CaratulaRole/>
+                  </Suspense>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/abonados-activos"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <ListaAbonadosActivos/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/abonados-inscriptos"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <ListaAbonadosInscriptos/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/abonados-inactivos"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <ListaAbonadosInactivos/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/abonados-atrasados"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <ListaAbonadosAtrasados/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/caratula-abonado"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <Suspense fallback={<Cargando/>}>
+                    <CaratulaAbonado/>
+                  </Suspense>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/caratula-abonado/:UserId"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <Suspense fallback={<Cargando/>}>
+                    <CaratulaAbonado/>
+                  </Suspense>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/cambio-domicilio/:UserId"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <CambioDomicilio/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/cambio-servicio/:UserId"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <CambioServicio/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/cambio-titularidad/:UserId"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <Suspense fallback={<Cargando/>}>
+                    <CambioTitularidad/>
+                  </Suspense>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/historial-de-pagos/:UserId"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <ListaPagos/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/caratula-ot"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <Suspense fallback={<Cargando/>}>
+                    <CaratulaOT/>
+                  </Suspense>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/caratula-ot/:OtId"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <Suspense fallback={<Cargando/>}>
+                    <CaratulaOT/>
+                  </Suspense>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/ot-pendientes"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <ListaOtPendientes/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/ot-finalizadas"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa"]}>
+                  <ListaOtFinalizadas/>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route
+              path="/perfil-user"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Mesa", "Tecnico"]}>
+                  <Suspense fallback={<Cargando/>}>
+                    <PerfilUser/>
+                  </Suspense>
+                </AuthRoute>
+              }>
+              </Route>
+
+              <Route exact
+              path="/mis-ot"
+              element={
+                <AuthRoute roles={["Jefe", "Admin", "Tecnico"]}>
+                  <ListaMisOt/>
+                </AuthRoute>
+              }>
+              </Route>
+              
+            </Routes>
           </AppState>
-        </Router>
+        </BrowserRouter>
       </MuiPickersUtilsProvider>
     </ThemeProvider>
     </>

@@ -106,10 +106,7 @@ const ListaAbonadosInactivos = () => {
             <BotonesDatatable botones={
                 <>
                 <MenuItem>
-                    <Link to={{
-                    pathname: `/historial-de-pagos/view/${data.Nombre + "-" +  data.Apellido}`,
-                    state: data
-                    }} style={{textDecoration: 'none', color: "navy"}}>
+                    <Link to={`/historial-de-pagos/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
                     <Typography style={{color: 'navy'}}>
                     <i className='bx bx-money bx-xs'></i> Pagos</Typography>
                     </Link> 

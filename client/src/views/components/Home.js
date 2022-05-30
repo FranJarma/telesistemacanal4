@@ -70,7 +70,7 @@ const Home = () => {
                         </Link>
                     </Grid>
                     <Grid item xs={12} lg={12}>
-                        <Link style={{textDecoration: 'none'}} to="ot-pendientes">
+                        <Link style={{textDecoration: 'none'}} to="/ot-pendientes">
                             <Card className={styles.cartaEstadisticas}>
                                 <CardContent>
                                     <Typography variant="h2"><i className="bx bx-line-chart up"></i>  Órdenes de trabajo asignadas</Typography>

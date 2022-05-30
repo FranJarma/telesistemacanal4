@@ -113,46 +113,31 @@ const ListaAbonadosActivos = () => {
         <BotonesDatatable botones={
             <>
             <MenuItem>
-                <Link to={{
-                pathname: `/caratula-abonado/edit/${data.Nombre + "-" +  data.Apellido}`,
-                state: data
-                }} style={{textDecoration: 'none', color: "#4D7F9E"}}>
+                <Link to={`/caratula-abonado/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "#4D7F9E"}}>
                 <Typography style={{color: '#4D7F9E'}}>
                 <i className='bx bxs-pencil bx-xs'></i> Editar</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Link to={{
-                pathname: `/cambio-domicilio/${data.Nombre + "-" +  data.Apellido}`,
-                state: data
-                }} style={{textDecoration: 'none', color: "#4D7F9E"}}>
+                <Link to={`/cambio-domicilio/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "#4D7F9E"}}>
                 <Typography style={{color: '#4D7F9E'}}>
                 <i className='bx bxs-home bx-xs'></i> Cambio de domicilio</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Link to={{
-                pathname: `/cambio-servicio/${data.Nombre + "-" +  data.Apellido}`,
-                state: data
-                }} style={{textDecoration: 'none', color: "teal"}}>
+                <Link to={`/cambio-servicio/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "teal"}}>
                 <Typography style={{color: 'teal'}}>
                 <i className='bx bx-plug bx-xs'></i> Cambio de servicio</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Link to={{
-                pathname: `/cambio-titularidad/${data.Nombre + "-" +  data.Apellido}`,
-                state: data
-                }} style={{textDecoration: 'none', color: "navy"}}>
+                <Link to={`/cambio-titularidad/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
                 <Typography style={{color: 'navy'}}>
                 <i className='bx bxs-notepad bx-xs'></i> Cambio de titularidad</Typography>
                 </Link> 
             </MenuItem>
             <MenuItem>
-                <Link to={{
-                pathname: `/historial-de-pagos/${data.Nombre + "-" +  data.Apellido}`,
-                state: data
-                }} style={{textDecoration: 'none', color: "navy"}}>
+                <Link to={`/historial-de-pagos/${data.UserId}`} state={data} style={{textDecoration: 'none', color: "navy"}}>
                 <Typography style={{color: 'navy'}}>
                 <i className='bx bx-money bx-xs'></i> Pagos</Typography>
                 </Link> 

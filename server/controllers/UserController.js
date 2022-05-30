@@ -182,10 +182,7 @@ exports.AbonadosGet = async(req, res) => {
     let abonados = '';
     try {
         req.params.municipioId != 0 && req.params.estadoId != 0 ?
-        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 'u.UserId', 
-        'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
-        'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
-        ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
+        abonados = await knex.select('u.UserId','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
         .from('_user as u')
         .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
@@ -204,10 +201,7 @@ exports.AbonadosGet = async(req, res) => {
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId == 0 && req.params.estadoId != 0 ?
-        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 'u.UserId', 
-        'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
-        'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
-        ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
+        abonados = await knex.select('u.UserId','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
         .from('_user as u')
         .leftJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
@@ -225,10 +219,7 @@ exports.AbonadosGet = async(req, res) => {
             'u.EstadoId': req.params.estadoId
         })
         : req.params.municipioId != 0 && req.params.estadoId == 0 ?
-        abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 'u.UserId', 
-        'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
-        'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
-        ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
+        abonados = await knex.select('u.UserId','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
         .from('_user as u')
         .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')
@@ -245,10 +236,7 @@ exports.AbonadosGet = async(req, res) => {
             'r.RoleId': VARIABLES.ID_ROL_ABONADO,
             'm.MunicipioId': req.params.municipioId,
         })
-        : abonados = await knex.select('u.Nombre', 'u.Apellido', 'u.Cuit', 'd.DomicilioCalle', 'u.UserId', 
-        'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado',
-        'o.OnuMac', 's.ServicioNombre', 'mo.ModeloOnuNombre', 'u.Telefono', 'u.Documento', 's.ServicioId'
-        ,'u.FechaVencimientoServicio', 'u.FechaBajada', 'u.FechaContrato')
+        : abonados = await knex.select('u.UserId','u.Nombre', 'u.Apellido', 'u.Documento', 'u.Cuit', 'u.CondicionIvaId', 'u.Email', 'u.FechaNacimiento', 'u.Telefono', 'u.FechaBajada', 'u.FechaVencimientoServicio', 'u.FechaContrato', 'u.deletedAt', 'u1.Nombre as NombreEliminado', 'u1.Apellido as ApellidoEliminado', 'd.DomicilioCalle', 'd.DomicilioNumero', 'd.DomicilioPiso', 'b.BarrioNombre', 'b.BarrioId', 'm.MunicipioNombre', 'm.MunicipioId', 'p.ProvinciaId', 'p.ProvinciaNombre', 's.ServicioId', 's.ServicioNombre', 'o.OnuMac', 'mo.ModeloOnuNombre')
         .from('_user as u')
         .innerJoin('_user as u1', 'u.deletedBy', 'u1.UserId')
         .innerJoin('_userrole as ur', 'u.UserId', '=', 'ur.UserId')

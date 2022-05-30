@@ -175,11 +175,7 @@ const Aside = () => {
           }}
         >
           <List style={{ cursor: 'pointer'}}>
-            <Link style={{textDecoration: 'none', color: '#000'}} to={{
-              pathname: '/perfil-user',
-              state: GetUserInfo()
-            }
-            }>
+            <Link style={{textDecoration: 'none', color: '#000'}} to={'/perfil-user'} state={GetUserInfo()}>
             <ListItem>
             <ListItemIcon>
             <i className="bx bx-user"></i>

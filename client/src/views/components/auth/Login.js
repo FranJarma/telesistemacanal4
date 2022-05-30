@@ -4,11 +4,11 @@ import logo from './../../images/logo-ts-transparente.png';
 import olinet from './../../images/olinet.png';
 import useStyles from './../Styles';
 import AppContext from '../../../context/appContext';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const styles = useStyles();
-    const history = useHistory();
+    const navigate = useNavigate();
     const appContext = useContext(AppContext);
     const { usuarioAutenticado, iniciarSesion } = appContext;
     const [AuthInfo, setAuthInfo] = useState({
@@ -28,9 +28,9 @@ const Login = () => {
     };
     useEffect(()=>{
       if(usuarioAutenticado){
-        history.push('/home');
+        navigate('/home');
       }
-    },[usuarioAutenticado, history]);
+    },[usuarioAutenticado, navigate]);
     return (
     <>
     <form onSubmit={onSubmit}>
