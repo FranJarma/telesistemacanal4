@@ -261,7 +261,7 @@ exports.AbonadosGet = async(req, res) => {
 
 exports.AbonadosAtrasadosGet = async(req, res) => {
     try {
-        const abonadosAtrasados = await knex.select('u.Nombre','u.Apellido', 'u.Documento',
+        const abonadosAtrasados = await knex.select('u.Nombre','u.Apellido', 'u.Documento','u.AbonadoNumero',
         'd.DomicilioCalle', 'd.DomicilioNumero', 'b.BarrioNombre', 'm.MunicipioNombre',
         knex.raw('GROUP_CONCAT(p.PagoMes, "/", p.PagoAño SEPARATOR ", ") as MesesDebe'))
         .from('_user as u')

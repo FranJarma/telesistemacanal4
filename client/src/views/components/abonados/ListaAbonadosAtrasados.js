@@ -61,6 +61,7 @@ const ListaAbonadosAtrasados = () => {
         "hide": "sm",
     }
 ]
+
 const ExpandedComponent = ({ data }) =>
 <>
     <Typography style={{fontWeight: 'bold'}} variant="h6"><i className="bx bx-calendar"></i> Meses que debe: {data.MesesDebe}</Typography>
@@ -71,7 +72,7 @@ const ExpandedComponent = ({ data }) =>
         <div className="container">
         <Aside/>
         <main>
-        <Typography variant="h6">Abonados Atrasados <Tooltip arrow title="Los abonados atrasados son aquellos que deben más de 3 meses de pagos">
+        <Typography variant="h6">Abonados Atrasados <Tooltip arrow title="En este listado se muestran los abonados que deben algun mes">
             <i style={{color: 'blue'}} className="bx bxs-help-circle bx-tada-hover bx-sm"></i></Tooltip>
         </Typography>
         <br/>
@@ -84,7 +85,7 @@ const ExpandedComponent = ({ data }) =>
                     datos={abonados}
                     paginacion={true}
                     buscar={true}/>
-                </CardContent>
+            </CardContent>
         </Card>
         </main>
         <Footer/>

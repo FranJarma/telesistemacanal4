@@ -1,10 +1,19 @@
-const express = require('express');
-const db = require('./config/connection');
-const cors = require('cors');
-const cron = require('node-cron');
-const PagoController = require('./controllers/PagoController');
-//creamos el server
+const express           = require('express');
+const db                = require('./config/connection');
+const cors              = require('cors');
+const cron              = require('node-cron');
+const PagoController    = require('./controllers/PagoController');
+const helmet            = require('helmet');
 
+const allowedOrigins = [
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://192.168.100.201',
+    'https://192.168.100.201',
+    'http://192.168.100.5',
+    'https://192.168.100.5 '
+];
+//creamos el server
 const app = express();
 db.authenticate();
 const PORT = process.env.PORT || 4000;
@@ -12,6 +21,7 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json({ extended: true}));
 
 app.use(cors());
+app.use(helmet());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     next();
@@ -58,7 +68,7 @@ app.use('/api/caja', require('./routes/Caja.js'));
 //FACTURAS
 app.use('/api/facturas', require('./routes/Factura.js'));
 
-cron.schedule('* * * * *', function() {
+cron.schedule('0 10 20 * *', function() {
     PagoController.PagosAñadirRecargosAutomaticos();
 });
 

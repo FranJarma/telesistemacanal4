@@ -3,9 +3,11 @@ const User = require('./../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const options =require('./../config/knex');
+const { request } = require('express');
 const knex = require('knex')(options);
 
-exports.UserGet = async (req, res) => {
+exports.UserGet = async (req = request, res) => {
+    console.log(req.ip);
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})

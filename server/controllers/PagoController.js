@@ -529,7 +529,9 @@ exports.PagosAñadirRecargosAutomaticos = async (req, res) => {
                 {
                     PagoSaldo: literal('PagoSaldo + 50'),
                     PagoRecargo: literal('PagoRecargo + 50'),
-                    PagoObservaciones: `Recargo agregado automáticamente el día: ${new Date().toLocaleDateString()}`
+                    PagoObservaciones: `Recargo agregado automáticamente el día: ${new Date().toLocaleDateString()}`,
+                    updatedAt: new Date(),
+                    updatedBy: 'DA200A5B-360D-4402-B07D-24ED19D1DB14'
                 },
                 {
                     where: {
@@ -541,11 +543,11 @@ exports.PagosAñadirRecargosAutomaticos = async (req, res) => {
                         },
                         PagoMes: {
                             [Op.lte]: mesActual
-                        }
+                        },
+                        PagoConceptoId: 1
                     }
                 },
             {transaction: t});
-            console.log('Recargos actualizados...')
         })
     } catch (error) {
         console.log('Error:', error)
