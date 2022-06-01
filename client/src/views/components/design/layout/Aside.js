@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { ProSidebar, Menu, MenuItem, SubMenu, SidebarHeader, SidebarFooter } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Link } from 'react-router-dom';
-import logo from './../../../images/logo-ts.png';
+import logo from './../../../../assets/images/logo-ts.png';
 import AppContext from '../../../../context/appContext';
 import { Button, Dialog, List, ListItem, ListItemIcon, Popover, Typography } from '@material-ui/core';
 import GetFullName from './../../../../helpers/GetFullName';

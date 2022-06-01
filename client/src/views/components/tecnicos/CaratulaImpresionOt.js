@@ -1,8 +1,8 @@
 import { Checkbox, FormControl, FormControlLabel, Typography } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import AppContext from '../../../context/appContext';
-import olinet from '../../images/olinet.png';
-import logo from '../../images/logo-ts.png';
+import olinet from '../../../assets/images/olinet.png';
+import logo from '../../../assets/images/logo-ts.png';
 import convertirAFecha from '../../../helpers/ConvertirAFecha';
 import convertirAHora from '../../../helpers/ConvertirAHora';
 

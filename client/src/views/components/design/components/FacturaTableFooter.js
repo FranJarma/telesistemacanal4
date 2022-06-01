@@ -1,8 +1,8 @@
 import React from 'react';
 import {Font, Text, StyleSheet } from '@react-pdf/renderer';
 
-import OpenSans from '../../../../fonts/OpenSans.ttf'
-import OpenSansBold from '../../../../fonts/OpenSansBold.ttf'
+import OpenSans from '../../../../assets/fonts/OpenSans.ttf'
+import OpenSansBold from '../../../../assets/fonts/OpenSansBold.ttf'
 
 Font.register({
   family: 'OpenSans',

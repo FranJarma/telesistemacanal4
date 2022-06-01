@@ -1,11 +1,12 @@
 
 import React from 'react';
 import { Page, Document, StyleSheet, Image, Text, View, Font } from '@react-pdf/renderer';
-import logo from './../../../images/logo-ts-transparente.png';
-import logo2 from './../../../images/olinet.png';
+import logo from './../../../../assets/images/logo-ts-transparente.png';
+import logo2 from './../../../../assets/images/olinet.png';
 
-import OpenSans from '../../../../fonts/OpenSans.ttf'
-import OpenSansBold from '../../../../fonts/OpenSansBold.ttf'
+import OpenSans from '../../../../assets/fonts/OpenSans.ttf'
+import OpenSansBold from '../../../../assets/fonts/OpenSansBold.ttf'
+
 import convertirAFecha from './../../../../helpers/ConvertirAFecha';
 
 Font.register({

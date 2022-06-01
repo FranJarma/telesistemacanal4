@@ -1,11 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Button, Card, CardContent, Grid, InputAdornment, TextField, Typography } from '@material-ui/core';
-import logo from './../../images/logo-ts-transparente.png';
-import olinet from './../../images/olinet.png';
+import logo from './../../../assets/images/logo-ts-transparente.png';
+import olinet from './../../../assets/images/olinet.png';
 import useStyles from './../Styles';
 import AppContext from '../../../context/appContext';
 import { useNavigate } from 'react-router-dom';
-import GetRoles from '../../../helpers/GetRoles';
 
 const Login = () => {
     const styles = useStyles();
